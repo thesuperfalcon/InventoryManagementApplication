@@ -1,4 +1,5 @@
 ﻿using InventoryManagementApplication.Areas.Identity.Data;
+using InventoryManagementApplication.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -12,19 +13,48 @@ public class InventoryManagementApplicationContext : IdentityDbContext<Inventory
     {
     }
 
+    public DbSet<Product> Products { get; set; }
+    public DbSet<Storage> Storages { get; set; }
+    public DbSet<InventoryTracker> InventoryTracker { get; set; }
+    public DbSet<ActivityLog> ActivityLog { get; set; }
+    public DbSet<Statistic> Statistics { get; set; }
+
+
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
-        // Customize the ASP.NET Identity model and override the defaults if needed.
-        // For example, you can rename the ASP.NET Identity table names and more.
-        // Add your customizations after calling base.OnModelCreating(builder);
+   
         builder.Entity<InventoryManagementRole>()
                   .Property(r => r.RoleName)
                   .HasMaxLength(256);
 
         builder.Entity<InventoryManagementRole>()
                .Property(r => r.FullAccess)
-               .HasDefaultValue(false); // Default value for FullAccess
+               .HasDefaultValue(false);
+
+        builder.Entity<Statistic>()
+            .HasOne(x => x.InitialStorage)
+            .WithMany(x => x.Statistics)
+            .HasForeignKey(x => x.InitialStorageId)
+            .OnDelete(DeleteBehavior.SetNull);
+
+        builder.Entity<Statistic>()
+            .HasOne(x => x.DestinationStorage)
+            .WithMany()
+            .HasForeignKey(x => x.DestinationStorageId)
+            .OnDelete(DeleteBehavior.SetNull);
+
+        builder.Entity<Statistic>()
+            .HasOne(x => x.InitialStorage)
+            .WithMany(x => x.Statistics)
+            .HasForeignKey(x => x.InitialStorageId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        builder.Entity<Statistic>()
+            .HasOne(x => x.DestinationStorage)
+            .WithMany()
+            .HasForeignKey(x => x.DestinationStorageId)
+            .OnDelete(DeleteBehavior.Restrict);
     }
 }
 
