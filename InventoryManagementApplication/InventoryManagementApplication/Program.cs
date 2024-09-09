@@ -13,7 +13,13 @@ namespace InventoryManagementApplication
 
             builder.Services.AddDbContext<InventoryManagementApplicationContext>(options => options.UseSqlServer(connectionString));
 
-            builder.Services.AddDefaultIdentity<InventoryManagementUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<InventoryManagementApplicationContext>();
+            builder.Services.AddDefaultIdentity<InventoryManagementUser>(options =>
+            {
+                options.SignIn.RequireConfirmedAccount = false;
+                options.User.RequireUniqueEmail = false;
+                
+            })
+            .AddEntityFrameworkStores<InventoryManagementApplicationContext>();
 
             // Add services to the container.
             builder.Services.AddRazorPages();
