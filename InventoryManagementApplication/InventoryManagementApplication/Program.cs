@@ -1,3 +1,7 @@
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using InventoryManagementApplication.Data;
+using InventoryManagementApplication.Areas.Identity.Data;
 namespace InventoryManagementApplication
 {
     public class Program
@@ -5,6 +9,11 @@ namespace InventoryManagementApplication
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+            var connectionString = builder.Configuration.GetConnectionString("InventoryManagementApplicationContextConnection") ?? throw new InvalidOperationException("Connection string 'InventoryManagementApplicationContextConnection' not found.");
+
+            builder.Services.AddDbContext<InventoryManagementApplicationContext>(options => options.UseSqlServer(connectionString));
+
+            builder.Services.AddDefaultIdentity<InventoryManagementUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<InventoryManagementApplicationContext>();
 
             // Add services to the container.
             builder.Services.AddRazorPages();
