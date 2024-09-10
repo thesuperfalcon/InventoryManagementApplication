@@ -19,6 +19,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
+using System.Security.Cryptography;
+using Microsoft.EntityFrameworkCore;
 
 namespace InventoryManagementApplication.Areas.Identity.Pages.Account
 {
@@ -30,6 +32,7 @@ namespace InventoryManagementApplication.Areas.Identity.Pages.Account
         private readonly IUserEmailStore<InventoryManagementUser> _emailStore;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
+
 
         public RegisterModel(
             UserManager<InventoryManagementUser> userManager,
@@ -113,15 +116,32 @@ namespace InventoryManagementApplication.Areas.Identity.Pages.Account
 
             [Required]
             [Display(Name = "Anställningsnummer")]
-            public int EmployeeNumber { get; set; }
+            public string EmployeeNumber { get; set; }
         }
 
+        //public static string GenerateRandomEmplyeeNumber()
+        //{
+        //    Random random = new Random();
+
+        //    int employeeNumber = random.Next(1000, 10000);
+
+        //    return employeeNumber.ToString();
+        //}
+
+        public async Task<IActionResult> OnGetCheckEmployeeNumberExists(string employeeNumber)
+        {
+            bool exists = await _userManager.Users.AnyAsync(u => u.EmployeeNumber == employeeNumber);
+            return new JsonResult(!exists);
+        }
 
         public async Task OnGetAsync(string returnUrl = null)
         {
             ReturnUrl = returnUrl;
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
         }
+
+
+
 
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
@@ -131,11 +151,13 @@ namespace InventoryManagementApplication.Areas.Identity.Pages.Account
             {
                 var user = CreateUser();
 
+
+
                 user.FirstName = Input.FirstName;
                 user.LastName = Input.LastName;
                 user.EmployeeNumber = Input.EmployeeNumber;
 
-                await _userStore.SetUserNameAsync(user, Input.FirstName, CancellationToken.None);
+                await _userStore.SetUserNameAsync(user, Input.EmployeeNumber, CancellationToken.None);
                 //await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
                 var result = await _userManager.CreateAsync(user, Input.Password);
 

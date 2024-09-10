@@ -14,7 +14,7 @@ public class InventoryManagementUser : IdentityUser
     [PersonalData]
     public string LastName { get; set; }
     [PersonalData]
-    public int EmployeeNumber { get; set; }
+    public string EmployeeNumber { get; set; }
     [PersonalData]
     public string? RoleId { get; set; }
     [PersonalData]
