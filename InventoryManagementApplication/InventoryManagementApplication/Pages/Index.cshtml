@@ -13,9 +13,10 @@
 }
 else
 {
-    <h1>@ViewData["Title"]</h1>
+    <h1 class="row justify-content-center">@ViewData["Title"]</h1>
     <div class="row">
-        <div class="col-md-4">
+        <div class="row justify-content-center">
+        <div class="col-md-4 ">
             <section>
                 <form id="account" method="post">
                     <hr />
@@ -39,18 +40,19 @@ else
                 <span asp-validation-for="Input.Email" class="text-danger"></span>
                 </div> *@
 
-                    <div class="checkbox mb-3">
+@*                     <div class="checkbox mb-3">
                         <label asp-for="Input.RememberMe" class="form-label">
                             <input class="form-check-input" asp-for="Input.RememberMe" />
                             @Html.DisplayNameFor(m => m.Input.RememberMe)
                         </label>
-                    </div>
+                    </div> *@
 
                     <div>
                         <button id="login-submit" type="submit" class="w-100 btn btn-lg btn-primary">Log in</button>
                     </div>
                 </form>
             </section>
+            </div>
         </div>
     </div>
 }
