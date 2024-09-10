@@ -4,6 +4,7 @@ using InventoryManagementApplication.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace InventoryManagementApplication.Migrations
 {
     [DbContext(typeof(InventoryManagementApplicationContext))]
-    partial class InventoryManagementApplicationContextModelSnapshot : ModelSnapshot
+    [Migration("20240909091613_AddedProduct_Storage")]
+    partial class AddedProduct_Storage
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -44,9 +47,8 @@ namespace InventoryManagementApplication.Migrations
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
 
-                    b.Property<string>("EmployeeNumber")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("EmployeeNumber")
+                        .HasColumnType("int");
 
                     b.Property<string>("FirstName")
                         .IsRequired()
@@ -108,67 +110,6 @@ namespace InventoryManagementApplication.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("InventoryManagementApplication.Models.ActivityLog", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("Action")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ItemType")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Notes")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("TimeStamp")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("TypeId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("TypeId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("ActivityLog");
-                });
-
-            modelBuilder.Entity("InventoryManagementApplication.Models.InventoryTracker", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ProductStock")
-                        .HasColumnType("int");
-
-                    b.Property<int>("StorageId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ProductId");
-
-                    b.HasIndex("StorageId");
-
-                    b.ToTable("InventoryTracker");
-                });
-
             modelBuilder.Entity("InventoryManagementApplication.Models.Product", b =>
                 {
                     b.Property<int>("Id")
@@ -203,59 +144,6 @@ namespace InventoryManagementApplication.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Products");
-                });
-
-            modelBuilder.Entity("InventoryManagementApplication.Models.Statistic", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<bool?>("Completed")
-                        .HasColumnType("bit");
-
-                    b.Property<int?>("DestinationStorageId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ExecuterId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime?>("FinishedTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int?>("InitialStorageId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Notes")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("OrderTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ProductQuantity")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ReporterId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("DestinationStorageId");
-
-                    b.HasIndex("ExecuterId");
-
-                    b.HasIndex("InitialStorageId");
-
-                    b.HasIndex("ProductId");
-
-                    b.HasIndex("ReporterId");
-
-                    b.ToTable("Statistics");
                 });
 
             modelBuilder.Entity("InventoryManagementApplication.Models.Storage", b =>
@@ -450,87 +338,6 @@ namespace InventoryManagementApplication.Migrations
                     b.HasDiscriminator().HasValue("InventoryManagementRole");
                 });
 
-            modelBuilder.Entity("InventoryManagementApplication.Models.ActivityLog", b =>
-                {
-                    b.HasOne("InventoryManagementApplication.Models.Product", "Product")
-                        .WithMany()
-                        .HasForeignKey("TypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("InventoryManagementApplication.Models.Storage", "Storage")
-                        .WithMany()
-                        .HasForeignKey("TypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("InventoryManagementApplication.Areas.Identity.Data.InventoryManagementUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
-
-                    b.Navigation("Product");
-
-                    b.Navigation("Storage");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("InventoryManagementApplication.Models.InventoryTracker", b =>
-                {
-                    b.HasOne("InventoryManagementApplication.Models.Product", "Product")
-                        .WithMany()
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("InventoryManagementApplication.Models.Storage", "Storage")
-                        .WithMany()
-                        .HasForeignKey("StorageId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Product");
-
-                    b.Navigation("Storage");
-                });
-
-            modelBuilder.Entity("InventoryManagementApplication.Models.Statistic", b =>
-                {
-                    b.HasOne("InventoryManagementApplication.Models.Storage", "DestinationStorage")
-                        .WithMany()
-                        .HasForeignKey("DestinationStorageId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("InventoryManagementApplication.Areas.Identity.Data.InventoryManagementUser", "Executer")
-                        .WithMany()
-                        .HasForeignKey("ExecuterId");
-
-                    b.HasOne("InventoryManagementApplication.Models.Storage", "InitialStorage")
-                        .WithMany("Statistics")
-                        .HasForeignKey("InitialStorageId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("InventoryManagementApplication.Models.Product", "Product")
-                        .WithMany()
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("InventoryManagementApplication.Areas.Identity.Data.InventoryManagementUser", "Reporter")
-                        .WithMany()
-                        .HasForeignKey("ReporterId");
-
-                    b.Navigation("DestinationStorage");
-
-                    b.Navigation("Executer");
-
-                    b.Navigation("InitialStorage");
-
-                    b.Navigation("Product");
-
-                    b.Navigation("Reporter");
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -580,11 +387,6 @@ namespace InventoryManagementApplication.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("InventoryManagementApplication.Models.Storage", b =>
-                {
-                    b.Navigation("Statistics");
                 });
 #pragma warning restore 612, 618
         }
