@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using InventoryManagementApplication.Models;
 using Microsoft.AspNetCore.Identity;
 
 namespace InventoryManagementApplication.Areas.Identity.Data;
@@ -21,5 +22,9 @@ public class InventoryManagementUser : IdentityUser
     public DateTime Created {  get; set; }
     [PersonalData]
     public DateTime Updated { get; set; }
+
+    public virtual ICollection<ActivityLog> ActivityLogs { get; set; } = new List<ActivityLog>();
+    public virtual ICollection<Statistic> StatisticExecuters { get; set; } = new List<Statistic>();
+    public virtual ICollection<Statistic> StatisticReporters { get; set; } = new List<Statistic>();
 }
 

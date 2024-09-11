@@ -19,15 +19,16 @@ namespace InventoryManagementApplication.Models
         public int? DestinationStorageId { get; set; }
         public virtual Storage? DestinationStorage { get; set; }
 
-        public int ProductId { get; set; }
+        public int? ProductId { get; set; }
+        public int ProductQuantity { get; set; }
         public virtual Product? Product { get; set; }
 
-        public int ProductQuantity { get; set; }
-
         public DateTime? OrderTime { get; set; }
-        public DateTime? FinishedTime { get; set; }
-        public bool? Completed { get; set; }
-        public string? Notes { get; set; }
 
+        public DateTime? FinishedTime { get; set; }
+
+        public bool? Completed { get; set; }
+
+        public string? Notes { get; set; }
     }
 }

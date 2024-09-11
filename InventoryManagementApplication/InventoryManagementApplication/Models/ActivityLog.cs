@@ -8,18 +8,25 @@ namespace InventoryManagementApplication.Models
     public class ActivityLog
     {
         public int Id { get; set; }
+
         public string? UserId { get; set; }
-        public virtual InventoryManagementUser ? User { get; set; }
-        public ActionType Action { get; set; }
-        public ItemType ItemType { get; set; }
-        public int TypeId { get; set; }
-        [ForeignKey(nameof(TypeId))]
-        public Storage? Storage { get; set; }
-        [ForeignKey(nameof(TypeId))]
-        public Product? Product { get; set; }
-        public DateTime TimeStamp { get; set; }
+
+        public ActionType? Action { get; set; }
+
+        public ItemType? ItemType { get; set; }
+
+        public int? TypeId { get; set; }
+        public DateTime? TimeStamp { get; set; }
+
         public string? Notes { get; set; }
+        [ForeignKey(nameof(TypeId))]
+        public virtual Product? Product { get; set; }
+        [ForeignKey(nameof(TypeId))]
+        public virtual Storage? Storage { get; set; }
+
+        public virtual InventoryManagementUser? User { get; set; }
     }
+
     public enum ActionType
     {
         Created,
@@ -27,6 +34,7 @@ namespace InventoryManagementApplication.Models
         Deleted,
         Moved
     }
+
     public enum ItemType
     {
         Product,

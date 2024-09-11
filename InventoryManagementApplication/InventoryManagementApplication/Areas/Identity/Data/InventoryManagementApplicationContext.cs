@@ -3,6 +3,7 @@ using InventoryManagementApplication.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection.Emit;
 
 namespace InventoryManagementApplication.Data;
 
@@ -23,38 +24,54 @@ public class InventoryManagementApplicationContext : IdentityDbContext<Inventory
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
-   
-        builder.Entity<InventoryManagementRole>()
-                  .Property(r => r.RoleName)
-                  .HasMaxLength(256);
 
-        builder.Entity<InventoryManagementRole>()
-               .Property(r => r.FullAccess)
-               .HasDefaultValue(false);
+        builder.Entity<ActivityLog>()
+                   .HasOne(al => al.User)
+                   .WithMany(u => u.ActivityLogs)
+                   .HasForeignKey(al => al.UserId)
+                   .OnDelete(DeleteBehavior.SetNull);
 
         builder.Entity<Statistic>()
-            .HasOne(x => x.InitialStorage)
-            .WithMany(x => x.Statistics)
-            .HasForeignKey(x => x.InitialStorageId)
-            .OnDelete(DeleteBehavior.SetNull);
-
-        builder.Entity<Statistic>()
-            .HasOne(x => x.DestinationStorage)
-            .WithMany()
-            .HasForeignKey(x => x.DestinationStorageId)
-            .OnDelete(DeleteBehavior.SetNull);
-
-        builder.Entity<Statistic>()
-            .HasOne(x => x.InitialStorage)
-            .WithMany(x => x.Statistics)
-            .HasForeignKey(x => x.InitialStorageId)
+            .HasOne(s => s.Reporter)
+            .WithMany(u => u.StatisticReporters)
+            .HasForeignKey(s => s.ReporterId)
             .OnDelete(DeleteBehavior.Restrict);
 
         builder.Entity<Statistic>()
-            .HasOne(x => x.DestinationStorage)
-            .WithMany()
-            .HasForeignKey(x => x.DestinationStorageId)
+            .HasOne(s => s.Executer)
+            .WithMany(u => u.StatisticExecuters)
+            .HasForeignKey(s => s.ExecuterId)
             .OnDelete(DeleteBehavior.Restrict);
+
+        builder.Entity<Statistic>()
+            .HasOne(s => s.InitialStorage)
+            .WithMany(s => s.StatisticInitialStorages)
+            .HasForeignKey(s => s.InitialStorageId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Entity<Statistic>()
+            .HasOne(s => s.DestinationStorage)
+            .WithMany(s => s.StatisticDestinationStorages)
+            .HasForeignKey(s => s.DestinationStorageId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Entity<Storage>()
+            .HasMany(s => s.InventoryTrackers)
+            .WithOne(it => it.Storage)
+            .HasForeignKey(it => it.StorageId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Entity<Storage>()
+            .HasMany(s => s.StatisticDestinationStorages)
+            .WithOne(s => s.DestinationStorage)
+            .HasForeignKey(s => s.DestinationStorageId)
+            .OnDelete(DeleteBehavior.NoAction);
+
+        builder.Entity<Storage>()
+            .HasMany(s => s.StatisticInitialStorages)
+            .WithOne(s => s.InitialStorage)
+            .HasForeignKey(s => s.InitialStorageId)
+            .OnDelete(DeleteBehavior.NoAction);
     }
 }
 
