@@ -1,0 +1,27 @@
+﻿@page
+@model InventoryManagementApplication.Pages.TemporaryAdminModel
+@{
+
+}
+<p>Här finns sidan som är länkad med API</p>
+@* <form method="post">
+	<a asp-route-createProduct="@Model.CreateProduct.Name">Ange namn</a>
+	<input asp-for="@Model.CreateProduct.Name" type="hidden" value="@Model.CreateProduct.Name" />
+</form> *@
+@if(Model.Products != null)
+{
+	@foreach (var product in Model.Products)
+	{
+		<p>@product.Name</p>
+		<p>@product.Price</p>
+	}
+}
+
+ @if (Model.Storages != null)
+{
+	@foreach (var storage in Model.Storages)
+	{
+		<p>@storage.Name</p>
+		<p>@storage.MaxCapacity</p>
+	}
+} 
