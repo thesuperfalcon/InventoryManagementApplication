@@ -1,4 +1,6 @@
-﻿namespace InventoryManagementApplication.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace InventoryManagementApplication.Models
 {
     public class Product
     {
@@ -9,8 +11,8 @@
         public string? ArticleNumber { get; set; }
 
         public string? Description { get; set; }
-
-        public double? Price { get; set; }
+        [DataType(DataType.Currency)]
+        public decimal? Price { get; set; }
 
         public int? Stock { get; set; }
 

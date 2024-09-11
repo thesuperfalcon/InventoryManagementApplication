@@ -4,6 +4,7 @@ using InventoryManagementApplication.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace InventoryManagementApplication.Migrations
 {
     [DbContext(typeof(InventoryManagementApplicationContext))]
-    partial class InventoryManagementApplicationContextModelSnapshot : ModelSnapshot
+    [Migration("20240911112605_updated_relation_inventorytracker_storage")]
+    partial class updated_relation_inventorytracker_storage
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

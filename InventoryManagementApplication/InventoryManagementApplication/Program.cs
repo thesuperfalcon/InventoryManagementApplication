@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using InventoryManagementApplication.Data;
 using InventoryManagementApplication.Areas.Identity.Data;
+using System.Globalization;
+using Microsoft.AspNetCore.Localization;
 namespace InventoryManagementApplication
 {
     public class Program
@@ -12,6 +14,15 @@ namespace InventoryManagementApplication
             var connectionString = builder.Configuration.GetConnectionString("InventoryManagementApplicationContextConnection") ?? throw new InvalidOperationException("Connection string 'InventoryManagementApplicationContextConnection' not found.");
 
             builder.Services.AddDbContext<InventoryManagementApplicationContext>(options => options.UseSqlServer(connectionString));
+
+
+            var supportedCultures = new[] { new CultureInfo("en-US") };
+            builder.Services.Configure<RequestLocalizationOptions>(options =>
+            {
+                options.DefaultRequestCulture = new RequestCulture("en-US");
+                options.SupportedCultures = supportedCultures;
+                options.SupportedUICultures = supportedCultures;
+            });
 
             builder.Services.AddDefaultIdentity<InventoryManagementUser>(options =>
             {

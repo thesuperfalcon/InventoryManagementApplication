@@ -4,6 +4,7 @@ using InventoryManagementApplication.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace InventoryManagementApplication.Migrations
 {
     [DbContext(typeof(InventoryManagementApplicationContext))]
-    partial class InventoryManagementApplicationContextModelSnapshot : ModelSnapshot
+    [Migration("20240911092139_product_price_decimal")]
+    partial class product_price_decimal
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -447,8 +450,7 @@ namespace InventoryManagementApplication.Migrations
                 {
                     b.HasOne("InventoryManagementApplication.Models.Product", "Product")
                         .WithMany("InventoryTrackers")
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("ProductId");
 
                     b.HasOne("InventoryManagementApplication.Models.Storage", "Storage")
                         .WithMany("InventoryTrackers")

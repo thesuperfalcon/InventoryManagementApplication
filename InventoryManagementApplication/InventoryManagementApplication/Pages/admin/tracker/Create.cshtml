@@ -1,0 +1,42 @@
+﻿@page
+@model InventoryManagementApplication.Pages.admin.tracker.CreateModel
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<h4>InventoryTracker</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label class="control-label">Lagerplats</label>
+                <select asp-for="InventoryTracker.StorageId" class ="form-control" asp-items="ViewBag.StorageId"></select>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Produkt</label>
+                <select asp-for="InventoryTracker.ProductId" class ="form-control" asp-items="ViewBag.ProductId"></select>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Antal</label>
+                <input asp-for="InventoryTracker.Quantity" class="form-control" />
+                <span asp-validation-for="InventoryTracker.Quantity" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-page="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

@@ -1,0 +1,15 @@
+﻿@page
+@model InventoryManagementApplication.Pages.reportPageModel
+@{
+}
+
+<div class="text-center container mt-5">
+@foreach(var tracker in Model.Storages)
+{
+	<div>@tracker.Name (Max Antal: @tracker.MaxCapacity) (Nuvarande Antal: @tracker.CurrentStock)</div>
+	@foreach (var tracker1 in tracker.InventoryTrackers)
+	{
+		<div style="margin: 2px">@tracker1.Product.Name @tracker1.Quantity</div>
+	}
+}
+</div>

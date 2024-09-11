@@ -31,6 +31,18 @@ public class InventoryManagementApplicationContext : IdentityDbContext<Inventory
                    .HasForeignKey(al => al.UserId)
                    .OnDelete(DeleteBehavior.SetNull);
 
+        builder.Entity<InventoryTracker>()
+            .HasOne(s => s.Product)
+            .WithMany(s => s.InventoryTrackers)
+            .HasForeignKey(s => s.ProductId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Entity<InventoryTracker>()
+            .HasOne(s => s.Storage)
+            .WithMany(s => s. InventoryTrackers)
+            .HasForeignKey(s => s.StorageId)
+            .OnDelete(DeleteBehavior.Cascade);
+
         builder.Entity<Statistic>()
             .HasOne(s => s.Reporter)
             .WithMany(u => u.StatisticReporters)
