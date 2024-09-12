@@ -67,7 +67,7 @@ namespace InventoryManagementApplication.Pages.admin.product
                 var storage = Storages.FirstOrDefault(s => s.Id == tracker.StorageId);
                 if (storage != null)
                 {
-                    storage.CurrentStock += tracker.Quantity; 
+                    storage.CurrentStock -= tracker.Quantity; 
                     _context.Storages.Update(storage); 
                 }
             }
