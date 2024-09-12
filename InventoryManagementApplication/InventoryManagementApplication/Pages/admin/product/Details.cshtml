@@ -36,10 +36,16 @@
             @Html.DisplayFor(model => model.Product.Price)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Product.Stock)
+            @Html.DisplayNameFor(model => model.Product.TotalStock)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Product.Stock)
+            @Html.DisplayFor(model => model.Product.TotalStock)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Product.CurrentStock)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Product.CurrentStock)
         </dd>
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Product.Created)

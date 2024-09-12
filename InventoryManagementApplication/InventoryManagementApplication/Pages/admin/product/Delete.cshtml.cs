@@ -12,15 +12,17 @@ namespace InventoryManagementApplication.Pages.admin.product
 {
     public class DeleteModel : PageModel
     {
-        private readonly InventoryManagementApplication.Data.InventoryManagementApplicationContext _context;
+        private readonly InventoryManagementApplicationContext _context;
 
-        public DeleteModel(InventoryManagementApplication.Data.InventoryManagementApplicationContext context)
+        public DeleteModel(InventoryManagementApplicationContext context)
         {
             _context = context;
         }
 
         [BindProperty]
         public Product Product { get; set; } = default!;
+        public List<InventoryTracker> InventoryTrackers { get; set; } = new List<InventoryTracker>();
+        public List<Storage> Storages { get; set; } = new List<Storage>();
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
@@ -29,16 +31,13 @@ namespace InventoryManagementApplication.Pages.admin.product
                 return NotFound();
             }
 
-            var product = await _context.Products.FirstOrDefaultAsync(m => m.Id == id);
+            Product = await _context.Products.FirstOrDefaultAsync(m => m.Id == id);
 
-            if (product == null)
+            if (Product == null)
             {
                 return NotFound();
             }
-            else
-            {
-                Product = product;
-            }
+
             return Page();
         }
 
@@ -49,13 +48,33 @@ namespace InventoryManagementApplication.Pages.admin.product
                 return NotFound();
             }
 
-            var product = await _context.Products.FindAsync(id);
-            if (product != null)
+            Product = await _context.Products.FindAsync(id);
+            if (Product == null)
             {
-                Product = product;
-                _context.Products.Remove(Product);
-                await _context.SaveChangesAsync();
+                return NotFound();
             }
+
+            InventoryTrackers = await _context.InventoryTracker
+                .Where(x => x.ProductId == Product.Id)
+                .ToListAsync();
+
+            Storages = await _context.Storages
+                .Where(storage => storage.InventoryTrackers.Any(tracker => InventoryTrackers.Contains(tracker)))
+                .ToListAsync();
+
+            foreach (var tracker in InventoryTrackers)
+            {
+                var storage = Storages.FirstOrDefault(s => s.Id == tracker.StorageId);
+                if (storage != null)
+                {
+                    storage.CurrentStock += tracker.Quantity; 
+                    _context.Storages.Update(storage); 
+                }
+            }
+
+            _context.Products.Remove(Product);
+
+            await _context.SaveChangesAsync();
 
             return RedirectToPage("./Index");
         }

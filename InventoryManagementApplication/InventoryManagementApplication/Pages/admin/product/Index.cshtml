@@ -26,7 +26,10 @@
                 @Html.DisplayNameFor(model => model.Product[0].Price)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Product[0].Stock)
+                @Html.DisplayNameFor(model => model.Product[0].TotalStock)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Product[0].CurrentStock)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Product[0].Created)
@@ -53,7 +56,10 @@
                 @Html.DisplayFor(modelItem => item.Price)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Stock)
+                @Html.DisplayFor(modelItem => item.TotalStock)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CurrentStock)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Created)

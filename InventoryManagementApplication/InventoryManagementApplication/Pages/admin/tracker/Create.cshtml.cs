@@ -27,9 +27,12 @@ namespace InventoryManagementApplication.Pages.admin.tracker
             return Page();
         }
 
+        [TempData]
+        public string StatusMessage { get; set; }
         [BindProperty]
         public InventoryTracker InventoryTracker { get; set; } = default!;
         public Storage Storage { get; set; } 
+        public Product Product { get; set; }
 
         // To protect from overposting attacks, see https://aka.ms/RazorPagesCRUD
         public async Task<IActionResult> OnPostAsync()
@@ -39,21 +42,43 @@ namespace InventoryManagementApplication.Pages.admin.tracker
                 return Page();
             }
 
+            int quantity = 0;
+
 			var existingTracker = await _context.InventoryTracker.Where(x => x.ProductId == InventoryTracker.ProductId && x.StorageId == InventoryTracker.StorageId).FirstOrDefaultAsync();
             if(existingTracker == null)
             {
 				_context.InventoryTracker.Add(InventoryTracker);
+                quantity = (int)InventoryTracker.Quantity;
 				await _context.SaveChangesAsync();
 			}
+            else
+            {
+                quantity = (int)existingTracker.Quantity;
+            }
 
             Storage = await _context.InventoryTracker
                 .Select(x => x.Storage)
                 .Where(x => x.Id == InventoryTracker.StorageId)
                 .FirstOrDefaultAsync();
 
-            int quantity = (int)InventoryTracker.Quantity;
+            Product = await _context.InventoryTracker
+                .Select(x => x.Product)
+                .Where(x => x.Id == InventoryTracker.ProductId)
+                .FirstOrDefaultAsync();
+
+            if (quantity > Product.CurrentStock)
+            {
+                StatusMessage = $"Antalet produkter du vill lägga till finns ej tillgänglig. Antal produkter utan lager: {Product.CurrentStock}";
+                if (InventoryTracker != null)
+                {
+                    _context.InventoryTracker.Remove(InventoryTracker);
+                    await _context.SaveChangesAsync();
+                }
+                return RedirectToPage("./Create");
+            }
 
 			Storage.CurrentStock += quantity;
+            Product.CurrentStock -= quantity;
             Storage.Updated = DateTime.Now;
 			await _context.SaveChangesAsync();
 

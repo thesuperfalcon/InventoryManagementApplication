@@ -27,7 +27,7 @@ namespace InventoryManagementApplication.Pages.admin.product
         [BindProperty]
         public Product Product { get; set; } = default!;
 
-        // To protect from overposting attacks, see https://aka.ms/RazorPagesCRUD
+        // For more information, see https://aka.ms/RazorPagesCRUD.
         public async Task<IActionResult> OnPostAsync()
         {
             if (!ModelState.IsValid)
@@ -35,6 +35,7 @@ namespace InventoryManagementApplication.Pages.admin.product
                 return Page();
             }
 
+            Product.CurrentStock = Product.TotalStock;
             _context.Products.Add(Product);
             await _context.SaveChangesAsync();
 

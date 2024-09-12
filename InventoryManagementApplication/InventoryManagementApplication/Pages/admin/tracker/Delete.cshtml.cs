@@ -56,10 +56,13 @@ namespace InventoryManagementApplication.Pages.admin.tracker
             {
 				var storage = await _context.Storages.FindAsync(inventorytracker.StorageId);
 
-                if(storage != null)
+                var product = await _context.Products.FindAsync(inventorytracker.ProductId);
+
+                if(storage != null && product != null)
                 {
                     storage.CurrentStock = storage.CurrentStock - inventorytracker.Quantity;
                     storage.Updated = DateTime.Now;
+                    product.CurrentStock += inventorytracker.Quantity;
                 }
 
 				InventoryTracker = inventorytracker;

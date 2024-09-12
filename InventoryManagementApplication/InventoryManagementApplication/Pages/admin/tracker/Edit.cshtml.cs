@@ -19,11 +19,13 @@ namespace InventoryManagementApplication.Pages.admin.tracker
         {
             _context = context;
         }
-
+        [TempData]
+        public string StatusMessage { get; set; }
         [BindProperty]
         public InventoryTracker InventoryTracker { get; set; } = default!;
         [BindProperty]
         public int? PreviousValue { get; set; }
+        public Product Product { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
@@ -55,9 +57,19 @@ namespace InventoryManagementApplication.Pages.admin.tracker
 
             if (PreviousValue.HasValue && PreviousValue != InventoryTracker.Quantity)
             {
+                Product = await _context.InventoryTracker.Select(x => x.Product).Where(x => x.Id == InventoryTracker.ProductId).FirstOrDefaultAsync();
+
                 int difference = CalculateDifference((int)PreviousValue, (int)InventoryTracker.Quantity);
-                var storage = await _context.Storages.Where(x => x.Id == InventoryTracker.StorageId).FirstOrDefaultAsync();
-                storage.CurrentStock += difference;
+                if (difference > Product.CurrentStock)
+                {
+                    StatusMessage = $"Antalet produkter finns ej tillgänglig. Antal produkter utan lager: {Product.CurrentStock}";
+                    return RedirectToPage("./Edit", new { id = InventoryTracker.Id });
+                }
+                else
+                {
+                    var storage = await _context.Storages.Where(x => x.Id == InventoryTracker.StorageId).FirstOrDefaultAsync();
+                    storage.CurrentStock += difference;
+                }
             }
 
             _context.Attach(InventoryTracker).State = EntityState.Modified;

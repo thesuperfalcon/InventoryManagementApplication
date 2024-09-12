@@ -20,6 +20,8 @@ namespace InventoryManagementApplication.Pages.admin.product
             _context = context;
         }
 
+        [TempData]
+        public string StatusMessage { get; set; }
         [BindProperty]
         public Product Product { get; set; } = default!;
 
@@ -40,7 +42,7 @@ namespace InventoryManagementApplication.Pages.admin.product
         }
 
         // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see https://aka.ms/RazorPagesCRUD.
+        // For more information, see https://aka.ms/RazorPagesCRUD.
         public async Task<IActionResult> OnPostAsync()
         {
             if (!ModelState.IsValid)
@@ -48,6 +50,27 @@ namespace InventoryManagementApplication.Pages.admin.product
                 return Page();
             }
 
+            var inventoryTrackers = await _context.InventoryTracker.Where(x => x.ProductId == Product.Id).ToListAsync();
+
+            var productQuantity = inventoryTrackers.Sum(x => x.Quantity);
+
+            if (inventoryTrackers != null && inventoryTrackers.Count > 0)
+            {
+
+                if (Product.TotalStock < productQuantity)
+                {
+                    StatusMessage = $"Går ej att ändra. Currentstock: {Product.CurrentStock} Total: {Product.TotalStock}";
+                    return RedirectToPage("./Edit", new { id = Product.Id });
+                }
+                else
+                {
+                    //Product.CurrentStock += productQuantity;
+                }
+            }
+            else
+            {
+                Product.CurrentStock = Product.TotalStock;
+            }
             _context.Attach(Product).State = EntityState.Modified;
 
             try
