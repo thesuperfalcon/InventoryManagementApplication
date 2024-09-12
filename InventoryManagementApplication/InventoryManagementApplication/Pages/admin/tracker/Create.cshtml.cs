@@ -51,19 +51,8 @@ namespace InventoryManagementApplication.Pages.admin.tracker
                 .Where(x => x.Id == InventoryTracker.StorageId)
                 .FirstOrDefaultAsync();
 
-            int quantity = 0;
+            int quantity = (int)InventoryTracker.Quantity;
 
-            if (existingTracker != null)
-            {
-                quantity = (int)existingTracker.Quantity + (int)InventoryTracker.Quantity;
-                existingTracker.Quantity = quantity;
-            }
-            else
-            {
-                quantity = (int)InventoryTracker.Quantity;
-				InventoryTracker.Quantity = quantity;
-
-			}
 			Storage.CurrentStock += quantity;
             Storage.Updated = DateTime.Now;
 			await _context.SaveChangesAsync();
