@@ -22,6 +22,8 @@ namespace InventoryManagementApplication.Pages.admin.tracker
 
         [BindProperty]
         public InventoryTracker InventoryTracker { get; set; } = default!;
+        [BindProperty]
+        public int? PreviousValue { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
@@ -36,6 +38,7 @@ namespace InventoryManagementApplication.Pages.admin.tracker
                 return NotFound();
             }
             InventoryTracker = inventorytracker;
+            PreviousValue = InventoryTracker.Quantity;
            ViewData["ProductId"] = new SelectList(_context.Products, "Id", "Id");
            ViewData["StorageId"] = new SelectList(_context.Storages, "Id", "Id");
             return Page();
@@ -48,6 +51,13 @@ namespace InventoryManagementApplication.Pages.admin.tracker
             if (!ModelState.IsValid)
             {
                 return Page();
+            }
+
+            if (PreviousValue.HasValue && PreviousValue != InventoryTracker.Quantity)
+            {
+                int difference = CalculateDifference((int)PreviousValue, (int)InventoryTracker.Quantity);
+                var storage = await _context.Storages.Where(x => x.Id == InventoryTracker.StorageId).FirstOrDefaultAsync();
+                storage.CurrentStock += difference;
             }
 
             _context.Attach(InventoryTracker).State = EntityState.Modified;
@@ -74,6 +84,10 @@ namespace InventoryManagementApplication.Pages.admin.tracker
         private bool InventoryTrackerExists(int id)
         {
             return _context.InventoryTracker.Any(e => e.Id == id);
+        }
+        private int CalculateDifference(int previousValue, int currentValue)
+        {
+            return currentValue - previousValue;
         }
     }
 }

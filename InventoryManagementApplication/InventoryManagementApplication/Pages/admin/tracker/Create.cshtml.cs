@@ -39,15 +39,32 @@ namespace InventoryManagementApplication.Pages.admin.tracker
                 return Page();
             }
 
-            _context.InventoryTracker.Add(InventoryTracker);
-            await _context.SaveChangesAsync();
+			var existingTracker = await _context.InventoryTracker.Where(x => x.ProductId == InventoryTracker.ProductId && x.StorageId == InventoryTracker.StorageId).FirstOrDefaultAsync();
+            if(existingTracker == null)
+            {
+				_context.InventoryTracker.Add(InventoryTracker);
+				await _context.SaveChangesAsync();
+			}
 
             Storage = await _context.InventoryTracker
                 .Select(x => x.Storage)
                 .Where(x => x.Id == InventoryTracker.StorageId)
                 .FirstOrDefaultAsync();
 
-            Storage.CurrentStock += InventoryTracker.Quantity;
+            int quantity = 0;
+
+            if (existingTracker != null)
+            {
+                quantity = (int)existingTracker.Quantity + (int)InventoryTracker.Quantity;
+                existingTracker.Quantity = quantity;
+            }
+            else
+            {
+                quantity = (int)InventoryTracker.Quantity;
+				InventoryTracker.Quantity = quantity;
+
+			}
+			Storage.CurrentStock += quantity;
             Storage.Updated = DateTime.Now;
 			await _context.SaveChangesAsync();
 
