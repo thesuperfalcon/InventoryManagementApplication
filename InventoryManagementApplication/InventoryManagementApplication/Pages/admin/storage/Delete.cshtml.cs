@@ -18,9 +18,11 @@ namespace InventoryManagementApplication.Pages.admin.storage
         {
             _context = context;
         }
-
+        [TempData]
+        public string StatusMessage { get; set; }
         [BindProperty]
         public Storage Storage { get; set; } = default!;
+        public List<InventoryTracker> Trackers { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
@@ -50,6 +52,15 @@ namespace InventoryManagementApplication.Pages.admin.storage
             }
 
             var storage = await _context.Storages.FindAsync(id);
+            Trackers = await _context.InventoryTracker.Where(x => x.StorageId == storage.Id).ToListAsync();
+            var sum = Trackers.Sum(x => x.Quantity);
+            if(sum > 0)
+            {
+                StatusMessage = "Går ej att ta bort. Flytta produkterna innann du tar bort lagret!";
+
+                return RedirectToPage("./Delete", new {id = storage.Id});
+            }
+
             if (storage != null)
             {
                 Storage = storage;

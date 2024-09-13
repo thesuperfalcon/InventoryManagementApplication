@@ -43,7 +43,7 @@
             @Html.DisplayFor(model => model.Storage.Updated)
         </dd>
     </dl>
-    
+    <div class="alert alert-info">@Model.StatusMessage</div>
     <form method="post">
         <input type="hidden" asp-for="Storage.Id" />
         <input type="submit" value="Delete" class="btn btn-danger" /> |

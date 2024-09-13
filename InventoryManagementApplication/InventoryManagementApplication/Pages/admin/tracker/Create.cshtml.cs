@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using InventoryManagementApplication.Data;
 using InventoryManagementApplication.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Net.WebSockets;
 
 namespace InventoryManagementApplication.Pages.admin.tracker
 {
@@ -20,19 +21,39 @@ namespace InventoryManagementApplication.Pages.admin.tracker
             _context = context;
         }
 
-        public IActionResult OnGet()
+        [TempData]
+        public string StatusMessage { get; set; }
+        public SelectList StorageSelectList { get; set; }
+        public SelectList ProductSelectList { get; set; }
+        [BindProperty]
+        public InventoryTracker InventoryTracker { get; set; } = default!;
+        public Storage Storage { get; set; }
+        public Product Product { get; set; }
+
+        public async Task<IActionResult> OnGetAsync()
         {
-        ViewData["ProductId"] = new SelectList(_context.Products, "Id", "Name");
-        ViewData["StorageId"] = new SelectList(_context.Storages, "Id", "Name");
+
+            var storages = await _context.Storages.ToListAsync();
+            var products = await _context.Products.ToListAsync();
+
+            var productItems = products.Select(x => new
+            {
+                Value = x.Id,
+                Text = $"{x.Name} (Antal utan lager: {x.CurrentStock})"
+            });
+
+            var storageItems = storages.Select(x => new
+            {
+                Value = x.Id,
+                Text = $"{x.Name} (Lediga platser: {x.MaxCapacity - x.CurrentStock})"
+            });
+
+            StorageSelectList = new SelectList(storageItems, "Value", "Text");
+            ProductSelectList = new SelectList(productItems, "Value", "Text");
+
             return Page();
         }
 
-        [TempData]
-        public string StatusMessage { get; set; }
-        [BindProperty]
-        public InventoryTracker InventoryTracker { get; set; } = default!;
-        public Storage Storage { get; set; } 
-        public Product Product { get; set; }
 
         // To protect from overposting attacks, see https://aka.ms/RazorPagesCRUD
         public async Task<IActionResult> OnPostAsync()
@@ -53,9 +74,8 @@ namespace InventoryManagementApplication.Pages.admin.tracker
 			}
             else
             {
-                quantity = (int)existingTracker.Quantity;
+                quantity = (int)InventoryTracker.Quantity;
             }
-
             Storage = await _context.InventoryTracker
                 .Select(x => x.Storage)
                 .Where(x => x.Id == InventoryTracker.StorageId)
@@ -66,13 +86,19 @@ namespace InventoryManagementApplication.Pages.admin.tracker
                 .Where(x => x.Id == InventoryTracker.ProductId)
                 .FirstOrDefaultAsync();
 
-            var storageTracking = await _context.InventoryTracker.Where(x => x.StorageId == Storage.Id).ToListAsync();
+            var currentSpace = Storage.MaxCapacity - Storage.CurrentStock;
 
-            var currentSpace = storageTracking.Sum(x => x.Quantity);
 
             if (currentSpace < quantity)
             {
                 StatusMessage = $"Finns ej plats i {Storage.Name}. Välj annan lagerplats!";
+                if(existingTracker == null)
+                {
+                    _context.Remove(InventoryTracker);
+                    await _context.SaveChangesAsync();  
+                }
+                return RedirectToPage("./Create");
+
             }
 
 
@@ -91,6 +117,10 @@ namespace InventoryManagementApplication.Pages.admin.tracker
                 StatusMessage = $"Finns ej plats i {Storage.Name}. Välj annan lagerplats!";
             }
 
+            if(existingTracker != null)
+            {
+                existingTracker.Quantity += InventoryTracker.Quantity;
+            }
 			Storage.CurrentStock += quantity;
             Product.CurrentStock -= quantity;
             Storage.Updated = DateTime.Now;

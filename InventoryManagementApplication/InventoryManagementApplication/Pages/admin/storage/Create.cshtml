@@ -15,12 +15,12 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="Storage.Name" class="control-label"></label>
-                <input asp-for="Storage.Name" class="form-control" />
+                <input asp-for="Storage.Name" class="form-control" required />
                 <span asp-validation-for="Storage.Name" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Storage.MaxCapacity" class="control-label"></label>
-                <input asp-for="Storage.MaxCapacity" class="form-control" />
+                <input asp-for="Storage.MaxCapacity" class="form-control" required />
                 <span asp-validation-for="Storage.MaxCapacity" class="text-danger"></span>
             </div>
             <div class="form-group">

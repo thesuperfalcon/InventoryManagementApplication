@@ -23,7 +23,6 @@ namespace InventoryManagementApplication.Pages.admin.storage
         {
             return Page();
         }
-
         [BindProperty]
         public Storage Storage { get; set; } = default!;
 
