@@ -23,6 +23,9 @@
                 @Html.DisplayNameFor(model => model.Storage[0].CurrentStock)
             </th>
             <th>
+                <div>Lediga platser</div>
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.Storage[0].Created)
             </th>
             <th>
@@ -32,29 +35,36 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model.Storage) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.MaxCapacity)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CurrentStock)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Created)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Updated)
-            </td>
-            <td>
-                <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-page="./Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model.Storage)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.MaxCapacity)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CurrentStock)
+                </td>
+                <td>
+                    @{
+                        var freeSlots = item.MaxCapacity - @item.CurrentStock;
+                    }
+                    <div>@freeSlots</div>
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Created)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Updated)
+                </td>
+                <td>
+                    <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-page="./Details" asp-route-id="@item.Id">Details</a> |
+                    <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>

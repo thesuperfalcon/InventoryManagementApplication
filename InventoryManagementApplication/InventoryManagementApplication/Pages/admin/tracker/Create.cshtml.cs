@@ -66,15 +66,29 @@ namespace InventoryManagementApplication.Pages.admin.tracker
                 .Where(x => x.Id == InventoryTracker.ProductId)
                 .FirstOrDefaultAsync();
 
+            var storageTracking = await _context.InventoryTracker.Where(x => x.StorageId == Storage.Id).ToListAsync();
+
+            var currentSpace = storageTracking.Sum(x => x.Quantity);
+
+            if (currentSpace < quantity)
+            {
+                StatusMessage = $"Finns ej plats i {Storage.Name}. Välj annan lagerplats!";
+            }
+
+
             if (quantity > Product.CurrentStock)
             {
                 StatusMessage = $"Antalet produkter du vill lägga till finns ej tillgänglig. Antal produkter utan lager: {Product.CurrentStock}";
-                if (InventoryTracker != null)
+                if (InventoryTracker != null && InventoryTracker.Id != 0)
                 {
                     _context.InventoryTracker.Remove(InventoryTracker);
                     await _context.SaveChangesAsync();
                 }
                 return RedirectToPage("./Create");
+            }
+            else if (Storage.CurrentStock < quantity)
+            {
+                StatusMessage = $"Finns ej plats i {Storage.Name}. Välj annan lagerplats!";
             }
 
 			Storage.CurrentStock += quantity;

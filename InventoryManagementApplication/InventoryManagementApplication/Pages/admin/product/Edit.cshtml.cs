@@ -64,7 +64,8 @@ namespace InventoryManagementApplication.Pages.admin.product
                 }
                 else
                 {
-                    //Product.CurrentStock += productQuantity;
+                    var input = Product.TotalStock - productQuantity;
+                    Product.CurrentStock = input;
                 }
             }
             else
