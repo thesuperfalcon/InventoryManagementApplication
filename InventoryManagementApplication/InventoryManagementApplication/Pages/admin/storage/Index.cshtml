@@ -5,31 +5,31 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<h1>Lagerplatser</h1>
 
-<p>
-    <a asp-page="Create">Create New</a>
-</p>
+
+    <a asp-page="Create" class="btn btn-primary">Lägg till</a>
+
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Storage[0].Name)
+                <div>Namn</div>
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Storage[0].MaxCapacity)
+                <div>Max antal</div>
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Storage[0].CurrentStock)
+                <div>Antal</div>
             </th>
             <th>
                 <div>Lediga platser</div>
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Storage[0].Created)
+                <div>Skapad</div>
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Storage[0].Updated)
+            <th>               
+                <div>Ändrad</div>
             </th>
             <th></th>
         </tr>
@@ -60,9 +60,9 @@
                     @Html.DisplayFor(modelItem => item.Updated)
                 </td>
                 <td>
-                    <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
-                    <a asp-page="./Details" asp-route-id="@item.Id">Details</a> |
-                    <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
+                    <a asp-page="./Edit" asp-route-id="@item.Id">Ändra</a> |
+                    <a asp-page="./Details" asp-route-id="@item.Id">Info</a> |
+                    <a asp-page="./Delete" asp-route-id="@item.Id">Ta bort</a>
                 </td>
             </tr>
         }

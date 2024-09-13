@@ -5,51 +5,53 @@
     ViewData["Title"] = "Edit";
 }
 
-<h1>Edit</h1>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Redigera lagerplats</h4>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
-<h4>Storage</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form method="post">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Storage.Id" />
-            <div class="form-group">
-                <label asp-for="Storage.Name" class="control-label"></label>
-                <input asp-for="Storage.Name" class="form-control" />
-                <span asp-validation-for="Storage.Name" class="text-danger"></span>
+                        <input type="hidden" asp-for="Storage.Id" />
+
+                        <div class="mb-3">
+                            <label asp-for="Storage.Name" class="form-label">Namn</label>
+                            <input asp-for="Storage.Name" class="form-control" />
+                            <span asp-validation-for="Storage.Name" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Storage.MaxCapacity" class="form-label">Max antal platser</label>
+                            <input asp-for="Storage.MaxCapacity" class="form-control" />
+                            <span asp-validation-for="Storage.MaxCapacity" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Storage.CurrentStock" class="col-form-label">Nuvarande produkter</label>
+                            <input asp-for="Storage.CurrentStock" class="form-control" readonly />
+                        </div>
+
+                        <input type="hidden" asp-for="Storage.Created" />
+
+                        <input type="hidden" asp-for="Storage.Updated" value="@DateTime.Now" />
+
+                        <div class="d-flex">
+                            <input type="submit" value="Spara" class="btn btn-primary me-2" />
+                            <a asp-page="Index" class="btn btn-secondary">Tillbaka till lista</a>
+                        </div>
+                    </form>
+                </div>
             </div>
-            <div class="form-group">
-                <label asp-for="Storage.MaxCapacity" class="control-label"></label>
-                <input asp-for="Storage.MaxCapacity" class="form-control" />
-                <span asp-validation-for="Storage.MaxCapacity" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Storage.CurrentStock" class="control-label"></label>
-                <input asp-for="Storage.CurrentStock" class="form-control" />
-                <span asp-validation-for="Storage.CurrentStock" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Storage.Created" class="control-label"></label>
-                <input asp-for="Storage.Created" class="form-control" />
-                <span asp-validation-for="Storage.Created" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Storage.Updated" class="control-label"></label>
-                <input asp-for="Storage.Updated" class="form-control" />
-                <span asp-validation-for="Storage.Updated" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
+        </div>
     </div>
 </div>
 
-<div>
-    <a asp-page="./Index">Back to List</a>
-</div>
-
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

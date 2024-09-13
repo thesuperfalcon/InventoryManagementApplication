@@ -5,48 +5,41 @@
     ViewData["Title"] = "Delete";
 }
 
-<h1>Delete</h1>
+<div class="container mt-5">
+    <h1 class="mb-4">Ta bort</h1>
 
-<h3>Are you sure you want to delete this?</h3>
-<div>
-    <h4>Storage</h4>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Storage.Name)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Storage.Name)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Storage.MaxCapacity)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Storage.MaxCapacity)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Storage.CurrentStock)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Storage.CurrentStock)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Storage.Created)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Storage.Created)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Storage.Updated)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Storage.Updated)
-        </dd>
-    </dl>
-    
-    <form method="post">
+    <div class="alert alert-warning" role="alert">
+        <h3 class="alert-heading">Är du säker på att du vill ta bort?</h3>
+        <p>Det går ej att ångra! **lägg in som popUp vid ta bort klick istället?**</p>
+    </div>
+
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-primary text-white">
+            <h4 class="mb-0">Lagerplatsinformation</h4>
+        </div>
+        <div class="card-body">
+            <dl class="row">
+                <dt class="col-sm-3 fw-bold">Namn</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.Storage.Name)</dd>
+
+                <dt class="col-sm-3 fw-bold">Max antal</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.Storage.MaxCapacity)</dd>
+
+                <dt class="col-sm-3 fw-bold">Antal i lagerplats</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.Storage.CurrentStock)</dd>
+
+                <dt class="col-sm-3 fw-bold">Skapad</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.Storage.Created)</dd>
+
+                <dt class="col-sm-3 fw-bold">Ändrad</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.Storage.Updated)</dd>
+            </dl>
+        </div>
+    </div>
+
+    <form method="post" class="d-flex justify-content-start align-items-center">
         <input type="hidden" asp-for="Storage.Id" />
-        <input type="submit" value="Delete" class="btn btn-danger" /> |
-        <a asp-page="./Index">Back to List</a>
+        <button type="submit" class="btn btn-danger me-2">Ta bort</button>
+        <a asp-page="./Index" class="btn btn-secondary">Tillbaka till lista</a>
     </form>
 </div>

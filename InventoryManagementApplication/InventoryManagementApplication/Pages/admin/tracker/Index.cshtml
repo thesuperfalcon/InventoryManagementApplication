@@ -5,22 +5,22 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<h1>Översikt av produkter och lager</h1>
 
-<p>
-    <a asp-page="Create">Create New</a>
-</p>
+
+    <a asp-page="Create" class="btn btn-primary">Flytta produkt</a>
+
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.InventoryTracker[0].Quantity)
+                <div>Antal</div>
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.InventoryTracker[0].Product)
+                <div>Produkt</div>
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.InventoryTracker[0].Storage)
+                <div>Lagerplats</div>
             </th>
             <th></th>
         </tr>

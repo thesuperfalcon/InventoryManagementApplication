@@ -66,14 +66,14 @@ namespace InventoryManagementApplication.Pages.admin.tracker
                 .Where(x => x.Id == InventoryTracker.ProductId)
                 .FirstOrDefaultAsync();
 
-            var storageTracking = await _context.InventoryTracker.Where(x => x.StorageId == Storage.Id).ToListAsync();
+            //var storageTracking = await _context.InventoryTracker.Where(x => x.StorageId == Storage.Id).ToListAsync();
 
-            var currentSpace = storageTracking.Sum(x => x.Quantity);
+            //var currentSpace = storageTracking.Sum(x => x.Quantity);
 
-            if (currentSpace < quantity)
-            {
-                StatusMessage = $"Finns ej plats i {Storage.Name}. Välj annan lagerplats!";
-            }
+            //if (currentSpace < quantity)
+            //{
+            //    StatusMessage = $"Finns ej plats i {Storage.Name}. Välj annan lagerplats!";
+            //}
 
 
             if (quantity > Product.CurrentStock)
@@ -91,6 +91,8 @@ namespace InventoryManagementApplication.Pages.admin.tracker
                 StatusMessage = $"Finns ej plats i {Storage.Name}. Välj annan lagerplats!";
             }
 
+            //InventoryTracker.Product = Product;
+            //InventoryTracker.Storage = Storage;
 			Storage.CurrentStock += quantity;
             Product.CurrentStock -= quantity;
             Storage.Updated = DateTime.Now;
