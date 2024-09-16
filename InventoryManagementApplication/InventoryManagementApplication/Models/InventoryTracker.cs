@@ -1,10 +1,12 @@
 ﻿using InventoryManagementApplication.Areas.Identity.Data;
+using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace InventoryManagementApplication.Models
 {
-    public class InventoryTracker
+	public class InventoryTracker
     {
+
         public int Id { get; set; }
 
         public int? StorageId { get; set; }

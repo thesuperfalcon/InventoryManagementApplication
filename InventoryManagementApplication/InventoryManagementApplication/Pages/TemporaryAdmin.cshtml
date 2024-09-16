@@ -8,6 +8,8 @@
 	<a asp-route-createProduct="@Model.CreateProduct.Name">Ange namn</a>
 	<input asp-for="@Model.CreateProduct.Name" type="hidden" value="@Model.CreateProduct.Name" />
 </form> *@
+<p>Products</p><br />
+<p>-------------</p><br />
 @if(Model.Products != null)
 {
 	@foreach (var product in Model.Products)
@@ -16,7 +18,10 @@
 		<p>@product.Price</p>
 	}
 }
-
+<p>Storages</p>
+<br />
+<p>-------------</p>
+<br />
  @if (Model.Storages != null)
 {
 	@foreach (var storage in Model.Storages)
@@ -25,3 +30,50 @@
 		<p>@storage.MaxCapacity</p>
 	}
 } 
+<p>Users</p>
+<br />
+<p>-------------</p>
+<br />
+@if (Model.Users != null)
+{
+	foreach(var user in Model.Users)
+	{
+		<p>@user.FirstName / @user.EmployeeNumber</p>
+	}
+}
+
+<p>Activity Logs</p>
+<br />
+<p>-------------</p>
+<br />
+@if (Model.ActivityLogs != null)
+{
+	foreach (var activityLog in Model.ActivityLogs)
+	{
+		<p>@activityLog.Product / @activityLog.Action</p>
+	}
+}
+
+<p>Inventory Trackers</p>
+<br />
+<p>-------------</p>
+<br />
+@if (Model.InventoryTracker != null)
+{
+	foreach (var inventoryTracker in Model.InventoryTracker)
+	{
+		<p>@inventoryTracker.Product / @inventoryTracker.Storage</p>
+	}
+}
+
+<p>Statistics</p>
+<br />
+<p>-------------</p>
+<br />
+@if (Model.Statistics != null)
+{
+	foreach (var statistic in Model.Statistics)
+	{
+		<p>@statistic.InitialStorage / @statistic.DestinationStorage</p>
+	}
+}
