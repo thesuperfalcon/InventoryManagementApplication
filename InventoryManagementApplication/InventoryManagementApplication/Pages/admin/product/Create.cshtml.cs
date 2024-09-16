@@ -7,39 +7,47 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using InventoryManagementApplication.Data;
 using InventoryManagementApplication.Models;
+using System.Text.Json;
 
 namespace InventoryManagementApplication.Pages.admin.product
 {
     public class CreateModel : PageModel
     {
-        private readonly InventoryManagementApplication.Data.InventoryManagementApplicationContext _context;
+		private readonly InventoryManagementApplication.Data.InventoryManagementApplicationContext _context;
 
-        public CreateModel(InventoryManagementApplication.Data.InventoryManagementApplicationContext context)
-        {
-            _context = context;
-        }
+		public CreateModel(InventoryManagementApplication.Data.InventoryManagementApplicationContext context)
+		{
+			_context = context;
+		}
 
-        public IActionResult OnGet()
-        {
-            return Page();
-        }
+		public IActionResult OnGet()
+		{
+			return Page();
+		}
 
-        [BindProperty]
-        public Product Product { get; set; } = default!;
+		private static Uri BaseAddress = new Uri("https://localhost:44353/");
 
-        // For more information, see https://aka.ms/RazorPagesCRUD.
-        public async Task<IActionResult> OnPostAsync()
-        {
-            if (!ModelState.IsValid)
-            {
-                return Page();
-            }
+		[BindProperty]
+		public Product Product { get; set; } = default!;
 
-            Product.CurrentStock = Product.TotalStock;
-            _context.Products.Add(Product);
-            await _context.SaveChangesAsync();
+		// For more information, see https://aka.ms/RazorPagesCRUD.
+		public async Task<IActionResult> OnPostAsync()
+		{
+			if (!ModelState.IsValid)
+			{
+				return Page();
+			}
+			Product.CurrentStock = Product.TotalStock;
+			using (var client = new HttpClient())
+			{
+				client.BaseAddress = BaseAddress;
+				var json = JsonSerializer.Serialize(Product);
 
-            return RedirectToPage("./Index");
-        }
-    }
+				//Gör det möjligt att skicka innehåll till API
+				StringContent httpContent = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
+				HttpResponseMessage response = await client.PostAsync("api/Products/", httpContent);
+			}
+			return RedirectToPage("./Index");
+		}
+	}
 }

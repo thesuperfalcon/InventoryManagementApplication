@@ -1,20 +1,28 @@
 ﻿using InventoryManagementApplication.Areas.Identity.Data;
+using Newtonsoft.Json;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace InventoryManagementApplication.Models
 {
     public class InventoryTracker
     {
+        [JsonPropertyName("id")]
         public int Id { get; set; }
 
-        public int? StorageId { get; set; }
+		[JsonPropertyName("storageId")]
+		public int? StorageId { get; set; }
 
-        public int? ProductId { get; set; }
+		[JsonPropertyName("productId")]
+		public int? ProductId { get; set; }
 
-        public int? Quantity { get; set; }
+		[JsonPropertyName("quantity")]
+		public int? Quantity { get; set; }
 
-        public virtual Product? Product { get; set; }
+		[JsonPropertyName("product")]
+		public virtual Product? Product { get; set; }
 
-        public virtual Storage? Storage { get; set; }
+		[JsonPropertyName("storage")]
+		public virtual Storage? Storage { get; set; }
     }
 }
