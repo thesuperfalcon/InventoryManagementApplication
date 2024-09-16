@@ -13,6 +13,18 @@ namespace InventoryManagementApplication
             var connectionString = builder.Configuration.GetConnectionString("InventoryManagementApplicationContextConnection") ?? throw new InvalidOperationException("Connection string 'InventoryManagementApplicationContextConnection' not found.");
 
             builder.Services.AddDbContext<InventoryManagementApplicationContext>(options => options.UseSqlServer(connectionString));
+<<<<<<< Updated upstream
+=======
+            builder.Services.AddTransient<Models.Product>();
+
+            var supportedCultures = new[] { new CultureInfo("en-US") };
+            builder.Services.Configure<RequestLocalizationOptions>(options =>
+            {
+                options.DefaultRequestCulture = new RequestCulture("en-US");
+                options.SupportedCultures = supportedCultures;
+                options.SupportedUICultures = supportedCultures;
+            });
+>>>>>>> Stashed changes
 
             builder.Services.AddDefaultIdentity<InventoryManagementUser>(options =>
             {
