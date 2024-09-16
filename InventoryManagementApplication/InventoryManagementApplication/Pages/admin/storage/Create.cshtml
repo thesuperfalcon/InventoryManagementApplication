@@ -20,13 +20,13 @@
 
                         <div class="mb-3">
                             <label asp-for="Storage.Name" class="form-label">Namn</label>
-                            <input asp-for="Storage.Name" class="form-control" />
+                            <input asp-for="Storage.Name" class="form-control" required />
                             <span asp-validation-for="Storage.Name" class="text-danger"></span>
                         </div>
 
                         <div class="mb-3">
                             <label asp-for="Storage.MaxCapacity" class="form-label">Antal platser</label>
-                            <input asp-for="Storage.MaxCapacity" class="form-control" />
+                            <input asp-for="Storage.MaxCapacity" class="form-control" required />
                             <span asp-validation-for="Storage.MaxCapacity" class="text-danger"></span>
                         </div>
 
@@ -38,6 +38,7 @@
                             <input type="submit" value="Lägg till" class="btn btn-primary me-2" />
                             <a asp-page="Index" class="btn btn-secondary">Tillbaka till lista</a>
                         </div>
+                        <div class="mt-3 alert alert-danger">@Model.StatusMessage</div>
                     </form>
                 </div>
             </div>

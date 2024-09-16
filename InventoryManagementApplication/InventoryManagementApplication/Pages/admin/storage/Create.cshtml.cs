@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using InventoryManagementApplication.Data;
 using InventoryManagementApplication.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace InventoryManagementApplication.Pages.admin.storage
 {
@@ -25,6 +26,7 @@ namespace InventoryManagementApplication.Pages.admin.storage
         }
         [BindProperty]
         public Storage Storage { get; set; } = default!;
+        public string StatusMessage { get; set; }
 
         // To protect from overposting attacks, see https://aka.ms/RazorPagesCRUD
         public async Task<IActionResult> OnPostAsync()
@@ -34,10 +36,19 @@ namespace InventoryManagementApplication.Pages.admin.storage
                 return Page();
             }
 
-            _context.Storages.Add(Storage);
-            await _context.SaveChangesAsync();
+            var storages = await _context.Storages.ToListAsync();
+            if (storages.Count < 6)
+            {
+                _context.Storages.Add(Storage);
+                await _context.SaveChangesAsync();
 
-            return RedirectToPage("./Index");
+                return RedirectToPage("./Index");
+            }
+            else
+            {
+                StatusMessage = "Max antal lagerplatser är 6";
+                return Page();
+            }
         }
     }
 }

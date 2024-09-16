@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using InventoryManagementApplication.Data;
 using InventoryManagementApplication.Models;
+using System.Runtime.InteropServices;
+using Microsoft.EntityFrameworkCore;
 
 namespace InventoryManagementApplication.Pages.admin.product
 {
@@ -26,6 +28,7 @@ namespace InventoryManagementApplication.Pages.admin.product
 
         [BindProperty]
         public Product Product { get; set; } = default!;
+        public string StatusMessage { get; set; }
 
         // For more information, see https://aka.ms/RazorPagesCRUD.
         public async Task<IActionResult> OnPostAsync()
@@ -35,11 +38,20 @@ namespace InventoryManagementApplication.Pages.admin.product
                 return Page();
             }
 
-            Product.CurrentStock = Product.TotalStock;
-            _context.Products.Add(Product);
-            await _context.SaveChangesAsync();
+            var products = await _context.Products.ToListAsync();
+            if (products.Count < 15)
+            {
+                Product.CurrentStock = Product.TotalStock;
+                _context.Products.Add(Product);
+                await _context.SaveChangesAsync();
 
-            return RedirectToPage("./Index");
+                return RedirectToPage("./Index");
+            }
+            else
+            {
+                StatusMessage = "Max antal produkter är 15";
+                return Page();
+            }
         }
     }
 }
