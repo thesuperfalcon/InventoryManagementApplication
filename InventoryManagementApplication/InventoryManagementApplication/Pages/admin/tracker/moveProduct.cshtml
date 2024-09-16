@@ -1,8 +1,9 @@
-@page
-@model InventoryManagementApplication.Pages.admin.tracker.CreateModel
+﻿@page
+@model InventoryManagementApplication.Pages.admin.tracker.moveProductModel
 
 @{
     ViewData["Title"] = "Create";
+
 }
 
 <div class="container mt-5">
@@ -18,13 +19,22 @@
                     <form method="post">
                         <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
+                        <input type="hidden" asp-for="SelectedInventoryTracker.Id" />
+@*                         <input type="hidden" asp-for="SelectedInventoryTracker.Product.Id" />
+                        <input type="hidden" asp-for="SelectedInventoryTracker.Id" /> *@
+
                         <div class="mb-3">
                             <label asp-for="InventoryTracker.ProductId" class="form-label">Produkt</label>
-                            <select asp-for="InventoryTracker.ProductId" class="form-select" asp-items="Model.ProductSelectList"></select>
+                            <input value="@($"{Model.SelectedInventoryTracker.Product.Name} | Antal: {Model.SelectedInventoryTracker.Quantity}")" class="form-control" readonly />
                         </div>
 
                         <div class="mb-3">
-                            <label asp-for="InventoryTracker.StorageId" class="form-label">Lagerplats</label>
+                            <label asp-for="InventoryTracker.StorageId" class="form-label">Från lagerplats</label>
+                            <input asp-for="SelectedInventoryTracker.Storage.Name" class="form-control" readonly />
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="InventoryTracker.StorageId" class="form-label">Till lagerplats</label>
                             <select asp-for="InventoryTracker.StorageId" class="form-select" asp-items="Model.StorageSelectList"></select>
                         </div>
 
@@ -52,3 +62,4 @@
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
 }
+

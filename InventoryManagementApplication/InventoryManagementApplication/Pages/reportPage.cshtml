@@ -6,6 +6,10 @@
 <h1>Lagersaldo</h1>
 
 <div class="mb-3">
+    <input id="searchInput" type="text" class="form-control" placeholder="Sök produktnamn/artikelnummer..." />
+</div>
+
+<div class="mb-3">
     <button id="toggleAll" class="btn btn-primary">Visa alla</button>
 </div>
 
@@ -43,6 +47,7 @@
                             <thead>
                                 <tr>
                                     <th>Produktnamn</th>
+                                    <th>Artikelnummer</th>
                                     <th>Antal i lager</th>
                                     <th>Ändrad</th>
                                 </tr>
@@ -52,6 +57,7 @@
                                 {
                                     <tr>
                                         <td>@product.Product.Name</td>
+                                        <td>@product.Product.ArticleNumber</td>
                                         <td>@product.Quantity</td>
                                         <td>@product.Product.Updated</td>
                                     </tr>

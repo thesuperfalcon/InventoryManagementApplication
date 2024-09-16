@@ -16,10 +16,10 @@ namespace InventoryManagementApplication
             builder.Services.AddDbContext<InventoryManagementApplicationContext>(options => options.UseSqlServer(connectionString));
 
 
-            var supportedCultures = new[] { new CultureInfo("en-US") };
+            var supportedCultures = new[] { new CultureInfo("sv-SE"), new CultureInfo("en-US") };
             builder.Services.Configure<RequestLocalizationOptions>(options =>
             {
-                options.DefaultRequestCulture = new RequestCulture("en-US");
+                options.DefaultRequestCulture = new RequestCulture("sv-SE");
                 options.SupportedCultures = supportedCultures;
                 options.SupportedUICultures = supportedCultures;
             });

@@ -3,15 +3,19 @@
 
 @{
     ViewData["Title"] = "Delete";
+
+    var errorMessage = Html.Raw($"Går ej att ta bort för det finns produkter i lagerplatsen! antal produkter: {Model.Storage.CurrentStock}");
+
+    var deleteMessage = Html.Raw($"Är du säker på att du vill ta bort detta objekt? Det går ej att ångra!!");
 }
 
 <div class="container mt-5">
     <h1 class="mb-4">Ta bort</h1>
 
-    <div class="alert alert-warning" role="alert">
+@*     <div class="alert alert-warning" role="alert">
         <h3 class="alert-heading">Är du säker på att du vill ta bort?</h3>
         <p>Det går ej att ångra! **lägg in som popUp vid ta bort klick istället?**</p>
-    </div>
+    </div> *@
 
     <div class="card shadow-sm mb-4">
         <div class="card-header bg-primary text-white">
@@ -37,9 +41,49 @@
         </div>
     </div>
 
-    <form method="post" class="d-flex justify-content-start align-items-center">
+    <form id="deleteForm" method="post" class="d-flex justify-content-start align-items-center">
         <input type="hidden" asp-for="Storage.Id" />
-        <button type="submit" class="btn btn-danger me-2">Ta bort</button>
+        <button type="button" class="btn btn-danger me-2" id="deleteButton">Ta bort</button>
         <a asp-page="./Index" class="btn btn-secondary">Tillbaka till lista</a>
     </form>
 </div>
+
+
+<!-- Bootstrap Modal -->
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmDeleteModalLabel">Bekräfta borttagning</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="modalMessage">
+                <!-- Message will be set by JavaScript -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Nej</button>
+                <button type="submit" form="deleteForm" class="btn btn-danger">Ja</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var currentStock = @Model.Storage.CurrentStock;
+            var errorMessage = "@errorMessage";
+            var deleteMessage = "@deleteMessage";
+
+            // Set the appropriate message in the modal based on stock count
+            var modalMessage = currentStock > 0 ? errorMessage : deleteMessage;
+            document.getElementById('modalMessage').textContent = modalMessage;
+
+            // Show the modal when the delete button is clicked
+            document.getElementById('deleteButton').addEventListener('click', function () {
+                var modal = new bootstrap.Modal(document.getElementById('confirmDeleteModal'));
+                modal.show();
+            });
+        });
+    </script>
+}
