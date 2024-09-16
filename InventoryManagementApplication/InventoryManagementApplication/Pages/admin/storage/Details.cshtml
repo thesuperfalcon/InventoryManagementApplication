@@ -5,45 +5,34 @@
     ViewData["Title"] = "Details";
 }
 
-<h1>Details</h1>
+<div class="container mt-5">
 
-<div>
-    <h4>Storage</h4>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Storage.Name)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Storage.Name)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Storage.MaxCapacity)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Storage.MaxCapacity)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Storage.CurrentStock)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Storage.CurrentStock)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Storage.Created)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Storage.Created)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Storage.Updated)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Storage.Updated)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-page="./Edit" asp-route-id="@Model.Storage.Id">Edit</a> |
-    <a asp-page="./Index">Back to List</a>
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-primary text-white">
+            <h4 class="mb-0">Lagerplatsinformation</h4>
+        </div>
+        <div class="card-body">
+            <dl class="row">
+                <dt class="col-sm-3 font-weight-bold">Namn</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.Storage.Name)</dd>
+
+                <dt class="col-sm-3 font-weight-bold">Max antal</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.Storage.MaxCapacity)</dd>
+
+                <dt class="col-sm-3 font-weight-bold">Antal</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.Storage.CurrentStock)</dd>
+
+                <dt class="col-sm-3 font-weight-bold">Skapad</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.Storage.Created)</dd>
+
+                <dt class="col-sm-3 font-weight-bold">Ändrad</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.Storage.Updated)</dd>
+            </dl>
+        </div>
+    </div>
+
+    <div>
+        <a class="btn btn-primary me-2" asp-page="./Edit" asp-route-id="@Model.Storage.Id">Ändra</a>
+        <a class="btn btn-secondary" asp-page="./Index">Tillbaka till lista</a>
+    </div>
 </div>

@@ -23,6 +23,7 @@ namespace InventoryManagementApplication.Pages.admin.tracker
         [BindProperty]
         public InventoryTracker InventoryTracker { get; set; } = default!;
 
+
         public async Task<IActionResult> OnGetAsync(int? id)
         {
             if (id == null)

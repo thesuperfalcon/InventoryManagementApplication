@@ -1,70 +1,68 @@
-﻿@page
+@page
 @model InventoryManagementApplication.Pages.admin.product.CreateModel
 
 @{
     ViewData["Title"] = "Create";
 }
 
-<h1>Create</h1>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
 
-<h4>Product</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form method="post">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Product.Name" class="control-label"></label>
-                <input asp-for="Product.Name" class="form-control" required />
-                <span asp-validation-for="Product.Name" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Product.ArticleNumber" class="control-label"></label>
-                <input asp-for="Product.ArticleNumber" class="form-control" required />
-                <span asp-validation-for="Product.ArticleNumber" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Product.Description" class="control-label"></label>
-                <input asp-for="Product.Description" class="form-control"  />
-                <span asp-validation-for="Product.Description" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Product.Price" class="control-label"></label>
-                <input asp-for="Product.Price" type="number" class="form-control" required />
-                <span asp-validation-for="Product.Price" class="text-danger"></span>
-            </div>
-             <div class="form-group">
-                <label asp-for="Product.TotalStock" class="control-label"></label>
-                <input asp-for="Product.TotalStock" class="form-control" required />
-                <span asp-validation-for="Product.TotalStock" class="text-danger"></span>
-            </div> 
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Lägg till ny produkt</h4>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
-           @*  <div class="form-group">
-                <label asp-for="Product.CurrentStock" class="control-label"></label>
-                <input asp-for="Product.CurrentStock" class="form-control" />
-                <span asp-validation-for="Product.CurrentStock" class="text-danger"></span>
-            </div> *@
-            <div class="form-group">
-                <label asp-for="Product.Created" class="control-label"></label>
-                <input asp-for="Product.Created" class="form-control" />
-                <span asp-validation-for="Product.Created" class="text-danger"></span>
+                        <div class="mb-3">
+                            <label asp-for="Product.Name" class="form-label">Namn</label>
+                            <input asp-for="Product.Name" class="form-control" />
+                            <span asp-validation-for="Product.Name" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Product.ArticleNumber" class="form-label">Artikelnummer</label>
+                            <input asp-for="Product.ArticleNumber" class="form-control" />
+                            <span asp-validation-for="Product.ArticleNumber" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Product.Description" class="form-label">Beskrivning</label>
+                            <input asp-for="Product.Description" class="form-control" />
+                            <span asp-validation-for="Product.Description" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Product.Price" class="form-label">Pris</label>
+                            <input asp-for="Product.Price" type="number" class="form-control" />
+                            <span asp-validation-for="Product.Price" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Product.TotalStock" class="form-label">Antal</label>
+                            <input asp-for="Product.TotalStock" class="form-control" />
+                            <span asp-validation-for="Product.TotalStock" class="text-danger"></span>
+                        </div>
+                        
+                        <input type="hidden" asp-for="Product.CurrentStock" value="0" />
+                        <input type="hidden" asp-for="Product.Created" value="@DateTime.Now" />
+
+                        <div class="d-flex">
+                            <input type="submit" value="Lägg till" class="btn btn-primary me-2" />
+                            <a asp-page="Index" class="btn btn-secondary">Tillbaka till lista</a>
+                        </div>
+                    </form>
+                </div>
             </div>
-            <div class="form-group">
-                <label asp-for="Product.Updated" class="control-label"></label>
-                <input asp-for="Product.Updated" class="form-control" />
-                <span asp-validation-for="Product.Updated" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
+        </div>
     </div>
 </div>
 
-<div>
-    <a asp-page="Index">Back to List</a>
-</div>
-
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }
