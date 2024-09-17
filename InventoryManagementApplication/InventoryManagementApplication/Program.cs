@@ -4,6 +4,7 @@ using InventoryManagementApplication.Data;
 using InventoryManagementApplication.Areas.Identity.Data;
 using System.Globalization;
 using Microsoft.AspNetCore.Localization;
+using InventoryManagementApplication.Helpers;
 namespace InventoryManagementApplication
 {
     public class Program
@@ -34,6 +35,12 @@ namespace InventoryManagementApplication
 
             // Add services to the container.
             builder.Services.AddRazorPages();
+
+            builder.Services.AddScoped<SelectListHelpers>();
+
+            builder.Services.AddControllersWithViews()
+            .AddJsonOptions(options =>
+             options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve);
 
             var app = builder.Build();
 

@@ -44,15 +44,9 @@ public class InventoryManagementApplicationContext : IdentityDbContext<Inventory
             .OnDelete(DeleteBehavior.Cascade);
 
         builder.Entity<Statistic>()
-            .HasOne(s => s.Reporter)
-            .WithMany(u => u.StatisticReporters)
-            .HasForeignKey(s => s.ReporterId)
-            .OnDelete(DeleteBehavior.Restrict);
-
-        builder.Entity<Statistic>()
-            .HasOne(s => s.Executer)
-            .WithMany(u => u.StatisticExecuters)
-            .HasForeignKey(s => s.ExecuterId)
+            .HasOne(s => s.User)
+            .WithMany(u => u.StatisticUsers)
+            .HasForeignKey(s => s.UserId)
             .OnDelete(DeleteBehavior.Restrict);
 
         builder.Entity<Statistic>()

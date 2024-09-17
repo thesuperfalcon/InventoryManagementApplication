@@ -24,7 +24,6 @@ public class InventoryManagementUser : IdentityUser
     public DateTime Updated { get; set; }
 
     public virtual ICollection<ActivityLog> ActivityLogs { get; set; } = new List<ActivityLog>();
-    public virtual ICollection<Statistic> StatisticExecuters { get; set; } = new List<Statistic>();
-    public virtual ICollection<Statistic> StatisticReporters { get; set; } = new List<Statistic>();
+    public virtual ICollection<Statistic> StatisticUsers { get; set; } = new List<Statistic>();
 }
 

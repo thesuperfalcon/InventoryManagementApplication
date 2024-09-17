@@ -7,11 +7,10 @@ namespace InventoryManagementApplication.Models
     {
         public int Id { get; set; }
 
-        public string? ReporterId { get; set; }
-        public virtual InventoryManagementUser? Reporter { get; set; }
+        public string? UserId { get; set; }
+        public virtual InventoryManagementUser? User { get; set; }
 
-        public string? ExecuterId { get; set; }
-        public virtual InventoryManagementUser? Executer { get; set; }
+        
 
         public int? InitialStorageId { get; set; }
         public virtual Storage? InitialStorage { get; set; }

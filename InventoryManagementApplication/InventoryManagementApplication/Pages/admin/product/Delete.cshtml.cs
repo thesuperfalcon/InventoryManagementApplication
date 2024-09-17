@@ -58,19 +58,22 @@ namespace InventoryManagementApplication.Pages.admin.product
                 .Where(x => x.ProductId == Product.Id)
                 .ToListAsync();
 
-            Storages = await _context.Storages
-                .Where(storage => storage.InventoryTrackers.Any(tracker => InventoryTrackers.Contains(tracker)))
+            var relatedStatistics = await _context.Statistics
+                .Where(s => s.ProductId == Product.Id)
                 .ToListAsync();
 
             foreach (var tracker in InventoryTrackers)
             {
-                var storage = Storages.FirstOrDefault(s => s.Id == tracker.StorageId);
+                var storage = await _context.Storages.FindAsync(tracker.StorageId);
                 if (storage != null)
                 {
                     storage.CurrentStock -= tracker.Quantity; 
-                    _context.Storages.Update(storage); 
+                    _context.Storages.Update(storage);
                 }
+                _context.InventoryTracker.Remove(tracker); 
             }
+
+            _context.Statistics.RemoveRange(relatedStatistics);
 
             _context.Products.Remove(Product);
 

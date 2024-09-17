@@ -1,4 +1,8 @@
+using InventoryManagementApplication.Areas.Identity.Data;
+using InventoryManagementApplication.Data;
+using InventoryManagementApplication.Helpers;
 using InventoryManagementApplication.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -8,11 +12,15 @@ namespace InventoryManagementApplication.Pages.admin.tracker
 {
     public class moveProductModel : PageModel
     {
-        private readonly InventoryManagementApplication.Data.InventoryManagementApplicationContext _context;
+        private readonly InventoryManagementApplicationContext _context;
+        private readonly UserManager<InventoryManagementUser> _userManager;
+        private readonly SelectListHelpers _selectListHelpers;
 
-        public moveProductModel(InventoryManagementApplication.Data.InventoryManagementApplicationContext context)
+        public moveProductModel(InventoryManagementApplicationContext context, UserManager<InventoryManagementUser> userManager, SelectListHelpers selectListHelpers)
         {
             _context = context;
+            _userManager = userManager;
+            _selectListHelpers = selectListHelpers;
         }
 
         [TempData]
@@ -23,42 +31,30 @@ namespace InventoryManagementApplication.Pages.admin.tracker
         public InventoryTracker InventoryTracker { get; set; } = default!;
         public Storage Storage { get; set; }
         public Product Product { get; set; }
-
+        public InventoryTracker MovingInventoryTracker { get; set; }
+        [BindProperty]
         public InventoryTracker SelectedInventoryTracker { get; set; }
+        public InventoryManagementUser MyUser { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
 
+            MyUser = await _userManager.GetUserAsync(User);
             SelectedInventoryTracker = await _context.InventoryTracker.Include(x => x.Product).Include(z => z.Storage).Where(g => g.Id == id).FirstOrDefaultAsync();
 
-            if(SelectedInventoryTracker == null)
+
+            if (SelectedInventoryTracker == null)
             {
                 return RedirectToPage("./Index");
             }
 
-            var storages = await _context.Storages.ToListAsync();
-            var products = await _context.Products.ToListAsync();
-
-            var productItems = products.Select(x => new
-            {
-                Value = x.Id,
-                Text = $"{x.Name} (Antal utan lager: {x.CurrentStock})"
-            });
-
-            var storageItems = storages.Select(x => new
-            {
-                Value = x.Id,
-                Text = $"{x.Name} (Lediga platser: {x.MaxCapacity - x.CurrentStock})"
-            });
-
-            StorageSelectList = new SelectList(storageItems, "Value", "Text");
-            ProductSelectList = new SelectList(productItems, "Value", "Text");
+            StorageSelectList = await _selectListHelpers.GenerateStorageSelectListAsync(SelectedInventoryTracker.StorageId);
+            ProductSelectList = await _selectListHelpers.GenerateProductSelectListAsync();
 
             return Page();
         }
 
 
-        // To protect from overposting attacks, see https://aka.ms/RazorPagesCRUD
         public async Task<IActionResult> OnPostAsync()
         {
             if (!ModelState.IsValid)
@@ -66,69 +62,76 @@ namespace InventoryManagementApplication.Pages.admin.tracker
                 return Page();
             }
 
-            int quantity = 0;
+            MyUser = await _userManager.GetUserAsync(User);
 
-            var existingTracker = await _context.InventoryTracker.Where(x => x.ProductId == SelectedInventoryTracker.ProductId && x.StorageId == SelectedInventoryTracker.StorageId).FirstOrDefaultAsync();
-            if (existingTracker == null)
+            var currentTracker = await _context.InventoryTracker
+                .Where(x => x.ProductId == SelectedInventoryTracker.ProductId && x.StorageId == SelectedInventoryTracker.StorageId)
+                .FirstOrDefaultAsync();
+
+            if (currentTracker == null)
             {
-                _context.InventoryTracker.Add(InventoryTracker);
-                quantity = (int)InventoryTracker.Quantity;
-                await _context.SaveChangesAsync();
+                return Page();
+            }
+
+            if (currentTracker.Quantity < InventoryTracker.Quantity)
+            {
+                return Page();
+            }
+
+            currentTracker.Quantity -= (int)InventoryTracker.Quantity;
+
+            var destinationTracker = await _context.InventoryTracker
+                .Where(x => x.ProductId == SelectedInventoryTracker.ProductId && x.StorageId == InventoryTracker.StorageId)
+                .FirstOrDefaultAsync();
+
+            if (destinationTracker == null)
+            {
+                destinationTracker = new InventoryTracker
+                {
+                    ProductId = SelectedInventoryTracker.ProductId,
+                    StorageId = InventoryTracker.StorageId,
+                    Quantity = (int)InventoryTracker.Quantity
+                };
+                _context.InventoryTracker.Add(destinationTracker);
             }
             else
             {
-                quantity = (int)InventoryTracker.Quantity;
+                destinationTracker.Quantity += (int)InventoryTracker.Quantity;
             }
-            Storage = await _context.InventoryTracker
-                .Select(x => x.Storage)
-                .Where(x => x.Id == InventoryTracker.StorageId)
-                .FirstOrDefaultAsync();
 
-            Product = await _context.InventoryTracker
-                .Select(x => x.Product)
-                .Where(x => x.Id == InventoryTracker.ProductId)
-                .FirstOrDefaultAsync();
+            var sourceStorage = await _context.Storages.FindAsync(SelectedInventoryTracker.StorageId);
+            var destinationStorage = await _context.Storages.FindAsync(InventoryTracker.StorageId);
+            var product = await _context.Products.FindAsync(SelectedInventoryTracker.ProductId);
 
-            var currentSpace = Storage.MaxCapacity - Storage.CurrentStock;
-
-
-            if (currentSpace < quantity)
+            if (sourceStorage == null || destinationStorage == null)
             {
-                StatusMessage = $"Finns ej plats i {Storage.Name}. Välj annan lagerplats!";
-                if (existingTracker == null)
-                {
-                    _context.Remove(InventoryTracker);
-                    await _context.SaveChangesAsync();
-                }
-                return RedirectToPage("./Create");
-
+                return Page();
             }
 
+            sourceStorage.CurrentStock -= (int)InventoryTracker.Quantity;
+            destinationStorage.CurrentStock += (int)InventoryTracker.Quantity;
 
-            if (quantity > Product.CurrentStock)
+            sourceStorage.Updated = DateTime.Now;
+            destinationStorage.Updated = DateTime.Now;
+
+            product.Updated = DateTime.Now;
+
+            currentTracker.Modified = DateTime.Now;
+            destinationTracker.Modified = DateTime.Now;
+
+            var statistic = new Statistic
             {
-                StatusMessage = $"Antalet produkter du vill lägga till finns ej tillgänglig. Antal produkter utan lager: {Product.CurrentStock}";
-                if (InventoryTracker != null && InventoryTracker.Id != 0)
-                {
-                    _context.InventoryTracker.Remove(InventoryTracker);
-                    await _context.SaveChangesAsync();
-                }
-                return RedirectToPage("./Create");
-            }
-            else if (Storage.CurrentStock < quantity)
-            {
-                StatusMessage = $"Finns ej plats i {Storage.Name}. Välj annan lagerplats!";
-            }
+                UserId = MyUser?.Id,
+                InitialStorageId = SelectedInventoryTracker.StorageId,
+                DestinationStorageId = InventoryTracker.StorageId,
+                ProductId = SelectedInventoryTracker.ProductId,
+                ProductQuantity = (int)InventoryTracker.Quantity,
+                OrderTime = DateTime.Now,
+                Completed = false
+            };
+            _context.Statistics.Add(statistic);
 
-            if (existingTracker != null)
-            {
-                existingTracker.Quantity += InventoryTracker.Quantity;
-            }
-            Storage.CurrentStock += quantity;
-            Product.CurrentStock -= quantity;
-            Storage.Updated = DateTime.Now;
             await _context.SaveChangesAsync();
-
 
             return RedirectToPage("./Index");
         }

@@ -9,16 +9,19 @@ using InventoryManagementApplication.Data;
 using InventoryManagementApplication.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Net.WebSockets;
+using InventoryManagementApplication.Helpers;
 
 namespace InventoryManagementApplication.Pages.admin.tracker
 {
     public class CreateModel : PageModel
     {
         private readonly InventoryManagementApplication.Data.InventoryManagementApplicationContext _context;
+        private readonly SelectListHelpers _selectListHelpers;
 
-        public CreateModel(InventoryManagementApplication.Data.InventoryManagementApplicationContext context)
+        public CreateModel(InventoryManagementApplication.Data.InventoryManagementApplicationContext context, SelectListHelpers selectListHelpers)
         {
             _context = context;
+            _selectListHelpers = selectListHelpers;
         }
 
         [TempData]
@@ -32,28 +35,11 @@ namespace InventoryManagementApplication.Pages.admin.tracker
 
         public async Task<IActionResult> OnGetAsync()
         {
-
-            var storages = await _context.Storages.ToListAsync();
-            var products = await _context.Products.ToListAsync();
-
-            var productItems = products.Select(x => new
-            {
-                Value = x.Id,
-                Text = $"{x.Name} (Antal utan lager: {x.CurrentStock})"
-            });
-
-            var storageItems = storages.Select(x => new
-            {
-                Value = x.Id,
-                Text = $"{x.Name} (Lediga platser: {x.MaxCapacity - x.CurrentStock})"
-            });
-
-            StorageSelectList = new SelectList(storageItems, "Value", "Text");
-            ProductSelectList = new SelectList(productItems, "Value", "Text");
+            StorageSelectList = await _selectListHelpers.GenerateStorageSelectListAsync(null);
+            ProductSelectList = await _selectListHelpers.GenerateProductSelectListAsync();
 
             return Page();
         }
-
 
         // To protect from overposting attacks, see https://aka.ms/RazorPagesCRUD
         public async Task<IActionResult> OnPostAsync()

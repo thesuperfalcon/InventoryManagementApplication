@@ -52,6 +52,7 @@ namespace InventoryManagementApplication.Pages.admin.storage
             }
 
             var storage = await _context.Storages.FindAsync(id);
+            var relativeStatistics = await _context.Statistics.Where(x => x.InitialStorageId == id || x.DestinationStorageId == id).ToListAsync();
             Trackers = await _context.InventoryTracker.Where(x => x.StorageId == storage.Id).ToListAsync();
             var sum = Trackers.Sum(x => x.Quantity);
             if(sum > 0)
@@ -64,6 +65,7 @@ namespace InventoryManagementApplication.Pages.admin.storage
             if (storage != null)
             {
                 Storage = storage;
+                _context.RemoveRange(relativeStatistics);
                 _context.Storages.Remove(Storage);
                 await _context.SaveChangesAsync();
             }
