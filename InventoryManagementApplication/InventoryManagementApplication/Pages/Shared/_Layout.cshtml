@@ -24,6 +24,7 @@
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
+
                         @if (User.Identity.IsAuthenticated)
                         {
                             <li class="nav-item">
@@ -32,9 +33,17 @@
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-page="/Privacy">Privacy</a>
                             </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" id="register" asp-area="Identity" asp-page="/Account/Register">Registrera användare</a>
-                            </li>
+
+    @* Om användaren är Admin *@
+    @if (User.IsInRole("Admin"))
+    {
+        <li class="nav-item">
+            <a class="nav-link text-dark" id="register" asp-area="Identity" asp-page="/Account/Register">Registrera användare</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-dark" asp-area="" asp-page="/UsersRoles">Användare och roller</a>
+        </li>
+    }
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-page="/Logg">Logg</a>
                             </li>
@@ -44,26 +53,27 @@
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-page="/Lagerstatus">Lagerstatus</a>
                             </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-page="/UsersRoles">Användare</a>
-                            </li>
+
                         }
-                        else
+
+
+                    @*       else
                         {
                             <li class="nav-item">
                                 <a class="nav-link text-dark" id="register" asp-area="Identity" asp-page="/Account/Register">Registrera användare</a>
                             </li>
-                           
+                                           <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-page="/UsersRoles">Användare</a>
+                            </li>
                         }
-
-
-                        
-@*                         @if (User.Identity.IsAuthenticated)
+                        @if (User.Identity.IsAuthenticated)
                         {
                             <li class="nav-item">
                                 <a class="nav-link text-dark" id="register" asp-area="Identity" asp-page="/Account/Register">Registrera användare</a>
                             </li>
                         } *@
+
+
                     </ul>
                     <partial name="_LoginPartial" />
                 </div>
