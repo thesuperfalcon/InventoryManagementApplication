@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using InventoryManagementApplication.Data;
 using InventoryManagementApplication.Models;
+using System.Text.Json;
 
 namespace InventoryManagementApplication.Pages.admin.storage
 {
@@ -18,12 +19,26 @@ namespace InventoryManagementApplication.Pages.admin.storage
         {
             _context = context;
         }
-
-        public IList<Storage> Storage { get;set; } = default!;
+		private static Uri BaseAddress = new Uri("https://localhost:44353/");
+		public IList<Storage> Storages { get;set; } = default!;
 
         public async Task OnGetAsync()
         {
-            Storage = await _context.Storages.ToListAsync();
+            using(var client = new HttpClient())
+            {
+                client.BaseAddress = BaseAddress;
+
+				HttpResponseMessage responseStorages = await client.GetAsync("api/Storages/");
+				if (responseStorages.IsSuccessStatusCode)
+				{
+					string responseString = await responseStorages.Content.ReadAsStringAsync();
+					List<Models.Storage> storages = JsonSerializer.Deserialize<List<Models.Storage>>(responseString);
+					Storages = storages.ToList();
+
+				}
+				//Storage = await _context.Storages.ToListAsync();
+			}
+            
         }
     }
 }

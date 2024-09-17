@@ -8,6 +8,9 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using InventoryManagementApplication.Data;
 using InventoryManagementApplication.Models;
+using System.Text.Json;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Shared;
+using System.Text;
 
 namespace InventoryManagementApplication.Pages.admin.storage
 {
@@ -19,55 +22,84 @@ namespace InventoryManagementApplication.Pages.admin.storage
         {
             _context = context;
         }
-
-        [BindProperty]
+		private static Uri BaseAddress = new Uri("https://localhost:44353/");
+		
+		[TempData] //Nödvändig????
+		public string StatusMessage { get; set; }
+		[BindProperty]
         public Storage Storage { get; set; } = default!;
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
-            if (id == null)
+            var storage = new Storage();
+            using (var client = new HttpClient())
             {
-                return NotFound();
-            }
-
-            var storage =  await _context.Storages.FirstOrDefaultAsync(m => m.Id == id);
-            if (storage == null)
-            {
-                return NotFound();
-            }
-            Storage = storage;
-            return Page();
+                client.BaseAddress = BaseAddress;
+				if (id == null)
+				{
+					return NotFound();
+				}
+				HttpResponseMessage response = await client.GetAsync($"api/Storages/");
+				if (response.IsSuccessStatusCode)
+				{
+					string responseString = await response.Content.ReadAsStringAsync();
+					storage = JsonSerializer.Deserialize<List<Models.Storage>>(responseString).Where(s => s.Id == id).SingleOrDefault();
+				}
+				//var storage = await _context.Storages.FirstOrDefaultAsync(m => m.Id == id);
+				if (storage == null)
+				{
+					return NotFound();
+				}
+				Storage = storage;
+				return Page();
+			}
+            
         }
 
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see https://aka.ms/RazorPagesCRUD.
         public async Task<IActionResult> OnPostAsync()
         {
-            if (!ModelState.IsValid)
+			int id = Storage.Id;
+            using (var client = new HttpClient())
             {
-                return Page();
-            }
+				client.BaseAddress = BaseAddress;
+				if (!ModelState.IsValid)
+				{
+					return Page();
+				}
+				//Ignorera????
+				_context.Attach(Storage).State = EntityState.Modified;
 
-            _context.Attach(Storage).State = EntityState.Modified;
+				try
+				{
+					var content = new StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(Storage), Encoding.UTF8, "application/json");
+					HttpResponseMessage response = await client.PutAsync($"api/Storages/{id}", content);
 
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!StorageExists(Storage.Id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+					if (!response.IsSuccessStatusCode)
+					{
+						string responseContent = await response.Content.ReadAsStringAsync();
+						StatusMessage = $"Failed to update product. Status: {response.StatusCode}, Reason: {response.ReasonPhrase}, Details: {responseContent}";
+						return RedirectToPage("./Edit", new { id = Storage.Id });
+					}
+					//await _context.SaveChangesAsync();
+				}
+				catch (DbUpdateConcurrencyException)
+				{
+					if (!StorageExists(Storage.Id))
+					{
+						return NotFound();
+					}
+					else
+					{
+						throw;
+					}
+				}
 
-            return RedirectToPage("./Index");
-        }
+				
+			}
+			return RedirectToPage("./Index");
+		}
 
         private bool StorageExists(int id)
         {

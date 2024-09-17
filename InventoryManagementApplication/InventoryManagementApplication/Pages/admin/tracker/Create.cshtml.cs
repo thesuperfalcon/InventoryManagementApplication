@@ -20,8 +20,8 @@ namespace InventoryManagementApplication.Pages.admin.tracker
         {
             _context = context;
         }
-
-        [TempData]
+		private static Uri BaseAddress = new Uri("https://localhost:44353/");
+		[TempData]
         public string StatusMessage { get; set; }
         public SelectList StorageSelectList { get; set; }
         public SelectList ProductSelectList { get; set; }

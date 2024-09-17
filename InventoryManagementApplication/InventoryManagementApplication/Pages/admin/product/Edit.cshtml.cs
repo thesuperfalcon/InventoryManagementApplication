@@ -101,7 +101,7 @@ namespace InventoryManagementApplication.Pages.admin.product
 					Product.CurrentStock = Product.TotalStock;
 				}
 				//Konvertera till API????
-				//_context.Attach(Product).State = EntityState.Modified;
+				_context.Attach(Product).State = EntityState.Modified;
 
 				try
 				{
