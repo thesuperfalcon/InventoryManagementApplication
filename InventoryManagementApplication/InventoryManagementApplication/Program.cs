@@ -36,7 +36,10 @@ namespace InventoryManagementApplication
             // Add services to the container.
             builder.Services.AddRazorPages();
 
+
+            //Helpers-connection
             builder.Services.AddScoped<SelectListHelpers>();
+            builder.Services.AddScoped<DeleteHelpers>();
 
             builder.Services.AddControllersWithViews()
             .AddJsonOptions(options =>

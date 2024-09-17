@@ -7,16 +7,19 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using InventoryManagementApplication.Data;
 using InventoryManagementApplication.Models;
+using InventoryManagementApplication.Helpers;
 
 namespace InventoryManagementApplication.Pages.admin.product
 {
     public class DeleteModel : PageModel
     {
         private readonly InventoryManagementApplicationContext _context;
+        private readonly DeleteHelpers _deleteHelpers;
 
-        public DeleteModel(InventoryManagementApplicationContext context)
+        public DeleteModel(InventoryManagementApplicationContext context, DeleteHelpers deleteHelpers)
         {
             _context = context;
+            _deleteHelpers = deleteHelpers;
         }
 
         [BindProperty]
@@ -54,28 +57,7 @@ namespace InventoryManagementApplication.Pages.admin.product
                 return NotFound();
             }
 
-            InventoryTrackers = await _context.InventoryTracker
-                .Where(x => x.ProductId == Product.Id)
-                .ToListAsync();
-
-            var relatedStatistics = await _context.Statistics
-                .Where(s => s.ProductId == Product.Id)
-                .ToListAsync();
-
-            foreach (var tracker in InventoryTrackers)
-            {
-                var storage = await _context.Storages.FindAsync(tracker.StorageId);
-                if (storage != null)
-                {
-                    storage.CurrentStock -= tracker.Quantity; 
-                    _context.Storages.Update(storage);
-                }
-                _context.InventoryTracker.Remove(tracker); 
-            }
-
-            _context.Statistics.RemoveRange(relatedStatistics);
-
-            _context.Products.Remove(Product);
+            await _deleteHelpers.RemoveRelateProductDataAsync(Product);
 
             await _context.SaveChangesAsync();
 
