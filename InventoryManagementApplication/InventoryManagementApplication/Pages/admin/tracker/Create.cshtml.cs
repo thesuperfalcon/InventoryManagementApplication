@@ -32,7 +32,7 @@ namespace InventoryManagementApplication.Pages.admin.tracker
 
         public async Task<IActionResult> OnGetAsync()
         {
-
+            //Allt returnerar null, får inte upp några alternativ på Create Tracker
             var storages = await _context.Storages.ToListAsync();
             var products = await _context.Products.ToListAsync();
 

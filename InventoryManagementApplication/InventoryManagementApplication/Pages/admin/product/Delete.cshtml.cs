@@ -85,7 +85,6 @@ namespace InventoryManagementApplication.Pages.admin.product
 
 						StringContent httpContent = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
 						HttpResponseMessage responseUpdateStorage = await client.PutAsync("api/Storages/" + storage.Id, httpContent);
-						//_context.Storages.Update(storage);
 					}
 				
 					

@@ -1,29 +1,37 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using InventoryManagementApplication.Models;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
-using InventoryManagementApplication.Data;
-using InventoryManagementApplication.Models;
+using System.Text.Json;
 
 namespace InventoryManagementApplication.Pages.admin.product
 {
-    public class IndexModel : PageModel
-    {
-        private readonly InventoryManagementApplication.Data.InventoryManagementApplicationContext _context;
+	public class IndexModel : PageModel
+	{
+		private readonly InventoryManagementApplication.Data.InventoryManagementApplicationContext _context;
 
-        public IndexModel(InventoryManagementApplication.Data.InventoryManagementApplicationContext context)
-        {
-            _context = context;
-        }
+		public IndexModel(InventoryManagementApplication.Data.InventoryManagementApplicationContext context)
+		{
+			_context = context;
+		}
+		private static Uri BaseAddress = new Uri("https://localhost:44353/");
+		public IList<Product> Products { get; set; } = default!;
 
-        public IList<Product> Product { get;set; } = default!;
+		public async Task OnGetAsync()
+		{
+			using (var client = new HttpClient())
+			{
+				client.BaseAddress = BaseAddress;
 
-        public async Task OnGetAsync()
-        {
-            Product = await _context.Products.ToListAsync();
-        }
-    }
+
+				HttpResponseMessage responseProducts = await client.GetAsync("api/Products");
+				if (responseProducts.IsSuccessStatusCode)
+				{
+					string responseString = await responseProducts.Content.ReadAsStringAsync();
+					List<Models.Product> products = JsonSerializer.Deserialize<List<Models.Product>>(responseString);
+					Products = products.ToList();
+
+				}			
+			}
+		}
+	}
 }
