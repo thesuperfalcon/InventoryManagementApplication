@@ -24,7 +24,9 @@ namespace InventoryManagementApplication.Pages.admin.tracker
         [BindProperty]
         public InventoryTracker InventoryTracker { get; set; } = default!;
         public Models.Storage Storage { get; set; }
-        public Product? Product { get; set; }
+        public Product Product { get; set; }
+        public List<Models.Storage> Storages { get; set; }
+        public List<Models.Product> Products { get; set; }
 
         public async Task<IActionResult> OnGetAsync()
         {
@@ -66,6 +68,9 @@ namespace InventoryManagementApplication.Pages.admin.tracker
 
                 StorageSelectList = new SelectList(storageItems, "Value", "Text");
                 ProductSelectList = new SelectList(productItems, "Value", "Text");
+
+                //Products = products;
+                //Storages = storages;
             }
             return Page();
         }
@@ -122,21 +127,31 @@ namespace InventoryManagementApplication.Pages.admin.tracker
                     quantity = (int)InventoryTracker.Quantity;
                 }
 
-                HttpResponseMessage responseProducts = await client.GetAsync($"api/InventoryTrackers/");
-                if (responseProducts.IsSuccessStatusCode)
+                var inventoryTracker = new List<InventoryTracker>();
+                HttpResponseMessage responseTracker = await client.GetAsync($"api/InventoryTrackers/");
+                if (responseTracker.IsSuccessStatusCode)
                 {
-                    string responseString = await responseProducts.Content.ReadAsStringAsync();
-                    Product = JsonSerializer.Deserialize<List<InventoryTracker>>(responseString).Select(x => x.Product)
-                    .FirstOrDefault(x => x.Id == InventoryTracker.ProductId);
+                    string responseString = await responseTracker.Content.ReadAsStringAsync();
+                    inventoryTracker = JsonSerializer.Deserialize<List<InventoryTracker>>(responseString);
+                    Product product = inventoryTracker.Select(x => x.Product).Where(x => x.Id == InventoryTracker.ProductId).FirstOrDefault();
                 }
 
-                HttpResponseMessage responseStorage = await client.GetAsync($"api/InventoryTrackers/");
-                if (responseStorage.IsSuccessStatusCode)
-                {
-                    string responseString = await responseStorage.Content.ReadAsStringAsync();
-                    Storage = JsonSerializer.Deserialize<List<InventoryTracker>>(responseString).Select(x => x.Storage)
-                   .FirstOrDefault(x => x.Id == InventoryTracker.StorageId); ;
-                }
+                //HttpResponseMessage responseProducts = await client.GetAsync($"api/InventoryTrackers/");
+                //if (responseProducts.IsSuccessStatusCode)
+                //{
+                //    string responseString = await responseProducts.Content.ReadAsStringAsync();
+                //    Product product = JsonSerializer.Deserialize<List<InventoryTracker>>(responseString).Select(x => x.Product)
+                //    .Where(x => x.Id == InventoryTracker.ProductId).FirstOrDefault();
+                //}
+
+                //HttpResponseMessage responseStorage = await client.GetAsync($"api/InventoryTrackers/");
+                //if (responseStorage.IsSuccessStatusCode)
+                //{
+                //    string responseString = await responseStorage.Content.ReadAsStringAsync();
+                //    var storage = JsonSerializer.Deserialize<List<InventoryTracker>>(responseString).Select(x => x.Storage)
+                //    .Where(x => x.Id == InventoryTracker.StorageId)
+                //    .FirstOrDefault();
+                //}
 
                 //Storage = await _context.InventoryTracker
                 //    .Select(x => x.Storage)
@@ -164,7 +179,7 @@ namespace InventoryManagementApplication.Pages.admin.tracker
                         //_context.Remove(InventoryTracker);
                         //await _context.SaveChangesAsync();
                     }
-                    return RedirectToPage("./Create");
+                    return RedirectToPage("./Index");
 
                 }
 
