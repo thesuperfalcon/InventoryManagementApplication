@@ -4,6 +4,7 @@ using InventoryManagementApplication.Data;
 using InventoryManagementApplication.Areas.Identity.Data;
 using System.Globalization;
 using Microsoft.AspNetCore.Localization;
+using System.Text.Json.Serialization;
 namespace InventoryManagementApplication
 {
     public class Program
@@ -15,7 +16,13 @@ namespace InventoryManagementApplication
 
             builder.Services.AddDbContext<InventoryManagementApplicationContext>(options => options.UseSqlServer(connectionString));
             builder.Services.AddTransient<Models.Product>();
-
+           
+            //builder.Services.AddControllers()
+            //.AddJsonOptions(options =>
+            //{
+            //    options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
+            //});
+           
             var supportedCultures = new[] { new CultureInfo("en-US") };
             builder.Services.Configure<RequestLocalizationOptions>(options =>
             {
