@@ -23,6 +23,7 @@ namespace InventoryManagementApplication.Pages.admin.product
 
         public async Task OnGetAsync()
         {
+            //hejsan från tintin
             Product = await _context.Products.ToListAsync();
         }
     }
