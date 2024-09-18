@@ -41,35 +41,46 @@
 
             <tr id="@uniqueId" class="nested-table-row" style="display: none;">
                 <td colspan="3">
-                    @if (storage.InventoryTrackers.Any())
-                    {
-                        <table class="table mb-0">
-                            <thead>
-                                <tr>
-                                    <th>Produktnamn</th>
-                                    <th>Artikelnummer</th>
-                                    <th>Antal i lager</th>
-                                    <th>Ändrad</th>
-                                </tr>
-                            </thead>
-                            <tbody>
+
+                    <table class="table mb-0">
+                        <thead>
+                            <tr>
+                                <th>Produktnamn</th>
+                                <th>Artikelnummer</th>
+                                <th>Antal i lager</th>
+                                <th>Ändrad</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (storage.InventoryTrackers.Any())
+                            {
                                 @foreach (var product in storage.InventoryTrackers)
                                 {
-                                    <tr>
-                                        <td>@product.Product.Name</td>
-                                        <td>@product.Product.ArticleNumber</td>
-                                        <td>@product.Quantity</td>
-                                        <td>@product.Modified</td>
-                                    </tr>
+                                    if (product?.Product != null)
+                                    {
+                                        <tr>
+                                            <td>@product.Product.Name</td>
+                                            <td>@product.Product.ArticleNumber</td>
+                                            <td>@product.Quantity</td>
+                                            <td>@product.Modified</td>
+                                        </tr>
+                                    }
+                                    else
+                                    {
+                                        <tr>
+                                            <td colspan="4" class="text-center">Produktinformation saknas</td>
+                                        </tr>
+                                    }
                                 }
-                            </tbody>
-                        </table>
-                    }
-                    else
-                    {
-                        <p class="text-center">Inga produkter finns...</p>
-                    }
-
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="4" class="text-center">Produktinformation saknas</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
                 </td>
             </tr>
         }

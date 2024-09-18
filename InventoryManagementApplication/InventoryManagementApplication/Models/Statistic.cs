@@ -10,8 +10,6 @@ namespace InventoryManagementApplication.Models
         public string? UserId { get; set; }
         public virtual InventoryManagementUser? User { get; set; }
 
-        
-
         public int? InitialStorageId { get; set; }
         public virtual Storage? InitialStorage { get; set; }
 
