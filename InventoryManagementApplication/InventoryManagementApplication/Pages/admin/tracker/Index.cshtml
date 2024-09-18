@@ -26,7 +26,8 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model.InventoryTracker) {
+@foreach (var item in Model.InventoryTracker) 
+{
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.Quantity)
