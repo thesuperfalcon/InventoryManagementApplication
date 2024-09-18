@@ -4,11 +4,16 @@
     ViewData["Title"] = "Registrering";
 }
 
-<h1>@ViewData["Title"]</h1>
+<head>
+    <link rel="stylesheet" href="~/css/admin.css" asp-append-version="true" />
+</head>
+    <h1 class="row justify-content-center">@ViewData["Title"]</h1>
 
-<div class="row">
-    <div class="col-md-4">
-        <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+<div id="registerContainer" data-check-url="@Url.Page("/Account/Register", "CheckEmployeeNumberExists")">
+    <div class="row">
+        <div class="row justify-content-center">
+            <div class="col-md-4">
+                <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
             <hr />
             <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
 
@@ -27,7 +32,7 @@
             <div class="form-floating mb-3 d-flex align-items-center">
                 <input asp-for="Input.EmployeeNumber" class="form-control me-2" id="employeeNumber" aria-required="true" placeholder="Anställningsnummer" readonly />
                 <label asp-for="Input.EmployeeNumber">Anställningsnummer</label>
-                <button id="generateEmployeeNumber" type="button" class="btn-primary btn mt-2">Generera</button>
+<button id="generateEmployeeNumber" type="button" class="btn btn-generic mt-2">Generera</button>
                 <span asp-validation-for="Input.EmployeeNumber" class="text-danger"></span>
                 
             </div>
@@ -52,7 +57,7 @@
                 <span asp-validation-for="Input.Email" class="text-danger"></span>
             </div> *@
 
-            <button id="registerSubmit" type="submit" class="w-100 btn btn-lg btn-primary">Registrera</button>
+<button id="registerSubmit" type="submit" class="w-100 btn btn-generic">Registrera</button>
         </form>
     </div>
     @* <div class="col-md-6 col-md-offset-2">
@@ -86,36 +91,10 @@
         </section>
     </div> *@
 </div>
-
+        </div>
+    </div>
 @section Scripts {
-
     <script src="https://ajax.aspnetcdn.com/ajax/jquery/3.5.1/jquery.min.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            $('#generateEmployeeNumber').on('click', function () {
-                var employeeNumber;
-                var isUnique = false;
-
-                // Loop until a unique employee number is found
-                while (!isUnique) {
-                    employeeNumber = Math.floor(Math.random() * (9999 - 1000 + 1)) + 1000;
-
-                    $.ajax({
-                        url: '@Url.Page("/Account/Register", "CheckEmployeeNumberExists")',
-                        type: 'GET',
-                        data: { employeeNumber: employeeNumber },
-                        success: function (data) {
-                            if (data) {
-                                isUnique = true;
-                                $('#employeeNumber').val(employeeNumber);
-                            }
-                        },
-                        async: false // Ensures the AJAX call completes before proceeding
-                    });
-                }
-            });
-        });
-    </script>
-
+    <script src="~/js/site.js" asp-append-version="true"></script>
     <partial name="_ValidationScriptsPartial" />
 }

@@ -86,9 +86,9 @@ namespace InventoryManagementApplication
                 }
             }
 
-            // Om admin inte finns, skapa admin vid start
-            var adminUserName = "adminUser";
-            var adminPassword = "Admin123!";
+            // Om admin inte finns, skapa rollen vid start
+            var adminUserName = "AdminUser";
+            var adminPassword = "AdminUser123!";
 
             var adminUser = await userManager.FindByNameAsync(adminUserName);
             if (adminUser == null)
