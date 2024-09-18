@@ -1,0 +1,65 @@
+﻿@page
+@model InventoryManagementApplication.Pages.StatisticPageModel
+@{
+
+}
+
+<h1>Statistik</h1>
+
+<div class="mb-3 mt-3">
+    <input id="searchInput" type="text" class="form-control" placeholder="Sök...Namn eller " />
+</div>
+
+<div class="card">
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col">Antällningsnummer</th>
+            <th scope="col">Förnamn</th>
+            <th scope="col">Efternamn</th>
+            <th scope="col">Antal produkter flyttade</th>           
+            <th scope="col">Senast förflyttning</th>
+        </tr>
+    </thead>
+    <tbody id="myTable">
+        @if(Model.Statistics.Any())
+        {
+            @foreach (var statistic in Model.Statistics)
+            {
+                <tr>
+                    <td>@statistic.User?.EmployeeNumber</td>
+                    <td>@statistic.User?.FirstName</td>
+                    <td>@statistic.User?.LastName</td>
+                    <td>@statistic.ProductQuantity</td>                    
+                    <td>@statistic.Product?.Updated</td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="8" class="text-center">Ingen data..</td>
+            </tr>
+        }
+    </tbody>
+</table>
+    <div class="mb-3">
+        <button id="toggleAll" class="btn btn-primary">Bak</button>
+    </div>
+    <div class="mb-3">
+        <button id="toggleAll" class="btn btn-primary">Fram</button>
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+        $(document).ready(function () {
+            $("#searchInput").on("keyup", function () {
+                var value = $(this).val().toLowerCase();
+                $("#myTable tr").filter(function () {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                });
+            });
+        });
+    </script>
+}

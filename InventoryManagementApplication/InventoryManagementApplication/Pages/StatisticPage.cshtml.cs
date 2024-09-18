@@ -6,14 +6,15 @@ using Microsoft.EntityFrameworkCore;
 
 namespace InventoryManagementApplication.Pages
 {
-    public class HistoryPageModel : PageModel
+    public class StatisticPageModel : PageModel
     {
         private readonly InventoryManagementApplicationContext _context;
 
-        public HistoryPageModel(InventoryManagementApplicationContext context)
+        public StatisticPageModel(InventoryManagementApplicationContext context)
         {
             _context = context;
         }
+
 
         public List<Statistic> Statistics { get; set; } = new List<Statistic>();
 
@@ -32,7 +33,6 @@ namespace InventoryManagementApplication.Pages
             statistic.DestinationStorage != null &&
             statistic.InitialStorage != null &&
             statistic.User != null).ToList();
-
 
         }
 
