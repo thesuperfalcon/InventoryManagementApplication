@@ -24,6 +24,7 @@ namespace InventoryManagementApplication.Pages.admin.product
         public async Task OnGetAsync()
         {
             //hejsan från tintin
+            // hejsan test
             Product = await _context.Products.ToListAsync();
         }
     }
