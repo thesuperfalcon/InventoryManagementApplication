@@ -3,6 +3,9 @@ using Microsoft.EntityFrameworkCore;
 using InventoryManagementApplication.Data;
 using InventoryManagementApplication.Areas.Identity.Data;
 using Microsoft.Extensions.DependencyInjection;
+using System.Globalization;
+using Microsoft.AspNetCore.Localization;
+using InventoryManagementApplication.Helpers;
 
 namespace InventoryManagementApplication
 {
