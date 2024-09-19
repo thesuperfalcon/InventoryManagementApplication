@@ -9,16 +9,19 @@ using InventoryManagementApplication.Data;
 using InventoryManagementApplication.Models;
 using Microsoft.CodeAnalysis.Elfie.Diagnostics;
 using System.Text.Json;
+using InventoryManagementApplication.DAL;
 
 namespace InventoryManagementApplication.Pages.admin.product
 {
     public class CreateModel : PageModel
     {
 		private readonly InventoryManagementApplication.Data.InventoryManagementApplicationContext _context;
+		private readonly ProductManager _manager;
 
-		public CreateModel(InventoryManagementApplication.Data.InventoryManagementApplicationContext context)
+		public CreateModel(InventoryManagementApplication.Data.InventoryManagementApplicationContext context, ProductManager manager)
 		{
 			_context = context;
+			_manager = manager;
 		}
 
 		public IActionResult OnGet()
@@ -26,7 +29,6 @@ namespace InventoryManagementApplication.Pages.admin.product
 			return Page();
 		}
 
-		private static Uri BaseAddress = new Uri("https://localhost:44353/");
 
 		[BindProperty]
 		public Product Product { get; set; } = default!;
@@ -39,15 +41,18 @@ namespace InventoryManagementApplication.Pages.admin.product
 				return Page();
 			}
 			Product.CurrentStock = Product.TotalStock;
-			using (var client = new HttpClient())
-			{
-				client.BaseAddress = BaseAddress;
-				var json = JsonSerializer.Serialize(Product);
+			
+			await _manager.CreateProductAsync(Product);
+			
+			//using (var client = new HttpClient())
+			//{
+			//	client.BaseAddress = BaseAddress;
+			//	var json = JsonSerializer.Serialize(Product);
 
-				//Gör det möjligt att skicka innehåll till API
-				StringContent httpContent = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
-				HttpResponseMessage response = await client.PostAsync("api/Products/", httpContent);
-			}
+			//	//Gör det möjligt att skicka innehåll till API
+			//	StringContent httpContent = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
+			//	HttpResponseMessage response = await client.PostAsync("api/Products/", httpContent);
+			//}
 			return RedirectToPage("./Index");
 		}
 	}

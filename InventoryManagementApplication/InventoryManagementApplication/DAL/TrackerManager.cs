@@ -1,6 +1,6 @@
 ﻿namespace InventoryManagementApplication.DAL
 {
-    public class TrackerManager
-    {
-    }
+	public class TrackerManager
+	{
+	}
 }

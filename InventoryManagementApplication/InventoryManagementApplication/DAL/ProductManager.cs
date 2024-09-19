@@ -9,6 +9,27 @@ namespace InventoryManagementApplication.DAL
 		private static Uri BaseAddress = new Uri("https://localhost:44353/");
 		public Product Product { get; set; }
 		public List<Product> Products { get; set; }
+
+		public async Task CreateProductAsync(Product product)
+		{
+			if(product != null)
+			{
+				Product = product;
+				using (var client = new HttpClient())
+				{
+					client.BaseAddress = BaseAddress;
+					var json = JsonSerializer.Serialize(Product);
+
+					StringContent httpContent = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
+					HttpResponseMessage response = await client.PostAsync("api/Products/", httpContent);
+				}
+			}
+			else
+			{
+				Console.WriteLine("Error! Abort!");
+			}
+			
+		}
 		public async Task<List<Product>> GetAllProductsAsync()
 		{
 			using (var client = new HttpClient())
