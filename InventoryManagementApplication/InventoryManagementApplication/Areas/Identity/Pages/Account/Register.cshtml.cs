@@ -165,6 +165,11 @@ namespace InventoryManagementApplication.Areas.Identity.Pages.Account
                 user.FirstName = Input.FirstName;
                 user.LastName = Input.LastName;
                 user.EmployeeNumber = Input.EmployeeNumber;
+                
+                //För att visa korrekt datum i användarinfomationen
+                user.Created = DateTime.Now;
+                user.Updated = DateTime.Now;
+                
                 Input.Password = "Admin123!";
 
                 await _userStore.SetUserNameAsync(user, Input.EmployeeNumber, CancellationToken.None);

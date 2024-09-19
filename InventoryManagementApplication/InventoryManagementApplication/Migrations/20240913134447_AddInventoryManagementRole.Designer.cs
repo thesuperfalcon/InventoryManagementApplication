@@ -4,6 +4,7 @@ using InventoryManagementApplication.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace InventoryManagementApplication.Migrations
 {
     [DbContext(typeof(InventoryManagementApplicationContext))]
-    partial class InventoryManagementApplicationContextModelSnapshot : ModelSnapshot
+    [Migration("20240913134447_AddInventoryManagementRole")]
+    partial class AddInventoryManagementRole
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -185,9 +188,6 @@ namespace InventoryManagementApplication.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime?>("Modified")
-                        .HasColumnType("datetime2");
-
                     b.Property<int?>("ProductId")
                         .HasColumnType("int");
 
@@ -220,19 +220,16 @@ namespace InventoryManagementApplication.Migrations
                     b.Property<DateTime?>("Created")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("CurrentStock")
-                        .HasColumnType("int");
-
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<decimal?>("Price")
-                        .HasColumnType("decimal(18,2)");
+                    b.Property<double?>("Price")
+                        .HasColumnType("float");
 
-                    b.Property<int?>("TotalStock")
+                    b.Property<int?>("Stock")
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("Updated")
@@ -257,6 +254,9 @@ namespace InventoryManagementApplication.Migrations
                     b.Property<int?>("DestinationStorageId")
                         .HasColumnType("int");
 
+                    b.Property<string>("ExecuterId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<DateTime?>("FinishedTime")
                         .HasColumnType("datetime2");
 
@@ -275,18 +275,20 @@ namespace InventoryManagementApplication.Migrations
                     b.Property<int>("ProductQuantity")
                         .HasColumnType("int");
 
-                    b.Property<string>("UserId")
+                    b.Property<string>("ReporterId")
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("DestinationStorageId");
 
+                    b.HasIndex("ExecuterId");
+
                     b.HasIndex("InitialStorageId");
 
                     b.HasIndex("ProductId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("ReporterId");
 
                     b.ToTable("Statistics");
                 });
@@ -455,8 +457,7 @@ namespace InventoryManagementApplication.Migrations
                 {
                     b.HasOne("InventoryManagementApplication.Models.Product", "Product")
                         .WithMany("InventoryTrackers")
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("ProductId");
 
                     b.HasOne("InventoryManagementApplication.Models.Storage", "Storage")
                         .WithMany("InventoryTrackers")
@@ -475,6 +476,11 @@ namespace InventoryManagementApplication.Migrations
                         .HasForeignKey("DestinationStorageId")
                         .OnDelete(DeleteBehavior.NoAction);
 
+                    b.HasOne("InventoryManagementApplication.Areas.Identity.Data.InventoryManagementUser", "Executer")
+                        .WithMany("StatisticExecuters")
+                        .HasForeignKey("ExecuterId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
                     b.HasOne("InventoryManagementApplication.Models.Storage", "InitialStorage")
                         .WithMany("StatisticInitialStorages")
                         .HasForeignKey("InitialStorageId")
@@ -484,18 +490,20 @@ namespace InventoryManagementApplication.Migrations
                         .WithMany("Statistics")
                         .HasForeignKey("ProductId");
 
-                    b.HasOne("InventoryManagementApplication.Areas.Identity.Data.InventoryManagementUser", "User")
-                        .WithMany("StatisticUsers")
-                        .HasForeignKey("UserId")
+                    b.HasOne("InventoryManagementApplication.Areas.Identity.Data.InventoryManagementUser", "Reporter")
+                        .WithMany("StatisticReporters")
+                        .HasForeignKey("ReporterId")
                         .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("DestinationStorage");
+
+                    b.Navigation("Executer");
 
                     b.Navigation("InitialStorage");
 
                     b.Navigation("Product");
 
-                    b.Navigation("User");
+                    b.Navigation("Reporter");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -553,7 +561,9 @@ namespace InventoryManagementApplication.Migrations
                 {
                     b.Navigation("ActivityLogs");
 
-                    b.Navigation("StatisticUsers");
+                    b.Navigation("StatisticExecuters");
+
+                    b.Navigation("StatisticReporters");
                 });
 
             modelBuilder.Entity("InventoryManagementApplication.Models.Product", b =>

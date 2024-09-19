@@ -7,7 +7,8 @@ using System.Reflection.Emit;
 
 namespace InventoryManagementApplication.Data;
 
-public class InventoryManagementApplicationContext : IdentityDbContext<InventoryManagementUser>
+//public class InventoryManagementApplicationContext : IdentityDbContext<InventoryManagementUser>
+  public class InventoryManagementApplicationContext : IdentityDbContext<InventoryManagementUser, InventoryManagementRole, string> 
 {
     public InventoryManagementApplicationContext(DbContextOptions<InventoryManagementApplicationContext> options)
         : base(options)
