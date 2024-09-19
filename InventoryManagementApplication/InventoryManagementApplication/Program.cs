@@ -7,17 +7,26 @@ using System.Globalization;
 using Microsoft.AspNetCore.Localization;
 using InventoryManagementApplication.Helpers;
 
+using System.Text.Json.Serialization;
 namespace InventoryManagementApplication
 {
     public class Program
     {
-        public static async Task Main(string[] args)  // Gör metoden till asynkron
+        public static async Task Main(string[] args)  // G�r metoden till asynkron
         {
             var builder = WebApplication.CreateBuilder(args);
             var connectionString = builder.Configuration.GetConnectionString("InventoryManagementApplicationContextConnection") ?? throw new InvalidOperationException("Connection string 'InventoryManagementApplicationContextConnection' not found.");
 
             builder.Services.AddDbContext<InventoryManagementApplicationContext>(options => options.UseSqlServer(connectionString));
             builder.Services.AddTransient<Models.Product>();
+           
+            //builder.Services.AddControllers()
+            //.AddJsonOptions(options =>
+            //{
+            //    options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
+            //});
+           
+            var supportedCultures = new[] { new CultureInfo("en-US") };
 
             var supportedCultures = new[] { new CultureInfo("sv-SE"), new CultureInfo("en-US") };
             builder.Services.Configure<RequestLocalizationOptions>(options =>
@@ -33,10 +42,10 @@ namespace InventoryManagementApplication
                 options.User.RequireUniqueEmail = false;
 
             })
-            .AddRoles<InventoryManagementRole>()  //Lägger till roller
+            .AddRoles<InventoryManagementRole>()  //L�gger till roller
             .AddEntityFrameworkStores<InventoryManagementApplicationContext>();
 
-            // Lägger till Admin-policy
+            // L�gger till Admin-policy
             builder.Services.AddAuthorization(options =>
             {
                 options.AddPolicy("Admin", policy => policy.RequireRole("Admin"));
@@ -53,7 +62,7 @@ namespace InventoryManagementApplication
 
             var app = builder.Build();
 
-            //Lägger till rollen för Admin
+            //L�gger till rollen f�r Admin
             using (var scope = app.Services.CreateScope())
             {
                 var services = scope.ServiceProvider;

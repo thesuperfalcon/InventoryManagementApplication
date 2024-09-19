@@ -20,11 +20,16 @@
 
                         <div class="mb-3">
                             <label asp-for="InventoryTracker.StorageId" class="form-label">Lagerplats</label>
+                            @*<select asp-for="InventoryTracker.StorageId" class="form-select" asp-items="ViewBag.StorageId"></select>*@
+                            <select asp-for="InventoryTracker.StorageId" class="form-select" asp-items="Model.StorageSelectList"></select>
                             <select asp-for="InventoryTracker.StorageId" class="form-select" asp-items="Model.StorageSelectList"></select>
                         </div>
-
+                       
+                        
                         <div class="mb-3">
                             <label asp-for="InventoryTracker.ProductId" class="form-label">Produkt</label>
+                            @*<select asp-for="InventoryTracker.ProductId" class="form-select" asp-items="ViewBag.ProductId"></select>*@
+                            <select asp-for="InventoryTracker.ProductId" class="form-select" asp-items="Model.ProductSelectList"></select>
                             <select asp-for="InventoryTracker.ProductId" class="form-select" asp-items="Model.ProductSelectList"></select>
                         </div>
 
