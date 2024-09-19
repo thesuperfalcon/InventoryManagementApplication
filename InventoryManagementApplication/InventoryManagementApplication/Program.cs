@@ -26,7 +26,7 @@ namespace InventoryManagementApplication
             //    options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
             //});
            
-            var supportedCultures = new[] { new CultureInfo("en-US") };
+            //var supportedCultures = new[] { new CultureInfo("en-US") };
 
             var supportedCultures = new[] { new CultureInfo("sv-SE"), new CultureInfo("en-US") };
             builder.Services.Configure<RequestLocalizationOptions>(options =>
