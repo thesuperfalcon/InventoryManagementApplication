@@ -55,11 +55,5 @@ namespace InventoryManagementApplication.Pages.admin.storage
 
                 return RedirectToPage("./Index");
             }
-            else
-            {
-                StatusMessage = "Max antal lagerplatser är 6";
-                return Page();
-            }
         }
     }
-}
