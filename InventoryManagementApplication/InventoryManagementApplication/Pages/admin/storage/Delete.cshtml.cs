@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using InventoryManagementApplication.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
-using InventoryManagementApplication.Data;
-using InventoryManagementApplication.Models;
+using System.Text.Json;
 
 namespace InventoryManagementApplication.Pages.admin.storage
 {
@@ -18,6 +14,9 @@ namespace InventoryManagementApplication.Pages.admin.storage
         {
             _context = context;
         }
+
+        private static Uri BaseAddress = new Uri("https://localhost:44353/");
+
         [TempData]
         public string StatusMessage { get; set; }
         [BindProperty]
@@ -31,46 +30,90 @@ namespace InventoryManagementApplication.Pages.admin.storage
                 return NotFound();
             }
 
-            var storage = await _context.Storages.FirstOrDefaultAsync(m => m.Id == id);
+            var storage = new Storage();
+            //var storage = await _context.Storages.FirstOrDefaultAsync(m => m.Id == id);
 
-            if (storage == null)
+            using (var client = new HttpClient())
             {
-                return NotFound();
+                client.BaseAddress = BaseAddress;
+
+
+                HttpResponseMessage responseStorage = await client.GetAsync("api/Storages");
+                if (responseStorage.IsSuccessStatusCode)
+                {
+                    string responseString = await responseStorage.Content.ReadAsStringAsync();
+                    storage = JsonSerializer.Deserialize<List<Models.Storage>>(responseString).Where(s => s.Id == id).FirstOrDefault();
+
+
+                }
+
+                if (storage == null)
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    Storage = storage;
+                }
+                return Page();
             }
-            else
-            {
-                Storage = storage;
-            }
-            return Page();
+
+
         }
-
-        public async Task<IActionResult> OnPostAsync(int? id)
-        {
-            if (id == null)
+            public async Task<IActionResult> OnPostAsync(int? id)
             {
-                return NotFound();
-            }
-
-            var storage = await _context.Storages.FindAsync(id);
-            var relativeStatistics = await _context.Statistics.Where(x => x.InitialStorageId == id || x.DestinationStorageId == id).ToListAsync();
-            Trackers = await _context.InventoryTracker.Where(x => x.StorageId == storage.Id).ToListAsync();
-            var sum = Trackers.Sum(x => x.Quantity);
-            if(sum > 0)
+                if (id == null)
+                {
+                    return NotFound();
+                }
+            var storage = new Storage();
+            // var storage = await _context.Storages.FindAsync(id);
+            //Trackers = await _context.InventoryTracker.Where(x => x.StorageId == storage.Id).ToListAsync();
+            using (var client = new HttpClient())
             {
-                StatusMessage = "Går ej att ta bort. Flytta produkterna innann du tar bort lagret!";
+                client.BaseAddress = BaseAddress;
 
-                return RedirectToPage("./Delete", new {id = storage.Id});
-            }
+                HttpResponseMessage responseStorage = await client.GetAsync($"api/Storage/{id}");
+                if (responseStorage.IsSuccessStatusCode)
+                {
+                    string responseString = await responseStorage.Content.ReadAsStringAsync();
+                    storage = JsonSerializer.Deserialize<Storage>(responseString);
+                    // InventoryTrackers = inventoryTrackers.Where(x => x.ProductId == id).ToList();
 
-            if (storage != null)
-            {
-                Storage = storage;
-                _context.RemoveRange(relativeStatistics);
-                _context.Storages.Remove(Storage);
-                await _context.SaveChangesAsync();
+                }
+
+
+                HttpResponseMessage responseInventoryTracker = await client.GetAsync($"api/InventoryTrackers");
+                if (responseInventoryTracker.IsSuccessStatusCode)
+                {
+                    string responseString = await responseInventoryTracker.Content.ReadAsStringAsync();
+                    Trackers = JsonSerializer.Deserialize<List<InventoryTracker>>(responseString).Where(x => x.StorageId == storage.Id).ToList();
+                    // InventoryTrackers = inventoryTrackers.Where(x => x.ProductId == id).ToList();
+
+                }
+
+
+
+
+                var sum = Trackers.Sum(x => x.Quantity);
+                if (sum > 0)
+                {
+                    StatusMessage = "Går ej att ta bort. Flytta produkterna innann du tar bort lagret!";
+
+                    return RedirectToPage("./Delete", new { id = storage.Id });
+                }
+
+
+                if (storage != null)
+                {
+                    var response = await client.DeleteAsync($"api/Storages/{id}");
+
+                    //_context.Storages.Remove(Storage);
+                    //await _context.SaveChangesAsync();
+                }
             }
 
             return RedirectToPage("./Index");
+            }
         }
     }
-}

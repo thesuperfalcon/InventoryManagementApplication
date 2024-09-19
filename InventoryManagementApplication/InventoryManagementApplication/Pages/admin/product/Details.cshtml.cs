@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using InventoryManagementApplication.Data;
 using InventoryManagementApplication.Models;
+using System.Text.Json;
 
 namespace InventoryManagementApplication.Pages.admin.product
 {
@@ -18,26 +19,38 @@ namespace InventoryManagementApplication.Pages.admin.product
         {
             _context = context;
         }
-
-        public Product Product { get; set; } = default!;
+		private static Uri BaseAddress = new Uri("https://localhost:44353/");
+		public Product Product { get; set; } = default!;
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
-            if (id == null)
+			var  products = new List<Product>();
+            using (var client = new HttpClient())
             {
-                return NotFound();
-            }
+				client.BaseAddress = BaseAddress;
+				if (id == null)
+				{
+					return NotFound();
+				}
+				HttpResponseMessage response = await client.GetAsync($"api/Products/");
+				if(response.IsSuccessStatusCode)
+				{
+					string responseString = await response.Content.ReadAsStringAsync();
+					products = JsonSerializer.Deserialize<List<Models.Product>>(responseString);
+				}
 
-            var product = await _context.Products.FirstOrDefaultAsync(m => m.Id == id);
-            if (product == null)
-            {
-                return NotFound();
-            }
-            else
-            {
-                Product = product;
-            }
-            return Page();
+				if (products == null)
+				{
+					return NotFound();
+				}
+				else
+				{
+					Product = products.Where(x => x.Id == id).SingleOrDefault();
+				}
+
+				return Page();
+			}
+            
         }
     }
 }
