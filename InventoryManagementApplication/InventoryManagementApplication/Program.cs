@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Localization;
 using InventoryManagementApplication.Helpers;
 
 using System.Text.Json.Serialization;
+using InventoryManagementApplication.DAL;
 namespace InventoryManagementApplication
 {
     public class Program
@@ -19,7 +20,6 @@ namespace InventoryManagementApplication
 
             builder.Services.AddDbContext<InventoryManagementApplicationContext>(options => options.UseSqlServer(connectionString));
             builder.Services.AddTransient<Models.Product>();
-<<<<<<< Updated upstream
            
             //builder.Services.AddControllers()
             //.AddJsonOptions(options =>
@@ -30,10 +30,6 @@ namespace InventoryManagementApplication
             //var supportedCultures = new[] { new CultureInfo("en-US") };
 
             var supportedCultures = new[] { new CultureInfo("sv-SE"), new CultureInfo("en-US") };
-=======
-
-            var supportedCultures = new[] { new CultureInfo("en-US") };
->>>>>>> Stashed changes
             builder.Services.Configure<RequestLocalizationOptions>(options =>
             {
                 options.DefaultRequestCulture = new RequestCulture("sv-SE");
@@ -60,6 +56,7 @@ namespace InventoryManagementApplication
             builder.Services.AddRazorPages();
 
             builder.Services.AddScoped<SelectListHelpers>();
+            builder.Services.AddScoped<ProductManager>();
 
             builder.Services.AddControllersWithViews()
             .AddJsonOptions(options =>
