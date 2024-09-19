@@ -57,6 +57,8 @@ namespace InventoryManagementApplication
 
             builder.Services.AddScoped<SelectListHelpers>();
             builder.Services.AddScoped<ProductManager>();
+            builder.Services.AddScoped<StorageManager>();
+            builder.Services.AddScoped<TrackerManager>();
 
             builder.Services.AddControllersWithViews()
             .AddJsonOptions(options =>
