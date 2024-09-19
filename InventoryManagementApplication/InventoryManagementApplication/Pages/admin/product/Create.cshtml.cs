@@ -7,6 +7,10 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using InventoryManagementApplication.Data;
 using InventoryManagementApplication.Models;
+<<<<<<< Updated upstream
+=======
+using Microsoft.CodeAnalysis.Elfie.Diagnostics;
+>>>>>>> Stashed changes
 using System.Text.Json;
 
 namespace InventoryManagementApplication.Pages.admin.product
@@ -25,6 +29,7 @@ namespace InventoryManagementApplication.Pages.admin.product
 			return Page();
 		}
 
+<<<<<<< Updated upstream
 		private static Uri BaseAddress = new Uri("https://localhost:44353/");
 
 		[BindProperty]
@@ -50,4 +55,31 @@ namespace InventoryManagementApplication.Pages.admin.product
 			return RedirectToPage("./Index");
 		}
 	}
+=======
+        private static Uri BaseAddress = new Uri("https://localhost:44353/");
+
+        [BindProperty]
+        public Product Product { get; set; } = default!;
+
+        // For more information, see https://aka.ms/RazorPagesCRUD.
+        public async Task<IActionResult> OnPostAsync()
+        {
+            if (!ModelState.IsValid)
+            {
+                return Page();
+            }
+            Product.CurrentStock = Product.TotalStock;
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = BaseAddress;
+                var json = JsonSerializer.Serialize(Product);
+
+                //Gör det möjligt att skicka innehåll till API
+                StringContent httpContent = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
+                HttpResponseMessage response = await client.PostAsync("api/Products/", httpContent);
+            }
+            return RedirectToPage("./Index");
+        }
+    }
+>>>>>>> Stashed changes
 }

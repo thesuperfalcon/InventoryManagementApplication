@@ -19,6 +19,7 @@ namespace InventoryManagementApplication
 
             builder.Services.AddDbContext<InventoryManagementApplicationContext>(options => options.UseSqlServer(connectionString));
             builder.Services.AddTransient<Models.Product>();
+<<<<<<< Updated upstream
            
             //builder.Services.AddControllers()
             //.AddJsonOptions(options =>
@@ -29,6 +30,10 @@ namespace InventoryManagementApplication
             //var supportedCultures = new[] { new CultureInfo("en-US") };
 
             var supportedCultures = new[] { new CultureInfo("sv-SE"), new CultureInfo("en-US") };
+=======
+
+            var supportedCultures = new[] { new CultureInfo("en-US") };
+>>>>>>> Stashed changes
             builder.Services.Configure<RequestLocalizationOptions>(options =>
             {
                 options.DefaultRequestCulture = new RequestCulture("sv-SE");
