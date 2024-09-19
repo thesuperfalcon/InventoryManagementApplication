@@ -31,49 +31,40 @@
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-page="/Index">Home</a>
                             </li>
+
+
+                            @* Om användaren är Admin *@
+                            @if (User.IsInRole("Admin"))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" id="register" asp-area="Identity" asp-page="/Account/Register">Registrera användare</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-page="/UsersRoles">Användare och roller</a>
+                                </li>
+                            }
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-page="/Privacy">Privacy</a>
+                                <a class="nav-link text-dark" asp-area="" asp-page="/admin/product/index">Produktkatalog</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-page="/admin/storage/index">Lagerplatser</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-page="/admin/tracker/index">Flytta produkt</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-page="/reportPage">Lagersaldo</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-page="/statisticPage">Statistik</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-page="/Logg">Loggning</a>
                             </li>
 
-    @* Om användaren är Admin *@
-    @if (User.IsInRole("Admin"))
-    {
-        <li class="nav-item">
-            <a class="nav-link text-dark" id="register" asp-area="Identity" asp-page="/Account/Register">Registrera användare</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link text-dark" asp-area="" asp-page="/UsersRoles">Användare och roller</a>
-        </li>
-    }
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-page="/Logg">Logg</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-page="/Rapport">Rapport</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-page="/Lagerstatus">Lagerstatus</a>
-                            </li>
+
 
                         }
-
-
-                    @*       else
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" id="register" asp-area="Identity" asp-page="/Account/Register">Registrera användare</a>
-                            </li>
-                                           <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-page="/UsersRoles">Användare</a>
-                            </li>
-                        }
-                        @if (User.Identity.IsAuthenticated)
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" id="register" asp-area="Identity" asp-page="/Account/Register">Registrera användare</a>
-                            </li>
-                        } *@
-
 
                     </ul>
                     <partial name="_LoginPartial" />
