@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json;
 
 namespace InventoryManagementApplication.Pages.admin.tracker
 {
@@ -16,6 +17,7 @@ namespace InventoryManagementApplication.Pages.admin.tracker
         private readonly UserManager<InventoryManagementUser> _userManager;
         private readonly SelectListHelpers _selectListHelpers;
 
+        private static Uri BaseAddress = new Uri("https://localhost:44353/");
         public moveProductModel(InventoryManagementApplicationContext context, UserManager<InventoryManagementUser> userManager, SelectListHelpers selectListHelpers)
         {
             _context = context;
@@ -119,6 +121,15 @@ namespace InventoryManagementApplication.Pages.admin.tracker
             currentTracker.Modified = DateTime.Now;
             destinationTracker.Modified = DateTime.Now;
 
+
+
+
+
+
+
+
+
+
             var statistic = new Statistic
             {
                 UserId = MyUser?.Id,
@@ -129,11 +140,46 @@ namespace InventoryManagementApplication.Pages.admin.tracker
                 OrderTime = DateTime.Now,
                 Completed = false
             };
-            _context.Statistics.Add(statistic);
 
-            await _context.SaveChangesAsync();
+
+            await SaveStatisticsAsync(statistic);
 
             return RedirectToPage("./Index");
+        }
+
+        public static async Task SaveStatisticsAsync(Statistic statistic)
+        {
+
+            var statistics = (await StatisticPageModel.GetStatisticsAsync()).Where(c => c.Id == statistic.Id).SingleOrDefault();
+
+            if (statistics != null)
+            {
+                using (var client = new HttpClient())
+                {
+                    client.BaseAddress = BaseAddress;
+
+                    var json = JsonSerializer.Serialize(statistics);
+
+                    StringContent httpContent = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
+
+                    HttpResponseMessage responseMessage = await client.PutAsync("api/Statictics/" + statistic.Id, httpContent);
+
+                }
+            }
+            else
+            {
+                using (var client = new HttpClient())
+                {
+                    client.BaseAddress = BaseAddress;
+
+                    var json = JsonSerializer.Serialize(statistic);
+
+                    StringContent httpContent = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
+
+                    HttpResponseMessage responseMessage = await client.PostAsync("api/Statistics", httpContent);
+
+                }
+            }
         }
     }
 }
