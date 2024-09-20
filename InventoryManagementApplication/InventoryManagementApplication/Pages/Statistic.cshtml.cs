@@ -1,14 +1,11 @@
-using InventoryManagementApplication.Data;
 using InventoryManagementApplication.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.VisualBasic;
 using System.Text.Json;
 
 namespace InventoryManagementApplication.Pages
 {
-    public class StatisticPageModel : PageModel
+    public class StatisticModel : PageModel
     {
         //private readonly InventoryManagementApplicationContext _context;
 
@@ -58,8 +55,5 @@ namespace InventoryManagementApplication.Pages
             //statistic.User != null).ToList();
 
         }
-
-       
-
     }
 }
