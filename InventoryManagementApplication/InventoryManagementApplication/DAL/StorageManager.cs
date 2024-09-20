@@ -68,7 +68,7 @@ namespace InventoryManagementApplication.DAL
             }
         }
 
-        public async Task DeleteStorageAsync(int id)
+        public async Task DeleteStorageAsync(int? id)
         {
             using (var client = new HttpClient())
             {
@@ -78,14 +78,14 @@ namespace InventoryManagementApplication.DAL
             }
         }
 
-        public async Task EditStorageAsync(int id)
+        public async Task EditStorageAsync(Storage? storage)
         {
             using (var client = new HttpClient())
             {
                 client.BaseAddress = BaseAddress;
 
-                var content = new StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(Storage), Encoding.UTF8, "application/json");
-                HttpResponseMessage response = await client.PutAsync($"api/products/{id}", content);
+                var content = new StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(storage), Encoding.UTF8, "application/json");
+                HttpResponseMessage response = await client.PutAsync($"api/storages/{storage.Id}", content);
             }
         }
     }

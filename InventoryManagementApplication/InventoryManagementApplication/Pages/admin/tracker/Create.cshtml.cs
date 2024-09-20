@@ -1,23 +1,24 @@
-using Azure;
+using InventoryManagementApplication.DAL;
 using InventoryManagementApplication.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Identity.Client.Extensions.Msal;
-using System.Text;
-using System.Text.Json;
 
 namespace InventoryManagementApplication.Pages.admin.tracker
 {
 	public class CreateModel : PageModel
 	{
-		private readonly InventoryManagementApplication.Data.InventoryManagementApplicationContext _context;
+		private readonly TrackerManager _trackerManager;
+		private readonly ProductManager _productManager;
+		private readonly StorageManager _storageManager;
 
-		public CreateModel(InventoryManagementApplication.Data.InventoryManagementApplicationContext context)
+		public CreateModel(TrackerManager trackerManager, ProductManager productManager, StorageManager storageManager)
 		{
-			_context = context;
+			_trackerManager = trackerManager;
+			_productManager = productManager;
+			_storageManager = storageManager;
 		}
-		private static Uri BaseAddress = new Uri("https://localhost:44353/");
 		[TempData]
 		public string StatusMessage { get; set; }
 		public SelectList StorageSelectList { get; set; }
@@ -31,229 +32,140 @@ namespace InventoryManagementApplication.Pages.admin.tracker
 
 		public async Task<IActionResult> OnGetAsync()
 		{
-			using (var client = new HttpClient())
+			var products = await _productManager.GetAllProductsAsync();
+			var storages = await _storageManager.GetAllStoragesAsync();
+
+			var productItems = products.Select(x => new
 			{
-				client.BaseAddress = BaseAddress;
-				var products = new List<Models.Product>();
-				var storages = new List<Models.Storage>();
+				Value = x.Id,
+				Text = $"{x.Name} (Antal utan lager: {x.CurrentStock})"
+			});
 
-				HttpResponseMessage responseProducts = await client.GetAsync($"api/Products/");
-				if (responseProducts.IsSuccessStatusCode)
-				{
+			var storageItems = storages.Select(x => new
+			{
+				Value = x.Id.ToString(),
+				Text = $"{x.Name} (Lediga platser: {x.MaxCapacity - x.CurrentStock})"
+			}).ToList();
 
-					string responseString = await responseProducts.Content.ReadAsStringAsync();
-					products = System.Text.Json.JsonSerializer.Deserialize<List<Models.Product>>(responseString);
-					Console.WriteLine(responseString);
-				}
+			StorageSelectList = new SelectList(storageItems, "Value", "Text");
+			ProductSelectList = new SelectList(productItems, "Value", "Text");
 
-				HttpResponseMessage responseStorage = await client.GetAsync($"api/Storages/");
-				if (responseStorage.IsSuccessStatusCode)
-				{
-					string responseString = await responseStorage.Content.ReadAsStringAsync();
-					storages = JsonSerializer.Deserialize<List<Models.Storage>>(responseString);
-					Console.WriteLine(responseStorage);
-				}
-				Console.WriteLine(products.Count); // Log the product count
-				Console.WriteLine(storages.Count); // Log the storage count
-
-				//return RedirectToPage("./Index");
-				//Allt returnerar null, får inte upp några alternativ på Create Tracker
-				//var storages = await _context.Storages.ToListAsync();
-				//var products = await _context.Products.ToListAsync();
-
-				var productItems = products.Select(x => new
-				{
-					Value = x.Id,
-					Text = $"{x.Name} (Antal utan lager: {x.CurrentStock})"
-				});
-
-				var storageItems = storages.Select(x => new
-				{
-					Value = x.Id.ToString(),
-					Text = $"{x.Name} (Lediga platser: {x.MaxCapacity - x.CurrentStock})"
-				}).ToList();
-
-				StorageSelectList = new SelectList(storageItems, "Value", "Text");
-				ProductSelectList = new SelectList(productItems, "Value", "Text");
-
-			}
 			return Page();
 		}
 
-
-		// To protect from overposting attacks, see https://aka.ms/RazorPagesCRUD
 		public async Task<IActionResult> OnPostAsync()
 		{
-
-			using (var client = new HttpClient())
+			if (!ModelState.IsValid)
 			{
-				client.BaseAddress = BaseAddress;
+				return Page();
+			}
 
-				if (!ModelState.IsValid)
-				{
-					return Page();
-				}
-				var existingTracker = new InventoryTracker();
-				var products = new List<Models.Product>();
+			int quantity = 0;
+			var existingTrackerSearcher = await _trackerManager.GetAllTrackersAsync();
 
-				int quantity = 0;
-				HttpResponseMessage responseTrackers = await client.GetAsync($"api/InventoryTrackers/");
-				if (responseTrackers.IsSuccessStatusCode)
-				{
-					string responseString = await responseTrackers.Content.ReadAsStringAsync();
-					existingTracker = JsonSerializer.Deserialize<List<Models.InventoryTracker>>(responseString).Where(x => x.ProductId == InventoryTracker.ProductId && x.StorageId ==
+			var existingTracker = existingTrackerSearcher.Where(x => x.Product.Id == InventoryTracker.ProductId && x.Storage.Id ==
 					InventoryTracker.StorageId).FirstOrDefault();
 
-				}
+			if (existingTracker == null)
+			{
+				var product = await _productManager.GetOneProductAsync(InventoryTracker.ProductId);
+				var storage = await _storageManager.GetOneStorageAsync(InventoryTracker.StorageId);
+				InventoryTracker.Storage = storage;
+				InventoryTracker.Product = product;
+				await _trackerManager.CreateTrackerAsync(InventoryTracker);
+				quantity = (int)InventoryTracker.Quantity;
+				
+			}
+			else
+			{
+				quantity = (int)InventoryTracker.Quantity;
+			}
 
-				//var existingTracker = await _context.InventoryTracker.Where(x => x.ProductId == InventoryTracker.ProductId && x.StorageId == InventoryTracker.StorageId).FirstOrDefaultAsync();
-				if (existingTracker == null)
+			var inventoryTrackers1 = await _productManager.GetAllProductsAsync();
+			Product = inventoryTrackers1
+				.Where(x => x.Id == InventoryTracker.ProductId)
+				.FirstOrDefault();
+
+			var inventoryTrackers2 = await _storageManager.GetAllStoragesAsync();
+			Storage = inventoryTrackers2
+				.Where(x => x.Id == InventoryTracker.StorageId)
+				.FirstOrDefault();
+
+			if (Storage != null)
+			{
+				CurrentSpace = Storage.MaxCapacity - Storage.CurrentStock;
+
+				if (CurrentSpace < quantity)
 				{
-					var json = JsonSerializer.Serialize(InventoryTracker);
 
-					//Gör det möjligt att skicka innehåll till API
-					StringContent httpContent = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
-					HttpResponseMessage response = await client.PostAsync("api/InventoryTrackers/", httpContent);				
-					quantity = (int)InventoryTracker.Quantity;
-                    //await _context.SaveChangesAsync();
-                    //_context.InventoryTracker.Add(InventoryTracker);
-                }
-                else
-				{
-					quantity = (int)InventoryTracker.Quantity;
-				}
-
-				HttpResponseMessage responseProducts = await client.GetAsync($"api/InventoryTrackers/");
-                string responseBody = await responseProducts.Content.ReadAsStringAsync();
-                Console.WriteLine($"Status Code: {responseProducts.StatusCode}");
-                Console.WriteLine($"Response Body: {responseBody}");
-                if (responseProducts.IsSuccessStatusCode)
-				{
-					string responseString = await responseProducts.Content.ReadAsStringAsync();
-					Product = JsonSerializer.Deserialize<List<InventoryTracker>>(responseString).Select(x => x.Product)
-					.Where(x => x.Id == InventoryTracker.ProductId)
-					.FirstOrDefault();
-				}
-
-				HttpResponseMessage responseStorage = await client.GetAsync($"api/InventoryTrackers/");
-				if (responseStorage.IsSuccessStatusCode)
-				{
-					string responseString = await responseStorage.Content.ReadAsStringAsync();
-					Storage = JsonSerializer.Deserialize<List<InventoryTracker>>(responseString).Select(x => x.Storage)
-                    .Where(x => x.Id == InventoryTracker.StorageId)
-                    .FirstOrDefault();
-                }
-
-                //Storage = await _context.InventoryTracker
-                //   .Select(x => x.Storage)
-                //.Where(x => x.Id == InventoryTracker.StorageId)
-                //.FirstOrDefaultAsync();
-
-                //Product = await _context.InventoryTracker
-                //.Select(x => x.Product)
-                //.Where(x => x.Id == InventoryTracker.ProductId)
-                //.FirstOrDefaultAsync();
-
-                if (Storage != null)
-                {
-                    CurrentSpace = Storage.MaxCapacity - Storage.CurrentStock;
-
-                    if (CurrentSpace < quantity)
-                    {
-
-                        StatusMessage = $"Finns ej plats i {Storage.Name}. Välj annan lagerplats!";
-                        if (existingTracker == null)
-                        {
-                            var json = JsonSerializer.Serialize(InventoryTracker);
-
-                            //Gör det möjligt att skicka innehåll till API
-                            StringContent httpContent = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
-                            HttpResponseMessage response = await client.PostAsync("api/InventoryTrackers/", httpContent);
-                            //_context.Remove(InventoryTracker);
-                            //await _context.SaveChangesAsync();
-                        }
-                        return RedirectToPage("./Create");
-
-                    }
-                }
-                else
-                {
-                    StatusMessage = "Storage not found.";
-                    return RedirectToPage("./Create");
-                }
-
-                
-
-
-				if (quantity > Product.CurrentStock)
-				{
-					int id = InventoryTracker.Id;
-
-					StatusMessage = $"Antalet produkter du vill lägga till finns ej tillgänglig. Antal produkter utan lager: {Product.CurrentStock}";
-					if (InventoryTracker != null && InventoryTracker.Id != 0)
+					StatusMessage = $"Finns ej plats i {Storage.Name}. Välj annan lagerplats!";
+					if (existingTracker == null)
 					{
-						var json = JsonSerializer.Serialize(InventoryTracker);
-
-						//Gör det möjligt att skicka innehåll till API
-						StringContent httpContent = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
-						HttpResponseMessage response = await client.DeleteAsync($"api/InventoryTrackers/{id}");
-						//_context.InventoryTracker.Remove(InventoryTracker);
-						//await _context.SaveChangesAsync();
+						await _trackerManager.DeleteTrackerAsync(InventoryTracker.Id);						
 					}
 					return RedirectToPage("./Create");
+
 				}
-				//Ändrade Storage.CurrentStock till currentSpace
-				else if (CurrentSpace < quantity)
-				{
-					StatusMessage = $"Finns ej plats i {Storage.Name}. Välj annan lagerplats!";
-                    return RedirectToPage("./Create");
-                }
+			}
+			else
+			{
+				StatusMessage = "Storage not found.";
+				return RedirectToPage("./Create");
+			}
 
-				if (existingTracker != null)
-				{
-					existingTracker.Quantity += InventoryTracker.Quantity;
-				}
-                var updatedStorage = new
-                {
-                    Id = Storage.Id,
-					Name = Storage.Name,
-					Created = Storage.Created,
-                    CurrentStock = Storage.CurrentStock + quantity,
-					MaxCapacity = Storage.MaxCapacity,					
-                    Updated = DateTime.Now
-                };
+			if (quantity > Product.CurrentStock)
+			{
+				int id = InventoryTracker.Id;
 
-                var updatedProduct = new
-                {
-                    Id = Product.Id,
-					Name = Product.Name,
-					Description = Product.Description,
-					ArticleNumber = Product.ArticleNumber,
-					Price = Product.Price,
-					TotalStock = Product.TotalStock,
-					Created = Product.Created,
-                    CurrentStock = Product.CurrentStock - quantity,
-                    Updated = DateTime.Now
-                };
+				StatusMessage = $"Antalet produkter du vill lägga till finns ej tillgänglig. Antal produkter utan lager: {Product.CurrentStock}";
+				return RedirectToPage("./Create");
+			}
+			//Kolla om den här är felplacerad?
+			if (InventoryTracker != null && InventoryTracker.Id != 0)
+			{
+				await _trackerManager.DeleteTrackerAsync(InventoryTracker.Id);
+				return RedirectToPage("./Create");
 
-                var productJson = JsonSerializer.Serialize(updatedProduct);
-                var productContent = new StringContent(productJson, Encoding.UTF8, "application/json");
-                await client.PutAsync($"api/products/{updatedProduct.Id}", productContent);
+			}
+			else if (CurrentSpace < quantity)
+			{
+				StatusMessage = $"Finns ej plats i {Storage.Name}. Välj annan lagerplats!";
+				return RedirectToPage("./Create");
+			}
+			if (existingTracker != null)
+			{
+				existingTracker.Quantity += InventoryTracker.Quantity;
+			}
 
-                // Send the updated storage data to the API
-                var storageJson = JsonSerializer.Serialize(updatedStorage);
-                var storageContent = new StringContent(storageJson, Encoding.UTF8, "application/json");
-                await client.PutAsync($"api/storages/{updatedStorage.Id}", storageContent);
+			var updatedStorage = new Models.Storage
+			{
+				Id = Storage.Id,
+				Name = Storage.Name,
+				Created = Storage.Created,
+				CurrentStock = Storage.CurrentStock + quantity,
+				MaxCapacity = Storage.MaxCapacity,
+				Updated = DateTime.Now
+			};
 
-                // Send the updated product data to the API
-               
-                //Storage.CurrentStock += quantity;
-                //Product.CurrentStock -= quantity;
-                //Storage.Updated = DateTime.Now;
-                //await _context.SaveChangesAsync();
+			var updatedProduct = new Models.Product
+			{
+				Id = Product.Id,
+				Name = Product.Name,
+				Description = Product.Description,
+				ArticleNumber = Product.ArticleNumber,
+				Price = Product.Price,
+				TotalStock = Product.TotalStock,
+				Created = Product.Created,
+				CurrentStock = Product.CurrentStock - quantity,
+				Updated = DateTime.Now
+			};
 
-            }
+			await _productManager.EditProductAsync(updatedProduct);
+			await _storageManager.EditStorageAsync(updatedStorage);
+
 			return RedirectToPage("./Index");
 		}
 	}
 }
+
+

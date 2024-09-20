@@ -1,4 +1,5 @@
 using InventoryManagementApplication.Areas.Identity.Data;
+using InventoryManagementApplication.DAL;
 using InventoryManagementApplication.Data;
 using InventoryManagementApplication.Helpers;
 using InventoryManagementApplication.Models;
@@ -15,12 +16,19 @@ namespace InventoryManagementApplication.Pages.admin.tracker
         private readonly InventoryManagementApplicationContext _context;
         private readonly UserManager<InventoryManagementUser> _userManager;
         private readonly SelectListHelpers _selectListHelpers;
+        private readonly TrackerManager _trackerManager;
+        private readonly StorageManager _storageManager;
+        private readonly ProductManager _productManager;
 
-        public moveProductModel(InventoryManagementApplicationContext context, UserManager<InventoryManagementUser> userManager, SelectListHelpers selectListHelpers)
+        public moveProductModel(InventoryManagementApplicationContext context, UserManager<InventoryManagementUser> userManager, 
+            SelectListHelpers selectListHelpers, TrackerManager trackerManager, StorageManager storageManager, ProductManager productManager)
         {
             _context = context;
             _userManager = userManager;
             _selectListHelpers = selectListHelpers;
+            _trackerManager = trackerManager;
+            _storageManager = storageManager;
+            _productManager = productManager;
         }
 
         [TempData]
@@ -38,12 +46,16 @@ namespace InventoryManagementApplication.Pages.admin.tracker
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
-
+            //Ändra user?
             MyUser = await _userManager.GetUserAsync(User);
-            SelectedInventoryTracker = await _context.InventoryTracker.Include(x => x.Product).Include(z => z.Storage).Where(g => g.Id == id).FirstOrDefaultAsync();
+			var trackerSelect = await _trackerManager.GetAllTrackersAsync();
+
+            SelectedInventoryTracker = trackerSelect.Where(tr => tr.Id == id).FirstOrDefault();
+
+			//SelectedInventoryTracker = await _context.InventoryTracker.Include(x => x.Product).Include(z => z.Storage).Where(g => g.Id == id).FirstOrDefaultAsync();
 
 
-            if (SelectedInventoryTracker == null)
+			if (SelectedInventoryTracker == null)
             {
                 return RedirectToPage("./Index");
             }
@@ -63,10 +75,15 @@ namespace InventoryManagementApplication.Pages.admin.tracker
             }
 
             MyUser = await _userManager.GetUserAsync(User);
+            var storageList = await _storageManager.GetAllStoragesAsync();
+            var trackerList = await _trackerManager.GetAllTrackersAsync();
+            var productList = await _productManager.GetAllProductsAsync();
 
-            var currentTracker = await _context.InventoryTracker
-                .Where(x => x.ProductId == SelectedInventoryTracker.ProductId && x.StorageId == SelectedInventoryTracker.StorageId)
-                .FirstOrDefaultAsync();
+            var currentTracker = trackerList.Where(x => x.ProductId == SelectedInventoryTracker.ProductId && x.StorageId == SelectedInventoryTracker.StorageId)
+				.FirstOrDefault();
+			//var currentTracker = await _context.InventoryTracker
+                //.Where(x => x.ProductId == SelectedInventoryTracker.ProductId && x.StorageId == SelectedInventoryTracker.StorageId)
+               // .FirstOrDefaultAsync();
 
             if (currentTracker == null)
             {
@@ -80,11 +97,13 @@ namespace InventoryManagementApplication.Pages.admin.tracker
 
             currentTracker.Quantity -= (int)InventoryTracker.Quantity;
 
-            var destinationTracker = await _context.InventoryTracker
-                .Where(x => x.ProductId == SelectedInventoryTracker.ProductId && x.StorageId == InventoryTracker.StorageId)
-                .FirstOrDefaultAsync();
+            var destinationTracker = trackerList.Where(x => x.Product.Id == SelectedInventoryTracker.ProductId && x.Storage.Id == InventoryTracker.StorageId)
+                .FirstOrDefault();
+			//var destinationTracker = await _context.InventoryTracker
+			//    .Where(x => x.ProductId == SelectedInventoryTracker.ProductId && x.StorageId == InventoryTracker.StorageId)
+			//    .FirstOrDefaultAsync();
 
-            if (destinationTracker == null)
+			if (destinationTracker == null)
             {
                 destinationTracker = new InventoryTracker
                 {
@@ -92,16 +111,24 @@ namespace InventoryManagementApplication.Pages.admin.tracker
                     StorageId = InventoryTracker.StorageId,
                     Quantity = (int)InventoryTracker.Quantity
                 };
-                _context.InventoryTracker.Add(destinationTracker);
+                await _trackerManager.CreateTrackerAsync(destinationTracker);
+               // _context.InventoryTracker.Add(destinationTracker);
             }
             else
             {
                 destinationTracker.Quantity += (int)InventoryTracker.Quantity;
             }
+            var sourceStorage = storageList.Find(s => s.Id == SelectedInventoryTracker.StorageId);
+            //var sourceStorage = await _context.Storages.FindAsync(SelectedInventoryTracker.StorageId);
+           
+            var destinationStorage = storageList.Find(s => s.Id == InventoryTracker.StorageId);
 
-            var sourceStorage = await _context.Storages.FindAsync(SelectedInventoryTracker.StorageId);
-            var destinationStorage = await _context.Storages.FindAsync(InventoryTracker.StorageId);
-            var product = await _context.Products.FindAsync(SelectedInventoryTracker.ProductId);
+            var destinationStorageTest = await _storageManager.GetOneStorageAsync(InventoryTracker.StorageId);
+            //var destinationStorage = await _context.Storages.FindAsync(InventoryTracker.StorageId);
+            
+            
+            var product = await _productManager.GetOneProductAsync(SelectedInventoryTracker.ProductId); 
+            //var product = await _context.Products.FindAsync(SelectedInventoryTracker.ProductId);
 
             if (sourceStorage == null || destinationStorage == null)
             {
@@ -113,11 +140,18 @@ namespace InventoryManagementApplication.Pages.admin.tracker
 
             sourceStorage.Updated = DateTime.Now;
             destinationStorage.Updated = DateTime.Now;
+            await _storageManager.EditStorageAsync(sourceStorage);
+            await _storageManager.EditStorageAsync(destinationStorage);
 
             product.Updated = DateTime.Now;
 
+            await _productManager.EditProductAsync(product);
+
             currentTracker.Modified = DateTime.Now;
             destinationTracker.Modified = DateTime.Now;
+
+            await _trackerManager.EditTrackerAsync(currentTracker);
+            await _trackerManager.EditTrackerAsync(destinationTracker);
 
             var statistic = new Statistic
             {
@@ -131,7 +165,7 @@ namespace InventoryManagementApplication.Pages.admin.tracker
             };
             _context.Statistics.Add(statistic);
 
-            await _context.SaveChangesAsync();
+            //await _context.SaveChangesAsync();
 
             return RedirectToPage("./Index");
         }

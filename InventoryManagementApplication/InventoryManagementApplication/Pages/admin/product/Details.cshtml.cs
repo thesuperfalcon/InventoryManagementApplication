@@ -14,35 +14,17 @@ namespace InventoryManagementApplication.Pages.admin.product
 {
     public class DetailsModel : PageModel
     {
-        private readonly InventoryManagementApplication.Data.InventoryManagementApplicationContext _context;
 		private readonly ProductManager _manager;
 
-        public DetailsModel(InventoryManagementApplication.Data.InventoryManagementApplicationContext context, ProductManager manager)
+        public DetailsModel(ProductManager manager)
         {
-            _context = context;
 			_manager = manager;
-
         }
 		public Product Product { get; set; } = default!;
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
 			Product = await _manager.GetOneProductAsync(id);
-
-
-			//         using (var client = new HttpClient())
-			//         {
-			//	client.BaseAddress = BaseAddress;
-			//	if (id == null)
-			//	{
-			//		return NotFound();
-			//	}
-			//	HttpResponseMessage response = await client.GetAsync($"api/Products/");
-			//	if(response.IsSuccessStatusCode)
-			//	{
-			//		string responseString = await response.Content.ReadAsStringAsync();
-			//		products = JsonSerializer.Deserialize<List<Models.Product>>(responseString);
-			//	}
 
 			if (Product == null)
 			{
@@ -51,12 +33,7 @@ namespace InventoryManagementApplication.Pages.admin.product
 			else
 			{
 				return Page();
-				//Product = products.Where(x => x.Id == id).SingleOrDefault();
-			}
-
-			
+			}		
 		}
-
-	}
-    
+	}  
 }

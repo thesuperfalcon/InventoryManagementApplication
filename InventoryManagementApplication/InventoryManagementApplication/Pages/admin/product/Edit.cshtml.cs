@@ -1,8 +1,10 @@
-﻿using InventoryManagementApplication.Models;
+﻿using InventoryManagementApplication.DAL;
+using InventoryManagementApplication.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
+using System.Collections.Generic;
 using System.Text;
 using System.Text.Json;
 
@@ -10,11 +12,12 @@ namespace InventoryManagementApplication.Pages.admin.product
 {
 	public class EditModel : PageModel
 	{
-		private readonly InventoryManagementApplication.Data.InventoryManagementApplicationContext _context;
-		private static Uri BaseAddress = new Uri("https://localhost:44353/");
-		public EditModel(InventoryManagementApplication.Data.InventoryManagementApplicationContext context)
+		private readonly ProductManager _productManager;
+		private readonly TrackerManager _trackerManager;
+		public EditModel(ProductManager productManager, TrackerManager trackerManager)
 		{
-			_context = context;
+			_productManager = productManager;
+			_trackerManager = trackerManager;
 		}
 
 		[TempData]
@@ -24,118 +27,80 @@ namespace InventoryManagementApplication.Pages.admin.product
 
 		public async Task<IActionResult> OnGetAsync(int? id)
 		{
-			var products = new List<Product>();
-			var product = new Product();
-
-			using (var client = new HttpClient())
+			if (id == null)
 			{
-				client.BaseAddress = BaseAddress;
+				return NotFound();
+			}
 
-				if (id == null)
-				{
-					return NotFound();
-				}
-				HttpResponseMessage responseProducts = await client.GetAsync("api/Products");
-				if (responseProducts.IsSuccessStatusCode)
-				{
-					string responseString = await responseProducts.Content.ReadAsStringAsync();
-					products = System.Text.Json.JsonSerializer.Deserialize<List<Models.Product>>(responseString);
+			var product = await _productManager.GetOneProductAsync(id);
 
-				}
-				product = products.Where(p => p.Id == id).FirstOrDefault();
-				//var product = await _context.Products.FirstOrDefaultAsync(m => m.Id == id);
-				if (product == null)
-				{
-					return NotFound();
-				}
+			if (product == null)
+			{
+				return NotFound();
 			}
 
 			Product = product;
 			return Page();
+
 		}
 
-		// To protect from overposting attacks, enable the specific properties you want to bind to.
-		// For more information, see https://aka.ms/RazorPagesCRUD.
 		public async Task<IActionResult> OnPostAsync()
-		{
-			var inventoryTrackers = new List<InventoryTracker>();
+		{;
 			if (!ModelState.IsValid)
 			{
 				return Page();
 			}
-			using (var client = new HttpClient())
+			List<InventoryTracker> inventoryTrackers = await _trackerManager.GetAllTrackersAsync();
+			inventoryTrackers = inventoryTrackers.Where(p => p.Id == Product.Id).ToList();
+
+			var productQuantity = inventoryTrackers.Sum(x => x.Quantity);
+
+			if (inventoryTrackers != null && inventoryTrackers.Count > 0)
 			{
-				client.BaseAddress = BaseAddress;
 
-				HttpResponseMessage responseInventoryTracker = await client.GetAsync("api/InventoryTrackers");
+				if (Product.TotalStock < productQuantity)
 				{
-					if (responseInventoryTracker.IsSuccessStatusCode)
-					{
-						string responseString = await responseInventoryTracker.Content.ReadAsStringAsync();
-						inventoryTrackers = System.Text.Json.JsonSerializer.Deserialize<List<Models.InventoryTracker>>(responseString).Where(p => p.Id == Product.Id).ToList();
-					}
-
-				}
-
-				//inventoryTrackers = inventoryTrackers.Where(x => x.Id == Product.Id).ToList();
-			    //inventoryTrackers = await _context.InventoryTracker.Where(x => x.ProductId == Product.Id).ToListAsync();
-
-				var productQuantity = inventoryTrackers.Sum(x => x.Quantity);
-
-				if (inventoryTrackers != null && inventoryTrackers.Count > 0)
-				{
-
-					if (Product.TotalStock < productQuantity)
-					{
-						StatusMessage = $"Går ej att ändra. Currentstock: {Product.CurrentStock} Total: {Product.TotalStock}";
-						return RedirectToPage("./Edit", new { id = Product.Id });
-					}
-					else
-					{
-						var input = Product.TotalStock - productQuantity;
-						Product.CurrentStock = input;
-					}
+					StatusMessage = $"Går ej att ändra. Currentstock: {Product.CurrentStock} Total: {Product.TotalStock}";
+					return RedirectToPage("./Edit", new { id = Product.Id });
 				}
 				else
 				{
-					Product.CurrentStock = Product.TotalStock;
+					var input = Product.TotalStock - productQuantity;
+					Product.CurrentStock = input;
 				}
-				//Konvertera till API????
-				_context.Attach(Product).State = EntityState.Modified;
-
-				try
-				{
-					var content = new StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(Product),Encoding.UTF8,"application/json");
-					HttpResponseMessage response = await client.PutAsync($"api/products/{Product.Id}", content);
-
-					if (!response.IsSuccessStatusCode)
-					{
-						string responseContent = await response.Content.ReadAsStringAsync();
-						StatusMessage = $"Failed to update product. Status: {response.StatusCode}, Reason: {response.ReasonPhrase}, Details: {responseContent}";
-						return RedirectToPage("./Edit", new { id = Product.Id });
-					}
-					//await _context.SaveChangesAsync();
-				}
-				catch (DbUpdateConcurrencyException)
-				{
-					if (!ProductExists(Product.Id))
-					{
-						return NotFound();
-					}
-					else
-					{
-						throw;
-					}
-				}
-
-				return RedirectToPage("./Index");
+			}
+			else
+			{
+				Product.CurrentStock = Product.TotalStock;
 			}
 
-			
+			// Enligt AI så byter man ut den här mot PutAsync när det gäller API?
+			//_context.Attach(Product).State = EntityState.Modified;
+
+			try
+			{
+				await _productManager.EditProductAsync(Product);
+				return RedirectToPage("./Edit", new { id = Product.Id });
+
+			}
+			catch (DbUpdateConcurrencyException)
+			{
+				if (!await ProductExists(Product.Id))
+				{
+					return NotFound();
+				}
+				else
+				{
+					throw;
+				}
+			}
 		}
-		private bool ProductExists(int id)
+	
+		private async Task<bool> ProductExists(int id)
 		{
-			return _context.Products.Any(e => e.Id == id);
+			var products = await _productManager.GetAllProductsAsync();
+			
+			return products.Any(e => e.Id == id);
 		}
 	}
 	}

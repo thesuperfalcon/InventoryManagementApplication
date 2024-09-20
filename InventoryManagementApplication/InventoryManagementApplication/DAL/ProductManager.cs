@@ -66,7 +66,7 @@ namespace InventoryManagementApplication.DAL
 			}
 		}
 
-		public async Task DeleteProductAsync(int id)
+		public async Task DeleteProductAsync(int? id)
 		{
 			using (var client = new HttpClient())
 			{
@@ -76,14 +76,20 @@ namespace InventoryManagementApplication.DAL
 			}
 		}
 
-		public async Task EditProductAsync(int id)
+		public async Task EditProductAsync(Product? product)
 		{
 			using (var client = new HttpClient())
 			{
 				client.BaseAddress = BaseAddress;
+				if (product != null)
+				{
+					Product = product;
+					var content = new StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(Product), Encoding.UTF8, "application/json");
+					HttpResponseMessage response = await client.PutAsync($"api/products/{Product.Id}", content);
+				}
+			
 
-				var content = new StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(Product), Encoding.UTF8, "application/json");
-				HttpResponseMessage response = await client.PutAsync($"api/products/{Product.Id}", content);
+				
 			}
 		}
 
