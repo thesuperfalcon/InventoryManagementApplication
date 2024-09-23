@@ -22,10 +22,10 @@ namespace InventoryManagementApplication.Models
         [JsonPropertyName("currentStock")]
         public int? CurrentStock { get; set; }
         [JsonPropertyName("created")]
-        [JsonIgnore]
+        //[JsonIgnore]
         public DateTime? Created { get; set; }
         [JsonPropertyName("updated")]
-        [JsonIgnore]
+        //[JsonIgnore]
         public DateTime? Updated { get; set; }
 
 

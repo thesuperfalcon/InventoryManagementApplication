@@ -58,7 +58,14 @@
                                             <td>@product.Product.Name</td>
                                             <td>@product.Product.ArticleNumber</td>
                                             <td>@product.Quantity</td>
-                                            <td>@product.Modified</td>
+                                            @if (product.Modified.HasValue)
+                                            {
+                                                <td>@product.Modified</td>
+                                            }
+                                            else
+                                            {
+                                                <td>@product.Product.Updated</td>
+                                            }
                                         </tr>
                                     }
                                     else

@@ -45,7 +45,7 @@ namespace InventoryManagementApplication.Pages.admin.product
 		}
 
 		public async Task<IActionResult> OnPostAsync()
-		{;
+		{
 			if (!ModelState.IsValid)
 			{
 				return Page();

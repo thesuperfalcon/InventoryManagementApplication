@@ -14,6 +14,8 @@ namespace InventoryManagementApplication.Pages.admin.tracker
 {
     public class moveProductModel : PageModel
     {
+
+        private static Uri BaseAddress = new Uri("https://localhost:44353/");
         private readonly InventoryManagementApplicationContext _context;
         private readonly UserManager<InventoryManagementUser> _userManager;
         private readonly SelectListHelpers _selectListHelpers;
