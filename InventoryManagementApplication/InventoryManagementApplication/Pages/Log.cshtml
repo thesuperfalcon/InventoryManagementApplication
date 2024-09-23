@@ -7,71 +7,182 @@
 <h1>Loggning</h1>
 
 <div class="mb-3 mt-3">
-    <input id="searchInput" type="text" class="form-control" placeholder="Sök...Namn eller " />
+    <input id="searchInput" type="text" class="form-control" placeholder="Sök..." />
 </div>
 
-<div class="card">
-<table class="table">
-    <thead>
-        <tr>
-            <th scope="col">Test</th> 
-            <th scope="col">Test</th>           
-            <th scope="col">Test</th>
-            <th scope="col">Test</th>           
-            <th scope="col">Test</th>
-            <th scope="col">Test</th> 
-            <th scope="col">Test</th>           
-            <th scope="col">Test</th>
-            <th scope="col">Test</th>           
-            <th scope="col">Test</th>
-            <th scope="col">Test</th>
-        </tr>
-    </thead>
-    <tbody id="myTable">
-        @if(Model.Statistics.Any())
-        {
-            @foreach (var statistic in Model.Statistics)
+<div>
+    <table id="statisticsTable" class="table" data-sort-direction="asc">
+        <thead>
+            <tr>
+                <th scope="col"><a href="javascript:void(0);" onclick="sortTable(0)">Namn</a></th>
+                <th scope="col"><a href="javascript:void(0);" onclick="sortTable(1)">Anställningsnummer</a></th>
+                <th scope="col">Vad har gjorts</th>
+                <th scope="col"><a href="javascript:void(0);" onclick="sortTable(3)">Produkt</a></th>
+                <th scope="col"><a href="javascript:void(0);" onclick="sortTable(4)">Produkter flyttade</a></th>
+                <th scope="col"><a href="javascript:void(0);" onclick="sortTable(5)">Flyttad från</a></th>
+                <th scope="col"><a href="javascript:void(0);" onclick="sortTable(6)">Flyttad till</a></th>
+                <th scope="col"><a href="javascript:void(0);" onclick="sortTable(7)">När</a></th>
+            </tr>
+        </thead>
+        <tbody id="myTable">
+            @if (Model.Statistics.Any())
+            {
+                @foreach (var statistic in Model.Statistics)
+                {
+                    <tr>
+                        <td>@statistic.ReporterName</td>
+                        <td>@statistic.ReporterEmployeeNumber</td>
+                        <td>Note?</td>                                             
+                        <td>@statistic.ProductName</td>
+                        <td>@statistic.ProductQuantity</td>
+                        <td>@statistic.InitialStorageName</td>
+                        <td>@statistic.DestinationStorageName</td>
+                        <td>@statistic.OrderTime</td>
+                    </tr>
+                }
+            }
+            else
             {
                 <tr>
-                    <td>@statistic.OrderTime</td>
-                    <td>@statistic.ProductQuantity</td>
-                    <td>@statistic.ProductName</td>
-                    <td>@statistic.Price</td>                    
-                    <td>@statistic.CurrentStock</td>
-                    <td>@statistic.InitialStorageName</td>
-                    <td>@statistic.InitialMaxCapacity</td>
-                    <td>@statistic.DestinationStorageName</td>
-                    <td>@statistic.DestinationMaxCapacity</td>
-                    <td>@statistic.ReporterName</td>
-                    <td>@statistic.ReporterEmployeeNumber</td>
+                    <td colspan="8" class="text-center">Ingen data..</td>
                 </tr>
             }
-        }
-        else
-        {
-            <tr>
-                <td colspan="8" class="text-center">Ingen data..</td>
-            </tr>
-        }
-    </tbody>
-</table>
+        </tbody>
+    </table>
     <div class="mb-3">
-        <button id="toggleAll" class="btn btn-primary">Bak</button>
-    </div>
-    <div class="mb-3">
-        <button id="toggleAll" class="btn btn-primary">Fram</button>
+        <button id="prevPage" class="btn btn-primary">Bak</button>
+        <span id="pageNumber" class="mx-3"></span>
+        <button id="nextPage" class="btn btn-primary">Fram</button>
     </div>
 </div>
 
-@section Scripts{
+@section Scripts {
+    <script src="~/js/logIndex.js"></script>
+}
+
+@* @section Scripts {
     <script>
+        // Initial Setup
+        const rowsPerPage = 10; // Rows to display per page
+        let currentPage = 1;
+        let originalRows = []; // Store the original rows
+        let filteredRows = []; // Store the filtered rows for search
+        let visibleRows = [];  // Store the currently visible rows
+
         $(document).ready(function () {
+            // Store all rows in the originalRows array, excluding the header row
+            originalRows = Array.from(document.querySelectorAll("#myTable tr:not(:first-child)"));
+            filteredRows = [...originalRows]; // Initially, filteredRows is the same as originalRows
+
+            updateVisibleRows(filteredRows); // Initialize visible rows on page load
+            paginateTable(); // Paginate the visible rows
+
+            // Search functionality
             $("#searchInput").on("keyup", function () {
                 var value = $(this).val().toLowerCase();
-                $("#myTable tr").filter(function () {
-                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+
+                // Filter originalRows based on the search input
+                filteredRows = originalRows.filter(row => {
+                    return row.innerText.toLowerCase().includes(value);
                 });
+
+                // Update visible rows with the filtered results
+                updateVisibleRows(filteredRows);
+                currentPage = 1; // Reset to first page
+                paginateTable(); // Re-paginate after filtering
+            });
+
+            // Pagination buttons
+            $("#prevPage").on("click", function () {
+                if (currentPage > 1) {
+                    currentPage--;
+                    paginateTable();
+                }
+            });
+
+            $("#nextPage").on("click", function () {
+                if (currentPage < Math.ceil(filteredRows.length / rowsPerPage)) {
+                    currentPage++;
+                    paginateTable();
+                }
             });
         });
-    </script>
+
+        // Update the visibleRows array based on the provided rows
+        function updateVisibleRows(rows) {
+            visibleRows = rows; // Update to hold the filtered rows
+            paginateTable(); // Re-paginate when updating visible rows
+        }
+
+        // Pagination Function
+        function paginateTable() {
+            const start = (currentPage - 1) * rowsPerPage;
+            const end = start + rowsPerPage;
+
+            // Hide all rows first
+            $("#myTable tr").hide(); // Hide all rows
+            // Show only the rows that fall within the current page
+            visibleRows.forEach((row, index) => {
+                if (index >= start && index < end) {
+                    $(row).show();
+                }
+            });
+
+            // Update the current page number display
+            const pageNumberElement = document.getElementById("pageNumber");
+            pageNumberElement.innerText = `Page ${currentPage} of ${Math.ceil(filteredRows.length / rowsPerPage)}`;
+        }
+
+        // Sort function for both alphabetical (A-Ö) and numerical (highest to lowest), case-insensitive
+        function sortTable(columnIndex) {
+        const table = document.getElementById("statisticsTable");
+        const isAscending = table.getAttribute("data-sort-direction") === "asc"; // Detect current sort direction
+
+    // Sort filtered rows based on the specified column
+    filteredRows.sort((a, b) => {
+        const cellA = a.cells[columnIndex].innerText.trim();
+        const cellB = b.cells[columnIndex].innerText.trim();
+
+        // Check if the column is a date (in the format dd/mm/yyyy hh:mm:ss)
+        const isDate = columnIndex === 7; // Assuming 'När' is the 8th column (index 7)
+
+        if (isDate) {
+            const [dateA, timeA] = cellA.split(' ');
+            const [dateB, timeB] = cellB.split(' ');
+
+            const [dayA, monthA, yearA] = dateA.split('/').map(Number);
+            const [dayB, monthB, yearB] = dateB.split('/').map(Number);
+
+            const dateObjA = new Date(yearA, monthA - 1, dayA, ...timeA.split(':').map(Number));
+            const dateObjB = new Date(yearB, monthB - 1, dayB, ...timeB.split(':').map(Number));
+
+            return isAscending ? dateObjA - dateObjB : dateObjB - dateObjA;
+        }
+
+        // Check if the column is numerical
+        const isNumber = !isNaN(parseFloat(cellA)) && !isNaN(parseFloat(cellB));
+
+        if (isNumber) {
+            return isAscending
+                ? parseFloat(cellA) - parseFloat(cellB)
+                : parseFloat(cellB) - parseFloat(cellA);
+        } else {
+            return isAscending
+                ? cellA.localeCompare(cellB, 'sv-SE', { sensitivity: 'base' })
+                : cellB.localeCompare(cellA, 'sv-SE', { sensitivity: 'base' });
+        }
+    });
+
+    // Toggle sorting direction for next click
+    table.setAttribute("data-sort-direction", isAscending ? "desc" : "asc");
+
+    // Re-append sorted rows to the table
+    const tbody = document.getElementById("myTable");
+    filteredRows.forEach(row => tbody.appendChild(row)); // Reorder based on sorting
+
+    // Reset to page 1 and update pagination
+    currentPage = 1;
+    paginateTable();
 }
+    </script>
+} *@

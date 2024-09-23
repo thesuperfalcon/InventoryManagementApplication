@@ -9,33 +9,17 @@
 
 <a asp-page="Create" class="btn btn-primary">Lägg till</a>
 
-<table class="table">
+<table id="productTable" class="table" data-sort-direction="asc">
     <thead>
         <tr>
-            <th>
-                <div>Namn</div>
-            </th>
-            <th>
-                <div>Artikelnummer</div>
-            </th>
-            <th>
-                <div>Beskrivning</div>
-            </th>
-            <th>
-                <div>Pris</div>
-            </th>
-            <th>
-                <div>Totalt</div>
-            </th>
-            <th>
-                <div>Antal utan lager</div>
-            </th>
-            <th>
-                <div>Skapad</div>
-            </th>
-            <th>
-                <div>Ändrad</div>
-            </th>
+            <th><a href="javascript:void(0);" onclick="sortTable(0)">Namn</a></th>
+            <th><a href="javascript:void(0);" onclick="sortTable(1)">Artikelnummer</a></th>
+            <th><a href="javascript:void(0);" onclick="sortTable(2)">Beskrivning</a></th>
+            <th><a href="javascript:void(0);" onclick="sortTable(3)">Pris</a></th>
+            <th><a href="javascript:void(0);" onclick="sortTable(4)">Totalt</a></th>
+            <th><a href="javascript:void(0);" onclick="sortTable(5)">Antal utan lager</a></th>
+            <th><a href="javascript:void(0);" onclick="sortTable(6)">Skapad</a></th>
+            <th><a href="javascript:void(0);" onclick="sortTable(7)">Ändrad</a></th>
             <th></th>
         </tr>
     </thead>
@@ -43,30 +27,14 @@
         @foreach (var item in Model.Products)
         {
             <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Name)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.ArticleNumber)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Description)
-                </td>
-                <td>
-                    @String.Format(new System.Globalization.CultureInfo("sv-SE"), "{0:C}", item.Price)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.TotalStock)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.CurrentStock)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Created)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Updated)
-                </td>
+                <td>@Html.DisplayFor(modelItem => item.Name)</td>
+                <td>@Html.DisplayFor(modelItem => item.ArticleNumber)</td>
+                <td>@Html.DisplayFor(modelItem => item.Description)</td>
+                <td>@String.Format(new System.Globalization.CultureInfo("sv-SE"), "{0:C}", item.Price)</td>
+                <td>@Html.DisplayFor(modelItem => item.TotalStock)</td>
+                <td>@Html.DisplayFor(modelItem => item.CurrentStock)</td>
+                <td>@Html.DisplayFor(modelItem => item.Created)</td>
+                <td>@Html.DisplayFor(modelItem => item.Updated)</td>
                 <td>
                     <a asp-page="./Edit" asp-route-id="@item.Id">Ändra</a> |
                     <a asp-page="./Details" asp-route-id="@item.Id">Info</a> |
@@ -76,3 +44,37 @@
         }
     </tbody>
 </table>
+
+
+<script>
+    function sortTable(columnIndex) {
+        const table = document.getElementById("productTable");
+        const rows = Array.from(table.rows).slice(1); // Get all rows except the header
+
+        const isAscending = table.getAttribute("data-sort-direction") === "asc";
+
+        rows.sort((a, b) => {
+            const cellA = a.cells[columnIndex].innerText.trim();
+            const cellB = b.cells[columnIndex].innerText.trim();
+
+            // Handle sorting for different data types
+            if (columnIndex === 3) { // Assuming "Pris" is at index 3
+                return isAscending
+                    ? parseFloat(cellA.replace(/[^0-9.-]+/g, "")) - parseFloat(cellB.replace(/[^0-9.-]+/g, ""))
+                    : parseFloat(cellB.replace(/[^0-9.-]+/g, "")) - parseFloat(cellA.replace(/[^0-9.-]+/g, ""));
+            } else {
+                return isAscending
+                    ? cellA.localeCompare(cellB, 'sv-SE') // For Swedish alphabetical order
+                    : cellB.localeCompare(cellA, 'sv-SE');
+            }
+        });
+
+        // Clear the table body and append sorted rows
+        const tbody = table.querySelector('tbody');
+        tbody.innerHTML = ""; // Clear existing rows
+        rows.forEach(row => tbody.appendChild(row)); // Append sorted rows
+
+        // Toggle sort direction
+        table.setAttribute("data-sort-direction", isAscending ? "desc" : "asc");
+    }
+</script>
