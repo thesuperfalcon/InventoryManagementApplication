@@ -68,10 +68,10 @@ namespace InventoryManagementApplication.Pages.admin.tracker
 
 			if (existingTracker == null)
 			{
-				//var product = await _productManager.GetOneProductAsync(InventoryTracker.ProductId);
-				//var storage = await _storageManager.GetOneStorageAsync(InventoryTracker.StorageId);
-				//InventoryTracker.Storage = storage;
-				//InventoryTracker.Product = product;
+				var product = await _productManager.GetOneProductAsync(InventoryTracker.ProductId);
+				var storage = await _storageManager.GetOneStorageAsync(InventoryTracker.StorageId);
+				InventoryTracker.Storage = storage;
+				InventoryTracker.Product = product;
 				await _trackerManager.CreateTrackerAsync(InventoryTracker);
 				quantity = (int)InventoryTracker.Quantity;
 				
@@ -135,7 +135,6 @@ namespace InventoryManagementApplication.Pages.admin.tracker
 			if (existingTracker != null)
 			{
 				existingTracker.Quantity += InventoryTracker.Quantity;
-				await _trackerManager.EditTrackerAsync(existingTracker);
 			}
 
 			var updatedStorage = new Models.Storage
@@ -163,7 +162,6 @@ namespace InventoryManagementApplication.Pages.admin.tracker
 
 			await _productManager.EditProductAsync(updatedProduct);
 			await _storageManager.EditStorageAsync(updatedStorage);
-			
 
 			return RedirectToPage("./Index");
 		}

@@ -51,12 +51,7 @@ namespace InventoryManagementApplication.Pages.admin.tracker
 			var trackerSelect = await _trackerManager.GetAllTrackersAsync();
 
             SelectedInventoryTracker = trackerSelect.Where(tr => tr.Id == id).FirstOrDefault();
-            if(SelectedInventoryTracker != null)
-            {
-                SelectedInventoryTracker.ProductId = SelectedInventoryTracker.Product.Id;
-                SelectedInventoryTracker.StorageId = SelectedInventoryTracker.Storage.Id;
 
-			}
 			//SelectedInventoryTracker = await _context.InventoryTracker.Include(x => x.Product).Include(z => z.Storage).Where(g => g.Id == id).FirstOrDefaultAsync();
 
 
@@ -84,7 +79,7 @@ namespace InventoryManagementApplication.Pages.admin.tracker
             var trackerList = await _trackerManager.GetAllTrackersAsync();
             var productList = await _productManager.GetAllProductsAsync();
 
-            var currentTracker = trackerList.Where(x => x.Product.Id == SelectedInventoryTracker.ProductId && x.Storage.Id == SelectedInventoryTracker.StorageId)
+            var currentTracker = trackerList.Where(x => x.ProductId == SelectedInventoryTracker.ProductId && x.StorageId == SelectedInventoryTracker.StorageId)
 				.FirstOrDefault();
 			//var currentTracker = await _context.InventoryTracker
                 //.Where(x => x.ProductId == SelectedInventoryTracker.ProductId && x.StorageId == SelectedInventoryTracker.StorageId)
