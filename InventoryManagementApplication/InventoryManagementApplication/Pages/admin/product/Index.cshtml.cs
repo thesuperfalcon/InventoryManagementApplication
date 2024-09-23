@@ -1,4 +1,5 @@
-﻿using InventoryManagementApplication.Models;
+﻿using InventoryManagementApplication.DAL;
+using InventoryManagementApplication.Models;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
@@ -7,31 +8,18 @@ namespace InventoryManagementApplication.Pages.admin.product
 {
 	public class IndexModel : PageModel
 	{
-		private readonly InventoryManagementApplication.Data.InventoryManagementApplicationContext _context;
+		private readonly ProductManager _manager;
 
-		public IndexModel(InventoryManagementApplication.Data.InventoryManagementApplicationContext context)
+		public IndexModel(ProductManager manager)
 		{
-			_context = context;
+			_manager = manager;
 		}
-		private static Uri BaseAddress = new Uri("https://localhost:44353/");
 		public IList<Product> Products { get; set; } = default!;
 
-		public async Task OnGetAsync()
+		public async Task OnGet()
 		{
-			using (var client = new HttpClient())
-			{
-				client.BaseAddress = BaseAddress;
-
-
-				HttpResponseMessage responseProducts = await client.GetAsync("api/Products");
-				if (responseProducts.IsSuccessStatusCode)
-				{
-					string responseString = await responseProducts.Content.ReadAsStringAsync();
-					List<Models.Product> products = JsonSerializer.Deserialize<List<Models.Product>>(responseString);
-					Products = products.ToList();
-
-				}			
-			}
+			Products = await _manager.GetAllProductsAsync();
+			
 		}
 	}
 }

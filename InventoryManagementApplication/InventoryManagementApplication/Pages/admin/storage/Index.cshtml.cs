@@ -8,37 +8,23 @@ using Microsoft.EntityFrameworkCore;
 using InventoryManagementApplication.Data;
 using InventoryManagementApplication.Models;
 using System.Text.Json;
+using InventoryManagementApplication.DAL;
 
 namespace InventoryManagementApplication.Pages.admin.storage
 {
     public class IndexModel : PageModel
     {
-        private readonly InventoryManagementApplication.Data.InventoryManagementApplicationContext _context;
+        private readonly StorageManager _storageManager;
 
-        public IndexModel(InventoryManagementApplication.Data.InventoryManagementApplicationContext context)
+        public IndexModel(StorageManager storageManager)
         {
-            _context = context;
+            _storageManager = storageManager;
         }
-		private static Uri BaseAddress = new Uri("https://localhost:44353/");
 		public IList<Storage> Storages { get;set; } = default!;
 
         public async Task OnGetAsync()
         {
-            using(var client = new HttpClient())
-            {
-                client.BaseAddress = BaseAddress;
-
-				HttpResponseMessage responseStorages = await client.GetAsync("api/Storages/");
-				if (responseStorages.IsSuccessStatusCode)
-				{
-					string responseString = await responseStorages.Content.ReadAsStringAsync();
-					List<Models.Storage> storages = JsonSerializer.Deserialize<List<Models.Storage>>(responseString);
-					Storages = storages.ToList();
-
-				}
-				//Storage = await _context.Storages.ToListAsync();
-			}
-            
-        }
+			Storages = await _storageManager.GetAllStoragesAsync();			
+		}
     }
 }

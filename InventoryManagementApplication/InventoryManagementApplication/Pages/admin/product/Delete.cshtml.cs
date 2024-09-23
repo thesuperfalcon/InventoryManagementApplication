@@ -1,22 +1,25 @@
-﻿using InventoryManagementApplication.Data;
+﻿using InventoryManagementApplication.DAL;
+using InventoryManagementApplication.Data;
 using InventoryManagementApplication.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
-using System.Text.Json;
 
 namespace InventoryManagementApplication.Pages.admin.product
 {
 	public class DeleteModel : PageModel
 	{
-		private readonly InventoryManagementApplicationContext _context;
+		private readonly ProductManager _productManager;
+		private readonly StorageManager _storageManager;
+		private readonly TrackerManager _trackerManager;
 
-		public DeleteModel(InventoryManagementApplicationContext context)
+		public DeleteModel(ProductManager productManager,
+			StorageManager storageManager, TrackerManager trackerManager)
 		{
-			_context = context;
+			_productManager = productManager;
+			_storageManager = storageManager;
+			_trackerManager = trackerManager;
 		}
-
-		private static Uri BaseAddress = new Uri("https://localhost:44353/");
 
 		[BindProperty]
 		public Product Product { get; set; } = default!;
@@ -30,8 +33,7 @@ namespace InventoryManagementApplication.Pages.admin.product
 				return NotFound();
 			}
 
-
-			Product = await _context.Products.FirstOrDefaultAsync(m => m.Id == id);
+			Product = await _productManager.GetOneProductAsync(id);
 
 			if (Product == null)
 			{
@@ -48,64 +50,25 @@ namespace InventoryManagementApplication.Pages.admin.product
 			{
 				return NotFound();
 			}
-			using (var client = new HttpClient())
+			var trackers = await _trackerManager.GetAllTrackersAsync();
+			InventoryTrackers = trackers.Where(x => x.ProductId == id).ToList();
+
+			var storages = await _storageManager.GetAllStoragesAsync();
+			Storages = storages.Where(s => s.InventoryTrackers.Any(tracker => InventoryTrackers.Contains(tracker))).ToList();
+
+			foreach (var tracker in InventoryTrackers)
 			{
-				client.BaseAddress = BaseAddress;
-				
-
-				HttpResponseMessage responseInventoryTracker = await client.GetAsync("api/InventoryTrackers");
-				if (responseInventoryTracker.IsSuccessStatusCode)
+				Models.Storage storage = Storages.FirstOrDefault(s => s.Id == tracker.StorageId);
+				if (storage != null)
 				{
-					string responseString = await responseInventoryTracker.Content.ReadAsStringAsync();
-					List<Models.InventoryTracker> inventoryTrackers = JsonSerializer.Deserialize<List<Models.InventoryTracker>>(responseString);
-					InventoryTrackers = inventoryTrackers.Where(x => x.ProductId == id).ToList();
-
+					storage.CurrentStock -= tracker.Quantity;
+					//Kolla om det blir rätt
+					_storageManager.EditStorageAsync(storage);
 				}
-
-				HttpResponseMessage responseStorage = await client.GetAsync("api/Storages");
-				if (responseStorage.IsSuccessStatusCode)
-				{
-					string responseString = await responseStorage.Content.ReadAsStringAsync();
-					List<Models.Storage> storages = JsonSerializer.Deserialize<List<Models.Storage>>(responseString);
-					int trackerId = (int)id;
-					//Be om förklaring någon gång, Storages blir null?
-					//Deklarera Product, hämta ur Lista med samma id
-					Storages = storages.Where(storage => storage.InventoryTrackers.Any(tracker => InventoryTrackers.Contains(tracker))).ToList();
-
-				}
-
-				foreach (var tracker in InventoryTrackers)
-				{
-					Models.Storage storage = Storages.FirstOrDefault(s => s.Id == tracker.StorageId);
-					if (storage != null)
-					{
-						storage.CurrentStock -= tracker.Quantity;
-
-						var json = JsonSerializer.Serialize(storage);
-
-						StringContent httpContent = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
-						HttpResponseMessage responseUpdateStorage = await client.PutAsync("api/Storages/" + storage.Id, httpContent);
-					}
-				
-					
-				}
-				var response = await client.DeleteAsync($"api/Products/{id}");
-
-
 			}
-				return RedirectToPage("./Index");
+			_productManager.DeleteProductAsync(id);
+
+			return RedirectToPage("./Index");
 		}
 	}
 }
-
-
-//InventoryTrackers = await _context.InventoryTracker
-//    .Where(x => x.ProductId == Product.Id)
-//    .ToListAsync();
-
-//Storages = await _context.Storages
-//    .Where(storage => storage.InventoryTrackers.Any(tracker => InventoryTrackers.Contains(tracker)))
-//    .ToListAsync();
-
-
-//}

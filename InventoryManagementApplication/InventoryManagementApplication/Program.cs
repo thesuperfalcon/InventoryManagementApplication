@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Localization;
 using InventoryManagementApplication.Helpers;
 
 using System.Text.Json.Serialization;
+using InventoryManagementApplication.DAL;
 namespace InventoryManagementApplication
 {
     public class Program
@@ -55,6 +56,9 @@ namespace InventoryManagementApplication
             builder.Services.AddRazorPages();
 
             builder.Services.AddScoped<SelectListHelpers>();
+            builder.Services.AddScoped<ProductManager>();
+            builder.Services.AddScoped<StorageManager>();
+            builder.Services.AddScoped<TrackerManager>();
 
             builder.Services.AddControllersWithViews()
             .AddJsonOptions(options =>
