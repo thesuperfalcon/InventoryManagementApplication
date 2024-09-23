@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json;
 
 namespace InventoryManagementApplication.Pages.admin.tracker
 {
@@ -46,7 +47,7 @@ namespace InventoryManagementApplication.Pages.admin.tracker
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
-            //Ändra user?
+            //ï¿½ndra user?
             MyUser = await _userManager.GetUserAsync(User);
 			var trackerSelect = await _trackerManager.GetAllTrackersAsync();
 
@@ -155,8 +156,23 @@ namespace InventoryManagementApplication.Pages.admin.tracker
             currentTracker.Modified = DateTime.Now;
             destinationTracker.Modified = DateTime.Now;
 
-            await _trackerManager.EditTrackerAsync(currentTracker);
-            await _trackerManager.EditTrackerAsync(destinationTracker);
+
+
+            var activityLog = new ActivityLog
+            {
+                UserId = MyUser?.Id,
+                ItemType = (ItemType?)0,
+                Action = (ActionType?)3,
+                TypeId = SelectedInventoryTracker.ProductId,
+                TimeStamp = DateTime.Now,
+                Notes = "",
+                
+            };
+
+
+
+
+
 
             var statistic = new Statistic
             {
@@ -166,13 +182,90 @@ namespace InventoryManagementApplication.Pages.admin.tracker
                 ProductId = SelectedInventoryTracker.ProductId,
                 ProductQuantity = (int)InventoryTracker.Quantity,
                 OrderTime = DateTime.Now,
-                Completed = false
-            };
-            _context.Statistics.Add(statistic);
+                Completed = false,
 
-            //await _context.SaveChangesAsync();
+                // ï¿½ndra _context till DAL metod.
+                // DestinationStorage = await _context.Storages.FindAsync(InventoryTracker.StorageId),
+                // InitialStorage = await _context.Storages.FindAsync(SelectedInventoryTracker.StorageId)
+                // Product = await _context.Products.FindAsync(SelectedInventoryTracker.ProductId)
+            };
+
+            await SaveActivityLogAsync(activityLog);
+            await SaveStatisticsAsync(statistic);
 
             return RedirectToPage("./Index");
+        }
+
+
+        // Lï¿½gg in denna metod i DAL mapp
+        public static async Task SaveStatisticsAsync(Statistic statistic)
+        {
+
+            var statistics = (await StatisticModel.GetStatisticsAsync()).Where(c => c.Id == statistic.Id).SingleOrDefault();
+
+            if (statistics != null && statistics.Id > 0)
+            {
+                using (var client = new HttpClient())
+                {
+                    client.BaseAddress = BaseAddress;
+
+                    var json = JsonSerializer.Serialize(statistics);
+
+                    StringContent httpContent = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
+
+                    HttpResponseMessage responseMessage = await client.PutAsync("api/Statictics/" + statistic.Id, httpContent);
+
+                }
+            }
+            else
+            {
+                using (var client = new HttpClient())
+                {
+                    client.BaseAddress = BaseAddress;
+
+                    var json = JsonSerializer.Serialize(statistic);
+
+                    StringContent httpContent = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
+
+                    HttpResponseMessage responseMessage = await client.PostAsync("api/Statistics", httpContent);
+
+                }
+            }
+        }
+
+        public static async Task SaveActivityLogAsync(ActivityLog activityLog)
+        {
+
+            var activityLogs = (await LogModel.GetActivityLogAsync()).Where(c => c.Id == activityLog.Id).FirstOrDefault();
+
+            if (activityLogs != null && activityLogs.Id > 0)
+            {
+                using (var client = new HttpClient())
+                {
+                    client.BaseAddress = BaseAddress;
+
+                    var json = JsonSerializer.Serialize(activityLog);
+
+                    StringContent httpContent = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
+
+                    HttpResponseMessage responseMessage = await client.PutAsync("api/ActivityLogs/" + activityLogs.Id, httpContent);
+
+                }
+            }
+            else
+            {
+                using (var client = new HttpClient())
+                {
+                    client.BaseAddress = BaseAddress;
+
+                    var json = JsonSerializer.Serialize(activityLog);
+
+                    StringContent httpContent = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
+
+                    HttpResponseMessage responseMessage = await client.PostAsync("api/ActivityLogs", httpContent);
+
+                }
+            }
         }
     }
 }

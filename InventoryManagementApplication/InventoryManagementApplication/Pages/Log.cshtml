@@ -1,10 +1,10 @@
 ﻿@page
-@model InventoryManagementApplication.Pages.StatisticPageModel
+@model InventoryManagementApplication.Pages.StatisticModel
 @{
 
 }
 
-<h1>Statistik</h1>
+<h1>Loggning</h1>
 
 <div class="mb-3 mt-3">
     <input id="searchInput" type="text" class="form-control" placeholder="Sök...Namn eller " />
@@ -14,11 +14,17 @@
 <table class="table">
     <thead>
         <tr>
-            <th scope="col">Antällningsnummer</th>
-            <th scope="col">Förnamn</th>
-            <th scope="col">Efternamn</th>
-            <th scope="col">Antal produkter flyttade</th>           
-            <th scope="col">Senast förflyttning</th>
+            <th scope="col">Test</th> 
+            <th scope="col">Test</th>           
+            <th scope="col">Test</th>
+            <th scope="col">Test</th>           
+            <th scope="col">Test</th>
+            <th scope="col">Test</th> 
+            <th scope="col">Test</th>           
+            <th scope="col">Test</th>
+            <th scope="col">Test</th>           
+            <th scope="col">Test</th>
+            <th scope="col">Test</th>
         </tr>
     </thead>
     <tbody id="myTable">
@@ -27,11 +33,17 @@
             @foreach (var statistic in Model.Statistics)
             {
                 <tr>
-                    <td>@statistic.User?.EmployeeNumber</td>
-                    <td>@statistic.User?.FirstName</td>
-                    <td>@statistic.User?.LastName</td>
-                    <td>@statistic.ProductQuantity</td>                    
-                    <td>@statistic.Product?.Updated</td>
+                    <td>@statistic.OrderTime</td>
+                    <td>@statistic.ProductQuantity</td>
+                    <td>@statistic.ProductName</td>
+                    <td>@statistic.Price</td>                    
+                    <td>@statistic.CurrentStock</td>
+                    <td>@statistic.InitialStorageName</td>
+                    <td>@statistic.InitialMaxCapacity</td>
+                    <td>@statistic.DestinationStorageName</td>
+                    <td>@statistic.DestinationMaxCapacity</td>
+                    <td>@statistic.ReporterName</td>
+                    <td>@statistic.ReporterEmployeeNumber</td>
                 </tr>
             }
         }
