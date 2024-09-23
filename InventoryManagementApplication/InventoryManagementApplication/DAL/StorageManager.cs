@@ -78,49 +78,20 @@ namespace InventoryManagementApplication.DAL
             }
         }
 
-        public async Task EditStorageAsync(Storage? storage)
+        public async Task EditStorageAsync(Storage storage)
         {
             using (var client = new HttpClient())
             {
                 client.BaseAddress = BaseAddress;
 
-                var content = new StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(storage), Encoding.UTF8, "application/json");
+                var json = JsonSerializer.Serialize(storage);
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
                 HttpResponseMessage response = await client.PutAsync($"api/Storages/{storage.Id}", content);
-                if(response.IsSuccessStatusCode)
+
+                if (!response.IsSuccessStatusCode)
                 {
-                    Console.WriteLine(storage.CurrentStock);
-                }
-            }
-        }
-        public async Task SaveStorageAsync(Storage storage)
-        {
-            var storages = (await GetAllStoragesAsync()).Where(c => c.Id == storage.Id).SingleOrDefault();
-
-            if (storages != null && storages.Id > 0)
-            {
-                using (var client = new HttpClient())
-                {
-                    client.BaseAddress = BaseAddress;
-
-                    var json = JsonSerializer.Serialize(storages);
-
-                    StringContent httpContent = new StringContent(json, Encoding.UTF8, "application/json");
-
-                    HttpResponseMessage response = await client.PutAsync("api/Storages/" + storage.Id, httpContent);
-                }
-            }
-            else
-            {
-                using (var client = new HttpClient())
-                {
-                    client.BaseAddress = BaseAddress;
-
-                    var json = JsonSerializer.Serialize(storage);
-
-                    StringContent httpContent = new StringContent(json, Encoding.UTF8, "application/json");
-
-                    HttpResponseMessage response = await client.PostAsync("api/Storages", httpContent);
-
+                    var errorResponse = await response.Content.ReadAsStringAsync();
+                    Console.WriteLine($"Error updating storage: {errorResponse}");
                 }
             }
         }
