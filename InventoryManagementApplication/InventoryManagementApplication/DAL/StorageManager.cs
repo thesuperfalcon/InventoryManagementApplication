@@ -7,9 +7,9 @@ namespace InventoryManagementApplication.DAL
 	public class StorageManager
 	{
         private static Uri BaseAddress = new Uri("https://localhost:44353/");
-
         public Storage Storage { get; set; }
         public List<Storage> Storages { get; set; }
+
 
         public async Task CreateStorageAsync(Storage storage)
         {
@@ -85,7 +85,43 @@ namespace InventoryManagementApplication.DAL
                 client.BaseAddress = BaseAddress;
 
                 var content = new StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(storage), Encoding.UTF8, "application/json");
-                HttpResponseMessage response = await client.PutAsync($"api/storages/{storage.Id}", content);
+                HttpResponseMessage response = await client.PutAsync($"api/Storages/{storage.Id}", content);
+                if(response.IsSuccessStatusCode)
+                {
+                    Console.WriteLine(storage.CurrentStock);
+                }
+            }
+        }
+        public async Task SaveStorageAsync(Storage storage)
+        {
+            var storages = (await GetAllStoragesAsync()).Where(c => c.Id == storage.Id).SingleOrDefault();
+
+            if (storages != null && storages.Id > 0)
+            {
+                using (var client = new HttpClient())
+                {
+                    client.BaseAddress = BaseAddress;
+
+                    var json = JsonSerializer.Serialize(storages);
+
+                    StringContent httpContent = new StringContent(json, Encoding.UTF8, "application/json");
+
+                    HttpResponseMessage response = await client.PutAsync("api/Storages/" + storage.Id, httpContent);
+                }
+            }
+            else
+            {
+                using (var client = new HttpClient())
+                {
+                    client.BaseAddress = BaseAddress;
+
+                    var json = JsonSerializer.Serialize(storage);
+
+                    StringContent httpContent = new StringContent(json, Encoding.UTF8, "application/json");
+
+                    HttpResponseMessage response = await client.PostAsync("api/Storages", httpContent);
+
+                }
             }
         }
     }

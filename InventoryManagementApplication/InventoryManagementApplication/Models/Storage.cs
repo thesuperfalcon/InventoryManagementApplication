@@ -21,6 +21,8 @@ namespace InventoryManagementApplication.Models
 
 		[JsonPropertyName("updated")]
 		public DateTime? Updated { get; set; }
+		[JsonPropertyName("isDeleted")]
+		public bool? IsDeleted { get; set; } = false;
 
 		[JsonPropertyName("activityLogs")]
 		public virtual ICollection<ActivityLog> ActivityLogs { get; set; } = new List<ActivityLog>();

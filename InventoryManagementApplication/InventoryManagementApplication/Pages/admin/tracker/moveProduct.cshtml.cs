@@ -81,29 +81,19 @@ namespace InventoryManagementApplication.Pages.admin.tracker
 
             var currentTracker = trackerList.Where(x => x.ProductId == SelectedInventoryTracker.ProductId && x.StorageId == SelectedInventoryTracker.StorageId)
 				.FirstOrDefault();
-			//var currentTracker = await _context.InventoryTracker
-                //.Where(x => x.ProductId == SelectedInventoryTracker.ProductId && x.StorageId == SelectedInventoryTracker.StorageId)
-               // .FirstOrDefaultAsync();
+
+            var destinationTracker = trackerList.Where(x => x.Product.Id == SelectedInventoryTracker.ProductId && x.Storage.Id == InventoryTracker.StorageId)
+                .FirstOrDefault();
+            //var currentTracker = await _context.InventoryTracker
+            //.Where(x => x.ProductId == SelectedInventoryTracker.ProductId && x.StorageId == SelectedInventoryTracker.StorageId)
+            // .FirstOrDefaultAsync();
 
             if (currentTracker == null)
             {
                 return Page();
             }
 
-            if (currentTracker.Quantity < InventoryTracker.Quantity)
-            {
-                return Page();
-            }
-
-            currentTracker.Quantity -= (int)InventoryTracker.Quantity;
-
-            var destinationTracker = trackerList.Where(x => x.Product.Id == SelectedInventoryTracker.ProductId && x.Storage.Id == InventoryTracker.StorageId)
-                .FirstOrDefault();
-			//var destinationTracker = await _context.InventoryTracker
-			//    .Where(x => x.ProductId == SelectedInventoryTracker.ProductId && x.StorageId == InventoryTracker.StorageId)
-			//    .FirstOrDefaultAsync();
-
-			if (destinationTracker == null)
+            if (destinationTracker == null || destinationTracker.Id == 0)
             {
                 destinationTracker = new InventoryTracker
                 {
@@ -112,12 +102,38 @@ namespace InventoryManagementApplication.Pages.admin.tracker
                     Quantity = (int)InventoryTracker.Quantity
                 };
                 await _trackerManager.CreateTrackerAsync(destinationTracker);
-               // _context.InventoryTracker.Add(destinationTracker);
+                // _context.InventoryTracker.Add(destinationTracker);
             }
             else
             {
                 destinationTracker.Quantity += (int)InventoryTracker.Quantity;
             }
+
+            trackerList = await _trackerManager.GetAllTrackersAsync();
+
+            destinationTracker = trackerList.Where(x => x.ProductId == destinationTracker.ProductId && x.StorageId == destinationTracker.StorageId)
+                .FirstOrDefault();
+
+            if (currentTracker.Quantity < InventoryTracker.Quantity)
+            {
+                StatusMessage = "Finns ej den mängden produkter i lagret. Försök med en mindre mängd.";
+                return RedirectToPage("./moveProduct", new {id = SelectedInventoryTracker.Id});
+            }
+
+            if(InventoryTracker.Quantity > destinationTracker.Storage.MaxCapacity - destinationTracker.Storage.CurrentStock)
+            {
+                StatusMessage = "Finns ej plats för den mängden produkter i lagret. Försök med en mindre mängd.";
+                return RedirectToPage("./moveProduct", new { id = SelectedInventoryTracker.Id });
+            }
+
+            currentTracker.Quantity -= (int)InventoryTracker.Quantity;
+
+           
+			//var destinationTracker = await _context.InventoryTracker
+			//    .Where(x => x.ProductId == SelectedInventoryTracker.ProductId && x.StorageId == InventoryTracker.StorageId)
+			//    .FirstOrDefaultAsync();
+
+			
             var sourceStorage = storageList.Find(s => s.Id == SelectedInventoryTracker.StorageId);
             //var sourceStorage = await _context.Storages.FindAsync(SelectedInventoryTracker.StorageId);
            
@@ -135,13 +151,28 @@ namespace InventoryManagementApplication.Pages.admin.tracker
                 return Page();
             }
 
-            sourceStorage.CurrentStock -= (int)InventoryTracker.Quantity;
-            destinationStorage.CurrentStock += (int)InventoryTracker.Quantity;
+            //sourceStorage.CurrentStock -= (int)InventoryTracker.Quantity;
+            //destinationStorage.CurrentStock += (int)InventoryTracker.Quantity;
 
-            sourceStorage.Updated = DateTime.Now;
-            destinationStorage.Updated = DateTime.Now;
-            await _storageManager.EditStorageAsync(sourceStorage);
-            await _storageManager.EditStorageAsync(destinationStorage);
+            await _storageManager.SaveStorageAsync(new Models.Storage
+            {
+                Id = sourceStorage.Id,
+                Name = sourceStorage.Name,
+                Created = sourceStorage.Created,
+                CurrentStock = sourceStorage.CurrentStock - (int)InventoryTracker.Quantity,
+                MaxCapacity = sourceStorage.MaxCapacity,
+                Updated = DateTime.Now
+            });
+
+            await _storageManager.SaveStorageAsync(new Models.Storage
+            {
+                Id = destinationStorage.Id,
+                Name = destinationStorage.Name,
+                Created = destinationStorage.Created,
+                CurrentStock = destinationStorage.CurrentStock + (int)InventoryTracker.Quantity,
+                MaxCapacity = destinationStorage.MaxCapacity,
+                Updated = DateTime.Now
+            });
 
             product.Updated = DateTime.Now;
 
@@ -164,6 +195,7 @@ namespace InventoryManagementApplication.Pages.admin.tracker
                 Completed = false
             };
             _context.Statistics.Add(statistic);
+            await _context.SaveChangesAsync();
 
             //await _context.SaveChangesAsync();
 

@@ -32,7 +32,7 @@ namespace InventoryManagementApplication.Pages.admin.tracker
 				return NotFound();
 			}
 
-			var inventoryTracker = await _trackerManager.GetOneTrackerAsync(id);
+			var inventoryTracker = await _trackerManager.GetOneTrackerAsync((int)id);
 			// var inventorytracker = await _context.InventoryTracker.FirstOrDefaultAsync(m => m.Id == id);
 
 			if (inventoryTracker == null)
@@ -53,7 +53,7 @@ namespace InventoryManagementApplication.Pages.admin.tracker
 				return NotFound();
 			}
 
-			var inventoryTracker = await _trackerManager.GetOneTrackerAsync(id);
+			var inventoryTracker = await _trackerManager.GetOneTrackerAsync((int)id);
 			//var inventorytracker = await _context.InventoryTracker.FindAsync(id);
 
 			if (inventoryTracker != null)

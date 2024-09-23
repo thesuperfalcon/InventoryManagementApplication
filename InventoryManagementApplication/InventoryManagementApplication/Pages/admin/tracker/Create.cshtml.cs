@@ -60,108 +60,72 @@ namespace InventoryManagementApplication.Pages.admin.tracker
 				return Page();
 			}
 
-			int quantity = 0;
-			var existingTrackerSearcher = await _trackerManager.GetAllTrackersAsync();
+            var product = await _productManager.GetOneProductAsync(InventoryTracker.ProductId);
+            var storage = await _storageManager.GetOneStorageAsync(InventoryTracker.StorageId);
+
+			if(product == null || storage == null)
+			{
+				StatusMessage = "Produkt eller lagret finns ej";
+				return RedirectToPage("./Create");
+			}
+
+            int quantity = (int)InventoryTracker.Quantity;
+
+			if(storage.CurrentStock + quantity > storage.MaxCapacity)
+			{
+				StatusMessage = $"Finns ej plats i {storage.Name}. Välj annan lagerplats.";
+                return RedirectToPage("./Create");
+            }
+
+            if (quantity > product.CurrentStock)
+            {
+
+                StatusMessage = $"Antalet produkter du vill lägga till finns ej tillgänglig. Antal produkter utan lager: {product.CurrentStock}";
+                return RedirectToPage("./Create");
+            }
+
+			InventoryTracker.Storage = storage;
+			InventoryTracker.Product = product;
+
+
+			//skapa dal för detta 
+            var existingTrackerSearcher = await _trackerManager.GetAllTrackersAsync();
 
 			var existingTracker = existingTrackerSearcher.Where(x => x.Product.Id == InventoryTracker.ProductId && x.Storage.Id ==
 					InventoryTracker.StorageId).FirstOrDefault();
 
-			if (existingTracker == null)
-			{
-				var product = await _productManager.GetOneProductAsync(InventoryTracker.ProductId);
-				var storage = await _storageManager.GetOneStorageAsync(InventoryTracker.StorageId);
-				InventoryTracker.Storage = storage;
-				InventoryTracker.Product = product;
-				await _trackerManager.CreateTrackerAsync(InventoryTracker);
-				quantity = (int)InventoryTracker.Quantity;
-				
-			}
-			else
-			{
-				quantity = (int)InventoryTracker.Quantity;
-			}
-
-			var inventoryTrackers1 = await _productManager.GetAllProductsAsync();
-			Product = inventoryTrackers1
-				.Where(x => x.Id == InventoryTracker.ProductId)
-				.FirstOrDefault();
-
-			var inventoryTrackers2 = await _storageManager.GetAllStoragesAsync();
-			Storage = inventoryTrackers2
-				.Where(x => x.Id == InventoryTracker.StorageId)
-				.FirstOrDefault();
-
-			if (Storage != null)
-			{
-				CurrentSpace = Storage.MaxCapacity - Storage.CurrentStock;
-
-				if (CurrentSpace < quantity)
-				{
-
-					StatusMessage = $"Finns ej plats i {Storage.Name}. Välj annan lagerplats!";
-					if (existingTracker == null)
-					{
-						await _trackerManager.DeleteTrackerAsync(InventoryTracker.Id);						
-					}
-					return RedirectToPage("./Create");
-
-				}
-			}
-			else
-			{
-				StatusMessage = "Storage not found.";
-				return RedirectToPage("./Create");
-			}
-
-			if (quantity > Product.CurrentStock)
-			{
-				int id = InventoryTracker.Id;
-
-				StatusMessage = $"Antalet produkter du vill lägga till finns ej tillgänglig. Antal produkter utan lager: {Product.CurrentStock}";
-				return RedirectToPage("./Create");
-			}
-			//Kolla om den här är felplacerad?
-			if (InventoryTracker != null && InventoryTracker.Id != 0)
-			{
-				await _trackerManager.DeleteTrackerAsync(InventoryTracker.Id);
-				return RedirectToPage("./Create");
-
-			}
-			else if (CurrentSpace < quantity)
-			{
-				StatusMessage = $"Finns ej plats i {Storage.Name}. Välj annan lagerplats!";
-				return RedirectToPage("./Create");
-			}
 			if (existingTracker != null)
 			{
-				existingTracker.Quantity += InventoryTracker.Quantity;
-			}
-
-			var updatedStorage = new Models.Storage
+				existingTracker.Quantity += quantity;
+                await _trackerManager.EditTrackerAsync(existingTracker);
+            }
+            else
 			{
-				Id = Storage.Id,
-				Name = Storage.Name,
-				Created = Storage.Created,
-				CurrentStock = Storage.CurrentStock + quantity,
-				MaxCapacity = Storage.MaxCapacity,
-				Updated = DateTime.Now
-			};
+				await _trackerManager.CreateTrackerAsync(InventoryTracker);
+            }
 
-			var updatedProduct = new Models.Product
+			await _productManager.EditProductAsync(new Product
 			{
-				Id = Product.Id,
-				Name = Product.Name,
-				Description = Product.Description,
-				ArticleNumber = Product.ArticleNumber,
-				Price = Product.Price,
-				TotalStock = Product.TotalStock,
-				Created = Product.Created,
-				CurrentStock = Product.CurrentStock - quantity,
-				Updated = DateTime.Now
-			};
+                Id = product.Id,
+                Name = product.Name,
+                Description = product.Description,
+                ArticleNumber = product.ArticleNumber,
+                Price = product.Price,
+                TotalStock = product.TotalStock,
+                Created = product.Created,
+                CurrentStock = product.CurrentStock - quantity,
+                Updated = DateTime.Now
+            });
 
-			await _productManager.EditProductAsync(updatedProduct);
-			await _storageManager.EditStorageAsync(updatedStorage);
+			await _storageManager.EditStorageAsync(new Models.Storage
+			{
+				Id = storage.Id,
+				Name = storage.Name,
+				Created = storage.Created,
+				CurrentStock = storage.CurrentStock + quantity,
+				MaxCapacity = storage.MaxCapacity,
+				Updated = DateTime.Now
+			});
 
 			return RedirectToPage("./Index");
 		}

@@ -53,7 +53,7 @@ namespace InventoryManagementApplication.DAL
 			using (var client = new HttpClient())
 			{
 				client.BaseAddress = BaseAddress;
-				HttpResponseMessage responseProducts = await client.GetAsync($"api/Products/{id}");
+				HttpResponseMessage responseProducts = await client.GetAsync($"api/Products/{id.Value}");
 
 				if (responseProducts.IsSuccessStatusCode)
 				{
