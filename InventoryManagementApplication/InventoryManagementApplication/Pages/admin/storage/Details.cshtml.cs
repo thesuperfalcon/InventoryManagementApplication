@@ -8,64 +8,34 @@ using Microsoft.EntityFrameworkCore;
 using InventoryManagementApplication.Data;
 using InventoryManagementApplication.Models;
 using System.Text.Json;
+using InventoryManagementApplication.DAL;
 
 namespace InventoryManagementApplication.Pages.admin.storage
 {
     public class DetailsModel : PageModel
     {
-        private readonly InventoryManagementApplication.Data.InventoryManagementApplicationContext _context;
+        private readonly StorageManager _storaManager;
 
-        public DetailsModel(InventoryManagementApplication.Data.InventoryManagementApplicationContext context)
+        public DetailsModel(StorageManager storageManager)
         {
-            _context = context;
+            _storaManager = storageManager;
         }
-        private static Uri BaseAddress = new Uri("https://localhost:44353/");
         public Storage Storage { get; set; } = default!;
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
-            var storage = new Storage();
-            using (var client = new HttpClient())
-            {
-                client.BaseAddress = BaseAddress;
-                if (id == null)
-                {
-                    return NotFound();
-                }
-                HttpResponseMessage response = await client.GetAsync($"api/Storages/");
-                if (response.IsSuccessStatusCode)
-                {
-                    string responseString = await response.Content.ReadAsStringAsync();
-                    storage = JsonSerializer.Deserialize<List<Models.Storage>>(responseString).Where(s => s.Id == id).SingleOrDefault();
-                }
+            var storage = await _storaManager.GetOneStorageAsync(id);
 
-                if (storage == null)
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    Storage = storage;
-                }
+			if (storage == null)
+			{
+				return NotFound();
+			}
+			else
+			{
+				Storage = storage;
+			}
 
-                return Page();
-            }
-
-            //if (id == null)
-            //{
-            //    return NotFound();
-            //}
-
-            //var storage = await _context.Storages.FirstOrDefaultAsync(m => m.Id == id);
-            //if (storage == null)
-            //{
-            //    return NotFound();
-            //}
-            //else
-            //{
-            //    Storage = storage;
-            //}
-            //return Page();
+			return Page();		
         }
     }
 }
