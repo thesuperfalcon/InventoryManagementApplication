@@ -33,6 +33,7 @@ namespace InventoryManagementApplication.Areas.Identity.Pages.Account
         private readonly IUserEmailStore<InventoryManagementUser> _emailStore;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
+        private readonly DAL.UserManager _userManagerDAL;
 
 
         public RegisterModel(
@@ -40,7 +41,8 @@ namespace InventoryManagementApplication.Areas.Identity.Pages.Account
             IUserStore<InventoryManagementUser> userStore,
             SignInManager<InventoryManagementUser> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender)
+            IEmailSender emailSender,
+            DAL.UserManager userManagerDAL)
         {
             _userManager = userManager;
             _userStore = userStore;
@@ -48,6 +50,7 @@ namespace InventoryManagementApplication.Areas.Identity.Pages.Account
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
+			_userManagerDAL = userManagerDAL;
         }
 
         /// <summary>
@@ -173,6 +176,8 @@ namespace InventoryManagementApplication.Areas.Identity.Pages.Account
                 Input.Password = "Admin123!";
 
                 await _userStore.SetUserNameAsync(user, Input.EmployeeNumber, CancellationToken.None);
+                
+                //var result = await _userManagerDAL.RegisterUserAsync(user);
                 //await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
                 var result = await _userManager.CreateAsync(user, Input.Password);
 

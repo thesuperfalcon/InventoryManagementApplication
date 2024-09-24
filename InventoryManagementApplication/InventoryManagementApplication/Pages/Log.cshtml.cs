@@ -1,3 +1,4 @@
+using InventoryManagementApplication.DAL;
 using InventoryManagementApplication.Data;
 using InventoryManagementApplication.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -11,6 +12,26 @@ namespace InventoryManagementApplication.Pages
     public class LogModel : PageModel
     {
         private static Uri BaseAddress = new Uri("https://localhost:44353/");
+
+        private readonly ActivityLogManager _activityLogManager;
+
+        public LogModel(ActivityLogManager activityLogManager)
+        {
+            _activityLogManager = activityLogManager;
+        }
+
+        public List<ActivityLog> ActivityLogs { get; set; } = new List<ActivityLog>();
+
+
+
+
+        public async void OnGet()
+        {
+            ActivityLogs = await _activityLogManager.GetAllActivityLogssAsync();
+            //ActivityLogs = await GetActivityLogAsync();
+
+        }
+
 
         public static async Task<List<ActivityLog>> GetActivityLogAsync()
         {
@@ -31,15 +52,6 @@ namespace InventoryManagementApplication.Pages
         }
 
 
-        public List<ActivityLog> ActivityLogs { get; set; } = new List<ActivityLog>();
-
-
-
-
-        public async void OnGet()
-        {
-
-            ActivityLogs = await GetActivityLogAsync();
-        }
+       
     }
 }

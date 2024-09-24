@@ -1,3 +1,4 @@
+using InventoryManagementApplication.DAL;
 using InventoryManagementApplication.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -14,46 +15,54 @@ namespace InventoryManagementApplication.Pages
         //    _context = context;
         //}
 
-        private static Uri BaseAddress = new Uri("https://localhost:44353/");
-
-
-        public static async Task<List<StatisticDto>> GetStatisticsAsync()
+        private readonly StatisticManager _statisticManager;
+        public StatisticModel(StatisticManager statisticManager)
         {
-            var statistics = new List<StatisticDto>();
-
-            using (var client = new HttpClient())
-            {
-                client.BaseAddress = BaseAddress;
-
-                HttpResponseMessage responseMessage = await client.GetAsync("api/Statistics/");
-                if (responseMessage.IsSuccessStatusCode)
-                {
-                    string responseString = await responseMessage.Content.ReadAsStringAsync();
-                    statistics = JsonSerializer.Deserialize<List<StatisticDto>>(responseString);
-                }
-                return statistics;
-            }
+            _statisticManager = statisticManager;
         }
 
+		//private static Uri BaseAddress = new Uri("https://localhost:44353/");
+		public List<StatisticDto> Statistics { get; set; }
+		public async Task OnGetAsync()
+		{
+			var statistics = await _statisticManager.GetAllStatisticsAsync();
+			Statistics = statistics.ToList();
+			//    .Include(x => x.InitialStorage)
+			//    .Include(x => x.DestinationStorage)
+			//    .Include(x => x.Product)
+			//    .Include(x => x.User)
+			//    .ToListAsync();
 
-        public List<StatisticDto> Statistics { get; set; } = new List<StatisticDto>();
+			//Statistics = Statistics.Where(statistic =>
+			//statistic?.Product != null &&
+			//statistic.DestinationStorage != null &&
+			//statistic.InitialStorage != null &&
+			//statistic.User != null).ToList();
+
+		}
 
 
-        public async Task OnGetAsync()
-        {
-            Statistics = await GetStatisticsAsync();
-            //    .Include(x => x.InitialStorage)
-            //    .Include(x => x.DestinationStorage)
-            //    .Include(x => x.Product)
-            //    .Include(x => x.User)
-            //    .ToListAsync();
 
-            //Statistics = Statistics.Where(statistic =>
-            //statistic?.Product != null &&
-            //statistic.DestinationStorage != null &&
-            //statistic.InitialStorage != null &&
-            //statistic.User != null).ToList();
-
-        }
+        
     }
 }
+//public static async Task<List<Statistic>> GetStatisticsAsync()
+//      {
+//          var statistics = new List<Statistic>();
+
+
+//          using (var client = new HttpClient())
+//          {
+//              client.BaseAddress = BaseAddress;
+
+//              HttpResponseMessage responseMessage = await client.GetAsync("api/Statistics/");
+//              if (responseMessage.IsSuccessStatusCode)
+//              {
+//                  string responseString = await responseMessage.Content.ReadAsStringAsync();
+//                  statistics = JsonSerializer.Deserialize<List<Statistic>>(responseString);
+//              }
+
+//          }
+//          return statistics;
+//}
+

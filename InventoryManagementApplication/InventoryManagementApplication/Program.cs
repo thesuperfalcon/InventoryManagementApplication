@@ -20,13 +20,17 @@ namespace InventoryManagementApplication
 
             builder.Services.AddDbContext<InventoryManagementApplicationContext>(options => options.UseSqlServer(connectionString));
             builder.Services.AddTransient<Models.Product>();
-           
+            builder.Services.AddScoped<StatisticManager>();
+            builder.Services.AddScoped<DAL.StatisticManager>();
+            //builder.Services.AddTransient<Models.Statistic>();
+            //builder.Services.AddTransient<Models.StatisticDto>();
+
             //builder.Services.AddControllers()
             //.AddJsonOptions(options =>
             //{
             //    options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
             //});
-           
+
             //var supportedCultures = new[] { new CultureInfo("en-US") };
 
             var supportedCultures = new[] { new CultureInfo("sv-SE"), new CultureInfo("en-US") };

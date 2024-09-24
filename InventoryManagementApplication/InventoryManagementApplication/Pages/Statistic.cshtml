@@ -1,11 +1,23 @@
 ﻿@page
-@model InventoryManagementApplication.Pages.LogModel
+@model InventoryManagementApplication.Pages.StatisticModel
 @{
+    
 }
 
 <div>
     <p>Statistics</p>
 </div>
-
+@if(Model.Statistics.Count != 0 || Model.Statistics != null)
+{
+    @foreach (var statistic in Model.Statistics)
+    {
+        <p>Name: @statistic.ProductName | Quantity: @statistic.ProductQuantity</p>
+    }
+}
+else
+{
+    <p>Här var det tomt</p>
+    
+}
 
 @* Förnamn Efternamn, anställningsnummer, antal förflyttningar, datum senast personen har ändrat något  *@
