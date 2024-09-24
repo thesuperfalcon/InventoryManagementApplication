@@ -5,7 +5,14 @@
     ViewData["Title"] = "Create";
 }
 
-<div class="container mt-5">
+
+<head>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+
+<div class="container mt-5" style="margin-bottom: 40px;">
     <div class="row justify-content-center">
         <div class="col-md-6 col-lg-5">
 
@@ -32,8 +39,8 @@
 
                         <div class="mb-3">
                             <label asp-for="Product.Description" class="form-label">Beskrivning</label>
-                            <input asp-for="Product.Description" class="form-control" />
-                            <span asp-validation-for="Product.Description" class="text-danger"></span>
+                            <input asp-for="Product.Description" class="form-control" required data-bs-toggle="tooltip" title="Ange beskrivning" />
+                            <span asp-validation-for="Product.Description" class="text-danger d-none"></span>
                         </div>
 
                         <div class="mb-3">
@@ -44,8 +51,8 @@
 
                         <div class="mb-3">
                             <label asp-for="Product.TotalStock" class="form-label">Antal</label>
-                            <input asp-for="Product.TotalStock" class="form-control" required="" />
-                            <span asp-validation-for="Product.TotalStock" class="text-danger"></span>
+                            <input asp-for="Product.TotalStock" type="number" class="form-control" required min="0" step="1" data-bs-toggle="tooltip" title="Ange antal i lager" />
+                            <span asp-validation-for="Product.TotalStock" class="text-danger d-none"></span>
                         </div>
 
                         <input type="hidden" asp-for="Product.CurrentStock" value="0" />
@@ -65,7 +72,7 @@
         </div>
     </div>
 </div>
-
+</body>
 @section Scripts {
     <script>
         document.getElementById("generateArticleNumberBtn").addEventListener("click", function () {
