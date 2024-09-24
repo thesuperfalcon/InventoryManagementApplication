@@ -131,11 +131,17 @@ namespace InventoryManagementApplication.Pages.admin.tracker
             product.Updated = DateTime.Now;
             await _productManager.EditProductAsync(product);
 
+
+            trackerList = await _trackerManager.GetAllTrackersAsync();
+
+            currentTracker = trackerList.FirstOrDefault(x => x.ProductId == SelectedInventoryTracker.ProductId && x.StorageId == SelectedInventoryTracker.StorageId);
+            destinationTracker = trackerList.FirstOrDefault(x => x.ProductId == SelectedInventoryTracker.ProductId && x.StorageId == InventoryTracker.StorageId);
+
             // Uppdatera Modified-datum för trackers
-            currentTracker.Modified = DateTime.Now;
+
             await _trackerManager.EditTrackerAsync(currentTracker);
 
-            destinationTracker.Modified = DateTime.Now;
+            
             await _trackerManager.EditTrackerAsync(destinationTracker);
 
             return RedirectToPage("./Index");

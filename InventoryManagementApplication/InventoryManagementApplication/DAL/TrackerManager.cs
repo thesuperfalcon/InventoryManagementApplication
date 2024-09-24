@@ -83,13 +83,32 @@ namespace InventoryManagementApplication.DAL
 
 		public async Task EditTrackerAsync(InventoryTracker? tracker)
 		{
-			using (var client = new HttpClient())
-			{
-				client.BaseAddress = BaseAddress;
+			var existingTracker = (await GetAllTrackersAsync()).Where(x => x.Id == tracker.Id).SingleOrDefault();
 
-				var content = new StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(tracker), Encoding.UTF8, "application/json");
-				HttpResponseMessage response = await client.PutAsync($"api/InventoryTrackers/{tracker.Id}", content);
+			if(existingTracker != null)
+			{
+                using (var client = new HttpClient())
+                {
+                    client.BaseAddress = BaseAddress;
+
+                    var content = new StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(tracker), Encoding.UTF8, "application/json");
+                    HttpResponseMessage response = await client.PutAsync($"api/InventoryTrackers/{tracker.Id}", content);
+                }
+            }
+			else
+			{
+				using (var client = new HttpClient())
+				{
+					client.BaseAddress = BaseAddress;
+
+					var json = JsonSerializer.Serialize(tracker);
+
+					StringContent httpContent = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
+
+					HttpResponseMessage responseMessage = await client.PostAsync("api/InventoryTrackers/", httpContent);
+				}
 			}
+
 		}
 	}
 }
