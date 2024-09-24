@@ -87,11 +87,7 @@ namespace InventoryManagementApplication.DAL
 					var content = new StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(Product), Encoding.UTF8, "application/json");
 					HttpResponseMessage response = await client.PutAsync($"api/products/{Product.Id}", content);
 				}
-			
-
-				
 			}
 		}
-
 	}
 }
