@@ -13,19 +13,30 @@ namespace InventoryManagementApplication.DAL
 		public List<InventoryTracker> InventoryTrackers { get; set; }
 
 
-		public async Task CreateTrackerAsync(InventoryTracker tracker)
-		{
-			InventoryTracker = tracker;
-			using (var client = new HttpClient())
-			{
-				client.BaseAddress = BaseAddress;
-				var json = JsonSerializer.Serialize(InventoryTracker);
+        public async Task<InventoryTracker> CreateTrackerAsync(InventoryTracker tracker)
+        {
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = BaseAddress;
 
-				StringContent httpContent = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
-				HttpResponseMessage response = await client.PostAsync("api/InventoryTrackers/", httpContent);
-			}
-		}
-		public async Task DeleteTrackerAsync(int? id)
+                var json = JsonSerializer.Serialize(tracker);
+                StringContent httpContent = new StringContent(json, Encoding.UTF8, "application/json");
+                HttpResponseMessage response = await client.PostAsync("api/InventoryTrackers/", httpContent);
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    var errorMessage = await response.Content.ReadAsStringAsync();
+                    throw new Exception($"Error creating tracker: {response.StatusCode} - {errorMessage}");
+                }
+
+                var responseString = await response.Content.ReadAsStringAsync();
+                return JsonSerializer.Deserialize<InventoryTracker>(responseString);
+            }
+        }
+
+
+
+        public async Task DeleteTrackerAsync(int id)
 		{
 			using (var client = new HttpClient())
 			{
@@ -34,7 +45,7 @@ namespace InventoryManagementApplication.DAL
 				var response = await client.DeleteAsync($"api/InventoryTrackers/{id}");
 			}
 		}
-		public async Task<Models.InventoryTracker> GetOneTrackerAsync(int? id)
+		public async Task<Models.InventoryTracker> GetOneTrackerAsync(int id)
 		{
 			using (var client = new HttpClient())
 			{

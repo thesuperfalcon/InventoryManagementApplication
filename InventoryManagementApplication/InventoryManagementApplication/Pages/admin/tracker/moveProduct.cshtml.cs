@@ -54,12 +54,7 @@ namespace InventoryManagementApplication.Pages.admin.tracker
 			var trackerSelect = await _trackerManager.GetAllTrackersAsync();
 
             SelectedInventoryTracker = trackerSelect.Where(tr => tr.Id == id).FirstOrDefault();
-            if(SelectedInventoryTracker != null)
-            {
-                SelectedInventoryTracker.ProductId = SelectedInventoryTracker.Product.Id;
-                SelectedInventoryTracker.StorageId = SelectedInventoryTracker.Storage.Id;
 
-			}
 			//SelectedInventoryTracker = await _context.InventoryTracker.Include(x => x.Product).Include(z => z.Storage).Where(g => g.Id == id).FirstOrDefaultAsync();
 
 
@@ -85,33 +80,17 @@ namespace InventoryManagementApplication.Pages.admin.tracker
             MyUser = await _userManager.GetUserAsync(User);
             var storageList = await _storageManager.GetAllStoragesAsync();
             var trackerList = await _trackerManager.GetAllTrackersAsync();
-            var productList = await _productManager.GetAllProductsAsync();
 
-            var currentTracker = trackerList.Where(x => x.Product.Id == SelectedInventoryTracker.ProductId && x.Storage.Id == SelectedInventoryTracker.StorageId)
-				.FirstOrDefault();
-			//var currentTracker = await _context.InventoryTracker
-                //.Where(x => x.ProductId == SelectedInventoryTracker.ProductId && x.StorageId == SelectedInventoryTracker.StorageId)
-               // .FirstOrDefaultAsync();
-
+            var currentTracker = trackerList.FirstOrDefault(x => x.ProductId == SelectedInventoryTracker.ProductId && x.StorageId == SelectedInventoryTracker.StorageId);
             if (currentTracker == null)
             {
                 return Page();
             }
 
-            if (currentTracker.Quantity < InventoryTracker.Quantity)
-            {
-                return Page();
-            }
+            var destinationTracker = trackerList.FirstOrDefault(x => x.ProductId == SelectedInventoryTracker.ProductId && x.StorageId == InventoryTracker.StorageId);
 
-            currentTracker.Quantity -= (int)InventoryTracker.Quantity;
-
-            var destinationTracker = trackerList.Where(x => x.Product.Id == SelectedInventoryTracker.ProductId && x.Storage.Id == InventoryTracker.StorageId)
-                .FirstOrDefault();
-			//var destinationTracker = await _context.InventoryTracker
-			//    .Where(x => x.ProductId == SelectedInventoryTracker.ProductId && x.StorageId == InventoryTracker.StorageId)
-			//    .FirstOrDefaultAsync();
-
-			if (destinationTracker == null)
+            // Skapa destinationTracker om den inte finns
+            if (destinationTracker == null)
             {
                 destinationTracker = new InventoryTracker
                 {
@@ -120,154 +99,50 @@ namespace InventoryManagementApplication.Pages.admin.tracker
                     Quantity = (int)InventoryTracker.Quantity
                 };
                 await _trackerManager.CreateTrackerAsync(destinationTracker);
-               // _context.InventoryTracker.Add(destinationTracker);
             }
             else
             {
                 destinationTracker.Quantity += (int)InventoryTracker.Quantity;
+                await _trackerManager.EditTrackerAsync(destinationTracker);
             }
-            var sourceStorage = storageList.Find(s => s.Id == SelectedInventoryTracker.StorageId);
-            //var sourceStorage = await _context.Storages.FindAsync(SelectedInventoryTracker.StorageId);
-           
-            var destinationStorage = storageList.Find(s => s.Id == InventoryTracker.StorageId);
 
-            var destinationStorageTest = await _storageManager.GetOneStorageAsync(InventoryTracker.StorageId);
-            //var destinationStorage = await _context.Storages.FindAsync(InventoryTracker.StorageId);
-            
-            
-            var product = await _productManager.GetOneProductAsync(SelectedInventoryTracker.ProductId); 
-            //var product = await _context.Products.FindAsync(SelectedInventoryTracker.ProductId);
+            if (currentTracker.Quantity < InventoryTracker.Quantity)
+            {
+                StatusMessage = "Finns ej den m�ngden produkter i lagret. F�rs�k med en mindre m�ngd.";
+                return RedirectToPage("./moveProduct", new { id = SelectedInventoryTracker.Id });
+            }
+
+            currentTracker.Quantity -= (int)InventoryTracker.Quantity;
+
+            var sourceStorage = storageList.FirstOrDefault(s => s.Id == SelectedInventoryTracker.StorageId);
+            var destinationStorage = storageList.FirstOrDefault(s => s.Id == InventoryTracker.StorageId);
 
             if (sourceStorage == null || destinationStorage == null)
             {
                 return Page();
             }
 
+            // Uppdatera lagret
             sourceStorage.CurrentStock -= (int)InventoryTracker.Quantity;
             destinationStorage.CurrentStock += (int)InventoryTracker.Quantity;
 
-            sourceStorage.Updated = DateTime.Now;
-            destinationStorage.Updated = DateTime.Now;
             await _storageManager.EditStorageAsync(sourceStorage);
             await _storageManager.EditStorageAsync(destinationStorage);
 
+            // Spara uppdaterad produkt
+            var product = await _productManager.GetOneProductAsync(SelectedInventoryTracker.ProductId);
             product.Updated = DateTime.Now;
-
             await _productManager.EditProductAsync(product);
 
+            // Uppdatera Modified-datum f�r trackers
             currentTracker.Modified = DateTime.Now;
+            await _trackerManager.EditTrackerAsync(currentTracker);
+
             destinationTracker.Modified = DateTime.Now;
-
-
-
-            var activityLog = new ActivityLog
-            {
-                UserId = MyUser?.Id,
-                ItemType = (ItemType?)0,
-                Action = (ActionType?)3,
-                TypeId = SelectedInventoryTracker.ProductId,
-                TimeStamp = DateTime.Now,
-                Notes = "",
-                
-            };
-
-
-
-
-
-
-            var statistic = new Statistic
-            {
-                UserId = MyUser?.Id,
-                InitialStorageId = SelectedInventoryTracker.StorageId,
-                DestinationStorageId = InventoryTracker.StorageId,
-                ProductId = SelectedInventoryTracker.ProductId,
-                ProductQuantity = (int)InventoryTracker.Quantity,
-                OrderTime = DateTime.Now,
-                Completed = false,
-
-                // �ndra _context till DAL metod.
-                // DestinationStorage = await _context.Storages.FindAsync(InventoryTracker.StorageId),
-                // InitialStorage = await _context.Storages.FindAsync(SelectedInventoryTracker.StorageId)
-                // Product = await _context.Products.FindAsync(SelectedInventoryTracker.ProductId)
-            };
-
-            await SaveActivityLogAsync(activityLog);
-            await SaveStatisticsAsync(statistic);
+            await _trackerManager.EditTrackerAsync(destinationTracker);
 
             return RedirectToPage("./Index");
         }
 
-
-        // L�gg in denna metod i DAL mapp
-        public static async Task SaveStatisticsAsync(Statistic statistic)
-        {
-
-            var statistics = (await StatisticModel.GetStatisticsAsync()).Where(c => c.Id == statistic.Id).SingleOrDefault();
-
-            if (statistics != null && statistics.Id > 0)
-            {
-                using (var client = new HttpClient())
-                {
-                    client.BaseAddress = BaseAddress;
-
-                    var json = JsonSerializer.Serialize(statistics);
-
-                    StringContent httpContent = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
-
-                    HttpResponseMessage responseMessage = await client.PutAsync("api/Statictics/" + statistic.Id, httpContent);
-
-                }
-            }
-            else
-            {
-                using (var client = new HttpClient())
-                {
-                    client.BaseAddress = BaseAddress;
-
-                    var json = JsonSerializer.Serialize(statistic);
-
-                    StringContent httpContent = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
-
-                    HttpResponseMessage responseMessage = await client.PostAsync("api/Statistics", httpContent);
-
-                }
-            }
-        }
-
-        public static async Task SaveActivityLogAsync(ActivityLog activityLog)
-        {
-
-            var activityLogs = (await LogModel.GetActivityLogAsync()).Where(c => c.Id == activityLog.Id).FirstOrDefault();
-
-            if (activityLogs != null && activityLogs.Id > 0)
-            {
-                using (var client = new HttpClient())
-                {
-                    client.BaseAddress = BaseAddress;
-
-                    var json = JsonSerializer.Serialize(activityLog);
-
-                    StringContent httpContent = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
-
-                    HttpResponseMessage responseMessage = await client.PutAsync("api/ActivityLogs/" + activityLogs.Id, httpContent);
-
-                }
-            }
-            else
-            {
-                using (var client = new HttpClient())
-                {
-                    client.BaseAddress = BaseAddress;
-
-                    var json = JsonSerializer.Serialize(activityLog);
-
-                    StringContent httpContent = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
-
-                    HttpResponseMessage responseMessage = await client.PostAsync("api/ActivityLogs", httpContent);
-
-                }
-            }
-        }
     }
 }

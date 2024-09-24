@@ -7,25 +7,24 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using InventoryManagementApplication.Data;
 using InventoryManagementApplication.Models;
+using InventoryManagementApplication.DAL;
 
 namespace InventoryManagementApplication.Pages.admin.tracker
 {
     public class IndexModel : PageModel
     {
-        private readonly InventoryManagementApplication.Data.InventoryManagementApplicationContext _context;
+        private readonly TrackerManager _trackerManager;
 
-        public IndexModel(InventoryManagementApplication.Data.InventoryManagementApplicationContext context)
+        public IndexModel(TrackerManager trackerManager)
         {
-            _context = context;
+            _trackerManager = trackerManager;
         }
 
         public IList<InventoryTracker> InventoryTracker { get;set; } = default!;
 
         public async Task OnGetAsync()
         {
-            InventoryTracker = await _context.InventoryTracker
-                .Include(i => i.Product)
-                .Include(i => i.Storage).ToListAsync();
+            InventoryTracker = await _trackerManager.GetAllTrackersAsync();
         }
     }
 }
