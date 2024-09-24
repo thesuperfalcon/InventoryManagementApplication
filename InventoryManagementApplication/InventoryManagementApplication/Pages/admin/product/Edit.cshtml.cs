@@ -51,7 +51,7 @@ namespace InventoryManagementApplication.Pages.admin.product
 				return Page();
 			}
 			List<InventoryTracker> inventoryTrackers = await _trackerManager.GetAllTrackersAsync();
-			inventoryTrackers = inventoryTrackers.Where(p => p.Id == Product.Id).ToList();
+			inventoryTrackers = inventoryTrackers.Where(p => p.ProductId == Product.Id).ToList();
 
 			var productQuantity = inventoryTrackers.Sum(x => x.Quantity);
 

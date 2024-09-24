@@ -113,6 +113,7 @@ namespace InventoryManagementApplication.Pages.admin.tracker
             }
 
             currentTracker.Quantity -= (int)InventoryTracker.Quantity;
+            await _trackerManager.EditTrackerAsync(currentTracker);
 
             var sourceStorage = storageList.FirstOrDefault(s => s.Id == SelectedInventoryTracker.StorageId);
             var destinationStorage = storageList.FirstOrDefault(s => s.Id == InventoryTracker.StorageId);
@@ -134,12 +135,18 @@ namespace InventoryManagementApplication.Pages.admin.tracker
             product.Updated = DateTime.Now;
             await _productManager.EditProductAsync(product);
 
-            // Uppdatera Modified-datum f�r trackers
-            currentTracker.Modified = DateTime.Now;
-            await _trackerManager.EditTrackerAsync(currentTracker);
 
-            destinationTracker.Modified = DateTime.Now;
-            await _trackerManager.EditTrackerAsync(destinationTracker);
+            //trackerList = await _trackerManager.GetAllTrackersAsync();
+
+            //currentTracker = trackerList.FirstOrDefault(x => x.ProductId == SelectedInventoryTracker.ProductId && x.StorageId == SelectedInventoryTracker.StorageId);
+            //destinationTracker = trackerList.FirstOrDefault(x => x.ProductId == SelectedInventoryTracker.ProductId && x.StorageId == InventoryTracker.StorageId);
+
+            // Uppdatera Modified-datum f�r trackers
+
+            //await _trackerManager.EditTrackerAsync(currentTracker);
+
+            
+            //await _trackerManager.EditTrackerAsync(destinationTracker);
 
             return RedirectToPage("./Index");
         }
