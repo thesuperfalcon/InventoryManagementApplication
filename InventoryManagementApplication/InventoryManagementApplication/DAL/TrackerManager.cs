@@ -1,6 +1,7 @@
 ﻿using InventoryManagementApplication.Models;
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace InventoryManagementApplication.DAL
 {
@@ -70,10 +71,15 @@ namespace InventoryManagementApplication.DAL
 				client.BaseAddress = BaseAddress;
 				HttpResponseMessage responseProducts = await client.GetAsync("api/InventoryTrackers/");
 
+				var option = new JsonSerializerOptions()
+				{
+                    ReferenceHandler = ReferenceHandler.Preserve
+                };
+
 				if (responseProducts.IsSuccessStatusCode)
 				{
 					string responseString = await responseProducts.Content.ReadAsStringAsync();
-					List<Models.InventoryTracker> trackers = JsonSerializer.Deserialize<List<Models.InventoryTracker>>(responseString);
+					List<Models.InventoryTracker> trackers = JsonSerializer.Deserialize<List<Models.InventoryTracker>>(responseString, option);
 					InventoryTrackers = trackers.ToList();
 				}
 

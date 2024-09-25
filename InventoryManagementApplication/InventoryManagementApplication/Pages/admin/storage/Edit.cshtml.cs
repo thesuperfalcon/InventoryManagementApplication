@@ -36,7 +36,7 @@ namespace InventoryManagementApplication.Pages.admin.storage
 				return NotFound();
 			}
 
-			var storage = await _storageManager.GetOneStorageAsync(id);
+			var storage = await _storageManager.GetStorageByIdAsync(id, false);
 
 			if (storage == null)
 			{
@@ -77,7 +77,7 @@ namespace InventoryManagementApplication.Pages.admin.storage
 
         private async Task<bool> StorageExists(int id)
         {
-			var storages = await _storageManager.GetAllStoragesAsync();
+			var storages = await _storageManager.GetStoragesAsync(false);
 			return storages.Any(s => s.Id == id);
         }
     }

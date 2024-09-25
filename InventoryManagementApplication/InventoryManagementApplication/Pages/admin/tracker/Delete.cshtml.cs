@@ -58,10 +58,10 @@ namespace InventoryManagementApplication.Pages.admin.tracker
 
 			if (inventoryTracker != null)
 			{
-				var storages = await _storageManager.GetAllStoragesAsync();
+				var storages = await _storageManager.GetStoragesAsync(false);
 				var storage = storages.Find(s => s.Id == inventoryTracker.StorageId);
 
-				var products = await _productManager.GetAllProductsAsync();
+				var products = await _productManager.GetProductsAsync(false);
 				var product = products.Find(p => p.Id == inventoryTracker.ProductId);
 
 

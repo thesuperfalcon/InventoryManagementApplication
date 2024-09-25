@@ -24,7 +24,7 @@ namespace InventoryManagementApplication.Pages.admin.product
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
-			Product = await _manager.GetOneProductAsync(id);
+			Product = await _manager.GetProductByIdAsync(id, null);
 
 			if (Product == null)
 			{

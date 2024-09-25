@@ -33,7 +33,7 @@ namespace InventoryManagementApplication.Pages.admin.product
 				return NotFound();
 			}
 
-			Product = await _productManager.GetOneProductAsync(id);
+			Product = await _productManager.GetProductByIdAsync(id, null);
 
 			if (Product == null)
 			{
@@ -53,17 +53,17 @@ namespace InventoryManagementApplication.Pages.admin.product
 			var trackers = await _trackerManager.GetAllTrackersAsync();
 			InventoryTrackers = trackers.Where(x => x.ProductId == id).ToList();
 
-			var storages = await _storageManager.GetAllStoragesAsync();
-			Storages = storages.Where(s => s.InventoryTrackers.Any(tracker => InventoryTrackers.Contains(tracker))).ToList();
+			var storages = await _storageManager.GetStoragesAsync(false);
+			
 
 			foreach (var tracker in InventoryTrackers)
 			{
-				Models.Storage storage = Storages.FirstOrDefault(s => s.Id == tracker.StorageId);
+				Models.Storage storage = storages.FirstOrDefault(s => s.Id == tracker.StorageId);
 				if (storage != null)
 				{
 					storage.CurrentStock -= tracker.Quantity;
-					//Kolla om det blir rätt
 					_storageManager.EditStorageAsync(storage);
+					_trackerManager.DeleteTrackerAsync(tracker.Id);
 				}
 			}
 			_productManager.DeleteProductAsync(id);

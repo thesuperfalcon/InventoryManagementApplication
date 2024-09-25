@@ -18,8 +18,8 @@ namespace InventoryManagementApplication.Pages.admin.product
 
 		public async Task OnGet()
 		{
-			Products = await _manager.GetAllProductsAsync();
-			
+			//ändra till false
+			Products = await _manager.GetProductsAsync(null);
 		}
 	}
 }

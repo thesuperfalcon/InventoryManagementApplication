@@ -24,7 +24,7 @@ namespace InventoryManagementApplication.Pages.admin.storage
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
-            var storage = await _storaManager.GetOneStorageAsync(id);
+            var storage = await _storaManager.GetStorageByIdAsync(id, null);
 
 			if (storage == null)
 			{

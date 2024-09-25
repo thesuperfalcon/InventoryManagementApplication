@@ -32,7 +32,7 @@ namespace InventoryManagementApplication.Pages.admin.product
 				return NotFound();
 			}
 
-			var product = await _productManager.GetOneProductAsync(id);
+			var product = await _productManager.GetProductByIdAsync(id, null);
 
 			if (product == null)
 			{
@@ -98,7 +98,7 @@ namespace InventoryManagementApplication.Pages.admin.product
 	
 		private async Task<bool> ProductExists(int id)
 		{
-			var products = await _productManager.GetAllProductsAsync();
+			var products = await _productManager.GetProductsAsync(false);
 			
 			return products.Any(e => e.Id == id);
 		}

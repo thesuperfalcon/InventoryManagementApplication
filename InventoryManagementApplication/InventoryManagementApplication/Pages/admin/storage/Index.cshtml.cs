@@ -24,7 +24,8 @@ namespace InventoryManagementApplication.Pages.admin.storage
 
         public async Task OnGetAsync()
         {
-			Storages = await _storageManager.GetAllStoragesAsync();			
+            //ändra till false
+			Storages = await _storageManager.GetStoragesAsync(null);			
 		}
     }
 }

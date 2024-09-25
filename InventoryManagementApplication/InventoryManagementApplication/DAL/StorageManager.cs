@@ -32,12 +32,17 @@ namespace InventoryManagementApplication.DAL
 
         }
 
-        public async Task<List<Storage>> GetAllStoragesAsync()
+        public async Task<List<Storage>> GetStoragesAsync(bool? isDeleted)
         {
             using (var client = new HttpClient())
             {
                 client.BaseAddress = BaseAddress;
-                HttpResponseMessage response = await client.GetAsync("api/Storages");
+                string uri = "api/Storages/";
+                if(isDeleted != null)
+                {
+                    uri += isDeleted == false ? "ExistingStorages" : "DeletedStorages";
+                }
+                HttpResponseMessage response = await client.GetAsync(uri);
 
                 if (response.IsSuccessStatusCode)
                 {
@@ -50,12 +55,21 @@ namespace InventoryManagementApplication.DAL
             }
         }
 
-        public async Task<Storage> GetOneStorageAsync(int? id)
+        public async Task<Storage> GetStorageByIdAsync(int? id, bool? isDeleted)
         {
             using (var client = new HttpClient())
             {
                 client.BaseAddress = BaseAddress;
-                HttpResponseMessage response = await client.GetAsync($"api/Storages/{id}");
+                string uri = "api/Storages/";
+                if (isDeleted != null)
+                {
+                    uri += isDeleted == false ? $"ExistingStorages/{id}" : $"DeletedStorages/{id}";
+                }
+                else
+                {
+                    uri += id;
+                }
+                HttpResponseMessage response = await client.GetAsync(uri);
 
                 if (response.IsSuccessStatusCode)
                 {

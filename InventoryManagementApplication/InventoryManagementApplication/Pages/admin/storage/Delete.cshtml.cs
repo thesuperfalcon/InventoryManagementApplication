@@ -29,7 +29,7 @@ namespace InventoryManagementApplication.Pages.admin.storage
 				return NotFound();
 			}
 
-			var storage = await _storageManager.GetOneStorageAsync(id);
+			var storage = await _storageManager.GetStorageByIdAsync(id, false);
 
 			if (storage == null)
 			{
@@ -48,7 +48,7 @@ namespace InventoryManagementApplication.Pages.admin.storage
 			{
 				return NotFound();
 			}
-			var storage = await _storageManager.GetOneStorageAsync(id);
+			var storage = await _storageManager.GetStorageByIdAsync(id, false);
 			Trackers = await _trackerManager.GetAllTrackersAsync();
 			Trackers = Trackers.Where(x => x.StorageId == storage.Id).ToList();
 

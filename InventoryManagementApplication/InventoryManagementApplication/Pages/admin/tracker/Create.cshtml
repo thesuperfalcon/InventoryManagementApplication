@@ -14,9 +14,11 @@
                 <div class="card-header bg-primary text-white">
                     <h4 class="mb-0">Flytta produkt</h4>
                 </div>
+
                 <div class="card-body">
                     <form method="post">
                         <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                        <input type="hidden" asp-for="DefaultStorage.Id" />
 
                         <div class="mb-3">
                             <label asp-for="InventoryTracker.ProductId" class="form-label">Produkt</label>

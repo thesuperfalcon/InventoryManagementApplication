@@ -1,3 +1,4 @@
+using InventoryManagementApplication.DAL;
 using InventoryManagementApplication.Data;
 using InventoryManagementApplication.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -8,30 +9,24 @@ namespace InventoryManagementApplication.Pages
 {
     public class reportPageModel : PageModel
     {
-        private readonly InventoryManagementApplicationContext _context;
+        private readonly StorageManager _storageManager;
+        private readonly TrackerManager _trackerManager;
         
-        public reportPageModel(InventoryManagementApplicationContext context)
+        public reportPageModel(TrackerManager trackerManager, StorageManager storageManager)
         {
-            _context = context;
+            _storageManager = storageManager;
+            _trackerManager = trackerManager;
         }
 
         public List<InventoryTracker> InventoryTracker { get; set; } = new List<InventoryTracker>();    
         public List<Storage> Storages { get; set; } = new List<Storage>();
 
         public async Task OnGetAsync()
+        
         {
+            Storages = await _storageManager.GetStoragesAsync(false);
 
-            Storages = await _context.Storages
-                .Include(x => x.InventoryTrackers)
-                .ThenInclude(x => x.Product)
-                .OrderBy(x => x.Id)
-                .ToListAsync();
-
-            InventoryTracker = await _context.InventoryTracker
-                .Include(x => x.Storage)
-                .Include(x => x.Product)
-                .OrderBy(x => x.StorageId)
-                .ToListAsync();
+            InventoryTracker = await _trackerManager.GetAllTrackersAsync();
         }
     }
 }

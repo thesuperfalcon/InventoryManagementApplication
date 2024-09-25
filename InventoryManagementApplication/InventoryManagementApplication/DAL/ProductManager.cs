@@ -30,12 +30,17 @@ namespace InventoryManagementApplication.DAL
 			}
 			
 		}
-		public async Task<List<Product>> GetAllProductsAsync()
+		public async Task<List<Product>> GetProductsAsync(bool? isDeleted)
 		{
 			using (var client = new HttpClient())
 			{
 				client.BaseAddress = BaseAddress;
-				HttpResponseMessage responseProducts = await client.GetAsync("api/Products");
+				string uri = "api/Products/";
+				if (isDeleted != null)
+				{
+					uri += isDeleted == false ? "ExistingProducts" : "DeletedProducts";
+				}
+				HttpResponseMessage responseProducts = await client.GetAsync(uri);
 
 				if (responseProducts.IsSuccessStatusCode)
 				{
@@ -48,12 +53,21 @@ namespace InventoryManagementApplication.DAL
 			}
 		}
 
-		public async Task<Product> GetOneProductAsync(int? id)
+		public async Task<Product> GetProductByIdAsync(int? id, bool? isDeleted)
 		{
 			using (var client = new HttpClient())
 			{
 				client.BaseAddress = BaseAddress;
-				HttpResponseMessage responseProducts = await client.GetAsync($"api/Products/{id.Value}");
+				string uri = "api/Products/";
+                if (isDeleted != null)
+                {
+					uri += isDeleted == false ? $"ExistingProducts/{id}" : $"DeletedProducts/{id}"; 
+                }
+				else
+				{
+					uri += id;
+				}
+                HttpResponseMessage responseProducts = await client.GetAsync(uri);
 
 				if (responseProducts.IsSuccessStatusCode)
 				{
