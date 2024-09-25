@@ -1,13 +1,70 @@
 ﻿@page
 @model InventoryManagementApplication.Pages.StatisticModel
 @{
-    
-}
+ }
 
-<div>
-    <p>Statistics</p>
+ <div class="mb-3 mt-3">
+    <input id="searchInput" type="text" class="form-control" placeholder="Sök..." />
 </div>
-@if(Model.Statistics.Count != 0 || Model.Statistics != null)
+<div>
+    <table id="statisticsTable" class="table" data-sort-direction="asc">
+        <thead>
+            <tr>
+                <th scope="col"><a href="javascript:void(0);" onclick="sortTable(0)">Namn</a></th>
+                <th scope="col"><a href="javascript:void(0);" onclick="sortTable(1)">Anställningsnummer</a></th>
+                <th scope="col">Vad har gjorts</th>
+                <th scope="col"><a href="javascript:void(0);" onclick="sortTable(3)">Produkt</a></th>
+                <th scope="col"><a href="javascript:void(0);" onclick="sortTable(4)">Produkter flyttade</a></th>
+                <th scope="col"><a href="javascript:void(0);" onclick="sortTable(5)">Flyttad från</a></th>
+                <th scope="col"><a href="javascript:void(0);" onclick="sortTable(6)">Flyttad till</a></th>
+                <th scope="col"><a href="javascript:void(0);" onclick="sortTable(7)">När</a></th>
+            </tr>
+        </thead>
+        <tbody id="myTable">
+            @*  @if (Model.ActivityLogs.Count != 0 || Model.ActivityLogs != null)
+            {
+            @foreach (var activity in Model.ActivityLogs)
+            {
+            <p>Name: @activity.Product | Quantity: @activity.Product</p>
+            }
+            }
+            else
+            {
+            <p>Här var det tomt</p>
+
+            } *@
+            @if (Model.Statistics.Any())
+            {
+                @foreach (var statistic in Model.Statistics)
+                {
+                    <tr>
+                        <td>@statistic.ReporterName</td>
+                        <td>@statistic.ReporterEmployeeNumber</td>
+                        <td>Note?</td>
+                        <td>@statistic.ProductName</td>
+                        <td>@statistic.ProductQuantity</td>
+                        <td>@statistic.InitialStorageName</td>
+                        <td>@statistic.DestinationStorageName</td>
+                        <td>@statistic.OrderTime</td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="8" class="text-center">Ingen data..</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <div class="mb-3">
+        <button id="prevPage" class="btn btn-primary">Bak</button>
+        <span id="pageNumber" class="mx-3"></span>
+        <button id="nextPage" class="btn btn-primary">Fram</button>
+    </div>
+</div>
+
+@* @if(Model.Statistics.Count != 0 || Model.Statistics != null)
 {
     @foreach (var statistic in Model.Statistics)
     {
@@ -18,6 +75,6 @@ else
 {
     <p>Här var det tomt</p>
     
-}
+} *@
 
 @* Förnamn Efternamn, anställningsnummer, antal förflyttningar, datum senast personen har ändrat något  *@

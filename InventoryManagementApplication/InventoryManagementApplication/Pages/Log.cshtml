@@ -1,5 +1,5 @@
 ﻿@page
-@model InventoryManagementApplication.Pages.StatisticModel
+@model InventoryManagementApplication.Pages.LogModel
 @{
 
 }
@@ -11,33 +11,29 @@
 </div>
 
 <div>
-    <table id="statisticsTable" class="table" data-sort-direction="asc">
+    <table id="logsTable" class="table" data-sort-direction="asc">
         <thead>
             <tr>
-                <th scope="col"><a href="javascript:void(0);" onclick="sortTable(0)">Namn</a></th>
-                <th scope="col"><a href="javascript:void(0);" onclick="sortTable(1)">Anställningsnummer</a></th>
-                <th scope="col">Vad har gjorts</th>
-                <th scope="col"><a href="javascript:void(0);" onclick="sortTable(3)">Produkt</a></th>
-                <th scope="col"><a href="javascript:void(0);" onclick="sortTable(4)">Produkter flyttade</a></th>
-                <th scope="col"><a href="javascript:void(0);" onclick="sortTable(5)">Flyttad från</a></th>
-                <th scope="col"><a href="javascript:void(0);" onclick="sortTable(6)">Flyttad till</a></th>
-                <th scope="col"><a href="javascript:void(0);" onclick="sortTable(7)">När</a></th>
+                <th scope="col"><a href="javascript:void(0);" onclick="sortTable(0)">Användar-Id</a></th>
+                <th scope="col"><a href="javascript:void(0);" onclick="sortTable(1)">Typ av Objekt</a></th>
+                <th scope="col"><a href="javascript:void(0);" onclick="sortTable(2)">Anteckning</a></th>
+                <th scope="col"><a href="javascript:void(0);" onclick="sortTable(3)">Objekt-Id</a></th>
+                <th scope="col"><a href="javascript:void(0);" onclick="sortTable(4)">Ändrad</a></th>
+                <th scope="col"><a href="javascript:void(0);" onclick="sortTable(5)">Händelse</a></th>
             </tr>
         </thead>
-        <tbody id="myTable">
-            @if (Model.Statistics.Any())
+        <tbody id="myLogTable">
+            @if (Model.ActivityLogs.Any())
             {
-                @foreach (var statistic in Model.Statistics)
+                @foreach (var logs in Model.ActivityLogs)
                 {
                     <tr>
-                        <td>@statistic.ReporterName</td>
-                        <td>@statistic.ReporterEmployeeNumber</td>
-                        <td>Note?</td>                                             
-                        <td>@statistic.ProductName</td>
-                        <td>@statistic.ProductQuantity</td>
-                        <td>@statistic.InitialStorageName</td>
-                        <td>@statistic.DestinationStorageName</td>
-                        <td>@statistic.OrderTime</td>
+                        <td>@logs.UserId </td>
+                        <td>@logs.ItemType</td>
+                        <td>@logs.Notes</td>                                             
+                        <td>@logs.TypeId</td>
+                        <td>@logs.TimeStamp</td>
+                        <td>@logs.Action</td>
                     </tr>
                 }
             }

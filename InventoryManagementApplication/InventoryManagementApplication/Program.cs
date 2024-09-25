@@ -22,6 +22,8 @@ namespace InventoryManagementApplication
             builder.Services.AddTransient<Models.Product>();
             builder.Services.AddScoped<StatisticManager>();
             builder.Services.AddScoped<DAL.StatisticManager>();
+            builder.Services.AddScoped<DAL.ActivityLogManager>();
+            builder.Services.AddScoped<InventoryManagementApplication.DAL.UserManager>();
             //builder.Services.AddTransient<Models.Statistic>();
             //builder.Services.AddTransient<Models.StatisticDto>();
 

@@ -8,13 +8,6 @@ namespace InventoryManagementApplication.Pages
 {
     public class StatisticModel : PageModel
     {
-        //private readonly InventoryManagementApplicationContext _context;
-
-        //public StatisticPageModel(InventoryManagementApplicationContext context)
-        //{
-        //    _context = context;
-        //}
-
         private readonly StatisticManager _statisticManager;
         public StatisticModel(StatisticManager statisticManager)
         {
