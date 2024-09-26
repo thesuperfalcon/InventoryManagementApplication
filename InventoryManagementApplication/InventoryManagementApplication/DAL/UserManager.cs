@@ -12,8 +12,9 @@ namespace InventoryManagementApplication.DAL
 		public List<Areas.Identity.Data.InventoryManagementUser>? Users { get; set; }
 
 
-		public async Task RegisterUserAsync(InventoryManagementUser user)
+		public async Task<HttpResponseMessage> RegisterUserAsync(InventoryManagementUser user)
 		{
+			HttpResponseMessage response = null;
 			if (user != null)
 			{
 				User = user;
@@ -23,14 +24,14 @@ namespace InventoryManagementApplication.DAL
 					var json = JsonSerializer.Serialize(User);
 
 					StringContent httpContent = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
-					HttpResponseMessage response = await client.PostAsync("api/Users/", httpContent);
+					response = await client.PostAsync("api/Users/", httpContent);
 				}
 			}
 			else
 			{
 				Console.WriteLine("Error! Abort!");
 			}
-
+			return response;
 		}
 
 		public async Task<List<InventoryManagementUser>> GetAllUsersAsync()
