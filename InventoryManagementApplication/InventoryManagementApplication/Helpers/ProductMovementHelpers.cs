@@ -20,13 +20,13 @@ namespace InventoryManagementApplication.Helpers
         }
         public async Task<Tuple<bool, string>> MoveProductAsync(int productId, int fromStorageId, int toStorageId, int quantity)
         {
-            var trackers = await _trackerManager.GetAllTrackersAsync();
-
             string message = string.Empty;
 
             var product = await _productManager.GetProductByIdAsync(productId, false);
             var fromStorage = await _storageManager.GetStorageByIdAsync(fromStorageId, false);
             var toStorage = await _storageManager.GetStorageByIdAsync(toStorageId, false);
+
+            // göra cases istället för IF ??
 
             if (fromStorage == null || toStorage == null)
             {
@@ -34,13 +34,27 @@ namespace InventoryManagementApplication.Helpers
                 return new Tuple<bool, string>(false, message);
             }
 
-            var fromStorageTracker = trackers.Where(x => x.StorageId ==  fromStorageId && x.ProductId == productId).FirstOrDefault();
+            if (quantity > toStorage.MaxCapacity - toStorage.CurrentStock)
+            {
+                message = "Finns ej plats för denna mängd i lagret. Försök med en mindre mängd.";
+                return new Tuple<bool, string>(false, message);
+            }
+
+            var fromStorageTracker = await _trackerManager.GetTrackerByProductAndStorageAsync(productId, fromStorageId);
             if (fromStorageTracker == null)
             {
                 message = "Kan ej finna lagersaldo från lager";
                 return new Tuple<bool, string>(false, message);
             }
-            var toStorageTracker = trackers.Where(x => x.StorageId == toStorageId && x.ProductId == productId).FirstOrDefault();
+
+            if (fromStorageTracker.Quantity < quantity)
+            {
+                message = "Finns ej den mängden produkter i lagret. Försök med mindre antal..";
+                return new Tuple<bool, string>(false, message);
+            }
+
+            var toStorageTracker = await _trackerManager.GetTrackerByProductAndStorageAsync(productId, toStorageId);
+
             if (toStorageTracker == null)
             {
                 toStorageTracker = new Models.InventoryTracker
@@ -50,22 +64,15 @@ namespace InventoryManagementApplication.Helpers
                     Quantity = quantity
                 };
                 await _trackerManager.CreateTrackerAsync(toStorageTracker);
+
+               toStorageTracker = await _trackerManager.GetTrackerByProductAndStorageAsync(productId, toStorageId);
             }
             else
             {
                 toStorageTracker.Quantity += quantity;
             }
-
-            if (quantity > toStorage.MaxCapacity - toStorage.CurrentStock)
-            {
-                message = "Finns ej den m�ngden produkter i lagret. F�rs�k med en mindre m�ngd.";
-                return new Tuple<bool, string>(false, message);
-            }
+            
             fromStorageTracker.Quantity -= quantity;
-
-            //ta bort när trackermanagergetbystorageandproductid är fixad
-            trackers = await _trackerManager.GetAllTrackersAsync();
-            toStorageTracker = trackers.Where(x => x.StorageId == toStorageId && x.ProductId == productId).FirstOrDefault();
 
             await _trackerManager.EditTrackerAsync(fromStorageTracker);
             await _trackerManager.EditTrackerAsync(toStorageTracker);

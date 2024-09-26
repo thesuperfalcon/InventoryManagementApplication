@@ -32,6 +32,27 @@ namespace InventoryManagementApplication.DAL
 
         }
 
+        public async Task <Storage> GetDefaultStorageAsync()
+        {
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = BaseAddress;
+                string uri = "api/Storages/DefaultStorage";
+
+                HttpResponseMessage response = await client.GetAsync(uri);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    string responseString = await response.Content.ReadAsStringAsync();
+                    Storage storages = JsonSerializer.Deserialize<Storage>(responseString);
+                    Storage = storages;
+                }
+
+                return Storage;
+            }
+        }
+
+
         public async Task<List<Storage>> GetStoragesAsync(bool? isDeleted)
         {
             using (var client = new HttpClient())

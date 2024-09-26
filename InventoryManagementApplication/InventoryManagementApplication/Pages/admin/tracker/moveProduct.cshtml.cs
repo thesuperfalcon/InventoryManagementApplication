@@ -53,12 +53,8 @@ namespace InventoryManagementApplication.Pages.admin.tracker
         {
             //�ndra user?
             MyUser = await _userManager.GetUserAsync(User);
-			var trackerSelect = await _trackerManager.GetAllTrackersAsync();
 
-            SelectedInventoryTracker = trackerSelect.Where(tr => tr.Id == id).FirstOrDefault();
-
-			//SelectedInventoryTracker = await _context.InventoryTracker.Include(x => x.Product).Include(z => z.Storage).Where(g => g.Id == id).FirstOrDefaultAsync();
-
+            SelectedInventoryTracker = await _trackerManager.GetOneTrackerAsync(id.Value);
 
 			if (SelectedInventoryTracker == null)
             {
@@ -97,76 +93,17 @@ namespace InventoryManagementApplication.Pages.admin.tracker
                 status = tuple.Item1;
                 if (status == false)
                 {
-                    StatusMessage = "Förflyttning lyckades ej";
+                    StatusMessage = tuple.Item2 != string.Empty ? tuple.Item2 : "Förflyttning lyckades ej!";
                     return RedirectToPage("./moveProduct", new { id = SelectedInventoryTracker.Id });
                 }
                 else
                 {
-                    StatusMessage = tuple.Item2;
-                    return RedirectToPage("./Index");
+                    StatusMessage = tuple.Item2 != string.Empty ? tuple.Item2 : "Förflyttning lyckades!";
+                    return RedirectToPage("./moveProduct", new { id = SelectedInventoryTracker.Id });
                 }
             }
             StatusMessage = "Förflyttning lyckades ej";
-            return RedirectToPage("./moveProduct", new { id = SelectedInventoryTracker.Id });
-            //MyUser = await _userManager.GetUserAsync(User);
-            //var storageList = await _storageManager.GetStoragesAsync(false);
-            //var trackerList = await _trackerManager.GetAllTrackersAsync();
-
-            //var currentTracker = trackerList.FirstOrDefault(x => x.ProductId == SelectedInventoryTracker.ProductId && x.StorageId == SelectedInventoryTracker.StorageId);
-            //if (currentTracker == null)
-            //{
-            //    return Page();
-            //}
-
-            //var destinationTracker = trackerList.FirstOrDefault(x => x.ProductId == SelectedInventoryTracker.ProductId && x.StorageId == InventoryTracker.StorageId);
-
-            //// Skapa destinationTracker om den inte finns
-            //if (destinationTracker == null)
-            //{
-            //    destinationTracker = new InventoryTracker
-            //    {
-            //        ProductId = SelectedInventoryTracker.ProductId,
-            //        StorageId = InventoryTracker.StorageId,
-            //        Quantity = (int)InventoryTracker.Quantity
-            //    };
-            //    await _trackerManager.CreateTrackerAsync(destinationTracker);
-            //}
-            //else
-            //{
-            //    destinationTracker.Quantity += (int)InventoryTracker.Quantity;
-            //    await _trackerManager.EditTrackerAsync(destinationTracker);
-            //}
-
-            //if (currentTracker.Quantity < InventoryTracker.Quantity)
-            //{
-            //    StatusMessage = "Finns ej den m�ngden produkter i lagret. F�rs�k med en mindre m�ngd.";
-            //    return RedirectToPage("./moveProduct", new { id = SelectedInventoryTracker.Id });
-            //}
-
-            //currentTracker.Quantity -= (int)InventoryTracker.Quantity;
-            //await _trackerManager.EditTrackerAsync(currentTracker);
-
-            //var sourceStorage = storageList.FirstOrDefault(s => s.Id == SelectedInventoryTracker.StorageId);
-            //var destinationStorage = storageList.FirstOrDefault(s => s.Id == InventoryTracker.StorageId);
-
-            //if (sourceStorage == null || destinationStorage == null)
-            //{
-            //    return Page();
-            //}
-
-            //// Uppdatera lagret
-            //sourceStorage.CurrentStock -= (int)InventoryTracker.Quantity;
-            //destinationStorage.CurrentStock += (int)InventoryTracker.Quantity;
-
-            //await _storageManager.EditStorageAsync(sourceStorage);
-            //await _storageManager.EditStorageAsync(destinationStorage);
-
-            //// Spara uppdaterad produkt
-            //var product = await _productManager.GetProductByIdAsync(SelectedInventoryTracker.ProductId, null);
-            //product.Updated = DateTime.Now;
-            //await _productManager.EditProductAsync(product);
-
-            //return RedirectToPage("./Index");
+            return RedirectToPage("./moveProduct", new { id = SelectedInventoryTracker.Id });          
         }
 
     }

@@ -21,8 +21,7 @@ namespace InventoryManagementApplication.Pages
         public List<InventoryTracker> InventoryTracker { get; set; } = new List<InventoryTracker>();    
         public List<Storage> Storages { get; set; } = new List<Storage>();
 
-        public async Task OnGetAsync()
-        
+        public async Task OnGetAsync()       
         {
             Storages = await _storageManager.GetStoragesAsync(false);
 
