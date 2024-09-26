@@ -46,24 +46,23 @@ namespace InventoryManagementApplication.DAL
 		}
 		public async Task<Models.InventoryTracker> GetOneTrackerAsync(int id)
 		{
-           
+			InventoryTracker inventoryTracker = null;
 
             using (var client = new HttpClient())
 			{
 				client.BaseAddress = BaseAddress;
-				HttpResponseMessage responseProducts = await client.GetAsync($"api/InventoryTrackers/{id}");
 
-                if (responseProducts.IsSuccessStatusCode)
+				HttpResponseMessage responseMessage = await client.GetAsync($"api/InventoryTrackers/{id}");
+                if (responseMessage.IsSuccessStatusCode)
 				{
-					string responseString = await responseProducts.Content.ReadAsStringAsync();
+					string responseString = await responseMessage.Content.ReadAsStringAsync();
 
 					// blir fel här
-					 InventoryTracker = JsonSerializer.Deserialize<Models.InventoryTracker>(responseString);
+					 inventoryTracker = JsonSerializer.Deserialize<InventoryTracker>(responseString);
 					
 				}			
 			}
-
-			return InventoryTracker;
+			return inventoryTracker;
 		}
 
 		public async Task<List<InventoryTracker>> GetAllTrackersAsync()
@@ -91,6 +90,7 @@ namespace InventoryManagementApplication.DAL
 
         public async Task<List<InventoryTracker>> GetTrackerByProductOrStorageAsync(int? productId, int? storageId)
         {
+			InventoryTrackers = new List<InventoryTracker>();
 
             using (var client = new HttpClient())
             {
@@ -102,11 +102,11 @@ namespace InventoryManagementApplication.DAL
                 if (responseProducts.IsSuccessStatusCode)
                 {
                     string responseString = await responseProducts.Content.ReadAsStringAsync();
-                    List<Models.InventoryTracker> tracker = JsonSerializer.Deserialize<List<Models.InventoryTracker>>(responseString);
+                    List<Models.InventoryTracker> tracker = JsonSerializer.Deserialize<List<Models.InventoryTracker>>(responseString);					
+
                     InventoryTrackers = tracker;
                 }
             }
-
             return InventoryTrackers;
         }
 

@@ -25,6 +25,7 @@ namespace InventoryManagementApplication.Helpers
             var product = await _productManager.GetProductByIdAsync(productId, false);
             var fromStorage = await _storageManager.GetStorageByIdAsync(fromStorageId, false);
             var toStorage = await _storageManager.GetStorageByIdAsync(toStorageId, false);
+            var defaultStorage = await _storageManager.GetDefaultStorageAsync();
 
             // göra cases istället för IF ??
 
@@ -82,6 +83,24 @@ namespace InventoryManagementApplication.Helpers
 
             await _storageManager.EditStorageAsync(fromStorage);
             await _storageManager.EditStorageAsync(toStorage);
+
+            if (defaultStorage.Id == fromStorageId || defaultStorage.Id == toStorageId)
+            {
+                switch (defaultStorage.Id)
+                {
+                    case var id when id == fromStorageId:
+                        defaultStorage.CurrentStock -= quantity;
+                        break;
+
+                    case var id when id == toStorageId:
+                        defaultStorage.CurrentStock += quantity;
+                        break;
+
+                    default:
+                        break;
+                }
+                await _storageManager.EditStorageAsync(defaultStorage);
+            }
 
             await _productManager.EditProductAsync(product);
 
