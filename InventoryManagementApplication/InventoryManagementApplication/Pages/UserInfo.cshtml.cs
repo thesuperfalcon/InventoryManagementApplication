@@ -13,11 +13,15 @@ namespace InventoryManagementApplication.Pages
     {
         private readonly UserManager<InventoryManagementUser> _userManager;
         private readonly RoleManager<InventoryManagementRole> _roleManager;
-        public UserInfoModel(UserManager<InventoryManagementUser> userManager, RoleManager<InventoryManagementRole> roleManager)
+        private readonly DAL.UserManager _userManagerDal;
+        public UserInfoModel(UserManager<InventoryManagementUser> userManager, RoleManager<InventoryManagementRole> roleManager,
+            DAL.UserManager userManagerDal)
         {
             _userManager = userManager;
             _roleManager = roleManager;
+            _userManagerDal = userManagerDal;
             AvailableRoles = new List<string>();
+
         }
 
 
@@ -58,8 +62,9 @@ namespace InventoryManagementApplication.Pages
             {
                 return NotFound("Användar-ID saknas.");
             }
-
-            SelectedUser = await _userManager.FindByIdAsync(userId);
+            
+            SelectedUser = await _userManagerDal.GetOneUserAsync(userId);
+            //SelectedUser = await _userManager.FindByIdAsync(userId);
             if (SelectedUser == null)
             {
                 return NotFound("Användaren kunde inte hittas.");

@@ -24,18 +24,20 @@ namespace InventoryManagementApplication
             builder.Services.AddScoped<DAL.StatisticManager>();
             builder.Services.AddScoped<DAL.ActivityLogManager>();
             builder.Services.AddScoped<InventoryManagementApplication.DAL.UserManager>();
-            //builder.Services.AddTransient<Models.Statistic>();
-            //builder.Services.AddTransient<Models.StatisticDto>();
+			builder.Services.AddScoped<UserManager<InventoryManagementUser>>();
+			builder.Services.AddScoped<RoleManager<InventoryManagementRole>>();
+			//builder.Services.AddTransient<Models.Statistic>();
+			//builder.Services.AddTransient<Models.StatisticDto>();
 
-            //builder.Services.AddControllers()
-            //.AddJsonOptions(options =>
-            //{
-            //    options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
-            //});
+			//builder.Services.AddControllers()
+			//.AddJsonOptions(options =>
+			//{
+			//    options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
+			//});
 
-            //var supportedCultures = new[] { new CultureInfo("en-US") };
+			//var supportedCultures = new[] { new CultureInfo("en-US") };
 
-            var supportedCultures = new[] { new CultureInfo("sv-SE"), new CultureInfo("en-US") };
+			var supportedCultures = new[] { new CultureInfo("sv-SE"), new CultureInfo("en-US") };
             builder.Services.Configure<RequestLocalizationOptions>(options =>
             {
                 options.DefaultRequestCulture = new RequestCulture("sv-SE");

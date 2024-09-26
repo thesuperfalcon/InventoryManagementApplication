@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using InventoryManagementApplication.Areas.Identity.Data;
 using Microsoft.AspNetCore.Authorization;
 using InventoryManagementApplication.DAL;
+using System.Security.Claims;
 
 namespace InventoryManagementApplication.Pages
 {
@@ -39,8 +40,8 @@ namespace InventoryManagementApplication.Pages
         //Hämtar användare
         public async Task OnGetAsync()
         {
-            //var users = await _userManagerDAL.GetAllUsersAsync();
-            var users = _userManager.Users.ToList();
+            var users = await _userManagerDAL.GetAllUsersAsync();
+//          var users1 = _userManager.Users.ToList();
             UsersWithRoles = new List<UserWithRoleViewModel>();
 
             foreach (var user in users)
@@ -48,7 +49,10 @@ namespace InventoryManagementApplication.Pages
                 UsersWithRoles.Add(await CreateUserWithRoleViewModel(user));
             }
             //var loggedInUser = await _userManagerDAL.GetOneUserAsync(User);
-            var loggedInUser = await _userManager.GetUserAsync(User);
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var loggedInUser = await _userManagerDAL.GetOneUserAsync(userId);
+
+            //var loggedInUser1 = await _userManager.GetUserAsync(User);
             LoggedInUserName = loggedInUser != null ? FormatUserName(loggedInUser) : string.Empty;
         }
 

@@ -38,20 +38,28 @@ namespace InventoryManagementApplication.DAL
 		{
 			using (var client = new HttpClient())
 			{
-				client.BaseAddress = BaseAddress;
-				HttpResponseMessage response = await client.GetAsync("api/Users/");
+				
+					client.BaseAddress = BaseAddress;
+					HttpResponseMessage response = await client.GetAsync("api/Users/");
 
-				if (response.IsSuccessStatusCode)
-				{
-					string responseString = await response.Content.ReadAsStringAsync();
-					List<InventoryManagementUser> users = JsonSerializer.Deserialize<List<InventoryManagementUser>>(responseString);
-					Users = users.ToList();
+					if (response.IsSuccessStatusCode)
+					{
+						string responseString = await response.Content.ReadAsStringAsync();
+						Console.WriteLine(responseString);
+						var options = new JsonSerializerOptions
+						{
+							PropertyNameCaseInsensitive = true
+						};
+					
+						List<InventoryManagementUser> users = JsonSerializer.Deserialize<List<InventoryManagementUser>>(responseString);					
+						Users = users.ToList();				
 				}
-
+				
+				
 				return Users;
 			}
 		}
-		public async Task<InventoryManagementUser> GetOneUserAsync(int id)
+		public async Task<InventoryManagementUser> GetOneUserAsync(string id)
 		{
 			using (var client = new HttpClient())
 			{
