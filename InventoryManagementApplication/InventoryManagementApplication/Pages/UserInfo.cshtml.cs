@@ -49,7 +49,7 @@ namespace InventoryManagementApplication.Pages
                 roles = new List<InventoryManagementRole>();
             }
 
-            AvailableRoles = roles.Select(r => r.Name).ToList();
+            AvailableRoles = roles.Select(r => r.RoleName).ToList();
             AvailableRoles.Insert(0, "Användare");
 
             if (string.IsNullOrEmpty(SelectedRole))
