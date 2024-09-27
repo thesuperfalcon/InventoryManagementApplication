@@ -13,7 +13,7 @@ namespace InventoryManagementApplication.DAL
 
 
 
-        public async Task<List<InventoryManagementRole>> GetAllRoles()
+        public async Task<List<InventoryManagementRole>> GetAllRolesAsync()
         {
             using (var client = new HttpClient())
             {

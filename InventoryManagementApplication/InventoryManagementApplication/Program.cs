@@ -12,9 +12,9 @@ using InventoryManagementApplication.DAL;
 namespace InventoryManagementApplication
 {
     public class Program
-    {
+    {     
         public static async Task Main(string[] args)  // G�r metoden till asynkron
-        {
+        {          
             var builder = WebApplication.CreateBuilder(args);
             var connectionString = builder.Configuration.GetConnectionString("InventoryManagementApplicationContextConnection") ?? throw new InvalidOperationException("Connection string 'InventoryManagementApplicationContextConnection' not found.");
 
@@ -107,8 +107,8 @@ namespace InventoryManagementApplication
 
         private static async Task SeedRolesAndAdminUser(RoleManager<InventoryManagementRole> roleManager, UserManager<InventoryManagementUser> userManager)
         {
+            
             var roles = new[] { "Admin" };
-
             // Skapa roller
             foreach (var role in roles)
             {
@@ -140,6 +140,7 @@ namespace InventoryManagementApplication
                     FirstName = "Admin",
                     LastName = "User"
                 };
+               
                 var result = await userManager.CreateAsync(adminUser, adminPassword);
                 if (result.Succeeded)
                 {

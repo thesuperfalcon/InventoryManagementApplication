@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
+using System.Data;
 
 namespace InventoryManagementApplication.Pages
 {
@@ -42,7 +43,7 @@ namespace InventoryManagementApplication.Pages
                 return;
             }
 
-            var roles = await _roleManagerDal.GetAllRoles();
+            var roles = await _roleManagerDal.GetAllRolesAsync();
             if (roles == null || roles.Count == 0)
             {
                 Console.WriteLine("Inga roller hittades i databasen.");
@@ -74,8 +75,17 @@ namespace InventoryManagementApplication.Pages
 
             await PopulateAvailableRolesAsync();
 
-            var userRoles = await _userManager.GetRolesAsync(SelectedUser);
-            SelectedRole = userRoles.FirstOrDefault() ?? "Användare"; // Om ingen roll, sätt "Användare"
+            var userRoles = await _roleManagerDal.GetAllRolesAsync();
+            if(SelectedUser.RoleId == userRoles[0].Id)
+            {
+                SelectedRole = userRoles[0].Id;
+            }
+            else
+            {
+                SelectedRole = "Användare";
+            }
+            //var userRoles = await _userManager.GetRolesAsync(SelectedUser);
+            //SelectedRole = userRoles.FirstOrDefault() ?? ; // Om ingen roll, sätt "Användare"
 
             return Page();
         }
