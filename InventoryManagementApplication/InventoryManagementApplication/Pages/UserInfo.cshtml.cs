@@ -14,14 +14,16 @@ namespace InventoryManagementApplication.Pages
         private readonly UserManager<InventoryManagementUser> _userManager;
         private readonly RoleManager<InventoryManagementRole> _roleManager;
         private readonly DAL.UserManager _userManagerDal;
+        private readonly DAL.RoleManager _roleManagerDal;
         public UserInfoModel(UserManager<InventoryManagementUser> userManager, RoleManager<InventoryManagementRole> roleManager,
-            DAL.UserManager userManagerDal)
+            DAL.UserManager userManagerDal, DAL.RoleManager roleManagerDal)
         {
             _userManager = userManager;
             _roleManager = roleManager;
             _userManagerDal = userManagerDal;
+            _roleManagerDal = roleManagerDal;
             AvailableRoles = new List<string>();
-
+           
         }
 
 
@@ -34,13 +36,13 @@ namespace InventoryManagementApplication.Pages
 
         private async Task PopulateAvailableRolesAsync()
         {
-            if (_roleManager == null)
+            if (_roleManagerDal == null)
             {
                 Console.WriteLine("RoleManager är null.");
                 return;
             }
 
-            var roles = await _roleManager.Roles.ToListAsync();
+            var roles = await _roleManagerDal.GetAllRoles();
             if (roles == null || roles.Count == 0)
             {
                 Console.WriteLine("Inga roller hittades i databasen.");

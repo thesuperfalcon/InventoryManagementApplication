@@ -26,6 +26,7 @@ namespace InventoryManagementApplication
             builder.Services.AddScoped<InventoryManagementApplication.DAL.UserManager>();
 			builder.Services.AddScoped<UserManager<InventoryManagementUser>>();
 			builder.Services.AddScoped<RoleManager<InventoryManagementRole>>();
+            builder.Services.AddScoped<DAL.RoleManager>();
 			//builder.Services.AddTransient<Models.Statistic>();
 			//builder.Services.AddTransient<Models.StatisticDto>();
 
