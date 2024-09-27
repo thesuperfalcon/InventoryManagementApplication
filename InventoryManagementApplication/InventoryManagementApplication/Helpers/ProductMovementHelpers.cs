@@ -1,6 +1,5 @@
 ﻿using InventoryManagementApplication.DAL;
 using InventoryManagementApplication.Data;
-using System.Runtime.CompilerServices;
 
 namespace InventoryManagementApplication.Helpers
 {
@@ -27,31 +26,29 @@ namespace InventoryManagementApplication.Helpers
             var toStorage = await _storageManager.GetStorageByIdAsync(toStorageId, false);
             var defaultStorage = await _storageManager.GetDefaultStorageAsync();
 
-            // göra cases istället för IF ??
-
-            if (fromStorage == null || toStorage == null)
-            {
-                message = "Kan ej finna lagrerna";
-                return new Tuple<bool, string>(false, message);
-            }
-
-            if (quantity > toStorage.MaxCapacity - toStorage.CurrentStock)
-            {
-                message = "Finns ej plats för denna mängd i lagret. Försök med en mindre mängd.";
-                return new Tuple<bool, string>(false, message);
-            }
-
             var fromStorageTracker = await _trackerManager.GetTrackerByProductAndStorageAsync(productId, fromStorageId);
-            if (fromStorageTracker == null)
-            {
-                message = "Kan ej finna lagersaldo från lager";
-                return new Tuple<bool, string>(false, message);
-            }
 
-            if (fromStorageTracker.Quantity < quantity)
+            bool success = false;
+            if (!success)
             {
-                message = "Finns ej den mängden produkter i lagret. Försök med mindre antal..";
-                return new Tuple<bool, string>(false, message);
+                switch ((bool)success)
+                {
+                    case false when fromStorage == null || toStorage == null:
+                        message = "Kan ej finna lagrerna";
+                        return new Tuple<bool, string>(false, message);
+                    case false when quantity > toStorage.MaxCapacity - toStorage.CurrentStock:
+                        message = "Finns ej plats för denna mängd i lagret. Försök med en mindre mängd.";
+                        return new Tuple<bool, string>(false, message);
+                    case false when fromStorageTracker == null:
+                        message = "Kan ej finna lagersaldo från lager";
+                        return new Tuple<bool, string>(false, message);
+                    case false when fromStorageTracker.Quantity < quantity:
+                        message = "Finns ej den mängden produkter i lagret. Försök med mindre antal..";
+                        return new Tuple<bool, string>(false, message);
+                    default:
+                        success = true;
+                        break;
+                }
             }
 
             var toStorageTracker = await _trackerManager.GetTrackerByProductAndStorageAsync(productId, toStorageId);
@@ -66,13 +63,13 @@ namespace InventoryManagementApplication.Helpers
                 };
                 await _trackerManager.CreateTrackerAsync(toStorageTracker);
 
-               toStorageTracker = await _trackerManager.GetTrackerByProductAndStorageAsync(productId, toStorageId);
+                toStorageTracker = await _trackerManager.GetTrackerByProductAndStorageAsync(productId, toStorageId);
             }
             else
             {
                 toStorageTracker.Quantity += quantity;
             }
-            
+
             fromStorageTracker.Quantity -= quantity;
 
             await _trackerManager.EditTrackerAsync(fromStorageTracker);
@@ -90,12 +87,10 @@ namespace InventoryManagementApplication.Helpers
                 {
                     case var id when id == fromStorageId:
                         product.CurrentStock -= quantity;
-                        //defaultStorage.CurrentStock -= quantity;
                         break;
 
                     case var id when id == toStorageId:
                         product.CurrentStock += quantity;
-                        //defaultStorage.CurrentStock += quantity;
                         break;
 
                     default:
@@ -103,8 +98,6 @@ namespace InventoryManagementApplication.Helpers
                 }
                 await _productManager.EditProductAsync(product);
             }
-
-            //await _productManager.EditProductAsync(product);
 
             message = "Förflyttning lyckades";
             return new Tuple<bool, string>(true, message);

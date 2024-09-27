@@ -88,7 +88,7 @@ namespace InventoryManagementApplication.DAL
 			}
 		}
 
-        public async Task<List<InventoryTracker>> GetTrackerByProductOrStorageAsync(int? productId, int? storageId)
+        public async Task<List<InventoryTracker>> GetTrackerByProductOrStorageAsync(int productId, int storageId)
         {
 			InventoryTrackers = new List<InventoryTracker>();
 
@@ -110,9 +110,9 @@ namespace InventoryManagementApplication.DAL
             return InventoryTrackers;
         }
 
-		public async Task<InventoryTracker> GetTrackerByProductAndStorageAsync(int? productId, int? storageId)
+		public async Task<InventoryTracker> GetTrackerByProductAndStorageAsync(int productId, int storageId)
 		{
-			if(productId.HasValue && storageId.HasValue)
+			if(productId > 0 && storageId > 0)
 			{
 				var inventoryTrackers = await GetTrackerByProductOrStorageAsync(productId, storageId);
 

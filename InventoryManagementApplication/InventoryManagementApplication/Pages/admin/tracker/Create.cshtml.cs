@@ -26,16 +26,13 @@ namespace InventoryManagementApplication.Pages.admin.tracker
 		}
 		[TempData]
 		public string StatusMessage { get; set; }
-		public SelectList StorageSelectList { get; set; }
-		public SelectList ProductSelectList { get; set; }
-
-		[BindProperty]
-		public InventoryTracker InventoryTracker { get; set; } = default!;
         [BindProperty]
-		public Models.Storage DefaultStorage { get; set; }
-		public Models.Storage Storage { get; set; }
-		public Product? Product { get; set; }
-		public int? CurrentSpace { get; set; }
+        public InventoryTracker InventoryTracker { get; set; } = default!;
+        [BindProperty]
+        public Models.Storage DefaultStorage { get; set; }
+        public SelectList StorageSelectList { get; set; }
+		public SelectList ProductSelectList { get; set; }
+		
 
 		public async Task<IActionResult> OnGetAsync()
 		{
@@ -44,17 +41,7 @@ namespace InventoryManagementApplication.Pages.admin.tracker
 
             DefaultStorage = await _storageManager.GetDefaultStorageAsync();
 
-			var productItems = products.Select(x => new
-			{
-				Value = x.Id,
-				Text = $"{x.Name} (Antal utan lager: {x.CurrentStock})"
-			});
-
-			var storageItems = storages.Select(x => new
-			{
-				Value = x.Id.ToString(),
-				Text = $"{x.Name} (Lediga platser: {x.MaxCapacity - x.CurrentStock})"
-			}).ToList();
+			
 
 			StorageSelectList = await _selectListHelpers.GenerateStorageSelectListAsync(DefaultStorage.Id);
 			ProductSelectList = await _selectListHelpers.GenerateProductSelectListBasedOfStorageAsync(DefaultStorage.Id);

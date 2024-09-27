@@ -14,16 +14,19 @@ namespace InventoryManagementApplication.Pages.admin.product
 	{
 		private readonly ProductManager _productManager;
 		private readonly TrackerManager _trackerManager;
-		public EditModel(ProductManager productManager, TrackerManager trackerManager)
+		private readonly StorageManager _storageManager;
+		public EditModel(ProductManager productManager, TrackerManager trackerManager, StorageManager storageManager)
 		{
 			_productManager = productManager;
 			_trackerManager = trackerManager;
+			_storageManager = storageManager;
 		}
 
 		[TempData]
 		public string StatusMessage { get; set; }
 		[BindProperty]
 		public Product Product { get; set; } = default!;
+		public List<InventoryTracker> InventoryTrackers { get; set; }
 
 		public async Task<IActionResult> OnGetAsync(int? id)
 		{
@@ -50,23 +53,32 @@ namespace InventoryManagementApplication.Pages.admin.product
 			{
 				return Page();
 			}
-			List<InventoryTracker> inventoryTrackers = await _trackerManager.GetAllTrackersAsync();
-			inventoryTrackers = inventoryTrackers.Where(p => p.ProductId == Product.Id).ToList();
 
-			var productQuantity = inventoryTrackers.Sum(x => x.Quantity);
+			var defaultStorage = await _storageManager.GetDefaultStorageAsync();
+			var tracker = await _trackerManager.GetTrackerByProductAndStorageAsync(Product.Id, defaultStorage.Id);
 
-			if (inventoryTrackers != null && inventoryTrackers.Count > 0)
+            if (tracker == null)
+            {
+                return RedirectToPage("./Edit", new { id = Product.Id });
+            }
+
+			InventoryTrackers = await _trackerManager.GetTrackerByProductOrStorageAsync(Product.Id, 0);
+
+			if (InventoryTrackers != null && InventoryTrackers.Count > 0)
 			{
+                var productQuantity = InventoryTrackers.Sum(x => x.Quantity);
 
-				if (Product.TotalStock < productQuantity)
+                if (Product.TotalStock < productQuantity)
 				{
-					StatusMessage = $"Går ej att ändra. Currentstock: {Product.CurrentStock} Total: {Product.TotalStock}";
+					StatusMessage = $"Förbjudet att sänka antalet produkter";
 					return RedirectToPage("./Edit", new { id = Product.Id });
 				}
 				else
 				{
 					var input = Product.TotalStock - productQuantity;
-					Product.CurrentStock = input;
+					Product.CurrentStock += input;
+					defaultStorage.CurrentStock += input;
+					tracker.Quantity += input;
 				}
 			}
 			else
@@ -74,12 +86,11 @@ namespace InventoryManagementApplication.Pages.admin.product
 				Product.CurrentStock = Product.TotalStock;
 			}
 
-			// Enligt AI så byter man ut den här mot PutAsync när det gäller API?
-			//_context.Attach(Product).State = EntityState.Modified;
-
 			try
 			{
 				await _productManager.EditProductAsync(Product);
+				await _storageManager.EditStorageAsync(defaultStorage);
+				await _trackerManager.EditTrackerAsync(tracker);
 				return RedirectToPage("./Edit", new { id = Product.Id });
 
 			}
@@ -98,9 +109,9 @@ namespace InventoryManagementApplication.Pages.admin.product
 	
 		private async Task<bool> ProductExists(int id)
 		{
-			var products = await _productManager.GetProductsAsync(false);
-			
-			return products.Any(e => e.Id == id);
+			var product = await _productManager.GetProductByIdAsync(id, false);
+
+			return product != null ? true : false;
 		}
 	}
-	}
+}
