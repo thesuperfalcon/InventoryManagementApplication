@@ -89,20 +89,22 @@ namespace InventoryManagementApplication.Helpers
                 switch (defaultStorage.Id)
                 {
                     case var id when id == fromStorageId:
-                        defaultStorage.CurrentStock -= quantity;
+                        product.CurrentStock -= quantity;
+                        //defaultStorage.CurrentStock -= quantity;
                         break;
 
                     case var id when id == toStorageId:
-                        defaultStorage.CurrentStock += quantity;
+                        product.CurrentStock += quantity;
+                        //defaultStorage.CurrentStock += quantity;
                         break;
 
                     default:
                         break;
                 }
-                await _storageManager.EditStorageAsync(defaultStorage);
+                await _productManager.EditProductAsync(product);
             }
 
-            await _productManager.EditProductAsync(product);
+            //await _productManager.EditProductAsync(product);
 
             message = "Förflyttning lyckades";
             return new Tuple<bool, string>(true, message);
