@@ -1,5 +1,6 @@
 ﻿using InventoryManagementApplication.Areas.Identity.Data;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages;
 using System.Text;
 using System.Text.Json;
 
@@ -50,7 +51,8 @@ namespace InventoryManagementApplication.DAL
                 {
                     User = user,
                     CurrentRoles = currentRoles,
-                    AddRole = null
+                    AddRole = null,
+                    ResetPassword = false
                 };
                 var content = new StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(removeRoleRequest), Encoding.UTF8, "application/json");
                 HttpResponseMessage response = await client.PutAsync($"api/Users/{user.Id}", content);
@@ -69,7 +71,8 @@ namespace InventoryManagementApplication.DAL
                 {
                     User = user,
                     CurrentRoles = null,
-                    AddRole = currentRoles
+                    AddRole = currentRoles,
+                    ResetPassword = false
                 };
                 var content = new StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(addRoleRequest), Encoding.UTF8, "application/json");
                 HttpResponseMessage response = await client.PutAsync($"api/Users/{user.Id}", content);
