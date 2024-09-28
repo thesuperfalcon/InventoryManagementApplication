@@ -81,7 +81,7 @@ namespace InventoryManagementApplication
                 var services = scope.ServiceProvider;
                 var roleManager = services.GetRequiredService<RoleManager<InventoryManagementRole>>();
                 var userManager = services.GetRequiredService<UserManager<InventoryManagementUser>>();
-                await SeedRolesAndAdminUser(roleManager, userManager);
+                //await SeedRolesAndAdminUser(roleManager, userManager);
             }
 
             // Configure the HTTP request pipeline.
@@ -104,49 +104,6 @@ namespace InventoryManagementApplication
 
             await app.RunAsync();
         }
-
-        private static async Task SeedRolesAndAdminUser(RoleManager<InventoryManagementRole> roleManager, UserManager<InventoryManagementUser> userManager)
-        {
-            
-            var roles = new[] { "Admin" };
-            // Skapa roller
-            foreach (var role in roles)
-            {
-                if (!await roleManager.RoleExistsAsync(role))
-                {
-                    var newRole = new InventoryManagementRole
-                    {
-                        Name = role,
-                        NormalizedName = role.ToUpper(),
-                        FullAccess = (role == "Admin"),
-                        RoleName = role
-                    };
-                    await roleManager.CreateAsync(newRole);
-
-                }
-            }
-
-            // Om admin inte finns, skapa rollen vid start
-            var adminUserName = "AdminUser";
-            var adminPassword = "AdminUser123!";
-
-            var adminUser = await userManager.FindByNameAsync(adminUserName);
-            if (adminUser == null)
-            {
-                adminUser = new InventoryManagementUser
-                {
-                    UserName = adminUserName,
-                    EmployeeNumber = "0000",
-                    FirstName = "Admin",
-                    LastName = "User"
-                };
-               
-                var result = await userManager.CreateAsync(adminUser, adminPassword);
-                if (result.Succeeded)
-                {
-                    await userManager.AddToRoleAsync(adminUser, "Admin");
-                }
-            }
-        }
+      
     }
 }

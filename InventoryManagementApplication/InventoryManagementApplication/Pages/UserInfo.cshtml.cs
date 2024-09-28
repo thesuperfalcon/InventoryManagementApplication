@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
 using System.Data;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace InventoryManagementApplication.Pages
 {
@@ -78,7 +79,7 @@ namespace InventoryManagementApplication.Pages
             var userRoles = await _roleManagerDal.GetAllRolesAsync();
             if(SelectedUser.RoleId == userRoles[0].Id)
             {
-                SelectedRole = userRoles[0].Id;
+                SelectedRole = userRoles[0].RoleName;
             }
             else
             {
@@ -101,7 +102,8 @@ namespace InventoryManagementApplication.Pages
 
             ModelState.Clear();
 
-            SelectedUser = await _userManager.FindByIdAsync(userId);
+            SelectedUser = await _userManagerDal.GetOneUserAsync(userId);
+            //SelectedUser = await _userManager.FindByIdAsync(userId);
 
             if (SelectedUser == null)
             {
@@ -114,32 +116,46 @@ namespace InventoryManagementApplication.Pages
                 return Page();
             }
 
-            var user = await _userManager.FindByIdAsync(userId);
+            var user = await _userManagerDal.GetOneUserAsync(userId);
+            //var user = await _userManager.FindByIdAsync(userId);
             if (user == null)
             {
                 return NotFound("Användaren kunde inte hittas.");
             }
 
-            var currentRoles = await _userManager.GetRolesAsync(user);
+            var getRoles = await _roleManagerDal.GetAllRolesAsync();
+            var currentRoles = getRoles.Where(r => r.Id == user.RoleId).Select(r => r.RoleName).ToList();
+            
+            //var currentRoleName = currentRoles.Select(r => r.Name).ToList();
+            //var currentRoles = await _userManager.GetRolesAsync(user);
 
-            if (currentRoles.Contains(SelectedRole))
+
+            if(currentRoles.Contains(SelectedRole)) 
             {
                 TempData["SuccessMessage"] = "Ingen förändring i roll.";
                 return RedirectToPage(new { userId });
             }
+            //if (currentRoles.Contains(SelectedRole))
+            //{
+            //    TempData["SuccessMessage"] = "Ingen förändring i roll.";
+            //    return RedirectToPage(new { userId });
+            //}
 
-            await _userManager.RemoveFromRolesAsync(user, currentRoles);
+            await _roleManagerDal.RemoveFromRoleAsync(user, currentRoles);
 
             if (SelectedRole != "Användare")
             {
-                var result = await _userManager.AddToRoleAsync(user, SelectedRole);
+                var result = await _roleManagerDal.AddToRoleAsync(user, SelectedRole);
 
-                if (!result.Succeeded)
+                //var result = await _userManager.AddToRoleAsync(user, SelectedRole);
+
+                if (!result)
                 {
-                    foreach (var error in result.Errors)
-                    {
-                        ModelState.AddModelError(string.Empty, error.Description);
-                    }
+                    ModelState.AddModelError(string.Empty, "Kunde inte tilldela rollen till användaren");
+                    //foreach (var error in result.Errors)
+                    //{
+                    //    ModelState.AddModelError(string.Empty, error.Description);
+                    //}
 
                     await PopulateAvailableRolesAsync();
                     return Page();
