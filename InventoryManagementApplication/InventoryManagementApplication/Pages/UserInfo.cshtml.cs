@@ -10,31 +10,41 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 namespace InventoryManagementApplication.Pages
 {
     //Endast admin har åtkomst
-    [Authorize(Roles = "Admin")]
+   [Authorize(Roles = "Admin")]
     public class UserInfoModel : PageModel
     {
         private readonly UserManager<InventoryManagementUser> _userManager;
         private readonly RoleManager<InventoryManagementRole> _roleManager;
+
+        private readonly SignInManager<InventoryManagementUser> _signInManager;
+
         private readonly DAL.UserManager _userManagerDal;
         private readonly DAL.RoleManager _roleManagerDal;
+
+
+
         public UserInfoModel(UserManager<InventoryManagementUser> userManager, RoleManager<InventoryManagementRole> roleManager,
-            DAL.UserManager userManagerDal, DAL.RoleManager roleManagerDal)
+             SignInManager<InventoryManagementUser> signInManager, DAL.UserManager userManagerDal, DAL.RoleManager roleManagerDal)
         {
             _userManager = userManager;
             _roleManager = roleManager;
             _userManagerDal = userManagerDal;
             _roleManagerDal = roleManagerDal;
+             _signInManager = signInManager;
             AvailableRoles = new List<string>();
-           
         }
 
 
-        [BindProperty]
+ 
+               [BindProperty]
         public InventoryManagementUser SelectedUser { get; set; }
+      
 
         [BindProperty]
         public string SelectedRole { get; set; }
         public List<string> AvailableRoles { get; set; }
+
+    
 
         private async Task PopulateAvailableRolesAsync()
         {
@@ -90,6 +100,15 @@ namespace InventoryManagementApplication.Pages
 
             return Page();
         }
+
+
+//Ser till att det alltid finns en admin
+        public async Task<int> GetAdminCountAsync()
+{
+    var admins = await _userManager.GetUsersInRoleAsync("Admin");
+    return admins.Count;
+}
+
 
 
         public async Task<IActionResult> OnPostAssignRoleAsync(string userId)
@@ -161,6 +180,18 @@ namespace InventoryManagementApplication.Pages
                     return Page();
                 }
             }
+
+   // Om den inloggade användaren ändrar sin egen roll till "Användare"
+    var loggedInUser = await _userManager.GetUserAsync(User);
+    if (loggedInUser != null && loggedInUser.Id == userId && SelectedRole == "Användare")
+    {
+        // Uppdatera den inloggade användarens säkerhetsanspråk för att reflektera den nya rollen
+        await _signInManager.RefreshSignInAsync(loggedInUser);
+
+        // Omdirigera till startsidan
+        return RedirectToPage("/Index");
+    }
+
 
             TempData["SuccessMessage"] = "Användaren har tilldelats en ny roll";
             return RedirectToPage(new { userId });
@@ -259,12 +290,34 @@ namespace InventoryManagementApplication.Pages
         }
         public async Task<IActionResult> OnPostDeleteAsync(string userId)
         {
-            var user = await _userManagerDal.GetOneUserAsync(userId);
+          /*  var user = await _userManagerDal.GetOneUserAsync(userId);
             //var user = await _userManager.FindByIdAsync(userId);
             if (user == null)
             {
                 return NotFound("Användaren hittades inte.");
-            }
+            }*/
+
+
+
+ var currentUser = await _userManager.GetUserAsync(User); // Hämta den inloggade användaren
+    if (currentUser == null)
+    {
+        return NotFound("Det gick inte att hämta den inloggade användaren.");
+    }
+
+    if (currentUser.Id == userId)
+    {
+        // Förhindra att den inloggade användaren kan radera sitt eget konto
+        ModelState.AddModelError(string.Empty, "Du kan inte radera ditt eget konto medan du är inloggad.");
+        await PopulateAvailableRolesAsync();
+        return Page();
+    }
+   var user = await _userManagerDal.GetOneUserAsync(userId);
+    if (user == null)
+    {
+        return NotFound("Användaren hittades inte.");
+    }
+
             var result = await _userManagerDal.DeleteUserAsync(user.Id);
             //var result = await _userManager.DeleteAsync(user);
 

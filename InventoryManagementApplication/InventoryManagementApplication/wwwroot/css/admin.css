@@ -100,3 +100,14 @@ margin: 20px;
 .form-control:disabled{
   background-color: #eeeff3 !important;
   }
+
+
+
+  .form-group {
+    margin-bottom: 20px;
+}
+
+.text-danger {
+    display: block; /* Gör felmeddelandet till block-element så det hamnar under fältet */
+    margin-top: 5px;
+}

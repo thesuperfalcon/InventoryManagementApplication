@@ -1,5 +1,15 @@
+
+
 @page "{userId}"
 @model InventoryManagementApplication.Pages.UserInfoModel
+@using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.Mvc.RazorPages
+@using InventoryManagementApplication.Areas.Identity.Data
+
+@inject UserManager<InventoryManagementUser> UserManager
+    @{
+    var loggedInUserId = UserManager.GetUserId(User); // Hämta det inloggade användarens ID
+}
 @{
     ViewData["Title"] = "Användarinformation";
 }
@@ -34,11 +44,13 @@
                     <div class="form-group">
                         <label for="FirstName">Förnamn</label>
                         <input asp-for="SelectedUser.FirstName" class="form-control" />
+                          <span asp-validation-for="SelectedUser.FirstName" class="text-danger"></span>
                     </div>
 
                     <div class="form-group">
                         <label for="LastName">Efternamn</label>
                         <input asp-for="SelectedUser.LastName" class="form-control" />
+                          <span asp-validation-for="SelectedUser.LastName" class="text-danger"></span>
                     </div>
 
                     <br>
@@ -70,7 +82,12 @@
                     data-check-url="@Url.Page("/Account/Register", "CheckEmployeeNumberExists")">
                                           
                     <h5>Rollhantering</h5>
-                    <form method="post" asp-page-handler="AssignRole">
+
+                    @{
+    // Hämta antalet admins från serversidan
+    var adminCount = await Model.GetAdminCountAsync();
+}
+                    <form method="post" asp-page-handler="AssignRole" onsubmit="return confirmRoleChange(@adminCount)">
   <div class="form-floating mb-3 d-flex align-items-center">
 
                             <select asp-for="SelectedRole" asp-items="@(new SelectList(Model.AvailableRoles))"
@@ -94,12 +111,30 @@
                             <div class="d-grid gap-2" style="width: 100%;">
                                 <hr>
                                 <h5>Ta bort konto</h5>
-                                <p>Denna åtgärd tar bort kontot permanent.</p>
-                                <button type="submit" asp-page-handler="Delete"
-                                    class="btn btn-danger d-flex align-items-center w-100">
-                                    <i class="fas fa-trash-alt me-1"></i> Ta bort
-                                </button>
-                            </div>
+    <p>Denna åtgärd tar bort kontot permanent.</p>
+
+    @if (Model.SelectedUser.Id != loggedInUserId) 
+    {
+        <!-- Visa bara knappen om användaren inte är den inloggade -->
+        <button type="submit" asp-page-handler="Delete"
+            class="btn btn-danger d-flex align-items-center w-100">
+            <i class="fas fa-trash-alt me-1"></i> Ta bort
+        </button>
+    }
+    else
+    {
+        <p class="text-danger">Du kan inte ta bort ditt eget konto medan du är inloggad.</p>
+    }
+</div>
+
+
+    <div class="alert alert-danger">
+        @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+        {
+            <p>@error.ErrorMessage</p>
+        }
+    </div>
+
                         </div>
                     </form>
                 </div>
@@ -113,4 +148,19 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     <partial name="_ValidationScriptsPartial" />
+    <script>
+        function confirmRoleChange(adminCount) {
+            var selectedRole = document.getElementById("RoleSelection").value;
+            var isChangingToUser = selectedRole === "Användare";
+
+            // Om rollen ändras till "Användare" och det bara finns en admin kvar
+            if (isChangingToUser && adminCount <= 1) {
+                alert("Det måste finnas minst en admin kvar. Du kan inte ändra rollen om det bara finns en admin.");
+                return false; // Förhindra formuläret från att skickas
+            }
+
+            // Visa bekräftelserutan för alla andra fall
+            return confirm("Är du säker på att du vill ändra användarens roll till: " + selectedRole + "?");
+        }
+    </script>
 }
