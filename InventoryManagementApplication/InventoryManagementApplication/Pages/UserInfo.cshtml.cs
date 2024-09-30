@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
+using System.Data;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace InventoryManagementApplication.Pages
 {
@@ -13,11 +15,17 @@ namespace InventoryManagementApplication.Pages
     {
         private readonly UserManager<InventoryManagementUser> _userManager;
         private readonly RoleManager<InventoryManagementRole> _roleManager;
-        public UserInfoModel(UserManager<InventoryManagementUser> userManager, RoleManager<InventoryManagementRole> roleManager)
+        private readonly DAL.UserManager _userManagerDal;
+        private readonly DAL.RoleManager _roleManagerDal;
+        public UserInfoModel(UserManager<InventoryManagementUser> userManager, RoleManager<InventoryManagementRole> roleManager,
+            DAL.UserManager userManagerDal, DAL.RoleManager roleManagerDal)
         {
             _userManager = userManager;
             _roleManager = roleManager;
+            _userManagerDal = userManagerDal;
+            _roleManagerDal = roleManagerDal;
             AvailableRoles = new List<string>();
+           
         }
 
 
@@ -30,20 +38,20 @@ namespace InventoryManagementApplication.Pages
 
         private async Task PopulateAvailableRolesAsync()
         {
-            if (_roleManager == null)
+            if (_roleManagerDal == null)
             {
                 Console.WriteLine("RoleManager är null.");
                 return;
             }
 
-            var roles = await _roleManager.Roles.ToListAsync();
+            var roles = await _roleManagerDal.GetAllRolesAsync();
             if (roles == null || roles.Count == 0)
             {
                 Console.WriteLine("Inga roller hittades i databasen.");
                 roles = new List<InventoryManagementRole>();
             }
 
-            AvailableRoles = roles.Select(r => r.Name).ToList();
+            AvailableRoles = roles.Select(r => r.RoleName).ToList();
             AvailableRoles.Insert(0, "Användare");
 
             if (string.IsNullOrEmpty(SelectedRole))
@@ -58,8 +66,9 @@ namespace InventoryManagementApplication.Pages
             {
                 return NotFound("Användar-ID saknas.");
             }
-
-            SelectedUser = await _userManager.FindByIdAsync(userId);
+            
+            SelectedUser = await _userManagerDal.GetOneUserAsync(userId);
+            //SelectedUser = await _userManager.FindByIdAsync(userId);
             if (SelectedUser == null)
             {
                 return NotFound("Användaren kunde inte hittas.");
@@ -67,8 +76,17 @@ namespace InventoryManagementApplication.Pages
 
             await PopulateAvailableRolesAsync();
 
-            var userRoles = await _userManager.GetRolesAsync(SelectedUser);
-            SelectedRole = userRoles.FirstOrDefault() ?? "Användare"; // Om ingen roll, sätt "Användare"
+            var userRoles = await _roleManagerDal.GetAllRolesAsync();
+            if(SelectedUser.RoleId == userRoles[0].Id)
+            {
+                SelectedRole = userRoles[0].RoleName;
+            }
+            else
+            {
+                SelectedRole = "Användare";
+            }
+            //var userRoles = await _userManager.GetRolesAsync(SelectedUser);
+            //SelectedRole = userRoles.FirstOrDefault() ?? ; // Om ingen roll, sätt "Användare"
 
             return Page();
         }
@@ -84,7 +102,8 @@ namespace InventoryManagementApplication.Pages
 
             ModelState.Clear();
 
-            SelectedUser = await _userManager.FindByIdAsync(userId);
+            SelectedUser = await _userManagerDal.GetOneUserAsync(userId);
+            //SelectedUser = await _userManager.FindByIdAsync(userId);
 
             if (SelectedUser == null)
             {
@@ -97,32 +116,46 @@ namespace InventoryManagementApplication.Pages
                 return Page();
             }
 
-            var user = await _userManager.FindByIdAsync(userId);
+            var user = await _userManagerDal.GetOneUserAsync(userId);
+            //var user = await _userManager.FindByIdAsync(userId);
             if (user == null)
             {
                 return NotFound("Användaren kunde inte hittas.");
             }
 
-            var currentRoles = await _userManager.GetRolesAsync(user);
+            var getRoles = await _roleManagerDal.GetAllRolesAsync();
+            var currentRoles = getRoles.Where(r => r.Id == user.RoleId).Select(r => r.RoleName).ToList();
+            
+            //var currentRoleName = currentRoles.Select(r => r.Name).ToList();
+            //var currentRoles = await _userManager.GetRolesAsync(user);
 
-            if (currentRoles.Contains(SelectedRole))
+
+            if(currentRoles.Contains(SelectedRole)) 
             {
                 TempData["SuccessMessage"] = "Ingen förändring i roll.";
                 return RedirectToPage(new { userId });
             }
+            //if (currentRoles.Contains(SelectedRole))
+            //{
+            //    TempData["SuccessMessage"] = "Ingen förändring i roll.";
+            //    return RedirectToPage(new { userId });
+            //}
 
-            await _userManager.RemoveFromRolesAsync(user, currentRoles);
+            await _roleManagerDal.RemoveFromRoleAsync(user, currentRoles);
 
             if (SelectedRole != "Användare")
             {
-                var result = await _userManager.AddToRoleAsync(user, SelectedRole);
+                var result = await _roleManagerDal.AddToRoleAsync(user, SelectedRole);
 
-                if (!result.Succeeded)
+                //var result = await _userManager.AddToRoleAsync(user, SelectedRole);
+
+                if (!result)
                 {
-                    foreach (var error in result.Errors)
-                    {
-                        ModelState.AddModelError(string.Empty, error.Description);
-                    }
+                    ModelState.AddModelError(string.Empty, "Kunde inte tilldela rollen till användaren");
+                    //foreach (var error in result.Errors)
+                    //{
+                    //    ModelState.AddModelError(string.Empty, error.Description);
+                    //}
 
                     await PopulateAvailableRolesAsync();
                     return Page();
@@ -140,23 +173,25 @@ namespace InventoryManagementApplication.Pages
             {
                 return NotFound("Användar-ID saknas.");
             }
-            var user = await _userManager.FindByIdAsync(userId);
+            var user = await _userManagerDal.GetOneUserAsync(userId);
+            //var user = await _userManager.FindByIdAsync(userId);
             if (user == null)
             {
                 return NotFound("Användaren kunde inte hittas.");
             }
 
             // Hårdkodat lösenord vid reset
-            var newPassword = "Admin123!";
-            var resetToken = await _userManager.GeneratePasswordResetTokenAsync(user);
-            var resetResult = await _userManager.ResetPasswordAsync(user, resetToken, newPassword);
-
-            if (!resetResult.Succeeded)
+            //var newPassword = "Admin123!";
+            //var resetToken = await _userManager.GeneratePasswordResetTokenAsync(user);
+            //var resetResult = await _userManager.ResetPasswordAsync(user, resetToken, newPassword);
+            var resetResult = await _userManagerDal.ResetPassword(user, null);
+            if (!resetResult)
             {
-                foreach (var error in resetResult.Errors)
-                {
-                    ModelState.AddModelError(string.Empty, error.Description);
-                }
+                ModelState.AddModelError(string.Empty, "Gick ej att återställa lösenord");
+                //foreach (var error in resetResult.Errors)
+                //{
+                //    ModelState.AddModelError(string.Empty, error.Description);
+                //}
 
                 await PopulateAvailableRolesAsync();
                 return Page();
@@ -180,8 +215,8 @@ namespace InventoryManagementApplication.Pages
                 await PopulateAvailableRolesAsync();
                 return Page();
             }
-
-            var user = await _userManager.FindByIdAsync(userId);
+            var user = await _userManagerDal.GetOneUserAsync(userId);
+            //var user = await _userManager.FindByIdAsync(userId);
             if (user == null)
             {
                 Console.WriteLine("User not found.");
@@ -201,15 +236,18 @@ namespace InventoryManagementApplication.Pages
 
             user.Updated = DateTime.Now;
 
-            var result = await _userManager.UpdateAsync(user);
+            var result = await _userManagerDal.EditUserAsync(user, null);
+           // var result = await _userManager.UpdateAsync(user);
 
-            if (!result.Succeeded)
+            if (!result)
             {
-                foreach (var error in result.Errors)
-                {
-                    Console.WriteLine($"Update error: {error.Description}");
-                    ModelState.AddModelError(string.Empty, error.Description);
-                }
+                Console.WriteLine($"Update error: Gick ej att uppdatera användare");
+                ModelState.AddModelError(string.Empty, "Gick ej att uppdatera användare");
+                //foreach (var error in result.Errors)
+                //{
+                //    Console.WriteLine($"Update error: {error.Description}");
+                //    ModelState.AddModelError(string.Empty, error.Description);
+                //}
                 await PopulateAvailableRolesAsync();
                 return Page();
             }
@@ -221,20 +259,22 @@ namespace InventoryManagementApplication.Pages
         }
         public async Task<IActionResult> OnPostDeleteAsync(string userId)
         {
-            var user = await _userManager.FindByIdAsync(userId);
+            var user = await _userManagerDal.GetOneUserAsync(userId);
+            //var user = await _userManager.FindByIdAsync(userId);
             if (user == null)
             {
                 return NotFound("Användaren hittades inte.");
             }
+            var result = await _userManagerDal.DeleteUserAsync(user.Id);
+            //var result = await _userManager.DeleteAsync(user);
 
-            var result = await _userManager.DeleteAsync(user);
-
-            if (!result.Succeeded)
+            if (!result)
             {
-                foreach (var error in result.Errors)
-                {
-                    ModelState.AddModelError(string.Empty, error.Description);
-                }
+                ModelState.AddModelError(string.Empty, "Gick ej att ta bort användare");
+                //foreach (var error in result.Errors)
+                //{
+                //    ModelState.AddModelError(string.Empty, error.Description);
+                //}
 
                 await PopulateAvailableRolesAsync();
                 return Page();
