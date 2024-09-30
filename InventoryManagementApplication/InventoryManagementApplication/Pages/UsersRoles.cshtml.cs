@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using InventoryManagementApplication.Areas.Identity.Data;
 using Microsoft.AspNetCore.Authorization;
+using InventoryManagementApplication.DAL;
+using System.Security.Claims;
 
 namespace InventoryManagementApplication.Pages
 {
@@ -11,11 +13,14 @@ namespace InventoryManagementApplication.Pages
     {
         private readonly UserManager<InventoryManagementUser> _userManager;
         private readonly RoleManager<InventoryManagementRole> _roleManager;
+        private readonly DAL.UserManager _userManagerDAL;
 
-        public UsersRolesModel(UserManager<InventoryManagementUser> userManager, RoleManager<InventoryManagementRole> roleManager)
+        public UsersRolesModel(UserManager<InventoryManagementUser> userManager, RoleManager<InventoryManagementRole> roleManager,
+            DAL.UserManager userManagerDAL)
         {
             _userManager = userManager;
             _roleManager = roleManager;
+            _userManagerDAL = userManagerDAL;
         }
 
         public List<UserWithRoleViewModel> UsersWithRoles { get; set; }
@@ -35,15 +40,19 @@ namespace InventoryManagementApplication.Pages
         //Hämtar användare
         public async Task OnGetAsync()
         {
-            var users = _userManager.Users.ToList();
+            var users = await _userManagerDAL.GetAllUsersAsync();
+//          var users1 = _userManager.Users.ToList();
             UsersWithRoles = new List<UserWithRoleViewModel>();
 
             foreach (var user in users)
             {
                 UsersWithRoles.Add(await CreateUserWithRoleViewModel(user));
             }
+            //var loggedInUser = await _userManagerDAL.GetOneUserAsync(User);
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var loggedInUser = await _userManagerDAL.GetOneUserAsync(userId);
 
-            var loggedInUser = await _userManager.GetUserAsync(User);
+            //var loggedInUser1 = await _userManager.GetUserAsync(User);
             LoggedInUserName = loggedInUser != null ? FormatUserName(loggedInUser) : string.Empty;
         }
 

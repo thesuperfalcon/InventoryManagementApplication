@@ -11,6 +11,7 @@
     <table class="table table-striped">
         <thead>
             <tr>
+                <th>Id</th>
                 <th>Anställningsnummer</th>
                 <th>Förnamn</th>
                 <th>Efternamn</th>
@@ -24,6 +25,7 @@
             @foreach (var user in Model.UsersWithRoles)
             {
                 <tr>
+                    <td>@user.Id</td>
                     <td>@user.EmployeeNumber</td>
                     <td>@user.FirstName</td>
                     <td>@user.LastName</td>

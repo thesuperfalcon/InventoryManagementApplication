@@ -30,10 +30,11 @@ namespace InventoryManagementApplication.Models
         [JsonPropertyName("isDeleted")]
         public bool? IsDeleted { get; set; } = false;
 
+        [JsonPropertyName("activityLog")]
         public virtual ICollection<ActivityLog> ActivityLogs { get; set; } = new List<ActivityLog>();
-
+        [JsonPropertyName("inventoryTrackers")]
         public virtual ICollection<InventoryTracker> InventoryTrackers { get; set; } = new List<InventoryTracker>();
-
+        [JsonPropertyName("statistics")]
         public virtual ICollection<Statistic> Statistics { get; set; } = new List<Statistic>();
     }
 }

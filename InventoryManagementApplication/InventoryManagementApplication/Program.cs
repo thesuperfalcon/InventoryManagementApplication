@@ -12,24 +12,33 @@ using InventoryManagementApplication.DAL;
 namespace InventoryManagementApplication
 {
     public class Program
-    {
+    {     
         public static async Task Main(string[] args)  // G�r metoden till asynkron
-        {
+        {          
             var builder = WebApplication.CreateBuilder(args);
             var connectionString = builder.Configuration.GetConnectionString("InventoryManagementApplicationContextConnection") ?? throw new InvalidOperationException("Connection string 'InventoryManagementApplicationContextConnection' not found.");
 
             builder.Services.AddDbContext<InventoryManagementApplicationContext>(options => options.UseSqlServer(connectionString));
             builder.Services.AddTransient<Models.Product>();
-           
-            //builder.Services.AddControllers()
-            //.AddJsonOptions(options =>
-            //{
-            //    options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
-            //});
-           
-            //var supportedCultures = new[] { new CultureInfo("en-US") };
+            builder.Services.AddScoped<StatisticManager>();
+            builder.Services.AddScoped<DAL.StatisticManager>();
+            builder.Services.AddScoped<DAL.ActivityLogManager>();
+            builder.Services.AddScoped<InventoryManagementApplication.DAL.UserManager>();
+			builder.Services.AddScoped<UserManager<InventoryManagementUser>>();
+			builder.Services.AddScoped<RoleManager<InventoryManagementRole>>();
+            builder.Services.AddScoped<DAL.RoleManager>();
+			//builder.Services.AddTransient<Models.Statistic>();
+			//builder.Services.AddTransient<Models.StatisticDto>();
 
-            var supportedCultures = new[] { new CultureInfo("sv-SE"), new CultureInfo("en-US") };
+			//builder.Services.AddControllers()
+			//.AddJsonOptions(options =>
+			//{
+			//    options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
+			//});
+
+			//var supportedCultures = new[] { new CultureInfo("en-US") };
+
+			var supportedCultures = new[] { new CultureInfo("sv-SE"), new CultureInfo("en-US") };
             builder.Services.Configure<RequestLocalizationOptions>(options =>
             {
                 options.DefaultRequestCulture = new RequestCulture("sv-SE");
@@ -73,7 +82,7 @@ namespace InventoryManagementApplication
                 var services = scope.ServiceProvider;
                 var roleManager = services.GetRequiredService<RoleManager<InventoryManagementRole>>();
                 var userManager = services.GetRequiredService<UserManager<InventoryManagementUser>>();
-                await SeedRolesAndAdminUser(roleManager, userManager);
+                //await SeedRolesAndAdminUser(roleManager, userManager);
             }
 
             // Configure the HTTP request pipeline.
@@ -96,48 +105,6 @@ namespace InventoryManagementApplication
 
             await app.RunAsync();
         }
-
-        private static async Task SeedRolesAndAdminUser(RoleManager<InventoryManagementRole> roleManager, UserManager<InventoryManagementUser> userManager)
-        {
-            var roles = new[] { "Admin" };
-
-            // Skapa roller
-            foreach (var role in roles)
-            {
-                if (!await roleManager.RoleExistsAsync(role))
-                {
-                    var newRole = new InventoryManagementRole
-                    {
-                        Name = role,
-                        NormalizedName = role.ToUpper(),
-                        FullAccess = (role == "Admin"),
-                        RoleName = role
-                    };
-                    await roleManager.CreateAsync(newRole);
-
-                }
-            }
-
-            // Om admin inte finns, skapa rollen vid start
-            var adminUserName = "AdminUser";
-            var adminPassword = "AdminUser123!";
-
-            var adminUser = await userManager.FindByNameAsync(adminUserName);
-            if (adminUser == null)
-            {
-                adminUser = new InventoryManagementUser
-                {
-                    UserName = adminUserName,
-                    EmployeeNumber = "0000",
-                    FirstName = "Admin",
-                    LastName = "User"
-                };
-                var result = await userManager.CreateAsync(adminUser, adminPassword);
-                if (result.Succeeded)
-                {
-                    await userManager.AddToRoleAsync(adminUser, "Admin");
-                }
-            }
-        }
+      
     }
 }
