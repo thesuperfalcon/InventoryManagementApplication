@@ -24,7 +24,7 @@ namespace InventoryManagementApplication.Pages.admin.tracker
 
         public async Task OnGetAsync()
         {
-            InventoryTracker = await _trackerManager.GetAllTrackersAsync();
+            InventoryTracker = await _trackerManager.GetAllTrackersAsync(false);
         }
     }
 }
