@@ -12,13 +12,15 @@ namespace InventoryManagementApplication.Pages.admin.product
 		private readonly ProductManager _productManager;
 		private readonly StorageManager _storageManager;
 		private readonly TrackerManager _trackerManager;
+		private readonly ActivityLogManager _activityLogManager;
 
 		public DeleteModel(ProductManager productManager,
-			StorageManager storageManager, TrackerManager trackerManager)
+			StorageManager storageManager, TrackerManager trackerManager, ActivityLogManager activityLogManager)
 		{
 			_productManager = productManager;
 			_storageManager = storageManager;
 			_trackerManager = trackerManager;
+			_activityLogManager = activityLogManager;
 		}
 
 		[BindProperty]
@@ -66,7 +68,8 @@ namespace InventoryManagementApplication.Pages.admin.product
 					_trackerManager.DeleteTrackerAsync(tracker.Id);
 				}
 			}
-			_productManager.DeleteProductAsync(id);
+            await _activityLogManager.LogActivityAsync(Product, EntityState.Deleted);
+            _productManager.DeleteProductAsync(id);
 
 			return RedirectToPage("./Index");
 		}

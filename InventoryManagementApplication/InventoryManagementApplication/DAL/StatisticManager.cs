@@ -1,4 +1,5 @@
-﻿using InventoryManagementApplication.Models;
+﻿using InventoryManagementApplication.DTO;
+using InventoryManagementApplication.Models;
 using System.Text;
 using System.Text.Json;
 
@@ -10,7 +11,7 @@ namespace InventoryManagementApplication.DAL
 		public Statistic Statistic { get; set; }
 		public List<Statistic> Statistics { get; set; }
 		public StatisticDto StatisticDto { get; set; }
-		public List<StatisticDto> StatisticsDto { get; set; }
+		public List<StatisticResponseDto> StatisticsDto { get; set; }
 
 		public async Task CreateStatisticAsync(StatisticDto statistic)
 		{
@@ -32,7 +33,7 @@ namespace InventoryManagementApplication.DAL
 			}
 
 		}
-		public async Task<List<StatisticDto>> GetAllStatisticsAsync()
+		public async Task<List<StatisticResponseDto>> GetAllStatisticsAsync()
 		{
 			using (var client = new HttpClient())
 			{
@@ -42,7 +43,7 @@ namespace InventoryManagementApplication.DAL
 				if (responseProducts.IsSuccessStatusCode)
 				{
 					string responseString = await responseProducts.Content.ReadAsStringAsync();
-					List<Models.StatisticDto> statistics = JsonSerializer.Deserialize<List<Models.StatisticDto>>(responseString);
+					List<Models.StatisticResponseDto> statistics = JsonSerializer.Deserialize<List<Models.StatisticResponseDto>>(responseString);
 					StatisticsDto = statistics.ToList();
 				}
 
@@ -94,5 +95,19 @@ namespace InventoryManagementApplication.DAL
 
 			}
 		}
-	}
+        public async Task CreateStatisticAsync(string userId, int fromStorageId, int toStorageId, int productId, int quantity)
+        {
+            var newStatistic = new StatisticDto
+            {
+                UserId = userId,
+                InitialStorageId = fromStorageId,
+                DestinationStorageId = toStorageId,
+                ProductId = productId,
+                ProductQuantity = quantity,
+                OrderTime = DateTime.Now,
+            };
+
+            await CreateStatisticAsync(newStatistic);
+        }
+    }
 }

@@ -2,16 +2,18 @@
 using InventoryManagementApplication.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
 
 namespace InventoryManagementApplication.Pages.admin.storage
 {
 	public class CreateModel : PageModel
 	{
 		private readonly StorageManager _storageManager;
-
-		public CreateModel(StorageManager storageManager)
+		private readonly ActivityLogManager _activityLogManager;
+		public CreateModel(StorageManager storageManager, ActivityLogManager activityLogManager)
 		{
 			_storageManager = storageManager;
+			_activityLogManager = activityLogManager;
 		}
 
 		[BindProperty]
@@ -31,6 +33,7 @@ namespace InventoryManagementApplication.Pages.admin.storage
 			}
 
 			await _storageManager.CreateStorageAsync(Storage);
+			await _activityLogManager.LogActivityAsync(Storage, EntityState.Modified);
 
 			return RedirectToPage("./Index");
 		}

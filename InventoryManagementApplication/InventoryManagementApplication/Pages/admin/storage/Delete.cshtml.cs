@@ -2,6 +2,7 @@
 using InventoryManagementApplication.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
 
 namespace InventoryManagementApplication.Pages.admin.storage
 {
@@ -9,11 +10,13 @@ namespace InventoryManagementApplication.Pages.admin.storage
 	{
 		private readonly StorageManager _storageManager;
 		private readonly TrackerManager _trackerManager;
+		private readonly ActivityLogManager _activityLogManager;
 
-		public DeleteModel(StorageManager storageManager, TrackerManager trackerManager)
+		public DeleteModel(StorageManager storageManager, TrackerManager trackerManager, ActivityLogManager activityLogManager)
 		{
 			_storageManager = storageManager;
 			_trackerManager = trackerManager;
+			_activityLogManager = activityLogManager;
 		}
 
 		[TempData]
@@ -61,6 +64,7 @@ namespace InventoryManagementApplication.Pages.admin.storage
 			}
 			if (storage != null)
 			{
+				await _activityLogManager.LogActivityAsync(Storage, EntityState.Deleted);
 				await _storageManager.DeleteStorageAsync(id);
 			}
 

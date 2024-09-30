@@ -1,96 +1,105 @@
 ﻿using InventoryManagementApplication.Models;
+using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 using System.Text;
 using System.Text.Json;
 
 namespace InventoryManagementApplication.DAL
 {
-	public class ActivityLogManager
-	{
-		private static Uri BaseAddress = new Uri("https://localhost:44353/");
-		public ActivityLog ActivityLog { get; set; }
-		public List<ActivityLog> ActivityLogs { get; set; }
+    public class ActivityLogManager
+    {
+        private static readonly Uri BaseAddress = new Uri("https://localhost:44353/");
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-		public async Task CreateActivityLogAsync(ActivityLog activityLog)
-		{
-			if (activityLog != null)
-			{
-				ActivityLog = activityLog;
-				using (var client = new HttpClient())
-				{
-					client.BaseAddress = BaseAddress;
-					var json = JsonSerializer.Serialize(ActivityLog);
+        public ActivityLog ActivityLog { get; set; }
+        public List<ActivityLog> ActivityLogs { get; set; }
 
-					StringContent httpContent = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
-					HttpResponseMessage response = await client.PostAsync("api/ActivityLogs/", httpContent);
-				}
-			}
-			else
-			{
-				Console.WriteLine("Error! Abort!");
-			}
+        public ActivityLogManager(IHttpContextAccessor httpContextAccessor)
+        {
+            _httpContextAccessor = httpContextAccessor;
+        }
 
-		}
-		public async Task<List<ActivityLog>> GetAllActivityLogssAsync()
-		{
-			using (var client = new HttpClient())
-			{
-				client.BaseAddress = BaseAddress;
-				HttpResponseMessage responseProducts = await client.GetAsync("api/ActivityLogs");
+        public async Task CreateActivityLogAsync(ActivityLog activityLog)
+        {
+            if (activityLog != null)
+            {
+                ActivityLog = activityLog;
+                using (var client = new HttpClient())
+                {
+                    client.BaseAddress = BaseAddress;
+                    var json = JsonSerializer.Serialize(ActivityLog);
 
-				if (responseProducts.IsSuccessStatusCode)
-				{
-					string responseString = await responseProducts.Content.ReadAsStringAsync();
-					List<Models.ActivityLog> activityLogs = JsonSerializer.Deserialize<List<Models.ActivityLog>>(responseString);
-					ActivityLogs = activityLogs.ToList();
-				}
+                    StringContent httpContent = new StringContent(json, Encoding.UTF8, "application/json");
+                    HttpResponseMessage response = await client.PostAsync("api/ActivityLogs/", httpContent);
+                }
+            }
+            else
+            {
+                Console.WriteLine("Error! Abort!");
+            }
+        }
 
-				return ActivityLogs;
-			}
-		}
+        public async Task<List<ActivityLog>> GetAllActivityLogsAsync()
+        {
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = BaseAddress;
+                HttpResponseMessage response = await client.GetAsync("api/ActivityLogs");
 
-		//public async Task<Product> GetOneProductAsync(int? id)
-		//{
-		//	using (var client = new HttpClient())
-		//	{
-		//		client.BaseAddress = BaseAddress;
-		//		HttpResponseMessage responseProducts = await client.GetAsync($"api/Products/{id.Value}");
+                if (response.IsSuccessStatusCode)
+                {
+                    string responseString = await response.Content.ReadAsStringAsync();
+                    List<Models.ActivityLog> activityLogs = JsonSerializer.Deserialize<List<Models.ActivityLog>>(responseString);
+                    ActivityLogs = activityLogs.ToList();
+                }
 
-		//		if (responseProducts.IsSuccessStatusCode)
-		//		{
-		//			string responseString = await responseProducts.Content.ReadAsStringAsync();
-		//			var product = JsonSerializer.Deserialize<Models.Product>(responseString);
-		//			Product = product;
-		//		}
+                return ActivityLogs;
+            }
+        }
 
-		//		return Product;
-		//	}
-		//}
+        public async Task DeleteActivityLogAsync(int? id)
+        {
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = BaseAddress;
 
-		public async Task DeleteActivityLogAsync(int? id)
-		{
-			using (var client = new HttpClient())
-			{
-				client.BaseAddress = BaseAddress;
+                var response = await client.DeleteAsync($"api/ActivityLogs/{id}");
+            }
+        }
 
-				var response = await client.DeleteAsync($"api/ActivityLogs/{id}");
-			}
-		}
+        public async Task EditActivityLogAsync(ActivityLog? activityLog)
+        {
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = BaseAddress;
+                if (activityLog != null)
+                {
+                    ActivityLog = activityLog;
+                    var content = new StringContent(JsonSerializer.Serialize(ActivityLog), Encoding.UTF8, "application/json");
+                    HttpResponseMessage response = await client.PutAsync($"api/ActivityLogs/{ActivityLog.Id}", content);
+                }
+            }
+        }
 
-		public async Task EditActivityLogAsync(ActivityLog? activityLog)
-		{
-			using (var client = new HttpClient())
-			{
-				client.BaseAddress = BaseAddress;
-				if (activityLog != null)
-				{
-					ActivityLog = activityLog;
-					var content = new StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(ActivityLog), Encoding.UTF8, "application/json");
-					HttpResponseMessage response = await client.PutAsync($"api/ActivityLogs/{ActivityLog.Id}", content);
-				}
+        public async Task LogActivityAsync(object entity, EntityState state)
+        {
+            var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
+            var actionType = state == EntityState.Added ? ActionType.Created :
+                             state == EntityState.Modified ? ActionType.Updated :
+                             ActionType.Deleted;
 
+            var log = new ActivityLog
+            {
+                UserId = userId,
+                Action = actionType,
+                ItemType = entity is Product ? ItemType.Product : ItemType.Storage,
+                TypeId = entity is Product product ? product.Id : (entity is Storage storage ? storage.Id : null),
+                TimeStamp = DateTime.UtcNow,
+                Notes = "Optional notes about the action"
+            };
 
-			}
-		}
-	}
+            await CreateActivityLogAsync(log);
+        }
+    }
 }
