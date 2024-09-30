@@ -49,27 +49,27 @@ namespace InventoryManagementApplication.Helpers
         }
 
         public async Task<SelectList> GenerateStorageSelectListAsync(int? storageId)
-		{
-			var storages = await _storageManager.GetStoragesAsync(false);
-			//var storages = await _context.Storages.ToListAsync();
+        {
+            var storages = await _storageManager.GetStoragesAsync(false);
 
-			var storageItems = storages
-				.Select(x => new
-				{
-					Value = x.Id,
-					Text = $"{x.Name} (Lediga platser: {x.MaxCapacity - x.CurrentStock})"
-				})
-				.ToList();
+            var storageItems = storages
+                .Select(x => new
+                {
+                    Value = x.Id,
+                    Text = x.Name == "Standardlager" ?
+                           $"Standardlager" :
+                           $"{x.Name} (Lediga platser: {x.MaxCapacity - x.CurrentStock})"
+                })
+                .ToList();
 
-			if (storageId.HasValue && storageId.Value != 0)
-			{
-				storageItems = storageItems
-					.Where(x => x.Value != storageId.Value)
-					.ToList();
-			}
+            if (storageId.HasValue && storageId.Value != 0)
+            {
+                storageItems = storageItems
+                    .Where(x => x.Value != storageId.Value)
+                    .ToList();
+            }
 
-			return new SelectList(storageItems, "Value", "Text");
-		}
-
-	}
+            return new SelectList(storageItems, "Value", "Text");
+        }
+    }
 }

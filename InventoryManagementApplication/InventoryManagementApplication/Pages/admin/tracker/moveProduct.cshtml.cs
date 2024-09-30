@@ -77,10 +77,30 @@ namespace InventoryManagementApplication.Pages.admin.tracker
             int toStorageId = (int)InventoryTracker.StorageId;
             int quantity = (int)InventoryTracker.Quantity;
 
-            if(productId < 0 ||fromStorageId < 0 || toStorageId < 0 || quantity < 0)
+            string errorMessage = null;
+
+            switch (true)
             {
+                case bool when productId < 0:
+                    errorMessage = "Ogiltigt produkt-ID. Vänligen ange ett giltigt produkt-ID.";
+                    break;
+                case bool when fromStorageId < 0:
+                    errorMessage = "Ogiltigt från-lager-ID. Vänligen ange ett giltigt från-lager.";
+                    break;
+                case bool when toStorageId < 0:
+                    errorMessage = "Ogiltigt till-lager-ID. Vänligen ange ett giltigt till-lager.";
+                    break;
+                case bool when quantity < 0:
+                    errorMessage = "Ogiltig kvantitet. Vänligen ange en positiv kvantitet.";
+                    break;
+            }
+
+            if (errorMessage != null)
+            {
+                StatusMessage = errorMessage;
                 return RedirectToPage("./moveProduct", new { id = SelectedInventoryTracker.Id });
             }
+
 
             bool status = false;
 

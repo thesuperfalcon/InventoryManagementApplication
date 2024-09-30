@@ -65,28 +65,35 @@ namespace InventoryManagementApplication.DAL
 			return inventoryTracker;
 		}
 
-		public async Task<List<InventoryTracker>> GetAllTrackersAsync()
-		{
-			using (var client = new HttpClient())
-			{
-				client.BaseAddress = BaseAddress;
-				HttpResponseMessage responseProducts = await client.GetAsync("api/InventoryTrackers/");
+        public async Task<List<InventoryTracker>> GetAllTrackersAsync(bool includeZeroQuantity = true)
+        {
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = BaseAddress;
 
-				var option = new JsonSerializerOptions()
-				{
+                string url = $"api/InventoryTrackers?includeZeroQuantity={includeZeroQuantity}";
+                HttpResponseMessage responseProducts = await client.GetAsync(url);
+
+                var option = new JsonSerializerOptions()
+                {
                     ReferenceHandler = ReferenceHandler.Preserve
                 };
 
-				if (responseProducts.IsSuccessStatusCode)
-				{
-					string responseString = await responseProducts.Content.ReadAsStringAsync();
-					List<Models.InventoryTracker> trackers = JsonSerializer.Deserialize<List<Models.InventoryTracker>>(responseString, option);
-					InventoryTrackers = trackers.ToList();
-				}
+                if (responseProducts.IsSuccessStatusCode)
+                {
+                    string responseString = await responseProducts.Content.ReadAsStringAsync();
+                    List<Models.InventoryTracker> trackers = JsonSerializer.Deserialize<List<Models.InventoryTracker>>(responseString, option);
+                    InventoryTrackers = trackers.ToList();
+                }
+                else
+                {
+                    InventoryTrackers = new List<InventoryTracker>();
+                }
 
-				return InventoryTrackers;
-			}
-		}
+                return InventoryTrackers;
+            }
+        }
+
 
         public async Task<List<InventoryTracker>> GetTrackerByProductOrStorageAsync(int productId, int storageId)
         {
