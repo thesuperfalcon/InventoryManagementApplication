@@ -1,0 +1,222 @@
+@page "{id:int}"
+@model InventoryManagementApplication.Pages.StorageDetailsModel
+
+<head>
+    <link rel="stylesheet" href="~/css/detailspages.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.8.1/font/bootstrap-icons.min.css">
+</head>
+
+<div class="container">
+    <div class="row">
+        <!-- Lagerdetaljer sektion -->
+        <div class="col-md-7">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h2>Lagerdetaljer</h2>
+                    <button class="btn btn-generic" data-bs-toggle="modal" data-bs-target="#editStorageModal">
+                        <i class="bi bi-pencil"></i>
+                    </button>
+                </div>
+                <div class="card-body">
+                    @if (Model.Storage != null)
+                    {
+                        <table class="table">
+                            <tr>
+                                <th>Namn</th>
+                                <td>@Model.Storage.Name</td>
+                            </tr>
+                            <tr>
+                                <th>Maxkapacitet</th>
+                                <td>@Model.Storage.MaxCapacity</td>
+                            </tr>
+                            @* hur använda detta? <tr>
+                                <th>Nuvarande lager</th>
+                                <td>@Model.Storage.CurrentStock</td>
+                            </tr>*@ 
+                            <tr>
+                                <th>Skapad</th>
+                                <td>@Model.Storage.Created</td>
+                            </tr>
+                            <tr>
+                                <th>Information uppdaterad</th>
+                                <td>@Model.Storage.Updated</td>
+                            </tr>
+                        </table>
+                    }
+                    else
+                    {
+                        <p>Lagret kunde inte laddas.</p>
+                    }
+                </div>
+            </div>
+
+            <!-- Produkter i lager sektion -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h3>Produkter i detta lager</h3>
+                    <input type="text" id="productSearch" class="form-control mb-3" placeholder="Sök efter produkt i lager..." />
+                </div>
+                <div class="card-body">
+                    <table class="table" id="productTable">
+                        <thead>
+                            <tr>
+                                <th>Produktnamn</th>
+                                <th>Artikelnummer</th>
+                                <th>Antal i lager</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model.Storage.InventoryTrackers.Any())
+                            {
+                                @foreach (var tracker in Model.Storage.InventoryTrackers)
+                                {
+                                    if (tracker.Product != null)
+                                    {
+                                        <tr>
+                                            <td>
+                                                <a asp-page="/ProductDetails" asp-route-id="@tracker.Product.Id" class="custom-link">
+                                                    @tracker.Product.Name
+                                                </a>
+                                            </td>
+                                            <td>@tracker.Product.ArticleNumber</td>
+                                            <td>@tracker.Quantity</td>
+                                        </tr>
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="3" class="text-center">Inga produkter i lager</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+         <!-- För sidor -->
+    <div class="pagination">
+        @if (Model.HasPreviousPage)
+        {
+            <a asp-page="./StorageDetails" asp-route-id="@Model.Storage.Id" asp-route-pageNumber="@(Model.PageNumber - 1)" class="btn btn-primary">Föregående</a>
+        }
+
+        <span>Sida @Model.PageNumber av @Model.TotalPages</span>
+
+        @if (Model.HasNextPage)
+        {
+            <a asp-page="./StorageDetails" asp-route-id="@Model.Storage.Id" asp-route-pageNumber="@(Model.PageNumber + 1)" class="btn btn-primary">Nästa</a>
+        }
+    </div>
+</div>
+
+        <!-- Senaste aktivitetsloggar sektion -->
+        <div class="col-md-5">
+            <div class="card mb-4" style="background-color: #eef1f8;">
+                <div class="card-header">
+                    <h2>Senaste aktivitetsloggar för lagret</h2>
+                    <input type="text" id="logSearch" class="form-control mb-3" placeholder="Sök i aktivitetsloggen..." />
+                </div>
+                <div class="card-body">
+                    <table class="table" id="logTable">
+                        <thead>
+                            <tr>
+                                <th>Åtgärd</th>
+                                <th>Datum</th>
+                                   <th>Anteckningar</th>
+                                   <th>Utförare</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model.ActivityLogs != null && Model.ActivityLogs.Any())
+                            {
+                                @foreach (var log in Model.ActivityLogs)
+                                {
+                                    <tr>  
+                                        <td>@log.Action</td>
+                                        <td>@log.TimeStamp</td>
+                                            <td>@log.Notes</td>
+                                         <td>@log.User?.UserName</td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="3" class="text-center">Inga aktivitetsloggar tillgängliga.</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+    <!-- För sidor -->
+    <div class="pagination">
+        @if (Model.HasPreviousPage)
+        {
+            <a asp-page="./StorageDetails" asp-route-id="@Model.Storage.Id" asp-route-pageNumber="@(Model.PageNumber - 1)" class="btn btn-primary">Föregående</a>
+        }
+
+        <span>Sida @Model.PageNumber av @Model.TotalPages</span>
+
+        @if (Model.HasNextPage)
+        {
+            <a asp-page="./StorageDetails" asp-route-id="@Model.Storage.Id" asp-route-pageNumber="@(Model.PageNumber + 1)" class="btn btn-primary">Nästa</a>
+        }
+    </div>
+</div>
+
+    </div>
+</div>
+
+<!-- Modal för att redigera lagerdetaljer -->
+<div class="modal fade" id="editStorageModal" tabindex="-1" aria-labelledby="editStorageModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editStorageModalLabel">Ändra lagernamn och maxkapacitet</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="post" asp-page-handler="UpdateStorage">
+                    <div class="form-group mb-3">
+                        <label for="StorageName">Nytt namn</label>
+                        <input type="text" class="form-control" id="StorageName" name="StorageName" value="@Model.Storage.Name" required />
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="StorageMaxCapacity">Maxkapacitet</label>
+                        <input type="number" class="form-control" id="StorageMaxCapacity" name="StorageMaxCapacity" value="@Model.Storage.MaxCapacity" required min="0" />
+                    </div>
+                    <input type="hidden" name="StorageId" value="@Model.Storage.Id" />
+                    <button type="submit" class="btn btn-primary">Spara</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Sökfunktion för produkter i lager
+        document.getElementById("productSearch").addEventListener("input", function() {
+            let searchValue = this.value.toLowerCase();
+            let rows = document.querySelectorAll("#productTable tbody tr");
+            rows.forEach(function(row) {
+                row.style.display = row.innerText.toLowerCase().includes(searchValue) ? "" : "none";
+            });
+        });
+
+        // Sökfunktion för aktivitetsloggar
+        document.getElementById("logSearch").addEventListener("input", function() {
+            let searchValue = this.value.toLowerCase();
+            let rows = document.querySelectorAll("#logTable tbody tr");
+            rows.forEach(function(row) {
+                row.style.display = row.innerText.toLowerCase().includes(searchValue) ? "" : "none";
+            });
+        });
+    </script>
+}

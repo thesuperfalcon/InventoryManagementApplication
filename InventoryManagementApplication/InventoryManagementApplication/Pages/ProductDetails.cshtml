@@ -1,0 +1,232 @@
+@page "{id:int}" 
+@model InventoryManagementApplication.Pages.ProductDetailsModel
+
+<head>
+    <link rel="stylesheet" href="~/css/detailspages.css" asp-append-version="true" />
+</head>
+<div class="container">
+    <div class="row">
+        <!-- Produktdetaljer sektion -->
+        <div class="col-md-7">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h2>Produktdetaljer</h2>
+                </div>
+                <div class="card-body">
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editProductModal">Redigera produktdetaljer</button>
+                    @if (Model.Product != null)
+                    {
+                        <div class="product-details-list">
+                            <ul>
+                                <li><strong>Namn:</strong> @Model.Product.Name</li>
+                                <li><strong>Artikelnummer:</strong> @Model.Product.ArticleNumber</li>
+                                <li><strong>Beskrivning:</strong> @Model.Product.Description</li>
+                                <li><strong>Totalantal:</strong> @Model.Product.TotalStock</li>
+                                <li><strong>Tillgängligt antal:</strong> @Model.Product.CurrentStock</li>
+                                <li><strong>Produkt skapad:</strong> @Model.Product.Created</li>
+                                <li><strong>Information uppdaterad:</strong> @Model.Product.Updated</li>
+                            </ul>
+                        </div>
+                    }
+                    else
+                    {
+                        <p>Produkt kunde inte laddas.</p>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- Aktiviteter och Lagerförändringar sektion -->
+        <div class="col-md-5">
+            <!-- Sammanfattning av allmänna aktiviteter (ActivityLog) -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h2>Allmänna aktiviteter</h2>
+                    <input type="text" id="activityLogSearch" class="form-control mb-3" placeholder="Sök i aktivitetsloggen..." />
+                </div>
+                <div class="card-body">
+                    @if (Model.Product.ActivityLogs != null && Model.Product.ActivityLogs.Any())
+                    {
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                  
+                                    <th>Åtgärd</th>
+                                    <th>Datum</th>
+                                    <th>Anteckningar</th>
+                                      <th>utförare</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var log in Model.Product.ActivityLogs)
+                                {
+                                    <tr>
+                                      
+                                        <td>@log.Action</td>
+                                        <td>@log.TimeStamp</td>
+                                        <td>@log.Notes</td>
+                                          <td>@log.User?.UserName</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    }
+                    else
+                    {
+                        <p>Inga aktiviteter tillgängliga.</p>
+                    }
+                </div>
+</div>
+
+
+<!-- Paginering för aktivitetsloggar -->
+<nav aria-label="Activity log pagination">
+    <ul class="pagination justify-content-center">
+        @if (Model.HasPreviousActivityPage)
+        {
+            <li class="page-item">
+                <a class="page-link" asp-page="./ProductDetails" asp-route-id="@Model.Product.Id" asp-route-activityPageNumber="@(Model.ActivityPageNumber - 1)" aria-label="Föregående">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+        }
+
+        <li class="page-item disabled">
+            <span class="page-link">Sida @Model.ActivityPageNumber av @Model.ActivityTotalPages</span>
+        </li>
+
+        @if (Model.HasNextActivityPage)
+        {
+            <li class="page-item">
+                <a class="page-link" asp-page="./ProductDetails" asp-route-id="@Model.Product.Id" asp-route-activityPageNumber="@(Model.ActivityPageNumber + 1)" aria-label="Nästa">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+        }
+    </ul>
+</nav>
+
+
+            <!-- Sammanfattning av lagerförändringar (InventoryTracker) -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h2>Lagerförändringar för produkt</h2>
+                    <input type="text" id="inventorySearch" class="form-control mb-3" placeholder="Sök i lagerförändringar..." />
+                </div>
+                <div class="card-body">
+                    @if (Model.Product.InventoryTrackers != null && Model.Product.InventoryTrackers.Any())
+                    {
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Lager</th>
+                                    <th>Kvantitet av produkt</th>
+                                    <th>Ändrad</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var tracker in Model.Product.InventoryTrackers)
+                                {
+                                    <tr>
+                                        <td>@tracker.Storage?.Name</td>
+                                        <td>@tracker.Quantity</td>
+                                        <td>@tracker.Modified</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    }
+                    else
+                    {
+                        <p>Inga lagerförändringar tillgängliga.</p>
+                    }
+                </div>
+            </div>
+        </div>
+<!-- Paginering för lagerförändringar -->
+<nav aria-label="Inventory tracker pagination">
+    <ul class="pagination justify-content-center">
+        @if (Model.HasPreviousInventoryPage)
+        {
+            <li class="page-item">
+                <a class="page-link" asp-page="./ProductDetails" asp-route-id="@Model.Product.Id" asp-route-inventoryPageNumber="@(Model.InventoryPageNumber - 1)" aria-label="Föregående">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+        }
+
+        <li class="page-item disabled">
+            <span class="page-link">Sida @Model.InventoryPageNumber av @Model.InventoryTotalPages</span>
+        </li>
+
+        @if (Model.HasNextInventoryPage)
+        {
+            <li class="page-item">
+                <a class="page-link" asp-page="./ProductDetails" asp-route-id="@Model.Product.Id" asp-route-inventoryPageNumber="@(Model.InventoryPageNumber + 1)" aria-label="Nästa">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+        }
+    </ul>
+</nav>
+
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="editProductModal" tabindex="-1" aria-labelledby="editProductModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg"> <!-- Ger större utrymme för redigering -->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editProductModalLabel">Ändra produktinformation</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="post" asp-page-handler="UpdateProductInfo" onsubmit="return validateForm();">
+                    <input type="hidden" name="ProductId" value="@Model.Product.Id" />
+                    <div class="form-group mb-3">
+                        <label for="ProductName">Nytt namn</label>
+                        <input type="text" class="form-control" id="ProductName" name="ProductName"
+                            value="@Model.Product.Name" required />
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="ProductDescription">Ny beskrivning</label>
+                        <textarea class="form-control" id="ProductDescription" name="ProductDescription" required>@Model.Product.Description</textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Spara ändringar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Enkel validering för modalformuläret
+        function validateForm() {
+            const name = document.getElementById("ProductName").value;
+            const description = document.getElementById("ProductDescription").value;
+            if (!name || !description) {
+                alert("Alla fält måste fyllas i!");
+                return false;
+            }
+            return true;
+        }
+
+        // Sökfunktion för aktivitetsloggar
+        document.getElementById("activityLogSearch").addEventListener("input", function() {
+            let searchValue = this.value.toLowerCase();
+            document.querySelectorAll("table tbody tr").forEach(function(row) {
+                row.style.display = row.innerText.toLowerCase().includes(searchValue) ? "" : "none";
+            });
+        });
+
+        // Sökfunktion för lagerförändringar
+        document.getElementById("inventorySearch").addEventListener("input", function() {
+            let searchValue = this.value.toLowerCase();
+            document.querySelectorAll("table tbody tr").forEach(function(row) {
+                row.style.display = row.innerText.toLowerCase().includes(searchValue) ? "" : "none";
+            });
+        });
+    </script>
+}
