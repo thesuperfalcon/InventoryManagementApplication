@@ -3,6 +3,7 @@ using InventoryManagementApplication.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
 
 namespace InventoryManagementApplication.Pages.admin.storage
 {
@@ -15,6 +16,7 @@ namespace InventoryManagementApplication.Pages.admin.storage
 		public CreateModel(StorageManager storageManager)
 		{
 			_storageManager = storageManager;
+			_activityLogManager = activityLogManager;
 		}
 
 		[BindProperty]

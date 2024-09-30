@@ -1,6 +1,8 @@
+using InventoryManagementApplication.Areas.Identity.Data;
 using InventoryManagementApplication.DAL;
 using InventoryManagementApplication.Helpers;
 using InventoryManagementApplication.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -15,17 +17,24 @@ namespace InventoryManagementApplication.Pages.admin.tracker
 		private readonly StorageManager _storageManager;
 		private readonly SelectListHelpers _selectListHelpers;
         private readonly ProductMovementHelpers _productMovementHelpers;
+		private readonly StatisticManager _statisticManager;
+        private readonly UserManager<InventoryManagementUser> _userManager;
 
-		public CreateModel(TrackerManager trackerManager, ProductManager productManager, StorageManager storageManager, SelectListHelpers selectListHelpers, ProductMovementHelpers productMovementHelpers)
+        public CreateModel(TrackerManager trackerManager, ProductManager productManager, StorageManager storageManager,
+			SelectListHelpers selectListHelpers, ProductMovementHelpers productMovementHelpers, StatisticManager statisticManager, UserManager<InventoryManagementUser> userManager)
 		{
 			_trackerManager = trackerManager;
 			_productManager = productManager;
 			_storageManager = storageManager;
 			_selectListHelpers = selectListHelpers;
             _productMovementHelpers = productMovementHelpers;
+			_statisticManager = statisticManager;
+			_userManager = userManager;
+
 		}
 		[TempData]
 		public string StatusMessage { get; set; }
+        public InventoryManagementUser MyUser { get; set; }
         [BindProperty]
         public InventoryTracker InventoryTracker { get; set; } = default!;
         [BindProperty]
@@ -36,6 +45,7 @@ namespace InventoryManagementApplication.Pages.admin.tracker
 
 		public async Task<IActionResult> OnGetAsync()
 		{
+			MyUser = await _userManager.GetUserAsync(User);
 			var products = await _productManager.GetProductsAsync(false);
 			var storages = await _storageManager.GetStoragesAsync(false);
 
@@ -51,7 +61,9 @@ namespace InventoryManagementApplication.Pages.admin.tracker
 
 		public async Task<IActionResult> OnPostAsync()
 		{
-			if (!ModelState.IsValid)
+            MyUser = await _userManager.GetUserAsync(User);
+
+            if (!ModelState.IsValid)
 			{
 				return Page();
 			}
@@ -74,12 +86,13 @@ namespace InventoryManagementApplication.Pages.admin.tracker
                 status = tuple.Item1;
                 if (status == false)
                 {
-                    StatusMessage = "Förflyttning lyckades ej";
+                    StatusMessage = tuple.Item2 != string.Empty ? tuple.Item2 : "Förflyttning lyckades ej!";
                     return RedirectToPage("./Create", new { id = InventoryTracker.Id });
                 }
                 else
                 {
-                    StatusMessage = tuple.Item2;
+                    StatusMessage = tuple.Item2 != string.Empty ? tuple.Item2 : "Förflyttning lyckades!";
+					await _statisticManager.CreateStatisticAsync(MyUser.Id, fromStorageId, toStorageId, productId, quantity);
                     return RedirectToPage("./Index");
                 }
             }

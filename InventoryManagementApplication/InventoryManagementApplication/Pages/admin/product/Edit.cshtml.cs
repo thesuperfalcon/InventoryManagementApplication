@@ -15,11 +15,13 @@ namespace InventoryManagementApplication.Pages.admin.product
 		private readonly ProductManager _productManager;
 		private readonly TrackerManager _trackerManager;
 		private readonly StorageManager _storageManager;
-		public EditModel(ProductManager productManager, TrackerManager trackerManager, StorageManager storageManager)
+		private readonly ActivityLogManager _activityLogManager;
+		public EditModel(ProductManager productManager, TrackerManager trackerManager, StorageManager storageManager, ActivityLogManager activityLogManager)
 		{
 			_productManager = productManager;
 			_trackerManager = trackerManager;
 			_storageManager = storageManager;
+			_activityLogManager = activityLogManager;
 		}
 
 		[TempData]

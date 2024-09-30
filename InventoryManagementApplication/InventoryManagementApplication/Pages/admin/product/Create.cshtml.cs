@@ -10,16 +10,19 @@ using InventoryManagementApplication.Models;
 using Microsoft.CodeAnalysis.Elfie.Diagnostics;
 using System.Text.Json;
 using InventoryManagementApplication.DAL;
+using Microsoft.EntityFrameworkCore;
 
 namespace InventoryManagementApplication.Pages.admin.product
 {
     public class CreateModel : PageModel
     {
 		private readonly ProductManager _manager;
+		private readonly ActivityLogManager _logManager;
 
-		public CreateModel(ProductManager manager)
+		public CreateModel(ProductManager manager, ActivityLogManager logManager)
 		{
 			_manager = manager;
+			_logManager = logManager;
 		}
 
 		public IActionResult OnGet()

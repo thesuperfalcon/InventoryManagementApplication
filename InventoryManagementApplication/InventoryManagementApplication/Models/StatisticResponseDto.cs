@@ -2,7 +2,7 @@
 
 namespace InventoryManagementApplication.Models
 {
-    public class StatisticDto
+    public class StatisticResponseDto
     {
         [JsonPropertyName("id")]
         public int Id { get; set; }

@@ -24,7 +24,7 @@ namespace InventoryManagementApplication.Pages
 
         public async Task OnGetAsync()
         {
-            var activityLogs =  await _activityLogManager.GetAllActivityLogssAsync();
+            var activityLogs =  await _activityLogManager.GetAllActivityLogsAsync();
             ActivityLogs = activityLogs.ToList();
             //ActivityLogs = await GetActivityLogAsync();
 

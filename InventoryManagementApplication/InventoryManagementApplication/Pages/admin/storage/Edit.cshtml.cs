@@ -18,10 +18,12 @@ namespace InventoryManagementApplication.Pages.admin.storage
     public class EditModel : PageModel
     {
 		private readonly StorageManager _storageManager;
+		private readonly ActivityLogManager _activityLogManager;
 
-        public EditModel(StorageManager storageManager)
+        public EditModel(StorageManager storageManager, ActivityLogManager activityLogManager)
         {
 			_storageManager = storageManager;
+			_activityLogManager = activityLogManager;
         }
 		
 		[TempData] 
