@@ -54,6 +54,10 @@
                             <input type="submit" value="Lägg till" class="btn btn-primary me-2" />
                             <a asp-page="Index" class="btn btn-secondary">Tillbaka till lista</a>
                         </div>
+
+                        <div class="alert-info mt-3">
+                            @Model.StatusMessage
+                        </div>
                     </form>
                 </div>
             </div>

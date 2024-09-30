@@ -26,9 +26,12 @@ namespace InventoryManagementApplication.Pages.admin.product
 		{
 			return Page();
 		}
+		[TempData]
+		public string StatusMessage { get; set; }
 
 		[BindProperty]
-		public Product Product { get; set; } = default!;
+		public Product Product { get; set; } //= default!;
+		public List<string> ArticleNumbers { get; set; } 
 
 		public async Task<IActionResult> OnPostAsync()
 		{
@@ -38,8 +41,35 @@ namespace InventoryManagementApplication.Pages.admin.product
 			}
 			Product.CurrentStock = Product.TotalStock;
 			Product.Created = DateTime.Now;
+			var getProduct = await _manager.GetProductsAsync(null);
 
-			await _manager.CreateProductAsync(Product);
+
+            ArticleNumbers = getProduct.Select(p => p.ArticleNumber).ToList();
+
+			if(ArticleNumbers != null)
+		    {
+		
+
+				if (ArticleNumbers.Contains(Product.ArticleNumber)) 
+				{
+					var checkProduct = getProduct.Where(x => x.ArticleNumber == Product.ArticleNumber).FirstOrDefault();
+					if (checkProduct.IsDeleted == true)
+					{
+                        StatusMessage = "Artikelnummer finns redan bland borttagna produkter! Välj annan nummer.";
+                        return RedirectToPage("./Create");
+                    }
+					StatusMessage = "Artikelnummer finns redan! Välj annat nummer.";
+					return RedirectToPage("./Create");
+				}
+                else
+                {
+                    await _manager.CreateProductAsync(Product);
+					
+                }
+
+            }
+
+			
 						
 			return RedirectToPage("./Index");
 		}

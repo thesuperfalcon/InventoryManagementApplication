@@ -26,6 +26,12 @@
     <tbody>
         @foreach (var item in Model.Products)
         {
+            if (item.IsDeleted == false )
+            {
+                
+            
+
+            
             <tr>
                 <td>@Html.DisplayFor(modelItem => item.Name)</td>
                 <td>@Html.DisplayFor(modelItem => item.ArticleNumber)</td>
@@ -41,6 +47,8 @@
                     <a asp-page="./Delete" asp-route-id="@item.Id">Ta bort</a>
                 </td>
             </tr>
+            }
+            
         }
     </tbody>
 </table>
