@@ -38,15 +38,12 @@ namespace InventoryManagementApplication.Pages.admin.tracker
 
         [TempData]
         public string StatusMessage { get; set; }
-        public SelectList StorageSelectList { get; set; }
-        public SelectList ProductSelectList { get; set; }
         [BindProperty]
         public InventoryTracker InventoryTracker { get; set; } = default!;
-        public Storage Storage { get; set; }
-        public Product Product { get; set; }
-        public InventoryTracker MovingInventoryTracker { get; set; }
         [BindProperty]
         public InventoryTracker SelectedInventoryTracker { get; set; }
+        public SelectList StorageSelectList { get; set; }
+        public SelectList ProductSelectList { get; set; }
         public InventoryManagementUser MyUser { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int? id)
