@@ -12,11 +12,6 @@
 <div class="container mt-5">
     <h1 class="mb-4">Ta bort</h1>
 
-@*     <div class="alert alert-warning" role="alert">
-        <h3 class="alert-heading">Är du säker på att du vill ta bort?</h3>
-        <p>Det går ej att ångra! **lägg in som popUp vid ta bort klick istället?**</p>
-    </div> *@
-
     <div class="card shadow-sm mb-4">
         <div class="card-header bg-primary text-white">
             <h4 class="mb-0">Lagerplatsinformation</h4>
@@ -60,9 +55,13 @@
             <div class="modal-body" id="modalMessage">
                 <!-- Message will be set by JavaScript -->
             </div>
-            <div class="modal-footer">
+            <div class="modal-footer" id="deleteFooter">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Nej</button>
                 <button type="submit" form="deleteForm" class="btn btn-danger">Ja</button>
+            </div>
+
+            <div class="modal-footer d-none" id="errorFooter">
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Ok</button>
             </div>
         </div>
     </div>
@@ -82,6 +81,16 @@
             // Show the modal when the delete button is clicked
             document.getElementById('deleteButton').addEventListener('click', function () {
                 var modal = new bootstrap.Modal(document.getElementById('confirmDeleteModal'));
+
+                if (currentStock > 0) {
+                    // Show the "errorFooter" and hide the "deleteFooter"
+                    document.getElementById('errorFooter').classList.remove('d-none');
+                    document.getElementById('deleteFooter').classList.add('d-none');
+                } else {
+                    // Show the "deleteFooter" and hide the "errorFooter"
+                    document.getElementById('deleteFooter').classList.remove('d-none');
+                    document.getElementById('errorFooter').classList.add('d-none');
+                }
                 modal.show();
             });
         });
