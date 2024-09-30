@@ -20,6 +20,8 @@ namespace InventoryManagementApplication.Pages
         public Product Product { get; set; }
 
         //Sidor
+
+    // Deklarera variabler för sidhantering
     public List<ActivityLog> PagedActivityLogs { get; set; } = new List<ActivityLog>();
     public List<InventoryTracker> PagedInventoryTrackers { get; set; } = new List<InventoryTracker>();
 
@@ -29,6 +31,16 @@ namespace InventoryManagementApplication.Pages
 
     public bool HasPreviousPage => PageNumber > 1;
     public bool HasNextPage => PageNumber < TotalPages;
+
+    public int ActivityPageNumber { get; set; } = 1;      // Aktuellt sidnummer för aktivitetsloggar
+    public int ActivityTotalPages { get; set; }           // Totalt antal sidor för aktivitetsloggar
+    public bool HasPreviousActivityPage => ActivityPageNumber > 1;
+    public bool HasNextActivityPage => ActivityPageNumber < ActivityTotalPages;
+
+    public int InventoryPageNumber { get; set; } = 1;     // Aktuellt sidnummer för lagerförändringar
+    public int InventoryTotalPages { get; set; }          // Totalt antal sidor för lagerförändringar
+    public bool HasPreviousInventoryPage => InventoryPageNumber > 1;
+    public bool HasNextInventoryPage => InventoryPageNumber < InventoryTotalPages;
 
        
         public List<Storage> Storages { get; set; }
@@ -55,28 +67,27 @@ namespace InventoryManagementApplication.Pages
             }
 
 
-  // Paginering av aktivitetsloggar
+    // Paginering för aktivitetsloggar
     int totalLogs = Product.ActivityLogs.Count();
-  ActivityTotalPages = (int)Math.Ceiling(totalLogs / (double)PageSize);
+    ActivityTotalPages = (int)Math.Ceiling(totalLogs / (double)PageSize);
     ActivityPageNumber = activityPageNumber;
-
     PagedActivityLogs = Product.ActivityLogs
         .OrderByDescending(log => log.TimeStamp)
         .Skip((ActivityPageNumber - 1) * PageSize)
         .Take(PageSize)
         .ToList();
 
-    // Paginering av lagerförändringar
+    // Paginering för lagerförändringar
     int totalTrackers = Product.InventoryTrackers.Count();
     InventoryTotalPages = (int)Math.Ceiling(totalTrackers / (double)PageSize);
     InventoryPageNumber = inventoryPageNumber;
-
     PagedInventoryTrackers = Product.InventoryTrackers
         .Skip((InventoryPageNumber - 1) * PageSize)
         .Take(PageSize)
         .ToList();
 
     return Page();
+
             /* Commenting out storage fetching logic */
             // Storages = await _context.Storages.ToListAsync();
 
