@@ -1,4 +1,5 @@
 ﻿using InventoryManagementApplication.Models;
+using Microsoft.VisualBasic;
 using System.Text;
 using System.Text.Json;
 
@@ -44,10 +45,30 @@ namespace InventoryManagementApplication.DAL
                 if (response.IsSuccessStatusCode)
                 {
                     string responseString = await response.Content.ReadAsStringAsync();
-                    Storage storages = JsonSerializer.Deserialize<Storage>(responseString);
-                    Storage = storages;
+                    Storage storage = JsonSerializer.Deserialize<Storage>(responseString);
+                    Storage = storage;
                 }
 
+                return Storage;
+            }
+        }
+
+        public async Task<Storage> GetStorageByNameAsync(string storageName)
+        {
+            Storage = new Storage();
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = BaseAddress;
+                string uri = $"api/Storages/ByStorageName/{storageName}";
+
+                HttpResponseMessage response = await client.GetAsync(uri);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    string responseString = await response.Content.ReadAsStringAsync();
+                    Storage storage = JsonSerializer.Deserialize<Storage>(responseString);
+                    Storage = storage;
+                }
                 return Storage;
             }
         }

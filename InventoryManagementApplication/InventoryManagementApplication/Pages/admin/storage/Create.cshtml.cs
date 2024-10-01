@@ -9,8 +9,8 @@ namespace InventoryManagementApplication.Pages.admin.storage
 	public class CreateModel : PageModel
 	{
 		private readonly StorageManager _storageManager;
-		private readonly ActivityLogManager _activityLogManager;
-		public CreateModel(StorageManager storageManager, ActivityLogManager activityLogManager)
+		private readonly LogManager _activityLogManager;
+		public CreateModel(StorageManager storageManager, LogManager activityLogManager)
 		{
 			_storageManager = storageManager;
 			_activityLogManager = activityLogManager;
@@ -33,7 +33,8 @@ namespace InventoryManagementApplication.Pages.admin.storage
 			}
 
 			await _storageManager.CreateStorageAsync(Storage);
-			await _activityLogManager.LogActivityAsync(Storage, EntityState.Modified);
+			var createdStorage = await _storageManager.GetStorageByNameAsync(Storage.Name);
+			await _activityLogManager.LogActivityAsync(createdStorage, EntityState.Added);
 
 			return RedirectToPage("./Index");
 		}

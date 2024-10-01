@@ -24,7 +24,6 @@ namespace InventoryManagementApplication.Helpers
 		public async Task<SelectList> GenerateProductSelectListAsync()
 		{
 			var products = await _productManager.GetProductsAsync(false);
-			//var products = await _context.Products.ToListAsync();
 
 			var productItems = products.Select(x => new
 			{

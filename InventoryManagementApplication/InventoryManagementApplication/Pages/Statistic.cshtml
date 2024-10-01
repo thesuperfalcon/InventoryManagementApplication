@@ -38,14 +38,14 @@
                 @foreach (var statistic in Model.Statistics)
                 {
                     <tr>
-                        <td>@statistic.ReporterName</td>
-                        <td>@statistic.ReporterEmployeeNumber</td>
+                        <td>@statistic.UserName</td>
+                        <td>@statistic.EmployeeNumber</td>
                         <td>Note?</td>
                         <td>@statistic.ProductName</td>
-                        <td>@statistic.ProductQuantity</td>
-                        <td>@statistic.InitialStorageName</td>
+                        <td>@statistic.Quantity</td>
+                        <td>@statistic.IntitialStorageName</td>
                         <td>@statistic.DestinationStorageName</td>
-                        <td>@statistic.OrderTime</td>
+                        <td>@statistic.Moved</td>
                     </tr>
                 }
             }

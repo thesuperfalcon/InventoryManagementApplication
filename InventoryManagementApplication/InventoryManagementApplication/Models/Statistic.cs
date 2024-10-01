@@ -1,6 +1,4 @@
-﻿using InventoryManagementApplication.Areas.Identity.Data;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
 
 namespace InventoryManagementApplication.Models
 {
@@ -9,43 +7,40 @@ namespace InventoryManagementApplication.Models
         [JsonPropertyName("id")]
         public int Id { get; set; }
 
-        [JsonPropertyName("userId")]
+        [JsonPropertyName("user_id")]
         public string? UserId { get; set; }
 
-        [JsonPropertyName("User")]
-        public virtual InventoryManagementUser? User { get; set; }
+        [JsonPropertyName("user_name")]
+        public string? UserName { get; set; }
 
-        [JsonPropertyName("intitialStorageId")]
-        public int? InitialStorageId { get; set; }
+        [JsonPropertyName("employee_number")]
+        public string? EmployeeNumber { get; set; }
 
-        [JsonPropertyName("initialStorage")]
-        public virtual Storage? InitialStorage { get; set; }
-
-        [JsonPropertyName("destinationStorageId")]
-        public int? DestinationStorageId { get; set; }
-
-        [JsonPropertyName("destinationStorage")]
-        public virtual Storage? DestinationStorage { get; set; }
-
-        [JsonPropertyName("productId")]
+        [JsonPropertyName("product_id")]
         public int? ProductId { get; set; }
 
-        [JsonPropertyName("productQuantity")]
-        public int ProductQuantity { get; set; }
+        [JsonPropertyName("product_name")]
+        public string? ProductName { get; set; }
 
-        [JsonPropertyName("product")]
-        public virtual Product? Product { get; set; }
+        [JsonPropertyName("quantity")]
+        public int? Quantity { get; set; }
 
-        [JsonPropertyName("orderTime")]
-        public DateTime? OrderTime { get; set; }
+        [JsonPropertyName("initial_storage_id")]
+        public int? InitialStorageId { get; set; }
 
-        [JsonPropertyName("finishedTime")]
-        public DateTime? FinishedTime { get; set; }
+        [JsonPropertyName("initial_storage_name")]
+        public string? IntitialStorageName { get; set; }
 
-        [JsonPropertyName("completed")]
-        public bool? Completed { get; set; }
+        [JsonPropertyName("destination_storage_id")]
+        public int? DestinationStorageId { get; set; }
+
+        [JsonPropertyName("destination_storage_name")]
+        public string? DestinationStorageName { get; set; }
+
+        [JsonPropertyName("moved")]
+        public DateTime? Moved { get; set; }
+
         [JsonPropertyName("notes")]
-
         public string? Notes { get; set; }
     }
 }

@@ -11,15 +11,16 @@ using Microsoft.CodeAnalysis.Elfie.Diagnostics;
 using System.Text.Json;
 using InventoryManagementApplication.DAL;
 using Microsoft.EntityFrameworkCore;
+using System.Runtime.CompilerServices;
 
 namespace InventoryManagementApplication.Pages.admin.product
 {
     public class CreateModel : PageModel
     {
 		private readonly ProductManager _manager;
-		private readonly ActivityLogManager _logManager;
-
-		public CreateModel(ProductManager manager, ActivityLogManager logManager)
+		private readonly LogManager _logManager;
+	
+		public CreateModel(ProductManager manager, LogManager logManager)
 		{
 			_manager = manager;
 			_logManager = logManager;
@@ -43,8 +44,14 @@ namespace InventoryManagementApplication.Pages.admin.product
 			Product.Created = DateTime.Now;
 
 			await _manager.CreateProductAsync(Product);
-			await _logManager.LogActivityAsync(Product, EntityState.Added);
-						
+
+			var createdProduct = await _manager.GetProductByArticleNumberAsync(Product.ArticleNumber);
+
+			if (createdProduct != null)
+			{
+                await _logManager.LogActivityAsync(createdProduct, EntityState.Added);
+            }
+
 			return RedirectToPage("./Index");
 		}
 	}

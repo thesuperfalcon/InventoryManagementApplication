@@ -4,6 +4,7 @@ using InventoryManagementApplication.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace InventoryManagementApplication.Migrations
 {
     [DbContext(typeof(InventoryManagementApplicationContext))]
-    partial class InventoryManagementApplicationContextModelSnapshot : ModelSnapshot
+    [Migration("20241001114525_removeActivityLogDbContext")]
+    partial class removeActivityLogDbContext
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -284,55 +287,6 @@ namespace InventoryManagementApplication.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int?>("DestinationStorageId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("DestinationStorageName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("EmployeeNumber")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("InitialStorageId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("IntitialStorageName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("Moved")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Notes")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("ProductId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ProductName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("Quantity")
-                        .HasColumnType("int");
-
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UserName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Statistics");
-                });
-
-            modelBuilder.Entity("InventoryManagementApplication.Models.StatisticRelation", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("Relational:JsonPropertyName", "id");
 
@@ -384,7 +338,9 @@ namespace InventoryManagementApplication.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("StatisticRelation");
+                    b.ToTable("Statistics");
+
+                    b.HasAnnotation("Relational:JsonPropertyName", "statisticDestinationStorages");
                 });
 
             modelBuilder.Entity("InventoryManagementApplication.Models.Storage", b =>
@@ -424,7 +380,7 @@ namespace InventoryManagementApplication.Migrations
 
                     b.ToTable("Storages");
 
-                    b.HasAnnotation("Relational:JsonPropertyName", "initialStorage");
+                    b.HasAnnotation("Relational:JsonPropertyName", "destinationStorage");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -554,23 +510,26 @@ namespace InventoryManagementApplication.Migrations
                     b.Navigation("Storage");
                 });
 
-            modelBuilder.Entity("InventoryManagementApplication.Models.StatisticRelation", b =>
+            modelBuilder.Entity("InventoryManagementApplication.Models.Statistic", b =>
                 {
                     b.HasOne("InventoryManagementApplication.Models.Storage", "DestinationStorage")
-                        .WithMany()
-                        .HasForeignKey("DestinationStorageId");
+                        .WithMany("StatisticDestinationStorages")
+                        .HasForeignKey("DestinationStorageId")
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.HasOne("InventoryManagementApplication.Models.Storage", "InitialStorage")
-                        .WithMany()
-                        .HasForeignKey("InitialStorageId");
+                        .WithMany("StatisticInitialStorages")
+                        .HasForeignKey("InitialStorageId")
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.HasOne("InventoryManagementApplication.Models.Product", "Product")
-                        .WithMany()
+                        .WithMany("Statistics")
                         .HasForeignKey("ProductId");
 
                     b.HasOne("InventoryManagementApplication.Areas.Identity.Data.InventoryManagementUser", "User")
                         .WithMany("StatisticUsers")
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("DestinationStorage");
 
@@ -640,11 +599,17 @@ namespace InventoryManagementApplication.Migrations
             modelBuilder.Entity("InventoryManagementApplication.Models.Product", b =>
                 {
                     b.Navigation("InventoryTrackers");
+
+                    b.Navigation("Statistics");
                 });
 
             modelBuilder.Entity("InventoryManagementApplication.Models.Storage", b =>
                 {
                     b.Navigation("InventoryTrackers");
+
+                    b.Navigation("StatisticDestinationStorages");
+
+                    b.Navigation("StatisticInitialStorages");
                 });
 #pragma warning restore 612, 618
         }

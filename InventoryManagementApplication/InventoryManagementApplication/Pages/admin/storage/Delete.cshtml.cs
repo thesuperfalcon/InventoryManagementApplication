@@ -10,9 +10,9 @@ namespace InventoryManagementApplication.Pages.admin.storage
 	{
 		private readonly StorageManager _storageManager;
 		private readonly TrackerManager _trackerManager;
-		private readonly ActivityLogManager _activityLogManager;
+		private readonly LogManager _activityLogManager;
 
-		public DeleteModel(StorageManager storageManager, TrackerManager trackerManager, ActivityLogManager activityLogManager)
+		public DeleteModel(StorageManager storageManager, TrackerManager trackerManager, LogManager activityLogManager)
 		{
 			_storageManager = storageManager;
 			_trackerManager = trackerManager;
@@ -51,7 +51,7 @@ namespace InventoryManagementApplication.Pages.admin.storage
 			{
 				return NotFound();
 			}
-			var storage = await _storageManager.GetStorageByIdAsync(id, false);
+			var storage = await _storageManager.GetStorageByIdAsync(id, null);
 			Trackers = await _trackerManager.GetAllTrackersAsync();
 			Trackers = Trackers.Where(x => x.StorageId == storage.Id).ToList();
 

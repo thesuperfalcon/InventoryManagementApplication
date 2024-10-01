@@ -1,7 +1,6 @@
 using InventoryManagementApplication.Areas.Identity.Data;
 using InventoryManagementApplication.DAL;
 using InventoryManagementApplication.Data;
-using InventoryManagementApplication.DTO;
 using InventoryManagementApplication.Helpers;
 using InventoryManagementApplication.Models;
 using Microsoft.AspNetCore.Identity;
@@ -123,7 +122,7 @@ namespace InventoryManagementApplication.Pages.admin.tracker
                 {
                     StatusMessage = tuple.Item2 != string.Empty ? tuple.Item2 : "Förflyttning lyckades!";
                    
-                    await _statisticManager.CreateStatisticAsync(MyUser.Id, fromStorageId, toStorageId, productId, quantity);
+                    await _statisticManager.CreateStatisticAsync(MyUser.Id, fromStorageId, toStorageId, productId, quantity, null);
 
                     return RedirectToPage("./moveProduct", new { id = SelectedInventoryTracker.Id });
                 }
