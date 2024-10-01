@@ -93,6 +93,7 @@ namespace InventoryManagementApplication
                 app.UseHsts();
             }
 
+            app.UseRequestLocalization();
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();

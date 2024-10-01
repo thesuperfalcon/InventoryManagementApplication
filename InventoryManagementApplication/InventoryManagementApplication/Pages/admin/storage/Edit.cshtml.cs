@@ -26,7 +26,10 @@ namespace InventoryManagementApplication.Pages.admin.storage
 		
 		[TempData] 
 		public string StatusMessage { get; set; }
-		[BindProperty]
+
+        [TempData]
+        public string StatusMessage1 { get; set; }
+        [BindProperty]
         public Storage Storage { get; set; } = default!;
 
         public async Task<IActionResult> OnGetAsync(int? id)
@@ -57,11 +60,18 @@ namespace InventoryManagementApplication.Pages.admin.storage
 
 			try
 			{
+				if(Storage.MaxCapacity < Storage.CurrentStock)
+				{
+					StatusMessage = $"Går ej att ändra max antal platser lägre än nuvarande produkter: {Storage.CurrentStock}";
+
+                    return RedirectToPage("./Edit", new { id = Storage.Id });
+                }
+				StatusMessage1 = $"Du har ökat max antal platser till: {Storage.MaxCapacity}";
 				await _storageManager.EditStorageAsync(Storage);
 
-				return RedirectToPage("./Edit", new { id = Storage.Id });
+                return RedirectToPage("./Edit", new { id = Storage.Id });
 
-			}
+            }
 			catch (DbUpdateConcurrencyException)
 			{
 				if (!await StorageExists(Storage.Id))
