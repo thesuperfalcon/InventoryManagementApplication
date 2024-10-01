@@ -105,7 +105,6 @@ namespace InventoryManagementApplication
             app.MapRazorPages();
 
             await app.RunAsync();
-        }
-      
+        }      
     }
 }

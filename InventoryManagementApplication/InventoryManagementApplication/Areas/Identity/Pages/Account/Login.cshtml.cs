@@ -60,7 +60,7 @@ namespace InventoryManagementApplication.Areas.Identity.Pages.Account
 
             [Required]
             [DataType(DataType.Text)]
-            public string EmployeeNumber { get; set; }
+            public string UserName { get; set; }
         }
 
         public async Task OnGetAsync(string returnUrl = null)
@@ -88,7 +88,7 @@ namespace InventoryManagementApplication.Areas.Identity.Pages.Account
 
             if (ModelState.IsValid)
             {
-                var user = await _signInManager.UserManager.Users.SingleOrDefaultAsync(u => u.EmployeeNumber == Input.EmployeeNumber);
+                var user = await _signInManager.UserManager.Users.SingleOrDefaultAsync(u => u.UserName == Input.UserName);
 
                 if (user == null)
                 {
