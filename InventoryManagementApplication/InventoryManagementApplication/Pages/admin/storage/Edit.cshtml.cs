@@ -66,7 +66,7 @@ namespace InventoryManagementApplication.Pages.admin.storage
 
                     return RedirectToPage("./Edit", new { id = Storage.Id });
                 }
-				StatusMessage1 = $"Du har ökat max antal platser till: {Storage.MaxCapacity}";
+				StatusMessage1 = $"Du har ändrat max antal platser till: {Storage.MaxCapacity}";
 				await _storageManager.EditStorageAsync(Storage);
 
                 return RedirectToPage("./Edit", new { id = Storage.Id });

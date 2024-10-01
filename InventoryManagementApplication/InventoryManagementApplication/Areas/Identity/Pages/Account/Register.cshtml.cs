@@ -50,7 +50,7 @@ namespace InventoryManagementApplication.Areas.Identity.Pages.Account
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
-			_userManagerDAL = userManagerDAL;
+            _userManagerDAL = userManagerDAL;
         }
 
         /// <summary>
@@ -156,7 +156,7 @@ namespace InventoryManagementApplication.Areas.Identity.Pages.Account
 
 
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
-        { 
+        {
 
             returnUrl ??= Url.Content("/Identity/Account/Register");
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
@@ -165,18 +165,23 @@ namespace InventoryManagementApplication.Areas.Identity.Pages.Account
                 var user = CreateUser();
 
 
+
                 user.FirstName = Input.FirstName;
                 user.LastName = Input.LastName;
                 user.EmployeeNumber = Input.EmployeeNumber;
-                
+
+                string firstTwoLettersFirstName = user.FirstName.Length >= 2 ? user.FirstName.Substring(0, 2).ToLower() : user.FirstName.ToLower();
+                string firstTwoLettersLastName = user.LastName.Length >= 2 ? user.LastName.Substring(0, 2).ToLower() : user.LastName.ToLower();
+                user.UserName = $"{firstTwoLettersFirstName}{firstTwoLettersLastName}{user.EmployeeNumber.ToLower()}";
+
                 //För att visa korrekt datum i användarinfomationen
                 user.Created = DateTime.Now;
                 user.Updated = DateTime.Now;
-                
+
                 Input.Password = "Admin123!";
 
-                await _userStore.SetUserNameAsync(user, Input.EmployeeNumber, CancellationToken.None);
-                
+                await _userStore.SetUserNameAsync(user, user.UserName, CancellationToken.None);
+
                 var result = await _userManagerDAL.RegisterUserAsync(user);
                 //await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
                 //var result = await _userManager.CreateAsync(user, Input.Password);
@@ -206,7 +211,12 @@ namespace InventoryManagementApplication.Areas.Identity.Pages.Account
                     //    await _signInManager.SignInAsync(user, isPersistent: false);
                     //    return LocalRedirect(returnUrl);
                     //}
-                    StatusMessage = "Användare har lagts till! " + user.FirstName + " " + user.LastName + " " + user.EmployeeNumber; 
+
+                    StatusMessage = "Användare har lagts till!<br>" +
+                                    $"Namn: {user.FirstName} {user.LastName}<br>" +
+                                    $"Anställningsnummer: {user.EmployeeNumber}<br>" +
+                                    $"Användarnamn: {user.UserName}<br>" +
+                                    $"Lösenord: {Input.Password}";
 
                     return LocalRedirect(returnUrl);
                 }
