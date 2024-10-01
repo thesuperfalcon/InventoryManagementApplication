@@ -20,6 +20,7 @@ namespace InventoryManagementApplication.Pages.admin.product
 		{
 			//ändra till false
 			Products = await _manager.GetProductsAsync(null);
-		}
-	}
+
+        }
+    }
 }
