@@ -15,7 +15,7 @@ namespace InventoryManagementApplication.Pages
         }
 
 		//private static Uri BaseAddress = new Uri("https://localhost:44353/");
-		public List<StatisticResponseDto> Statistics { get; set; }
+		public List<Statistic> Statistics { get; set; }
 		public async Task OnGetAsync()
 		{
 			var statistics = await _statisticManager.GetAllStatisticsAsync();

@@ -1,8 +1,5 @@
 ﻿@page
 @model InventoryManagementApplication.Pages.LogModel
-@{
-
-}
 
 <h1>Loggning</h1>
 
@@ -18,30 +15,30 @@
                 <th scope="col"><a href="javascript:void(0);" onclick="sortTable(1)">Typ av Objekt</a></th>
                 <th scope="col"><a href="javascript:void(0);" onclick="sortTable(2)">Anteckning</a></th>
                 <th scope="col"><a href="javascript:void(0);" onclick="sortTable(3)">Objekt-Id</a></th>
-                <th scope="col"><a href="javascript:void(0);" onclick="sortTable(4)">Ändrad</a></th>
+                <th scope="col"><a href="javascript:void(0);" onclick="sortTable(4)">Tidpunkt</a></th>
                 <th scope="col"><a href="javascript:void(0);" onclick="sortTable(5)">Händelse</a></th>
             </tr>
         </thead>
         <tbody id="myLogTable">
-            @if (Model.ActivityLogs.Any())
+            @if (Model.Logs.Any())
             {
-                @foreach (var logs in Model.ActivityLogs)
+                foreach (var log in Model.Logs)
                 {
-                    <tr>
-                        <td>@logs.UserId </td>
-                        <td>@logs.ItemType</td>
-                        <td>@logs.Notes</td>                                             
-                        <td>@logs.TypeId</td>
-                        <td>@logs.TimeStamp</td>
-                        <td>@logs.Action</td>
-                    </tr>
+                            <tr>
+                                <td>@log.UserId</td>
+                                <td>@log.EntityType</td>
+                                <td>@log.EntityDetails</td>
+                                <td>@(log.Id)</td> 
+                                <td>@log.TimeStamp</td> 
+                                <td>@log.Action</td>
+                            </tr>
                 }
             }
             else
             {
-                <tr>
-                    <td colspan="8" class="text-center">Ingen data..</td>
-                </tr>
+                    <tr>
+                        <td colspan="6" class="text-center">Ingen data..</td>
+                    </tr>
             }
         </tbody>
     </table>
@@ -53,5 +50,5 @@
 </div>
 
 @section Scripts {
-    <script src="~/js/logIndex.js"></script>
+        <script src="~/js/logIndex.js"></script>
 }

@@ -18,9 +18,9 @@ namespace InventoryManagementApplication.Pages.admin.storage
     public class EditModel : PageModel
     {
 		private readonly StorageManager _storageManager;
-		private readonly ActivityLogManager _activityLogManager;
+		private readonly LogManager _activityLogManager;
 
-        public EditModel(StorageManager storageManager, ActivityLogManager activityLogManager)
+        public EditModel(StorageManager storageManager, LogManager activityLogManager)
         {
 			_storageManager = storageManager;
 			_activityLogManager = activityLogManager;

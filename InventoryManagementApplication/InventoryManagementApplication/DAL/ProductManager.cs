@@ -90,7 +90,29 @@ namespace InventoryManagementApplication.DAL
 			}
 		}
 
-		public async Task EditProductAsync(Product? product)
+		public async Task<Product> GetProductByArticleNumberAsync(string articleNumber)
+		{
+			Product = new Product();
+			using (var client = new HttpClient())
+			{
+				client.BaseAddress = BaseAddress;
+				string uri = $"api/Products/ByArticleNumber/{articleNumber}";
+				if (articleNumber != null || articleNumber != string.Empty)
+				{
+					HttpResponseMessage response = await client.GetAsync(uri);
+					if (response.IsSuccessStatusCode)
+					{
+						string responseString = await response.Content.ReadAsStringAsync();
+						var product = JsonSerializer.Deserialize<Models.Product>(responseString);
+						Product = product;
+					}
+				}
+				return Product;
+			}
+
+        }
+
+        public async Task EditProductAsync(Product? product)
 		{
 			using (var client = new HttpClient())
 			{

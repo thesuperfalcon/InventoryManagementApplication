@@ -15,8 +15,8 @@ namespace InventoryManagementApplication.Pages.admin.product
 		private readonly ProductManager _productManager;
 		private readonly TrackerManager _trackerManager;
 		private readonly StorageManager _storageManager;
-		private readonly ActivityLogManager _activityLogManager;
-		public EditModel(ProductManager productManager, TrackerManager trackerManager, StorageManager storageManager, ActivityLogManager activityLogManager)
+		private readonly LogManager _activityLogManager;
+		public EditModel(ProductManager productManager, TrackerManager trackerManager, StorageManager storageManager, LogManager activityLogManager)
 		{
 			_productManager = productManager;
 			_trackerManager = trackerManager;
@@ -62,10 +62,10 @@ namespace InventoryManagementApplication.Pages.admin.product
 			var defaultStorage = await _storageManager.GetDefaultStorageAsync();
 			var tracker = await _trackerManager.GetTrackerByProductAndStorageAsync(Product.Id, defaultStorage.Id);
 
-            if (tracker == null)
-            {
-                return RedirectToPage("./Edit", new { id = Product.Id });
-            }
+            //if (tracker == null)
+            //{
+            //    return RedirectToPage("./Edit", new { id = Product.Id });
+            //}
 
 			InventoryTrackers = await _trackerManager.GetTrackerByProductOrStorageAsync(Product.Id, 0);
 

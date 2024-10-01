@@ -1,5 +1,5 @@
-﻿using InventoryManagementApplication.DTO;
-using InventoryManagementApplication.Models;
+﻿using InventoryManagementApplication.Models;
+using Microsoft.AspNetCore.Identity;
 using System.Text;
 using System.Text.Json;
 
@@ -7,21 +7,24 @@ namespace InventoryManagementApplication.DAL
 {
 	public class StatisticManager
 	{
-		private static Uri BaseAddress = new Uri("https://localhost:44353/");
-		public Statistic Statistic { get; set; }
-		public List<Statistic> Statistics { get; set; }
-		public StatisticDto StatisticDto { get; set; }
-		public List<StatisticResponseDto> StatisticsDto { get; set; }
-
-		public async Task CreateStatisticAsync(StatisticDto statistic)
+		private readonly StorageManager _storageManager;
+		private readonly ProductManager _productManager;
+		private readonly UserManager _userManager;
+        public StatisticManager(StorageManager storageManager, ProductManager productManager, UserManager userManager)
+        {
+			_storageManager = storageManager;
+            _productManager = productManager;
+			_userManager = userManager;
+        }
+        private static Uri BaseAddress = new Uri("https://localhost:44353/");
+		public async Task CreateStatisticAsync(Statistic statistic)
 		{
 			if (statistic != null)
 			{
-				StatisticDto = statistic;
 				using (var client = new HttpClient())
 				{
 					client.BaseAddress = BaseAddress;
-					var json = JsonSerializer.Serialize(StatisticDto);
+					var json = JsonSerializer.Serialize(statistic);
 
 					StringContent httpContent = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
 					HttpResponseMessage response = await client.PostAsync("api/Statistics/", httpContent);
@@ -33,8 +36,9 @@ namespace InventoryManagementApplication.DAL
 			}
 
 		}
-		public async Task<List<StatisticResponseDto>> GetAllStatisticsAsync()
+		public async Task<List<Statistic>> GetAllStatisticsAsync()
 		{
+			var statistics = new List<Statistic>();
 			using (var client = new HttpClient())
 			{
 				client.BaseAddress = BaseAddress;
@@ -43,31 +47,12 @@ namespace InventoryManagementApplication.DAL
 				if (responseProducts.IsSuccessStatusCode)
 				{
 					string responseString = await responseProducts.Content.ReadAsStringAsync();
-					List<Models.StatisticResponseDto> statistics = JsonSerializer.Deserialize<List<Models.StatisticResponseDto>>(responseString);
-					StatisticsDto = statistics.ToList();
+					statistics = JsonSerializer.Deserialize<List<Models.Statistic>>(responseString);
 				}
 
-				return StatisticsDto;
+				return statistics;
 			}
 		}
-
-		//public async Task<Product> GetOneProductAsync(int? id)
-		//{
-		//	using (var client = new HttpClient())
-		//	{
-		//		client.BaseAddress = BaseAddress;
-		//		HttpResponseMessage responseProducts = await client.GetAsync($"api/Products/{id.Value}");
-
-		//		if (responseProducts.IsSuccessStatusCode)
-		//		{
-		//			string responseString = await responseProducts.Content.ReadAsStringAsync();
-		//			var product = JsonSerializer.Deserialize<Models.Product>(responseString);
-		//			Product = product;
-		//		}
-
-		//		return Product;
-		//	}
-		//}
 
 		public async Task DeleteStatisticAsync(int? id)
 		{
@@ -86,28 +71,39 @@ namespace InventoryManagementApplication.DAL
 				client.BaseAddress = BaseAddress;
 				if (statistic != null)
 				{
-					Statistic = statistic;
-					var content = new StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(Statistic), Encoding.UTF8, "application/json");
-					HttpResponseMessage response = await client.PutAsync($"api/Statistics/{Statistic.Id}", content);
+					var content = new StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(statistic), Encoding.UTF8, "application/json");
+					HttpResponseMessage response = await client.PutAsync($"api/Statistics/{statistic.Id}", content);
 				}
 
 
 
 			}
 		}
-        public async Task CreateStatisticAsync(string userId, int fromStorageId, int toStorageId, int productId, int quantity)
+        public async Task CreateStatisticAsync(string userId, int fromStorageId, int toStorageId, int productId, int quantity, string? notes)
         {
-            var newStatistic = new StatisticDto
+            var user = await _userManager.GetOneUserAsync(userId);
+            var product = await _productManager.GetProductByIdAsync(productId, false);
+            var initialStorage = await _storageManager.GetStorageByIdAsync(fromStorageId, false);
+            var destinationStorage = await _storageManager.GetStorageByIdAsync(toStorageId, false);
+
+            var newStatistic = new Statistic
             {
                 UserId = userId,
-                InitialStorageId = fromStorageId,
-                DestinationStorageId = toStorageId,
+                UserName = user?.UserName,
+                EmployeeNumber = user?.EmployeeNumber,
                 ProductId = productId,
-                ProductQuantity = quantity,
-                OrderTime = DateTime.Now,
+                ProductName = product?.Name,
+                Quantity = quantity,
+                InitialStorageId = fromStorageId,
+                IntitialStorageName = initialStorage?.Name,
+                DestinationStorageId = toStorageId,
+                DestinationStorageName = destinationStorage?.Name,
+                Moved = DateTime.Now,
+				Notes = notes
             };
 
             await CreateStatisticAsync(newStatistic);
         }
+
     }
 }

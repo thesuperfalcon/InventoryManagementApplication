@@ -24,17 +24,8 @@ namespace InventoryManagementApplication.Models
 		[JsonPropertyName("isDeleted")]
 		public bool? IsDeleted { get; set; } = false;
 
-		[JsonPropertyName("activityLogs")]
-		public virtual ICollection<ActivityLog> ActivityLogs { get; set; } = new List<ActivityLog>();
-
 		[JsonPropertyName("inventoryTrackers")]
 		public virtual ICollection<InventoryTracker> InventoryTrackers { get; set; } = new List<InventoryTracker>();
-
-		[JsonPropertyName("statisticDestinationStorages")]
-        public virtual ICollection<Statistic> StatisticDestinationStorages { get; set; } = new List<Statistic>();
-
-		[JsonPropertyName("statisticInitialStorages")]
-		public virtual ICollection<Statistic> StatisticInitialStorages { get; set; } = new List<Statistic>();
     }
 }
 

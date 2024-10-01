@@ -37,10 +37,5 @@ public class InventoryManagementUser : IdentityUser
 	[JsonPropertyName("updated")]
 	[PersonalData]
     public DateTime Updated { get; set; }
-
-	
-
-	public virtual ICollection<ActivityLog> ActivityLogs { get; set; } = new List<ActivityLog>();
-    public virtual ICollection<Statistic> StatisticUsers { get; set; } = new List<Statistic>();
 }
 
