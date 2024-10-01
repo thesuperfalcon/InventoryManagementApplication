@@ -9,6 +9,7 @@
 @inject UserManager<InventoryManagementUser> UserManager
     @{
     var loggedInUserId = UserManager.GetUserId(User); // Hämta det inloggade användarens ID
+     var adminCount = await Model.GetAdminCountAsync();
 }
 @{
     ViewData["Title"] = "Användarinformation";
@@ -82,12 +83,7 @@
                     data-check-url="@Url.Page("/Account/Register", "CheckEmployeeNumberExists")">
                                           
                     <h5>Rollhantering</h5>
-
-                    @{
-    // Hämta antalet admins från serversidan
-    var adminCount = await Model.GetAdminCountAsync();
-}
-                    <form method="post" asp-page-handler="AssignRole" onsubmit="return confirmRoleChange(@adminCount)">
+  <form method="post" asp-page-handler="AssignRole" id="roleChangeForm">
   <div class="form-floating mb-3 d-flex align-items-center">
 
                             <select asp-for="SelectedRole" asp-items="@(new SelectList(Model.AvailableRoles))"
@@ -95,7 +91,7 @@
                                 <option value="">-- Välj en roll --</option>
                             </select>
                             <label for="RoleSelection">Roll</label>
-                            <button type="submit" class="btn btn-generic">Tilldela</button>
+                            <button type="button" class="btn btn-generic" id="openRoleChangeModalBtn">Tilldela</button>
                             <span asp-validation-for="SelectedRole" class="text-danger"></span>
                         </div>
 
@@ -115,7 +111,6 @@
 
     @if (Model.SelectedUser.Id != loggedInUserId) 
     {
-        <!-- Visa bara knappen om användaren inte är den inloggade -->
         <button type="submit" asp-page-handler="Delete"
             class="btn btn-danger d-flex align-items-center w-100">
             <i class="fas fa-trash-alt me-1"></i> Ta bort
@@ -139,6 +134,28 @@
                     </form>
                 </div>
             </div>
+
+<!-- Modal för att bekräfta rolländring -->
+<div class="modal fade" id="roleChangeModal" tabindex="-1" role="dialog" aria-labelledby="roleChangeModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="roleChangeModalLabel">Bekräfta Rolländring</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Stäng">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        Är du säker på att du vill ändra användarens roll till: <strong id="modalRole"></strong>?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Avbryt</button>
+        <button type="button" class="btn btn-primary" id="confirmRoleChangeBtn">Bekräfta</button>
+      </div>
+    </div>
+  </div>
+</div>
+
         </div>
     </div>
 </body>
@@ -149,18 +166,31 @@
     <script src="~/js/site.js" asp-append-version="true"></script>
     <partial name="_ValidationScriptsPartial" />
     <script>
-        function confirmRoleChange(adminCount) {
-            var selectedRole = document.getElementById("RoleSelection").value;
-            var isChangingToUser = selectedRole === "Användare";
+        $(document).ready(function () {
+    
+            var adminCount = @adminCount;
 
-            // Om rollen ändras till "Användare" och det bara finns en admin kvar
-            if (isChangingToUser && adminCount <= 1) {
-                alert("Det måste finnas minst en admin kvar. Du kan inte ändra rollen om det bara finns en admin.");
-                return false; // Förhindra formuläret från att skickas
-            }
 
-            // Visa bekräftelserutan för alla andra fall
-            return confirm("Är du säker på att du vill ändra användarens roll till: " + selectedRole + "?");
-        }
+            $('#openRoleChangeModalBtn').on('click', function (e) {
+                e.preventDefault(); // Förhindra att knappen triggar något annat
+
+                var selectedRole = $('#RoleSelection').val();
+                var isChangingToUser = selectedRole === "Användare";
+
+                // Kontrollera om rollen ändras till "Användare" och det bara finns en admin kvar
+                if (isChangingToUser && adminCount <= 1) {
+                    alert("Det måste finnas minst en admin kvar. Du kan inte ändra rollen om det bara finns en admin.");
+                    return false; // Förhindra formuläret från att skickas
+                }
+
+                // Uppdatera modalens text med vald roll
+                $('#modalRole').text(selectedRole);
+
+                $('#roleChangeModal').modal('show');
+            });
+            $('#confirmRoleChangeBtn').on('click', function () {
+                $('#roleChangeForm').submit();
+            });
+        });
     </script>
 }

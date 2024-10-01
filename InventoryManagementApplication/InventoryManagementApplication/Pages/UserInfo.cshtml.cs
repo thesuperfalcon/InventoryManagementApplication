@@ -265,7 +265,10 @@ namespace InventoryManagementApplication.Pages
                 user.Created = DateTime.Now;
             }
 
-            user.Updated = DateTime.Now;
+       if (user.Updated == DateTime.MinValue || user.Updated == default(DateTime))
+{
+    user.Updated = DateTime.Now;
+}
 
             var result = await _userManagerDal.EditUserAsync(user, null);
            // var result = await _userManager.UpdateAsync(user);

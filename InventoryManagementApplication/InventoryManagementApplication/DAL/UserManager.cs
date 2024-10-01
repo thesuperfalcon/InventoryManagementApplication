@@ -97,15 +97,10 @@ namespace InventoryManagementApplication.DAL
         }
         public async Task<bool> EditUserAsync(InventoryManagementUser? user, List<string?>? currentRoles)
         {
+
+   
             using (var client = new HttpClient())
             {
-
-                 // Kontrollera att fältet 'Updated' sätts innan PUT-begäran skickas
-        user.Updated = DateTime.Now; // Sätt Updated till den aktuella tiden
-
-        // Logga värdet för att säkerställa att det sätts korrekt
-        Console.WriteLine($"Updated time: {user.Updated}");
-        
 
                 client.BaseAddress = BaseAddress;
                 var editUserRequest = new DTO.RolesDTO
