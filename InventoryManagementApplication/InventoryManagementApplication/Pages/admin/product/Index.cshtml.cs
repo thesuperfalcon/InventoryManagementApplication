@@ -21,7 +21,6 @@ namespace InventoryManagementApplication.Pages.admin.product
 		{
 			//ändra till false
 			Products = await _manager.GetProductsAsync(null);
-<<<<<<< HEAD
 		}
 
 		public IActionResult OnPost()
@@ -29,9 +28,4 @@ namespace InventoryManagementApplication.Pages.admin.product
 			return RedirectToPage("./Create");
 		}
 	}
-=======
-
-        }
-    }
->>>>>>> f47cc9066a29aec6060a9703804fe0cc9d081d19
 }
