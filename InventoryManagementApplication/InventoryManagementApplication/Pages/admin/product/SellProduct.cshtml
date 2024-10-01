@@ -1,0 +1,80 @@
+﻿@page
+@model InventoryManagementApplication.Pages.admin.product.SellProductModel
+@{
+
+    int x = 0;
+    
+}
+
+<table id="productTable" class="table" data-sort-direction="asc">
+    <thead>
+        <tr>
+            <th><a href="javascript:void(0);" onclick="sortTable(0)">Lagernamn</a></th>
+            <th><a href="javascript:void(0);" onclick="sortTable(1)">Produktnamn</a></th>
+            <th><a href="javascript:void(0);" onclick="sortTable(2)">Antal i lager</a></th>
+            <th><a href="javascript:void(0);" onclick="sortTable(3)">Pris</a></th>           
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+
+@if(Model.StorageId != 0 && Model.ProductId != 0)
+    {
+            @*<h3>Sälj @Model.Product.Name i @Model.Storage.Name</h3>
+
+            <h4>Antal produkter i lagret: @Model.CurrentProductAmountList[Model.Index] st</h4>*@
+            <div class="container mt-5">
+                <div class="row justify-content-center">
+
+                    <div class="col-md-6 col-lg-5">
+
+                        <div class="card shadow-sm">
+                                <div class="card-header bg-primary text-white">
+                                                <h4 class="mb-0">Sälj @Model.Product.Name i @Model.Storage.Name</h4>
+                                </div>
+                                    <div class="card-body">
+                                        <form method="post">
+                                            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                                                        <div class="mb-3">
+                                                            <input type="hidden" asp-for="ProductId" />
+                                                            <input type="hidden" asp-for="StorageId" />
+                                                            <label asp-for="@Model.SellAmount" class="form-label">Antal produkter i lagret: @Model.CurrentProductAmountList[Model.Index] st</label>
+                                                            <input asp-for="@Model.SellAmount" type="number" class="form-control" required />
+                                                            <span asp-validation-for="@Model.SellAmount" class="text-danger"></span>
+                                                        </div>
+                                                    <div class="d-flex">
+                                                        <input type="submit" value="Sälj" class="btn btn-primary me-2" />
+                                                        <a asp-page="./Index" class="btn btn-secondary">Tillbaka till lista</a>
+                                                    </div>
+
+
+                                                     
+                                                </form>
+                                            </div>
+                                    </div>
+                            </div>
+                </div>
+            </div>
+    }
+        <div class="alert-info mt-3">@Model.StatusMessage</div>
+        @if(Model.InventoryTrackers != null)
+        {
+            @foreach (var item in Model.InventoryTrackers)
+            {
+                <tr>
+                    <td>@Html.DisplayFor(modelItem => item.Storage.Name)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Product.Name)</td>
+                    <td>@Html.DisplayFor(modelItem => Model.CurrentProductAmountList[x]) / @Html.DisplayFor(modelItem => item.Storage.MaxCapacity)</td>
+                    <td>@String.Format(new System.Globalization.CultureInfo("sv-SE"), "{0:C}", item.Product.Price)</td>
+
+                    <td>
+                        <a asp-page="./SellProduct" asp-route-index="@x" asp-route-storageId="@item.StorageId" asp-route-id="@item.ProductId">Sälj</a> |
+                    </td>
+                </tr>
+                x++;
+
+            }
+        }
+        
+    </tbody>
+</table>

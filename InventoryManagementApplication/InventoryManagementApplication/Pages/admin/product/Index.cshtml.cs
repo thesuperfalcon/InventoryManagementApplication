@@ -1,5 +1,6 @@
 ﻿using InventoryManagementApplication.DAL;
 using InventoryManagementApplication.Models;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
@@ -20,6 +21,11 @@ namespace InventoryManagementApplication.Pages.admin.product
 		{
 			//ändra till false
 			Products = await _manager.GetProductsAsync(null);
+		}
+
+		public IActionResult OnPost()
+		{
+			return RedirectToPage("./Create");
 		}
 	}
 }

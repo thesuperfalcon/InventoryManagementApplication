@@ -3,11 +3,39 @@
 
 @{
     ViewData["Title"] = "Index";
+    var amountOfProducts = @Model.Products.Where(x => x.IsDeleted == false).Count();
 }
+
+
 
 <h1>Produktkatalog</h1>
 
-<a asp-page="Create" class="btn btn-primary">Lägg till</a>
+<form id="createForm" method="post" class="d-flex justify-content-start align-items-center">
+    <button type="button" id="createButton" class="btn btn-primary me-2">Lägg till</button>
+    <h3>@amountOfProducts / 15 produkter</h3>
+</form>
+
+<!-- Bootstrap Modal -->
+<div class="modal fade" id="confirmCreateModal" tabindex="-1" aria-labelledby="confirmCreateModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmCreateModalLabel">Bekräfta</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="modalMessage">
+                Är du säker på att du vill lägga till en produkt? Det finns redan 15 produkter i listan.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Nej</button>
+                <button type="submit" form="createForm" class="btn btn-danger">Ja</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@*<a asp-page="Create" id="confirmProducts" class="btn btn-primary">Lägg till</a>*@
+
 
 <table id="productTable" class="table" data-sort-direction="asc">
     <thead>
@@ -37,7 +65,7 @@
                 <td>@Html.DisplayFor(modelItem => item.ArticleNumber)</td>
                 <td>@Html.DisplayFor(modelItem => item.Description)</td>
                 <td>@String.Format(new System.Globalization.CultureInfo("sv-SE"), "{0:C}", item.Price)</td>
-                <td>@Html.DisplayFor(modelItem => item.TotalStock)</td>
+                    <td>@Html.DisplayFor(modelItem => item.TotalStock)<a asp-page="./SellProduct" asp-route-storageId="0" asp-route-id="@item.Id">Sälj produkt</a></td>
                 <td>@Html.DisplayFor(modelItem => item.CurrentStock)</td>
                 <td>@Html.DisplayFor(modelItem => item.Created)</td>
                 <td>@Html.DisplayFor(modelItem => item.Updated)</td>
@@ -53,30 +81,55 @@
     </tbody>
 </table>
 
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
 
-<script>
-    function sortTable(columnIndex) {
-        const table = document.getElementById("productTable");
-        const rows = Array.from(table.rows).slice(1); // Get all rows except the header
+            var createButton = document.getElementById('createButton');
+            var form = document.getElementById('createForm');
+            var amountOfProducts = @amountOfProducts; // Get the product count from Razor
 
-        const isAscending = table.getAttribute("data-sort-direction") === "asc";
+            if (amountOfProducts >= 15) {
+                var modalMessage = "Är du säker på att du vill lägga till en produkt? Det finns redan 15 produkter i listan.";
+                document.getElementById('modalMessage').textContent = modalMessage;
 
-        rows.sort((a, b) => {
-            const cellA = a.cells[columnIndex].innerText.trim();
-            const cellB = b.cells[columnIndex].innerText.trim();
-
-            // Handle sorting for different data types
-            if (columnIndex === 3) { // Assuming "Pris" is at index 3
-                return isAscending
-                    ? parseFloat(cellA.replace(/[^0-9.-]+/g, "")) - parseFloat(cellB.replace(/[^0-9.-]+/g, ""))
-                    : parseFloat(cellB.replace(/[^0-9.-]+/g, "")) - parseFloat(cellA.replace(/[^0-9.-]+/g, ""));
+                // Show the modal when the "Lägg till" button is clicked
+                createButton.addEventListener('click', function () {
+                    var modal = new bootstrap.Modal(document.getElementById('confirmCreateModal'));
+                    modal.show();
+                });
             } else {
-                return isAscending
-                    ? cellA.localeCompare(cellB, 'sv-SE') // For Swedish alphabetical order
-                    : cellB.localeCompare(cellA, 'sv-SE');
+                // If products are less than 15, submit the form directly
+                createButton.addEventListener('click', function () {
+                    form.submit(); // Directly submit the form
+                });
             }
-        });
 
+        });
+    </script>
+    <script>
+        function sortTable(columnIndex) {
+            const table = document.getElementById("productTable");
+            const rows = Array.from(table.rows).slice(1); // Get all rows except the header
+
+            const isAscending = table.getAttribute("data-sort-direction") === "asc";
+
+            rows.sort((a, b) => {
+                const cellA = a.cells[columnIndex].innerText.trim();
+                const cellB = b.cells[columnIndex].innerText.trim();
+
+                // Handle sorting for different data types
+                if (columnIndex === 3) { // Assuming "Pris" is at index 3
+                    return isAscending
+                        ? parseFloat(cellA.replace(/[^0-9.-]+/g, "")) - parseFloat(cellB.replace(/[^0-9.-]+/g, ""))
+                        : parseFloat(cellB.replace(/[^0-9.-]+/g, "")) - parseFloat(cellA.replace(/[^0-9.-]+/g, ""));
+                } else {
+                    return isAscending
+                        ? cellA.localeCompare(cellB, 'sv-SE') // For Swedish alphabetical order
+                        : cellB.localeCompare(cellA, 'sv-SE');
+                }
+            });
+        });
         // Clear the table body and append sorted rows
         const tbody = table.querySelector('tbody');
         tbody.innerHTML = ""; // Clear existing rows
@@ -84,5 +137,7 @@
 
         // Toggle sort direction
         table.setAttribute("data-sort-direction", isAscending ? "desc" : "asc");
-    }
-</script>
+            }
+    </script>
+
+}

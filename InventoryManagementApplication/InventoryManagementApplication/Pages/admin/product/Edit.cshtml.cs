@@ -26,7 +26,9 @@ namespace InventoryManagementApplication.Pages.admin.product
 		public string StatusMessage { get; set; }
 		[BindProperty]
 		public Product Product { get; set; } = default!;
+		public Product PreviousProduct { get; set; } = default!;
 		public List<InventoryTracker> InventoryTrackers { get; set; }
+		public int? SellAmount { get; set; }
 
 		public async Task<IActionResult> OnGetAsync(int? id)
 		{
@@ -43,6 +45,7 @@ namespace InventoryManagementApplication.Pages.admin.product
 			}
 
 			Product = product;
+			SellAmount = 0;
 			return Page();
 
 		}
@@ -53,7 +56,7 @@ namespace InventoryManagementApplication.Pages.admin.product
 			{
 				return Page();
 			}
-
+			PreviousProduct = await _productManager.GetProductByIdAsync(Product.Id, null);
 			var defaultStorage = await _storageManager.GetDefaultStorageAsync();
 			var tracker = await _trackerManager.GetTrackerByProductAndStorageAsync(Product.Id, defaultStorage.Id);
 
@@ -64,13 +67,16 @@ namespace InventoryManagementApplication.Pages.admin.product
 
 			InventoryTrackers = await _trackerManager.GetTrackerByProductOrStorageAsync(Product.Id, 0);
 
+
 			if (InventoryTrackers != null && InventoryTrackers.Count > 0)
 			{
                 var productQuantity = InventoryTrackers.Sum(x => x.Quantity);
 
+
                 if (Product.TotalStock < productQuantity)
 				{
-					StatusMessage = $"Förbjudet att sänka antalet produkter";
+					//Hjälp! Grammatik!
+					StatusMessage = $"Det går ej att fylla med färre antal.";
 					return RedirectToPage("./Edit", new { id = Product.Id });
 				}
 				else
@@ -79,6 +85,7 @@ namespace InventoryManagementApplication.Pages.admin.product
 					Product.CurrentStock += input;
 					defaultStorage.CurrentStock += input;
 					tracker.Quantity += input;
+										
 				}
 			}
 			else
@@ -88,9 +95,20 @@ namespace InventoryManagementApplication.Pages.admin.product
 
 			try
 			{
-				await _productManager.EditProductAsync(Product);
+
+                await _productManager.EditProductAsync(Product);
 				await _storageManager.EditStorageAsync(defaultStorage);
 				await _trackerManager.EditTrackerAsync(tracker);
+				if(PreviousProduct.Name == Product.Name && PreviousProduct.Price == Product.Price && PreviousProduct.ArticleNumber == Product.ArticleNumber
+					&& PreviousProduct.Description == Product.Description && PreviousProduct.CurrentStock == Product.CurrentStock)
+				{
+					StatusMessage = "Inga ändringar har gjorts, ange nya värden";
+				}
+				else
+				{
+                    StatusMessage = "Produkten har ändrats!";
+                }
+				
 				return RedirectToPage("./Edit", new { id = Product.Id });
 
 			}

@@ -4,15 +4,11 @@
 
 @{
     ViewData["Title"] = "Delete";
-
-   
-
     var deleteMessage = Html.Raw($"Är du säker på att du vill ta bort detta objekt? Det går ej att ångra!!");
 }
 
 <div class="container mt-5">
     <h1 class="mb-4">Ta bort produkt</h1>
-
 
     <div class="card shadow-sm mb-4">
         <div class="card-header bg-primary text-white">
@@ -49,7 +45,7 @@
 
     <form id="deleteForm" method="post" class="d-flex justify-content-start align-items-center">
         <input type="hidden" asp-for="Product.Id" />
-        <button type="button" class="btn btn-danger me-2" id="deleteButton">Ta bort</button>
+        <button type="button" id="deleteButton" class="btn btn-danger me-2">Ta bort</button>
         <a asp-page="./Index" class="btn btn-secondary">Tillbaka till lista</a>
     </form>
 </div>
@@ -59,7 +55,7 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="confirmDeleteModalLabel">Bekräfta borttagning</h5>
+                    <h5 class="modal-title" id="confirmCreateModalLabel">Bekräfta borttagning</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body" id="modalMessage">
@@ -78,7 +74,7 @@
 @section Scripts {
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            var currentStock = @Model.Product.CurrentStock;
+            //var currentStock = @Model.Product.CurrentStock;
            
             var deleteMessage = "@deleteMessage";
 
