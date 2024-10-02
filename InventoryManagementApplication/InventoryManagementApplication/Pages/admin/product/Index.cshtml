@@ -65,7 +65,7 @@
                 <td>@Html.DisplayFor(modelItem => item.ArticleNumber)</td>
                 <td>@Html.DisplayFor(modelItem => item.Description)</td>
                 <td>@String.Format(new System.Globalization.CultureInfo("sv-SE"), "{0:C}", item.Price)</td>
-                    <td>@Html.DisplayFor(modelItem => item.TotalStock)<a asp-page="./SellProduct" asp-route-storageId="0" asp-route-id="@item.Id">Sälj produkt</a></td>
+                    <td>@Html.DisplayFor(modelItem => item.TotalStock) <a asp-page="./SellProduct" asp-route-storageId="0" asp-route-id="@item.Id">Sälj produkt</a></td>
                 <td>@Html.DisplayFor(modelItem => item.CurrentStock)</td>
                 <td>@Html.DisplayFor(modelItem => item.Created)</td>
                 <td>@Html.DisplayFor(modelItem => item.Updated)</td>
