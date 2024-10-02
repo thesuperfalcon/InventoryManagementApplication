@@ -68,6 +68,7 @@ namespace InventoryManagementApplication.Pages.admin.product
                 else
                 {
                     await _manager.CreateProductAsync(Product);
+					await _logManager.LogActivityAsync(Product, EntityState.Added);
 					
                 }
 

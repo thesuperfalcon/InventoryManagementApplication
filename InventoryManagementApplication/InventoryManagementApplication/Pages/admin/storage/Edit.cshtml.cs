@@ -55,7 +55,8 @@ namespace InventoryManagementApplication.Pages.admin.storage
         public async Task<IActionResult> OnPostAsync()
         {
 			int id = Storage.Id;
-			if (!ModelState.IsValid)
+            var storageNoChanges = await _storageManager.GetStorageByIdAsync(id, false);
+            if (!ModelState.IsValid)
 			{
 				return Page();
 			}
@@ -70,6 +71,7 @@ namespace InventoryManagementApplication.Pages.admin.storage
                 }
 				StatusMessage1 = $"Du har ändrat max antal platser till: {Storage.MaxCapacity}";
 				await _storageManager.EditStorageAsync(Storage);
+				await _activityLogManager.LogActivityAsync(Storage, EntityState.Modified, storageNoChanges);
 
                 return RedirectToPage("./Edit", new { id = Storage.Id });
 

@@ -79,6 +79,7 @@ namespace InventoryManagementApplication.Pages.admin.product
 					
 				}
 			}
+			await _activityLogManager.LogActivityAsync(product, EntityState.Deleted);
 			await _productManager.DeleteProductAsync(id);
 
 			return RedirectToPage("./Index");
