@@ -12,8 +12,9 @@ namespace InventoryManagementApplication.Pages.admin.storage
 	{
         
         private readonly StorageManager _storageManager;
+		private readonly StorageManager _activityLogManager;
 
-		public CreateModel(StorageManager storageManager)
+		public CreateModel(StorageManager storageManager, StorageManager activityLogManager)
 		{
 			_storageManager = storageManager;
 			_activityLogManager = activityLogManager;
