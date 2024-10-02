@@ -70,13 +70,16 @@ namespace InventoryManagementApplication.Pages.admin.product
 				Models.Storage storage = storages.FirstOrDefault(s => s.Id == tracker.StorageId);
 				if (storage != null)
 				{
-					storage.CurrentStock -= tracker.Quantity;
-					_storageManager.EditStorageAsync(storage);
+					
 					_trackerManager.DeleteTrackerAsync(tracker.Id);
+					var trackerStorage = await _storageManager.GetStorageByIdAsync(storage.Id, false);
+					trackerStorage.CurrentStock -= tracker.Quantity;
+
+					_storageManager.EditStorageAsync(trackerStorage);
+					
 				}
 			}
-            await _activityLogManager.LogActivityAsync(product, EntityState.Deleted);
-            _productManager.DeleteProductAsync(id);
+			await _productManager.DeleteProductAsync(id);
 
 			return RedirectToPage("./Index");
 		}

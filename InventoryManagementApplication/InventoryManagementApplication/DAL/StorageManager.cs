@@ -1,4 +1,5 @@
-﻿using InventoryManagementApplication.Models;
+﻿using Azure;
+using InventoryManagementApplication.Models;
 using Microsoft.VisualBasic;
 using System.Text;
 using System.Text.Json;
@@ -141,14 +142,19 @@ namespace InventoryManagementApplication.DAL
                 client.BaseAddress = BaseAddress;
 
                 var json = JsonSerializer.Serialize(storage);
-                var content = new StringContent(json, Encoding.UTF8, "application/json");
+				Console.WriteLine($"Serialized JSON: {json}");
+
+				var content = new StringContent(json, Encoding.UTF8, "application/json");
                 HttpResponseMessage response = await client.PutAsync($"api/Storages/{storage.Id}", content);
 
                 if (!response.IsSuccessStatusCode)
                 {
                     var errorResponse = await response.Content.ReadAsStringAsync();
                     Console.WriteLine($"Error updating storage: {errorResponse}");
-                }
+					Console.WriteLine($"Status Code: {response.StatusCode}");
+					Console.WriteLine($"Reason Phrase: {response.ReasonPhrase}");
+					Console.WriteLine($"Response Headers: {response.Headers}");
+				}
             }
         }
     }
