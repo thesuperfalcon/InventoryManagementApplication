@@ -12,11 +12,12 @@ namespace InventoryManagementApplication.Pages.admin.storage
 	{
         
         private readonly StorageManager _storageManager;
+		private readonly LogManager _logManager;
 
-		public CreateModel(StorageManager storageManager)
+		public CreateModel(StorageManager storageManager, LogManager logManager)
 		{
 			_storageManager = storageManager;
-			_activityLogManager = activityLogManager;
+            _logManager = logManager;
 		}
 
 		[BindProperty]
