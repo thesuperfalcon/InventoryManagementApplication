@@ -2,60 +2,52 @@ using InventoryManagementApplication.DAL;
 using InventoryManagementApplication.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using System.Text.Json;
 
 namespace InventoryManagementApplication.Pages
 {
     public class StatisticModel : PageModel
     {
         private readonly StatisticManager _statisticManager;
-        public StatisticModel(StatisticManager statisticManager)
+        private readonly UserManager _userManager;
+        public StatisticModel(StatisticManager statisticManager, UserManager userManager)
         {
             _statisticManager = statisticManager;
+            _userManager = userManager;
         }
 
-		//private static Uri BaseAddress = new Uri("https://localhost:44353/");
-		public List<Statistic> Statistics { get; set; }
-		public async Task OnGetAsync()
-		{
-			var statistics = await _statisticManager.GetAllStatisticsAsync();
-			Statistics = statistics.ToList();
-			//    .Include(x => x.InitialStorage)
-			//    .Include(x => x.DestinationStorage)
-			//    .Include(x => x.Product)
-			//    .Include(x => x.User)
-			//    .ToListAsync();
+        [BindProperty]
+        public bool StatisticSwitch { get; set; }
+        public List<Statistic> Statistics { get; set; }
+        public List<Statistic> MovementPerPerson { get; set; } = new List<Statistic>();
+        public async Task OnGetAsync(bool statisticSwitch)
+        {
 
-			//Statistics = Statistics.Where(statistic =>
-			//statistic?.Product != null &&
-			//statistic.DestinationStorage != null &&
-			//statistic.InitialStorage != null &&
-			//statistic.User != null).ToList();
+            var statistics = await _statisticManager.GetAllStatisticsAsync();
+            Statistics = statistics.ToList();
+            StatisticSwitch = statisticSwitch;
 
-		}
+                var personList = await _userManager.GetAllUsersAsync();
+                foreach (var person in personList)
+                {
+                    var quantityPerPerson = new Statistic
+                    {
+                        EmployeeNumber = person.EmployeeNumber,
+                        Quantity = await GetTotalQuantityByUserAsync(Statistics, person.Id)
+                    };
+                    MovementPerPerson.Add(quantityPerPerson);
+                }
+                if (MovementPerPerson.Count > 0)
+                {
+                    MovementPerPerson.OrderBy(x => x.Quantity);
+                }
+        }
 
+        public async Task<int> GetTotalQuantityByUserAsync(List<Statistic> statistics, string userId)
+        {
+            return statistics
+                .Where(stat => stat.UserId == userId && stat.Quantity.HasValue) // Filtrerar på användarens ID och att Quantity inte är null
+                .Sum(stat => stat.Quantity.Value); // Summerar alla Quantity-värden  
 
-
-        
+        }
     }
 }
-//public static async Task<List<Statistic>> GetStatisticsAsync()
-//      {
-//          var statistics = new List<Statistic>();
-
-
-//          using (var client = new HttpClient())
-//          {
-//              client.BaseAddress = BaseAddress;
-
-//              HttpResponseMessage responseMessage = await client.GetAsync("api/Statistics/");
-//              if (responseMessage.IsSuccessStatusCode)
-//              {
-//                  string responseString = await responseMessage.Content.ReadAsStringAsync();
-//                  statistics = JsonSerializer.Deserialize<List<Statistic>>(responseString);
-//              }
-
-//          }
-//          return statistics;
-//}
-
