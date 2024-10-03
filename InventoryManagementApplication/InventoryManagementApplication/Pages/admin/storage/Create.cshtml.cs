@@ -31,10 +31,11 @@ namespace InventoryManagementApplication.Pages.admin.storage
 			var storages = await _storageManager.GetStoragesAsync(false);
 			StorageCount = storages.Count();
 
-            if (StorageCount >= 7)
-            {
-                StatusMessage = $"Det finns redan 6 stycken lagerplatser vilket är max! Är du säker på att du vill lägga till fler?";
-            }
+			//Ifall vi vill ha varningstext för X antal lagerplatser vid antalsbegränsning
+   //         if (StorageCount >= 7)
+   //         {
+   //             StatusMessage = $"Det finns redan 6 stycken lagerplatser vilket är max! Är du säker på att du vill lägga till fler?";
+   //         }
             return Page();
 		}
 
@@ -47,7 +48,7 @@ namespace InventoryManagementApplication.Pages.admin.storage
 
 			var existingStorages = await _storageManager.GetStoragesAsync(false);
 
-			var existingStorageName = existingStorages.FirstOrDefault(x => x.Name == Storage.Name);
+			var existingStorageName = existingStorages.FirstOrDefault(x => x.Name.Equals(Storage.Name, StringComparison.OrdinalIgnoreCase));
 			StorageCount = existingStorages.Count();
 
 			if(existingStorageName != null)
