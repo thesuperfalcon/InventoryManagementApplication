@@ -1,47 +1,61 @@
 ﻿@page
 @model InventoryManagementApplication.Pages.admin.tracker.IndexModel
-
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Flytta produkter";
 }
 
-<h1>Översikt av produkter och lager</h1>
+<div class="container mt-4">
+    <div class="row mb-4">
+        <div class="col-12 d-flex justify-content-between align-items-center">
+            <h1 class="fw-bold text-primary">Flytta produkter</h1>
+            <a asp-page="Create" class="btn btn-success btn-lg">
+                <i class="bi bi-plus-lg me-2"></i> Flytta produkt
+            </a>
+        </div>
+    </div>
 
+   
+    <div class="row mb-3">
+        <div class="col-md-6">
+            <div class="input-group shadow-sm">
+                <input type="text" id="searchInput" class="form-control" placeholder="Filtrera produkter..." onkeyup="filterTable()" />
+                <span class="input-group-text bg-primary text-white">
+                    <i class="bi bi-search"></i>
+                </span>
+            </div>
+        </div>
+    </div>
 
-    <a asp-page="Create" class="btn btn-primary">Flytta produkt</a>
+    
+    <div class="table-responsive shadow-sm">
+        <table id="trackerTable" class="table table-striped table-hover align-middle">
+            <thead class="table-dark">
+                <tr>
+                    <th><a href="javascript:void(0);" onclick="sortTable('trackerTable', 0)" class="text-white">Produkt <i class="bi bi-sort-down"></i></a></th>
+                    <th><a href="javascript:void(0);" onclick="sortTable('trackerTable', 1)" class="text-white">Antal <i class="bi bi-sort-down"></i></a></th>                
+                    <th><a href="javascript:void(0);" onclick="sortTable('trackerTable', 2)" class="text-white">Lagerplats <i class="bi bi-sort-down"></i></a></th>
+                    <th class="text-center text-white">Åtgärder</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.InventoryTracker)
+                {
+                    <tr>
+                        <td>@Html.DisplayFor(modelItem => item.Product.Name)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Quantity)</td>                       
+                        <td>@Html.DisplayFor(modelItem => item.Storage.Name)</td>
+                        <td class="text-center">
+                            <a asp-page="./moveProduct" asp-route-id="@item.Id" class="btn btn-warning btn-sm" title="Flytta produkt">
+                                <i class="bi bi-arrow-left-right"></i> Flytta
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                <div>Antal</div>
-            </th>
-            <th>
-                <div>Produkt</div>
-            </th>
-            <th>
-                <div>Lagerplats</div>
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model.InventoryTracker) 
-{
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Quantity)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Product.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Storage.Name)
-            </td>
-            <td>
-                <a asp-page="./moveProduct" asp-route-id="@item.Id">Flytta</a>
-            </td>
-        </tr>
+@section Scripts {
+    <script src="~/js/trackerIndex.js"></script>
 }
-    </tbody>
-</table>
