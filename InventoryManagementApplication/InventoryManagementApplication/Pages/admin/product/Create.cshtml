@@ -19,7 +19,7 @@
 
                         <div class="mb-3">
                             <label asp-for="Product.Name" class="form-label">Namn</label>
-                            <input asp-for="Product.Name" class="form-control" required/>
+                            <input asp-for="Product.Name" class="form-control" required />
                             <span asp-validation-for="Product.Name" class="text-danger"></span>
                         </div>
 
@@ -47,7 +47,7 @@
                             <input asp-for="Product.TotalStock" class="form-control" required="" />
                             <span asp-validation-for="Product.TotalStock" class="text-danger"></span>
                         </div>
-                        
+
                         <input type="hidden" asp-for="Product.CurrentStock" value="0" />
                         <input type="hidden" asp-for="Product.Created" value="@DateTime.Now" />
 
@@ -79,13 +79,13 @@
                 .then(response => response.json())
                 .then(data => {
                     document.getElementById("ArticleNumber").value = data.articleNumber;
-                });              
+                });
         });
     </script>
 }
-    @{
-        
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-     }
+@{
+
+    await Html.RenderPartialAsync("_ValidationScriptsPartial");
 }
+
 
