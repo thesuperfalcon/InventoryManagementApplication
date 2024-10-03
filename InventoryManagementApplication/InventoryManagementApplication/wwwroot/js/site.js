@@ -31,32 +31,3 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 });
-
-
-//document.addEventListener("DOMContentLoaded", function () {
-//    var container = document.getElementById("productContainer");
-//    if (container) {
-//        var checkArticleNumberUrl = container.getAttribute("data-check-url");
-
-//        $("#generateArticleNumber").on("click", function () {
-//            generateUniqueArticleNumber();
-//        });
-
-//        function generateUniqueArticleNumber() {
-//            var articleNumber = Math.floor(Math.random() * (9999 - 1000 + 1)) + 1000;
-
-//            $.ajax({
-//                url: checkArticleNumberUrl,
-//                type: "GET",
-//                data: { articleNumber: articleNumber },
-//                success: function (data) {
-//                    if (data) {
-//                        $("#articleNumber").val(articleNumber);
-//                    } else {
-//                        generateUniqueArticleNumber();
-//                    }
-//                },
-//            });
-//        }
-//    }
-//});
