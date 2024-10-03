@@ -10,13 +10,14 @@
 
 <h1>Produktkatalog</h1>
 
-<form id="createForm" method="post" class="d-flex justify-content-start align-items-center">
-    <button type="button" id="createButton" class="btn btn-primary me-2">Lägg till</button>
-    <h3>@amountOfProducts / 15 produkter</h3>
-</form>
+@* < id="createForm" method="post" class="d-flex justify-content-start align-items-center"> *@
+
+    <a asp-page ="./Create" type="button" id="createButton" class="btn btn-primary me-2">Lägg till</a>
+    <h3>Antal produkter: @amountOfProducts </h3>
+@* </> *@
 
 <!-- Bootstrap Modal -->
-<div class="modal fade" id="confirmCreateModal" tabindex="-1" aria-labelledby="confirmCreateModalLabel" aria-hidden="true">
+@* <div class="modal fade" id="confirmCreateModal" tabindex="-1" aria-labelledby="confirmCreateModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -32,7 +33,7 @@
             </div>
         </div>
     </div>
-</div>
+</div> *@
 
 @*<a asp-page="Create" id="confirmProducts" class="btn btn-primary">Lägg till</a>*@
 
@@ -82,7 +83,7 @@
 </table>
 
 @section Scripts {
-    <script>
+    @* <script>
         document.addEventListener('DOMContentLoaded', function () {
 
             var createButton = document.getElementById('createButton');
@@ -106,7 +107,7 @@
             }
 
         });
-    </script>
+    </script> *@
     <script>
         function sortTable(columnIndex) {
             const table = document.getElementById("productTable");
