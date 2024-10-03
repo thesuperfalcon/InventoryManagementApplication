@@ -109,94 +109,74 @@ namespace InventoryManagementApplication.Pages
     return admins.Count;
 }
 
-
-
-        public async Task<IActionResult> OnPostAssignRoleAsync(string userId)
-        {
-            if (string.IsNullOrEmpty(userId) || string.IsNullOrEmpty(SelectedRole))
-            {
-                await PopulateAvailableRolesAsync();
-                return NotFound("Användar-ID eller roll saknas.");
-            }
-
-            ModelState.Clear();
-
-            SelectedUser = await _userManagerDal.GetOneUserAsync(userId);
-            //SelectedUser = await _userManager.FindByIdAsync(userId);
-
-            if (SelectedUser == null)
-            {
-                return NotFound("Användaren kunde inte hittas.");
-            }
-
-            if (!ModelState.IsValid)
-            {
-                await PopulateAvailableRolesAsync();
-                return Page();
-            }
-
-            var user = await _userManagerDal.GetOneUserAsync(userId);
-            //var user = await _userManager.FindByIdAsync(userId);
-            if (user == null)
-            {
-                return NotFound("Användaren kunde inte hittas.");
-            }
-
-            var getRoles = await _roleManagerDal.GetAllRolesAsync();
-            var currentRoles = getRoles.Where(r => r.Id == user.RoleId).Select(r => r.RoleName).ToList();
-            
-            //var currentRoleName = currentRoles.Select(r => r.Name).ToList();
-            //var currentRoles = await _userManager.GetRolesAsync(user);
-
-
-            if(currentRoles.Contains(SelectedRole)) 
-            {
-                TempData["SuccessMessage"] = "Ingen förändring i roll.";
-                return RedirectToPage(new { userId });
-            }
-            //if (currentRoles.Contains(SelectedRole))
-            //{
-            //    TempData["SuccessMessage"] = "Ingen förändring i roll.";
-            //    return RedirectToPage(new { userId });
-            //}
-
-            await _roleManagerDal.RemoveFromRoleAsync(user, currentRoles);
-
-            if (SelectedRole != "Användare")
-            {
-                var result = await _roleManagerDal.AddToRoleAsync(user, SelectedRole);
-
-                //var result = await _userManager.AddToRoleAsync(user, SelectedRole);
-
-                if (!result)
-                {
-                    ModelState.AddModelError(string.Empty, "Kunde inte tilldela rollen till användaren");
-                    //foreach (var error in result.Errors)
-                    //{
-                    //    ModelState.AddModelError(string.Empty, error.Description);
-                    //}
-
-                    await PopulateAvailableRolesAsync();
-                    return Page();
-                }
-            }
-
-   // Om den inloggade användaren ändrar sin egen roll till "Användare"
-    var loggedInUser = await _userManager.GetUserAsync(User);
-    if (loggedInUser != null && loggedInUser.Id == userId && SelectedRole == "Användare")
+    public async Task<IActionResult> OnPostAssignRoleAsync(string userId)
+{
+    if (string.IsNullOrEmpty(userId) || string.IsNullOrEmpty(SelectedRole))
     {
-        // Uppdatera den inloggade användarens säkerhetsanspråk för att reflektera den nya rollen
-        await _signInManager.RefreshSignInAsync(loggedInUser);
-
-        // Omdirigera till startsidan
-        return RedirectToPage("/Index");
+        await PopulateAvailableRolesAsync();
+        return NotFound("Användar-ID eller roll saknas.");
     }
 
+    ModelState.Clear();
 
-            TempData["SuccessMessage"] = "Användaren har tilldelats en ny roll";
-            return RedirectToPage(new { userId });
+    var user = await _userManager.FindByIdAsync(userId); // Hämta användaren från UserManager
+    if (user == null)
+    {
+        return NotFound("Användaren kunde inte hittas.");
+    }
+
+    // Hämta användarens aktuella roller
+    var currentRoles = await _userManager.GetRolesAsync(user);
+
+    // Om användaren redan är en "Användare" (ingen roll) och försöker tilldela "Användare"
+    if (SelectedRole == "Användare" && !currentRoles.Any())
+    {
+        TempData["SuccessMessage"] = "Användaren har redan ingen tilldelad roll.";
+        return RedirectToPage(new { userId });
+    }
+
+    // Om användaren försöker ändra till "Användare" och användaren har adminroll
+    if (SelectedRole == "Användare" && currentRoles.Contains("Admin"))
+    {
+        // Se till att det finns minst en admin kvar
+        if (await GetAdminCountAsync() <= 1)
+        {
+            ModelState.AddModelError(string.Empty, "Det måste finnas minst en admin kvar.");
+            await PopulateAvailableRolesAsync();
+            return Page();
         }
 
+        var removeResult = await _userManager.RemoveFromRoleAsync(user, "Admin");
+        if (!removeResult.Succeeded)
+        {
+            ModelState.AddModelError(string.Empty, "Kunde inte ta bort adminrollen.");
+            await PopulateAvailableRolesAsync();
+            return Page();
+        }
+
+        TempData["SuccessMessage"] = "Användaren har nu ingen adminroll (är nu en vanlig användare).";
+        return RedirectToPage(new { userId });
+    }
+
+    // Om användaren ska göras till Admin
+    if (SelectedRole == "Admin" && !currentRoles.Contains("Admin"))
+    {
+        var addResult = await _userManager.AddToRoleAsync(user, "Admin");
+        if (!addResult.Succeeded)
+        {
+            ModelState.AddModelError(string.Empty, "Kunde inte tilldela adminrollen.");
+            await PopulateAvailableRolesAsync();
+            return Page();
+        }
+
+        TempData["SuccessMessage"] = "Användaren har tilldelats adminrollen.";
+        return RedirectToPage(new { userId });
+    }
+
+    // Om ingen ändring behövs
+    TempData["SuccessMessage"] = "Ingen rolländring behövdes.";
+    return RedirectToPage(new { userId });
+}
 
         public async Task<IActionResult> OnPostResetPasswordAsync(string userId)
         {
@@ -254,11 +234,11 @@ namespace InventoryManagementApplication.Pages
                 return NotFound("Användaren kunde inte hittas.");
             }
 
-            Console.WriteLine($"Updating user: {user.FirstName}, {user.LastName}, {user.EmployeeNumber}");
+          //  Console.WriteLine($"Updating user: {user.FirstName}, {user.LastName}, {user.EmployeeNumber}");
 
             user.FirstName = SelectedUser.FirstName;
             user.LastName = SelectedUser.LastName;
-            user.EmployeeNumber = SelectedUser.EmployeeNumber;
+          //  user.EmployeeNumber = SelectedUser.EmployeeNumber;
 
             if (user.Created == DateTime.MinValue)
             {
@@ -291,6 +271,7 @@ namespace InventoryManagementApplication.Pages
             await PopulateAvailableRolesAsync();
             return Redirect("/UsersRoles");
         }
+
         public async Task<IActionResult> OnPostDeleteAsync(string userId)
         {
           /*  var user = await _userManagerDal.GetOneUserAsync(userId);
@@ -335,8 +316,12 @@ namespace InventoryManagementApplication.Pages
                 await PopulateAvailableRolesAsync();
                 return Page();
             }
+ // Skicka flagga för att visa raderingsmodal i frontend
+       // Sätt TempData-flaggan för att visa bekräftelsen
+    TempData["UserDeleted"] = true;
 
-            return Redirect("/UsersRoles");
+    // Returnera Page istället för att direkt omdirigera
+    return Page();
 
         }
     }
