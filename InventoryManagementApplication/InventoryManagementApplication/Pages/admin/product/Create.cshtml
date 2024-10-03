@@ -24,9 +24,10 @@
                         </div>
 
                         <div class="mb-3">
-                            <label asp-for="Product.ArticleNumber" class="form-label">Artikelnummer</label>
-                            <input asp-for="Product.ArticleNumber" class="form-control" required />
-                            <span asp-validation-for="Product.ArticleNumber" class="text-danger"></span>
+                            <label asp-for="ArticleNumber" class="form-label">Artikelnummer</label>
+                            <input asp-for="ArticleNumber" class="form-control" required readonly />
+                            <button type="button" id="generateArticleNumberBtn" class="btn btn-primary mt-2">Generera</button>
+                            <span asp-validation-for="ArticleNumber" class="text-danger"></span>
                         </div>
 
                         <div class="mb-3">
@@ -66,7 +67,24 @@
 </div>
 
 @section Scripts {
+    <script>
+        document.getElementById("generateArticleNumberBtn").addEventListener("click", function () {
+            fetch('/admin/product/create?handler=GenerateArticleNumber', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+                }
+            })
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById("ArticleNumber").value = data.articleNumber;
+                });              
+        });
+    </script>
+}
     @{
+        
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
      }
 }

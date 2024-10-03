@@ -28,4 +28,5 @@ namespace InventoryManagementApplication.Pages.admin.product
 			return RedirectToPage("./Create");
 		}
 	}
+
 }
