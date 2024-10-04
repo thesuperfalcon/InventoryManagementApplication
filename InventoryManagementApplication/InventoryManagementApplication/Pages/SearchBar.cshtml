@@ -1,0 +1,65 @@
+﻿@page
+@model SearchBarModel
+@{
+    ViewData["Title"] = "Sök";
+}
+@* <div class="search-container text-center">
+    <form method="get" action="/SearchBar">
+        <input type="text" name="query" value="@Model.Query" placeholder="Sök här..." class="search-input" />
+        <button type="submit" class="btn btn-outline-primary">Sök</button>
+    </form>
+</div> *@
+
+@if (!string.IsNullOrEmpty(Model.Query))
+{
+    <h3>Sökresultat för "@Model.Query":</h3>
+
+    if (Model.Products.Any())
+    {
+        <h4>Produkter:</h4>
+        <ul>
+            @foreach (var product in Model.Products)
+            {
+                <li>@product.Name, @product.Id</li> 
+            }
+        </ul>
+    }
+    else
+    {
+        <p>Inga produkter hittades.</p>
+    }
+
+    if (Model.Storages.Any())
+    {
+        <h4>Lager:</h4>
+        <ul>
+            @foreach (var storage in Model.Storages)
+            {
+                <li>@storage.Name</li> 
+            }
+        </ul>
+    }
+    else
+    {
+        <p>Inga lager hittades.</p>
+    }
+
+    if (Model.Users.Any())
+    {
+        <h4>Användare:</h4>
+        <ul>
+            @foreach (var user in Model.Users)
+            {
+                <li>@user.FirstName, @user.LastName, @user.EmployeeNumber</li>
+            }
+        </ul>
+    }
+    else
+    {
+        <p>Inga användare hittades.</p>
+    }
+}
+else
+{
+    <p>Inga sökresultat att visa. Var vänlig ange en sökfråga.</p>
+}
