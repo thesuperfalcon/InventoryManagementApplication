@@ -141,7 +141,7 @@ namespace InventoryManagementApplication.Areas.Identity.Pages.Account
 
                 if (user == null)
                 {
-                    ModelState.AddModelError(string.Empty, "Anställningsnummer finns ej!");
+                    ModelState.AddModelError(string.Empty, "Användarnamnet finns ej!");
                     return Page();
                 }
 
