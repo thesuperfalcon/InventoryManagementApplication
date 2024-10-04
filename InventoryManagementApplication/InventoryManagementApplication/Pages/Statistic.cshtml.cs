@@ -33,18 +33,17 @@ namespace InventoryManagementApplication.Pages
             {
                 var movementsByUser = statistics.Where(stat => stat.UserId == person.Id);
 
-                // Kommentera ut koden för veckonummer för att testa dagmetoder
-                /*
+                
                 var currentWeek = GetCurrentWeekNumber();
                 movementsByUser = movementsByUser
                     .Where(stat => stat.Moved.HasValue &&
                                    GetWeekNumber(stat.Moved.Value) == currentWeek &&
                                    DateTime.Now.Year == stat.Moved.Value.Year);
-                */
+                
 
-                movementsByUser = movementsByUser
-                    .Where(stat => stat.Moved.HasValue &&
-                                   IsSameDay(stat.Moved.Value));
+                //movementsByUser = movementsByUser
+                //    .Where(stat => stat.Moved.HasValue &&
+                //                   IsSameDay(stat.Moved.Value));
 
                 if (movementsByUser.Any())
                 {
