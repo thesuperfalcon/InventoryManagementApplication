@@ -1,0 +1,37 @@
+﻿@using Microsoft.AspNetCore.Http.Features
+@{
+    var consentFeatureFlag = Context.Features.Get<ITrackingConsentFeature>();
+    var showBannerFlag = !consentFeatureFlag?.CanTrack ?? false;
+    var cookieStr = consentFeatureFlag?.CreateConsentCookie();
+}
+<link rel="stylesheet" href="~/css/cookies.css" asp-append-version="true" />
+@if (showBannerFlag == true)
+{
+    <div id="cookieConsentModal" class="cookie-consent-modal">
+        <div class="cookie-consent-content">
+            <h3 class="cookie-consent-title">Cookie Policy</h3>
+            <img src="~/images/logos/cookies.png" alt="Cookies" class="cookie-image"/>
+            <p class="cookie-consent-text">Vi använder cookies för att förbättra din upplevelse 
+                på vår webbplats. Genom att fortsätta använda vår webbplats accepterar du användningen av cookies i enlighet med vår cookie policy.</p>           
+            <button type="button" data-cookie-string="@cookieStr" class="cookie-consent-button">
+                <span aria-hidden="true">Acceptera</span>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var consentModal = document.getElementById("cookieConsentModal");
+            var acceptButton = consentModal.querySelector("button[data-cookie-string]");
+            var closeButton = consentModal.querySelector(".cookie-consent-close");
+
+            // Show modal by default
+            consentModal.style.display = "block";
+
+            acceptButton.addEventListener("click", function () {
+                document.cookie = acceptButton.getAttribute("data-cookie-string");
+                consentModal.style.display = "none";
+            });
+        });
+    </script>
+}
