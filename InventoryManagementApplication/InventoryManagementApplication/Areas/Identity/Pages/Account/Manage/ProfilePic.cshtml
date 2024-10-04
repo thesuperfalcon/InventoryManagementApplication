@@ -1,0 +1,39 @@
+﻿@page
+@model InventoryManagementApplication.Areas.Identity.Pages.Account.Manage.ProfilePicModel
+@{
+}
+<h3>Byt profilbild</h3>
+
+
+
+<form class="avatar-container" method="post">
+	<input type="hidden" asp-for="SelectedProfilePic" />
+	@foreach (var url in Model.ProfilePics)
+	{
+		if(url == Model.SelectedUser.ProfilePic)
+		{
+			<div class="current-avatar"><img src="@Url.Content(url)" alt="Profile image" class="profile-image" /></div>
+		}
+		else
+		{
+			<div class="avatar"><img src="@Url.Content(url)" alt="Profile image" class="profile-image" /></div>
+		}
+		
+	}
+	<button type="submit" class="btn-primary" >Byt Avatar</button>
+</form>
+
+@section Scripts{
+	<script>
+		const avatars = document.querySelectorAll('.avatar');
+
+		avatars.forEach(item => {
+			item.addEventListener('click', function (e) { 
+
+				avatars.forEach(i => i.classList.remove('clicked-avatar'));
+
+				this.classList.add('clicked-avatar');
+			});
+		});
+	</script>
+}

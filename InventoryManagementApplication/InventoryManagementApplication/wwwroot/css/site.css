@@ -20,3 +20,35 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+.avatar-container{
+    display:flex;
+    flex-direction:row;
+    justify-content:flex-start;
+    flex-wrap:wrap;
+    gap:10px;
+    width: 400px;
+}
+
+.avatar{
+    padding:8px;
+    margin: 2px;
+    background-color:lightgrey;
+}
+.current-avatar {
+    background-color: limegreen;
+    padding: 8px;
+    margin: 2px;
+}
+.current-avatar:hover{
+    background-color: darkgreen
+}
+.avatar:hover{
+    background-color:darkgrey;
+}
+.clicked-avatar {
+    background-color: steelblue;
+    padding: 8px;
+    margin: 2px;
+}
+

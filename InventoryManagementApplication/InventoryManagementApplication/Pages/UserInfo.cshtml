@@ -4,6 +4,7 @@
     ViewData["Title"] = "Användarinformation";
 }
 
+
 <head>
     <link rel="stylesheet" href="~/css/admin.css" asp-append-version="true" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
@@ -13,7 +14,8 @@
 <body>
     <div class="user-info">
         <h2>@ViewData["Title"]</h2>
-        <img src="/images/logos/avatar-default-icon.png" alt="Profile image" class="profile-image" />
+        <h4>@Model.SelectedUser.ProfilePic</h4>
+        <img src="@Url.Content(@Model.SelectedUser.ProfilePic)" alt="Profile image" class="profile-image" />
         <hr />
         <ul class="nav nav-tabs" id="userSettingsTab" role="tablist">
             <li class="nav-item">
