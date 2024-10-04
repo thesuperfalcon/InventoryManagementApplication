@@ -125,17 +125,13 @@ namespace InventoryManagementApplication.Pages
         return NotFound("Användaren kunde inte hittas.");
     }
 
-    // Hämta användarens aktuella roller
     var currentRoles = await _userManager.GetRolesAsync(user);
-
-    // Om användaren redan är en "Användare" (ingen roll) och försöker tilldela "Användare"
     if (SelectedRole == "Användare" && !currentRoles.Any())
     {
         TempData["SuccessMessage"] = "Användaren har redan ingen tilldelad roll.";
         return RedirectToPage(new { userId });
     }
 
-    // Om användaren försöker ändra till "Användare" och användaren har adminroll
     if (SelectedRole == "Användare" && currentRoles.Contains("Admin"))
     {
         // Se till att det finns minst en admin kvar
@@ -158,7 +154,6 @@ namespace InventoryManagementApplication.Pages
         return RedirectToPage(new { userId });
     }
 
-    // Om användaren ska göras till Admin
     if (SelectedRole == "Admin" && !currentRoles.Contains("Admin"))
     {
         var addResult = await _userManager.AddToRoleAsync(user, "Admin");
@@ -173,7 +168,6 @@ namespace InventoryManagementApplication.Pages
         return RedirectToPage(new { userId });
     }
 
-    // Om ingen ändring behövs
     TempData["SuccessMessage"] = "Ingen rolländring behövdes.";
     return RedirectToPage(new { userId });
 }
@@ -316,11 +310,9 @@ namespace InventoryManagementApplication.Pages
                 await PopulateAvailableRolesAsync();
                 return Page();
             }
- // Skicka flagga för att visa raderingsmodal i frontend
-       // Sätt TempData-flaggan för att visa bekräftelsen
+
     TempData["UserDeleted"] = true;
 
-    // Returnera Page istället för att direkt omdirigera
     return Page();
 
         }

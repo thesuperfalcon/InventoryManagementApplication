@@ -57,8 +57,6 @@ namespace InventoryManagementApplication.Pages
             //var loggedInUser1 = await _userManager.GetUserAsync(User);
             LoggedInUserName = loggedInUser != null ? FormatUserName(loggedInUser) : string.Empty;
         }
-
-        //Skapar en viewmodel för en given användare
         private async Task<UserWithRoleViewModel> CreateUserWithRoleViewModel(InventoryManagementUser user)
         {
             var roles = await _userManager.GetRolesAsync(user);
