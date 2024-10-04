@@ -8,7 +8,7 @@ using System.Security.Claims;
 namespace InventoryManagementApplication.Pages
 {
     // Bara admin har tillgång
-   [Authorize(Roles = "Admin")]
+  [Authorize(Roles = "Admin")]
     public class UsersRolesModel : PageModel
     {
         private readonly UserManager<InventoryManagementUser> _userManager;

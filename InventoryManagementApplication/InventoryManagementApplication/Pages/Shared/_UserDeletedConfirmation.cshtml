@@ -1,15 +1,14 @@
 @if (TempData["UserDeleted"] != null && TempData["UserDeleted"].ToString() == "True")
 {
     <div class="alert alert-success" role="alert">
-        Användaren har raderats framgångsrikt. Du kommer att omdirigeras till användaröversikten om några sekunder.
+        Användaren har raderats. Du kommer att omdirigeras till användaröversikten om några sekunder.
         <br />
         <a href="/UsersRoles" class="btn btn-primary mt-2">Gå tillbaka nu</a>
     </div>
 
-    <script>
-        // Omdirigera automatiskt efter 3 sekunder
+   <script>
         setTimeout(function () {
             window.location.href = '/UsersRoles';
-        }, 3000);
+        }, 5000);
     </script>
 }
