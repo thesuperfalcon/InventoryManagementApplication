@@ -131,6 +131,5 @@ namespace InventoryManagementApplication.Pages.admin.tracker
                
             return RedirectToPage("./moveProduct", new { id = SelectedInventoryTracker.Id });          
         }
-
     }
 }

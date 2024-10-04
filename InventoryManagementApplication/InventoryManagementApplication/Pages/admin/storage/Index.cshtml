@@ -4,89 +4,64 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Lagerplatser</h1>
 
-<a asp-page="Create" class="btn btn-primary">Lägg till</a>
+<div class="container mt-4">
+    <h1>Lagerplatser, antal: @Model.StorageCount</h1>
+    <a asp-page="Create" class="btn btn-primary mb-3">Lägg till</a>
+
+    <div class="mb-3">
+        <div class="input-group">
+            <input type="text" id="searchInput" class="form-control" placeholder="Filter..." aria-label="Sök" style="max-width: 300px; width: 100%;" />
+            <span class="input-group-text">
+                <i class="bi bi-search"></i> 
+            </span>
+        </div>
+    </div>
 
 
-<table id="storageTable" class="table">
-    <thead>
-        <tr>
-            <th><a href="javascript:void(0);" onclick="sortTable('storageTable', 0)">Namn</a></th>
-            <th><a href="javascript:void(0);" onclick="sortTable('storageTable', 1)">Max antal</a></th>
-            <th><a href="javascript:void(0);" onclick="sortTable('storageTable', 2)">Antal i lager</a></th>
-            <th><a href="javascript:void(0);" onclick="sortTable('storageTable', 3)">Lediga platser</a></th>
-            <th><a href="javascript:void(0);" onclick="sortTable('storageTable', 4)">Skapad</a></th>
-            <th><a href="javascript:void(0);" onclick="sortTable('storageTable', 5)">Ändrad</a></th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model.Storages)
-        {
-            @if (item.IsDeleted == false)
+    <table id="storageTable" class="table table-striped table-hover">
+        <thead>
+            <tr>
+                <th><a href="javascript:void(0);" onclick="sortTable('storageTable', 0)">Namn</a></th>
+                <th><a href="javascript:void(0);" onclick="sortTable('storageTable', 1)">Max antal</a></th>
+                <th><a href="javascript:void(0);" onclick="sortTable('storageTable', 2)">Antal i lager</a></th>
+                <th><a href="javascript:void(0);" onclick="sortTable('storageTable', 3)">Lediga platser</a></th>
+                <th><a href="javascript:void(0);" onclick="sortTable('storageTable', 4)">Skapad</a></th>
+                <th><a href="javascript:void(0);" onclick="sortTable('storageTable', 5)">Ändrad</a></th>
+                <th>Åtgärder</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Storages)
             {
-                <tr>
-                    <td>@Html.DisplayFor(modelItem => item.Name)</td>
-                    <td>@Html.DisplayFor(modelItem => item.MaxCapacity)</td>
-                    <td>@Html.DisplayFor(modelItem => item.CurrentStock)</td>
-                    <td>@(item.MaxCapacity - item.CurrentStock)</td>
-                    <td>@Html.DisplayFor(modelItem => item.Created)</td>
-                    <td>@Html.DisplayFor(modelItem => item.Updated)</td>
-                    <td>
-                        @if (item.Id == 1)
-                        {
-                            <a asp-page="./Details" asp-route-id="@item.Id">Info</a>
-                        }
-                        else
-                        {
-                            <a asp-page="./Edit" asp-route-id="@item.Id">Ändra</a>
-                            <a asp-page="./Details" asp-route-id="@item.Id">Info</a>
-                            <a asp-page="./Delete" asp-route-id="@item.Id">Ta bort</a>
-                        }
-
-                    </td>
-                </tr>
+                @if (item.IsDeleted == false)
+                {
+                    <tr>
+                        <td>@Html.DisplayFor(modelItem => item.Name)</td>
+                        <td>@Html.DisplayFor(modelItem => item.MaxCapacity)</td>
+                        <td>@Html.DisplayFor(modelItem => item.CurrentStock)</td>
+                        <td>@(item.MaxCapacity - item.CurrentStock)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Created)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Updated)</td>
+                        <td>
+                            @if (item.Id == 1)
+                            {
+                                <a asp-page="./Details" asp-route-id="@item.Id" class="btn btn-info btn-sm" title="Se mer information"><i class="bi bi-info-circle"></i></a>
+                            }
+                            else
+                            {
+                                <a asp-page="./Edit" asp-route-id="@item.Id" class="btn btn-warning btn-sm" title="Ändra"><i class="bi bi-pencil"></i></a>
+                                <a asp-page="./Details" asp-route-id="@item.Id" class="btn btn-info btn-sm" title="Se mer information"><i class="bi bi-info-circle"></i></a>
+                                <a asp-page="./Delete" asp-route-id="@item.Id" class="btn btn-danger btn-sm" title="Ta bort"><i class="bi bi-trash"></i></a>
+                            }
+                        </td>
+                    </tr>
+                }
             }
-        }
-    </tbody>
-</table>
+        </tbody>
+    </table>
+</div>
 
-
-<script>
-    function sortTable(tableId, columnIndex) {
-        const table = document.getElementById(tableId);
-        const rows = Array.from(table.rows).slice(1); // Get all rows except the header
-
-        // Initialize sort direction if not set
-        if (!table.hasAttribute("data-sort-direction")) {
-            table.setAttribute("data-sort-direction", "asc");
-        }
-
-        const isAscending = table.getAttribute("data-sort-direction") === "asc";
-
-        rows.sort((a, b) => {
-            const cellA = a.cells[columnIndex].innerText.trim();
-            const cellB = b.cells[columnIndex].innerText.trim();
-
-            // Handle sorting for different data types
-            if (columnIndex === 1 || columnIndex === 2 || columnIndex === 3) { // For numerical columns
-                return isAscending
-                    ? parseFloat(cellA) - parseFloat(cellB)
-                    : parseFloat(cellB) - parseFloat(cellA);
-            } else {
-                return isAscending
-                    ? cellA.localeCompare(cellB, 'sv-SE')
-                    : cellB.localeCompare(cellA, 'sv-SE');
-            }
-        });
-
-        // Clear the table body and append sorted rows
-        const tbody = table.querySelector('tbody');
-        tbody.innerHTML = ""; // Clear existing rows
-        rows.forEach(row => tbody.appendChild(row)); // Append sorted rows
-
-        // Toggle sort direction
-        table.setAttribute("data-sort-direction", isAscending ? "desc" : "asc");
-    }
-</script>
+@section Scripts {
+    <script src="~/js/storageIndex.js"></script>
+}

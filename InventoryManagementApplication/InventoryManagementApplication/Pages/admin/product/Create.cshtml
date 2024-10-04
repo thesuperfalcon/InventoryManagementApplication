@@ -19,14 +19,15 @@
 
                         <div class="mb-3">
                             <label asp-for="Product.Name" class="form-label">Namn</label>
-                            <input asp-for="Product.Name" class="form-control" required/>
+                            <input asp-for="Product.Name" class="form-control" required />
                             <span asp-validation-for="Product.Name" class="text-danger"></span>
                         </div>
 
                         <div class="mb-3">
-                            <label asp-for="Product.ArticleNumber" class="form-label">Artikelnummer</label>
-                            <input asp-for="Product.ArticleNumber" class="form-control" required />
-                            <span asp-validation-for="Product.ArticleNumber" class="text-danger"></span>
+                            <label asp-for="ArticleNumber" class="form-label">Artikelnummer</label>
+                            <input asp-for="ArticleNumber" class="form-control" required readonly />
+                            <button type="button" id="generateArticleNumberBtn" class="btn btn-primary mt-2">Generera</button>
+                            <span asp-validation-for="ArticleNumber" class="text-danger"></span>
                         </div>
 
                         <div class="mb-3">
@@ -46,7 +47,7 @@
                             <input asp-for="Product.TotalStock" class="form-control" required="" />
                             <span asp-validation-for="Product.TotalStock" class="text-danger"></span>
                         </div>
-                        
+
                         <input type="hidden" asp-for="Product.CurrentStock" value="0" />
                         <input type="hidden" asp-for="Product.Created" value="@DateTime.Now" />
 
@@ -66,8 +67,25 @@
 </div>
 
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-     }
+    <script>
+        document.getElementById("generateArticleNumberBtn").addEventListener("click", function () {
+            fetch('/admin/product/create?handler=GenerateArticleNumber', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+                }
+            })
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById("ArticleNumber").value = data.articleNumber;
+                });
+        });
+    </script>
 }
+@{
+
+    await Html.RenderPartialAsync("_ValidationScriptsPartial");
+}
+
 

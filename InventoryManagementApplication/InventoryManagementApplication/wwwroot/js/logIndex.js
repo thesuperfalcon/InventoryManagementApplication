@@ -1,31 +1,29 @@
-﻿// Initial Setup
-const rowsPerPage = 10; // Rows to display per page
+﻿
+const rowsPerPage = 10;
 let currentPage = 1;
-let originalRows = []; // Store the original rows
-let filteredRows = []; // Store the filtered rows for search
-let visibleRows = [];  // Store the currently visible rows
+let originalRows = [];
+let filteredRows = [];
+let visibleRows = [];
 
 $(document).ready(function () {
-    // Store all rows in the originalRows array, excluding the header row
-    originalRows = Array.from(document.querySelectorAll("#myTable tr:not(:first-child)"));
-    filteredRows = [...originalRows]; // Initially, filteredRows is the same as originalRows
 
-    updateVisibleRows(filteredRows); // Initialize visible rows on page load
-    paginateTable(); // Paginate the visible rows
+    originalRows = Array.from(document.querySelectorAll("#myLogTable tr:not(:first-child)"));
+    filteredRows = [...originalRows];
+
+    updateVisibleRows(filteredRows);
+    paginateTable();
 
     // Search functionality
     $("#searchInput").on("keyup", function () {
         var value = $(this).val().toLowerCase();
 
-        // Filter originalRows based on the search input
         filteredRows = originalRows.filter(row => {
             return row.innerText.toLowerCase().includes(value);
         });
 
-        // Update visible rows with the filtered results
         updateVisibleRows(filteredRows);
-        currentPage = 1; // Reset to first page
-        paginateTable(); // Re-paginate after filtering
+        currentPage = 1;
+        paginateTable();
     });
 
     // Pagination buttons
@@ -46,9 +44,10 @@ $(document).ready(function () {
 
 // Update the visibleRows array based on the provided rows
 function updateVisibleRows(rows) {
-    visibleRows = rows; // Update to hold the filtered rows
-    paginateTable(); // Re-paginate when updating visible rows
+    visibleRows = rows; 
+    paginateTable(); 
 }
+
 
 // Pagination Function
 function paginateTable() {
@@ -56,7 +55,7 @@ function paginateTable() {
     const end = start + rowsPerPage;
 
     // Hide all rows first
-    $("#myTable tr").hide(); // Hide all rows
+    $("#myLogTable tr").hide(); 
     // Show only the rows that fall within the current page
     visibleRows.forEach((row, index) => {
         if (index >= start && index < end) {
@@ -69,10 +68,11 @@ function paginateTable() {
     pageNumberElement.innerText = `Page ${currentPage} of ${Math.ceil(filteredRows.length / rowsPerPage)}`;
 }
 
+
 // Sort function for both alphabetical (A-Ö) and numerical (highest to lowest), case-insensitive
 function sortTable(columnIndex) {
-    const table = document.getElementById("statisticsTable");
-    const isAscending = table.getAttribute("data-sort-direction") === "asc"; // Detect current sort direction
+    const table = document.getElementById("logsTable"); 
+    const isAscending = table.getAttribute("data-sort-direction") === "asc";
 
     // Sort filtered rows based on the specified column
     filteredRows.sort((a, b) => {
@@ -113,7 +113,7 @@ function sortTable(columnIndex) {
     table.setAttribute("data-sort-direction", isAscending ? "desc" : "asc");
 
     // Re-append sorted rows to the table
-    const tbody = document.getElementById("myTable");
+    const tbody = document.getElementById("myLogTable");
     filteredRows.forEach(row => tbody.appendChild(row)); // Reorder based on sorting
 
     // Reset to page 1 and update pagination

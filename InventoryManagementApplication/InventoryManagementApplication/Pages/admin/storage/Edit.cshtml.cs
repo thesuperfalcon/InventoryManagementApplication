@@ -31,8 +31,10 @@ namespace InventoryManagementApplication.Pages.admin.storage
 
         [TempData]
         public string StatusMessage1 { get; set; }
+
         [BindProperty]
         public Storage Storage { get; set; } = default!;
+        public int StorageCount { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
@@ -55,13 +57,22 @@ namespace InventoryManagementApplication.Pages.admin.storage
         public async Task<IActionResult> OnPostAsync()
         {
 			int id = Storage.Id;
+			string name = Storage.Name;
             var storageNoChanges = await _storageManager.GetStorageByIdAsync(id, false);
+
             if (!ModelState.IsValid)
 			{
 				return Page();
 			}
+			var storages = await _storageManager.GetStoragesAsync(false);	
 
-			try
+            if (storages.Any(x => x.Id != id && x.Name.Equals(Storage.Name, StringComparison.OrdinalIgnoreCase)))
+            {
+                StatusMessage = "Ett lager med detta namn finns redan. Välj ett annat namn";
+                return Page();
+            }
+
+            try
 			{
 				if(Storage.MaxCapacity < Storage.CurrentStock)
 				{
@@ -69,7 +80,15 @@ namespace InventoryManagementApplication.Pages.admin.storage
 
                     return RedirectToPage("./Edit", new { id = Storage.Id });
                 }
-				StatusMessage1 = $"Du har ändrat max antal platser till: {Storage.MaxCapacity}";
+                if ( storageNoChanges.Name != Storage.Name)
+                {
+                    StatusMessage1 = $"Du har ändrat lagernamn från {storageNoChanges.Name} till: {Storage.Name}";
+                }
+                if (storageNoChanges.MaxCapacity != Storage.MaxCapacity)
+                {
+                    StatusMessage1 = $"Du har ändrat max antal platser från: {storageNoChanges.MaxCapacity} till: {Storage.MaxCapacity}" ;
+                }
+				
 				await _storageManager.EditStorageAsync(Storage);
 				await _activityLogManager.LogActivityAsync(Storage, EntityState.Modified, storageNoChanges);
 
@@ -87,7 +106,8 @@ namespace InventoryManagementApplication.Pages.admin.storage
 					throw;
 				}
 			}
-		}
+
+        }
 
         private async Task<bool> StorageExists(int id)
         {

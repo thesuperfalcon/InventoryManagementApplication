@@ -15,7 +15,7 @@ namespace InventoryManagementApplication.Pages.admin.storage
     public class IndexModel : PageModel
     {
         private readonly StorageManager _storageManager;
-
+        public int StorageCount { get; set; }
         public IndexModel(StorageManager storageManager)
         {
             _storageManager = storageManager;
@@ -25,7 +25,9 @@ namespace InventoryManagementApplication.Pages.admin.storage
         public async Task OnGetAsync()
         {
             //ändra till false
-			Storages = await _storageManager.GetStoragesAsync(null);			
+			Storages = await _storageManager.GetStoragesAsync(null);
+            var storages = await _storageManager.GetStoragesAsync(false);
+            StorageCount = storages.Count();
 		}
     }
 }
