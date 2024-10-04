@@ -18,5 +18,55 @@ html {
 }
 
 body {
-  margin-bottom: 60px;
+    margin-bottom: 60px;
+    background-color: white;
+    color: black;
+}
+
+
+
+
+ /* Dark mode styles */
+body.dark-mode {
+    background-color: #121212; /* Dark background */
+    color: white; /* Light text */
+    }
+
+.navbar {
+    background-color: #f8f9fa; /* Light navbar background */
+}
+
+    .navbar.dark-mode {
+        background-color: #343a40; /* Dark navbar background */
+    }
+
+.nav-link {
+    color: black;
+}
+
+    .nav-link.dark-mode {
+        color: white;
+    }
+
+
+/* Default light mode styles for table */
+table {
+    width: 100%; /* Full width for tables */
+    border-collapse: collapse; /* Collapse borders for a cleaner look */
+}
+
+td {
+    padding: 10px; /* Add padding for table cells */
+    border: 1px solid #dee2e6; /* Light border for light mode */
+}
+
+/* Dark mode styles for table */
+body.dark-mode table {
+    border: 1px solid #444; /* Darker border for dark mode */
+}
+
+body.dark-mode td {
+    background-color: #333; /* Dark background for table cells */
+    color: white; /* Light text color for readability */
+    border: 1px solid #555; /* Slightly lighter border for dark mode */
 }
