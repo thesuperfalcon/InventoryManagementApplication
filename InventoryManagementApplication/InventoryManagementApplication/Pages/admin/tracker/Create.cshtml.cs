@@ -92,7 +92,7 @@ namespace InventoryManagementApplication.Pages.admin.tracker
                 else
                 {
                     StatusMessage = tuple.Item2 != string.Empty ? tuple.Item2 : "Förflyttning lyckades!";
-					await _statisticManager.CreateStatisticAsync(MyUser.Id, fromStorageId, toStorageId, productId, quantity, null);
+					await _statisticManager.GetValueFromStatisticAsync(MyUser.Id, fromStorageId, toStorageId, productId, quantity, null);
                     return RedirectToPage("./Index");
                 }
             }

@@ -4,10 +4,15 @@ let originalRows = [];
 let filteredRows = [];
 let visibleRows = [];
 
-  function toggleHelp() {
-        var popup = document.getElementById("helpPopup");
-        popup.style.display = popup.style.display === "none" || popup.style.display === "" ? "flex" : "none";
+function toggleHelp() {
+    var helpPopup = document.getElementById("helpPopup");
+    if (helpPopup.style.display === "none" || helpPopup.style.display === "") {
+        helpPopup.style.display = "block";
+    } else {
+        helpPopup.style.display = "none";
+    }
 }
+
 
 $(document).ready(function () {
     originalRows = Array.from(document.querySelectorAll("#myTable tr:not(:first-child)"));
@@ -15,6 +20,38 @@ $(document).ready(function () {
 
     updateVisibleRows(filteredRows);
     paginateTable();
+
+    $("#leaderboardSearchInput").on("input", function () {
+        var value = $(this).val().toLowerCase();
+        console.log(`Inmatat värde: "${value}"`);
+
+        $("#leaderboardTable tbody tr.search").hide(); 
+        $("#leaderboardTable tbody tr.nested-table-row").hide(); 
+
+        let hasVisibleRows = false;
+
+        $("#leaderboardTable tbody tr.search").each(function () {
+            var employeeNumber = $(this).find("td:eq(0)").text().toLowerCase();
+            var matchFound = employeeNumber.indexOf(value) > -1;
+
+            if (matchFound) {
+                $(this).show(); 
+                hasVisibleRows = true;
+
+                $(this).next(".nested-table-row").show(); 
+            }
+        });
+
+        
+        if (hasVisibleRows) {
+            $("#leaderboardTable thead").show(); 
+        } else {
+            $("#leaderboardTable thead").hide(); 
+        }
+    });
+
+
+
 
     $("#searchInput").on("input", function () {
         var value = $(this).val().toLowerCase();
@@ -25,6 +62,7 @@ $(document).ready(function () {
 
         filteredRows = originalRows.filter(row => {
             console.log(`Rada: ${JSON.stringify(row.cells)}`);
+
 
             if (filters.length === 1 && !filters[0].includes(':')) {
                 return (
@@ -49,7 +87,7 @@ $(document).ready(function () {
                 console.log(`Nyckel: ${key}, Sökterm: ${searchTerm}, Exakt matchning: ${exactMatch}`);
 
                 switch (key) {
-                    case "#e":
+                    case "#a":
                         return exactMatch
                             ? row.cells[1].innerText.toLowerCase() === searchTerm
                             : row.cells[1].innerText.toLowerCase().includes(searchTerm);
@@ -57,19 +95,19 @@ $(document).ready(function () {
                         return exactMatch
                             ? row.cells[2].innerText.toLowerCase() === searchTerm
                             : row.cells[2].innerText.toLowerCase().includes(searchTerm);
-                    case "#k":
+                    case "#pf":
                         return exactMatch
                             ? row.cells[3].innerText === searchTerm
                             : row.cells[3].innerText.includes(searchTerm);
-                    case "#il":
+                    case "#ff":
                         return exactMatch
                             ? row.cells[4].innerText.toLowerCase() === searchTerm
                             : row.cells[4].innerText.toLowerCase().includes(searchTerm);
-                    case "#dl":
+                    case "#ft":
                         return exactMatch
                             ? row.cells[5].innerText.toLowerCase() === searchTerm
                             : row.cells[5].innerText.toLowerCase().includes(searchTerm);
-                    case "#d":
+                    case "#n":
                         return exactMatch
                             ? row.cells[6].innerText === searchTerm
                             : row.cells[6].innerText.includes(searchTerm);
@@ -128,12 +166,28 @@ function toggleContent() {
         content1.style.display = "block";
         content2.style.display = "none";
         button.innerText = "Visa Statistik";
+        closeAllExpandedRows();
     } else {
         content1.style.display = "none";
         content2.style.display = "block";
         button.innerText = "Visa Leaderboard";
     }
 }
+
+function closeAllExpandedRows() {
+    const nestedRows = document.querySelectorAll('.nested-table-row');
+    nestedRows.forEach(row => {
+        row.style.display = 'none';
+    });
+
+    const toggleIcons = document.querySelectorAll('.toggle-icon i');
+    toggleIcons.forEach(icon => {
+        icon.classList.remove('bi-dash-square');
+        icon.classList.add('bi-plus-square');
+    });
+}
+
+
 
 function updateVisibleRows(rows) {
     visibleRows = rows;
@@ -184,3 +238,82 @@ function sortTable(columnIndex) {
     currentPage = 1;
     paginateTable();
 }
+
+function setEmployeeNumber(employeeNumber) {
+    const searchInput = document.getElementById("searchInput");
+    searchInput.value = `#a:${employeeNumber}., `;
+
+    const event = new Event('input', {
+        bubbles: true,
+        cancelable: true,
+    });
+    searchInput.dispatchEvent(event);
+
+    toggleContent();
+}
+
+function clearSearch() {
+    const searchInput = document.getElementById("searchInput");
+    searchInput.value = ""; 
+
+    const event = new Event('input', {
+        bubbles: true,
+        cancelable: true,
+    });
+    searchInput.dispatchEvent(event);
+}
+
+function clearLeaderboardSearch() {
+    const leaderboardSearchInput = document.getElementById("leaderboardSearchInput");
+    leaderboardSearchInput.value = ""; 
+
+    const event = new Event('input', {
+        bubbles: true,
+        cancelable: true,
+    });
+    leaderboardSearchInput.dispatchEvent(event);
+}
+
+function setMovementAttributes(employeeNumber, productName, quantity, initialStorageName, destinationStorageName, moved) {
+    const searchInput = document.getElementById("searchInput");
+
+    const leaderboardSearchInput = document.getElementById("leaderboardSearchInput");
+    const statisticsSearchInput = document.getElementById("searchInput");
+
+    resetTableVisibility("leaderboardTable");
+    resetTableVisibility("statisticsTable");
+
+    const filters = [];
+    if (employeeNumber) filters.push(`#a: ${employeeNumber}.,`);
+    if (productName) filters.push(`#p: ${productName}.,`);
+    if (quantity) filters.push(`#pf: ${quantity}.,`);
+    if (initialStorageName) filters.push(`#ff: ${initialStorageName}.,`);
+    if (destinationStorageName) filters.push(`#ft: ${destinationStorageName}.,`);
+    if (moved) filters.push(`#n: ${moved},`);
+
+    searchInput.value = filters.join(' ');
+
+    const event = new Event('input', {
+        bubbles: true,
+        cancelable: true,
+    });
+    const isStatisticsVisible = document.getElementById("content1").style.display !== "none";
+
+    if (isStatisticsVisible) {
+        toggleContent();
+    }
+    searchInput.dispatchEvent(event);
+
+    console.log("Söksträng:", searchInput.value); 
+
+}
+
+function resetTableVisibility(tableId) {
+    const table = document.getElementById(tableId);
+    const rows = table.getElementsByTagName("tr");
+
+    for (let i = 0; i < rows.length; i++) {
+        rows[i].style.display = ""; 
+    }
+}
+
