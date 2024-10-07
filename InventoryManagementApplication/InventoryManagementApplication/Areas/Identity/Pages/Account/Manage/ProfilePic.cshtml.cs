@@ -19,6 +19,7 @@ namespace InventoryManagementApplication.Areas.Identity.Pages.Account.Manage
         public List<string> ProfilePics { get; set; }
 
         [BindProperty] public string SelectedProfilePic { get; set; }
+        [TempData] public string StatusMessage { get; set; }
 
         public InventoryManagementUser SelectedUser { get; set; }
         public async Task OnGetAsync()
@@ -39,6 +40,7 @@ namespace InventoryManagementApplication.Areas.Identity.Pages.Account.Manage
             SelectedUser.ProfilePic = SelectedProfilePic;
             await _userManager.EditUserAsync(SelectedUser, null);
 
+            StatusMessage = "Profilbilden har ändrats!";
             return RedirectToPage("./ProfilePic");
         }
     }

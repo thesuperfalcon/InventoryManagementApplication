@@ -27,7 +27,7 @@ body {
     justify-content:flex-start;
     flex-wrap:wrap;
     gap:10px;
-    width: 400px;
+    width: 850px;
 }
 
 .avatar{
@@ -47,6 +47,12 @@ body {
     background-color:darkgrey;
 }
 .clicked-avatar {
+    background-color: steelblue;
+    padding: 8px;
+    margin: 2px;
+}
+
+.clicked-avatar:hover {
     background-color: steelblue;
     padding: 8px;
     margin: 2px;
