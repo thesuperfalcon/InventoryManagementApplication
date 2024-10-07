@@ -169,6 +169,7 @@ namespace InventoryManagementApplication.Areas.Identity.Pages.Account
                 user.FirstName = Input.FirstName;
                 user.LastName = Input.LastName;
                 user.EmployeeNumber = Input.EmployeeNumber;
+                user.ProfilePic = "images/ProfileAvatars/profile_avatar_1.png";
 
                 string firstTwoLettersFirstName = user.FirstName.Length >= 2 ? user.FirstName.Substring(0, 2).ToLower() : user.FirstName.ToLower();
                 string firstTwoLettersLastName = user.LastName.Length >= 2 ? user.LastName.Substring(0, 2).ToLower() : user.LastName.ToLower();
