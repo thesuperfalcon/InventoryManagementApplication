@@ -20,8 +20,6 @@
             </a>
             <div class="container">
 
-
-                @* <a class="navbar-brand" asp-area="" asp-page="/Index">InventoryManagementApplication</a> *@
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -78,9 +76,13 @@
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2024 - InventoryManagementApplication - <a asp-area="" asp-page="/Privacy">Privacy</a>
+    <footer class="border-top text-muted">
+        <div class="footer-container">
+            <div class="footer-left">
+                &copy; 2024 - Lagerhanteringsapplikation</div>
+            <div class="footer-right"> 
+                <a class="nav-link" asp-area="" asp-page="/AboutUs">Om oss</a>
+            </div>
         </div>
     </footer>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>

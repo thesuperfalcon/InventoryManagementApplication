@@ -1,8 +1,9 @@
 ﻿@page
 @using InventoryManagementApplication.Areas.Identity.Pages.Account
+@using Microsoft.AspNetCore.Identity
 @model LoginModel
 @{
-    ViewData["Title"] = "Logga in";
+    ViewData["Title"] = "Startsida";
 }
 
 @if (User.Identity.IsAuthenticated)
