@@ -6,11 +6,13 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
 using System.Data;
 using static System.Runtime.InteropServices.JavaScript.JSType;
+using Microsoft.AspNetCore.Authentication;
+using System.Security.Claims;
 
 namespace InventoryManagementApplication.Pages
 {
     //Endast admin har åtkomst
-   [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin")]
     public class UserInfoModel : PageModel
     {
         private readonly UserManager<InventoryManagementUser> _userManager;
@@ -30,21 +32,21 @@ namespace InventoryManagementApplication.Pages
             _roleManager = roleManager;
             _userManagerDal = userManagerDal;
             _roleManagerDal = roleManagerDal;
-             _signInManager = signInManager;
+            _signInManager = signInManager;
             AvailableRoles = new List<string>();
         }
 
 
- 
-               [BindProperty]
+
+        [BindProperty]
         public InventoryManagementUser SelectedUser { get; set; }
-      
+
 
         [BindProperty]
         public string SelectedRole { get; set; }
         public List<string> AvailableRoles { get; set; }
 
-    
+
 
         private async Task PopulateAvailableRolesAsync()
         {
@@ -76,7 +78,7 @@ namespace InventoryManagementApplication.Pages
             {
                 return NotFound("Användar-ID saknas.");
             }
-            
+
             SelectedUser = await _userManagerDal.GetOneUserAsync(userId);
             //SelectedUser = await _userManager.FindByIdAsync(userId);
             if (SelectedUser == null)
@@ -87,7 +89,7 @@ namespace InventoryManagementApplication.Pages
             await PopulateAvailableRolesAsync();
 
             var userRoles = await _roleManagerDal.GetAllRolesAsync();
-            if(SelectedUser.RoleId == userRoles[0].Id)
+            if (SelectedUser.RoleId == userRoles[0].Id)
             {
                 SelectedRole = userRoles[0].RoleName;
             }
@@ -102,75 +104,75 @@ namespace InventoryManagementApplication.Pages
         }
 
 
-//Ser till att det alltid finns en admin
+        //Ser till att det alltid finns en admin
         public async Task<int> GetAdminCountAsync()
-{
-    var admins = await _userManager.GetUsersInRoleAsync("Admin");
-    return admins.Count;
-}
-
-    public async Task<IActionResult> OnPostAssignRoleAsync(string userId)
-{
-    if (string.IsNullOrEmpty(userId) || string.IsNullOrEmpty(SelectedRole))
-    {
-        await PopulateAvailableRolesAsync();
-        return NotFound("Användar-ID eller roll saknas.");
-    }
-
-    ModelState.Clear();
-
-    var user = await _userManager.FindByIdAsync(userId); // Hämta användaren från UserManager
-    if (user == null)
-    {
-        return NotFound("Användaren kunde inte hittas.");
-    }
-
-    var currentRoles = await _userManager.GetRolesAsync(user);
-    if (SelectedRole == "Användare" && !currentRoles.Any())
-    {
-        TempData["SuccessMessage"] = "Användaren har redan ingen tilldelad roll.";
-        return RedirectToPage(new { userId });
-    }
-
-    if (SelectedRole == "Användare" && currentRoles.Contains("Admin"))
-    {
-        // Se till att det finns minst en admin kvar
-        if (await GetAdminCountAsync() <= 1)
         {
-            ModelState.AddModelError(string.Empty, "Det måste finnas minst en admin kvar.");
-            await PopulateAvailableRolesAsync();
-            return Page();
+            var admins = await _userManager.GetUsersInRoleAsync("Admin");
+            return admins.Count;
         }
 
-        var removeResult = await _userManager.RemoveFromRoleAsync(user, "Admin");
-        if (!removeResult.Succeeded)
+        public async Task<IActionResult> OnPostAssignRoleAsync(string userId)
         {
-            ModelState.AddModelError(string.Empty, "Kunde inte ta bort adminrollen.");
-            await PopulateAvailableRolesAsync();
-            return Page();
+            if (string.IsNullOrEmpty(userId) || string.IsNullOrEmpty(SelectedRole))
+            {
+                await PopulateAvailableRolesAsync();
+                return NotFound("Användar-ID eller roll saknas.");
+            }
+
+            ModelState.Clear();
+
+            var user = await _userManager.FindByIdAsync(userId); // Hämta användaren från UserManager
+            if (user == null)
+            {
+                return NotFound("Användaren kunde inte hittas.");
+            }
+
+            var currentRoles = await _userManager.GetRolesAsync(user);
+            if (SelectedRole == "Användare" && !currentRoles.Any())
+            {
+                TempData["SuccessMessage"] = "Användaren har redan ingen tilldelad roll.";
+                return RedirectToPage(new { userId });
+            }
+
+            if (SelectedRole == "Användare" && currentRoles.Contains("Admin"))
+            {
+                // Se till att det finns minst en admin kvar
+                if (await GetAdminCountAsync() <= 1)
+                {
+                    ModelState.AddModelError(string.Empty, "Det måste finnas minst en admin kvar.");
+                    await PopulateAvailableRolesAsync();
+                    return Page();
+                }
+
+                var removeResult = await _userManager.RemoveFromRoleAsync(user, "Admin");
+                if (!removeResult.Succeeded)
+                {
+                    ModelState.AddModelError(string.Empty, "Kunde inte ta bort adminrollen.");
+                    await PopulateAvailableRolesAsync();
+                    return Page();
+                }
+
+                TempData["SuccessMessage"] = "Användaren har nu ingen adminroll (är nu en vanlig användare).";
+                return RedirectToPage(new { userId });
+            }
+
+            if (SelectedRole == "Admin" && !currentRoles.Contains("Admin"))
+            {
+                var addResult = await _userManager.AddToRoleAsync(user, "Admin");
+                if (!addResult.Succeeded)
+                {
+                    ModelState.AddModelError(string.Empty, "Kunde inte tilldela adminrollen.");
+                    await PopulateAvailableRolesAsync();
+                    return Page();
+                }
+
+                TempData["SuccessMessage"] = "Användaren har tilldelats adminrollen.";
+                return RedirectToPage(new { userId });
+            }
+
+            TempData["SuccessMessage"] = "Ingen rolländring behövdes.";
+            return RedirectToPage(new { userId });
         }
-
-        TempData["SuccessMessage"] = "Användaren har nu ingen adminroll (är nu en vanlig användare).";
-        return RedirectToPage(new { userId });
-    }
-
-    if (SelectedRole == "Admin" && !currentRoles.Contains("Admin"))
-    {
-        var addResult = await _userManager.AddToRoleAsync(user, "Admin");
-        if (!addResult.Succeeded)
-        {
-            ModelState.AddModelError(string.Empty, "Kunde inte tilldela adminrollen.");
-            await PopulateAvailableRolesAsync();
-            return Page();
-        }
-
-        TempData["SuccessMessage"] = "Användaren har tilldelats adminrollen.";
-        return RedirectToPage(new { userId });
-    }
-
-    TempData["SuccessMessage"] = "Ingen rolländring behövdes.";
-    return RedirectToPage(new { userId });
-}
 
         public async Task<IActionResult> OnPostResetPasswordAsync(string userId)
         {
@@ -230,28 +232,28 @@ namespace InventoryManagementApplication.Pages
 
             user.FirstName = SelectedUser.FirstName;
             user.LastName = SelectedUser.LastName;
-          //  user.EmployeeNumber = SelectedUser.EmployeeNumber;
+            //  user.EmployeeNumber = SelectedUser.EmployeeNumber;
 
-    // Skapar ett nytt användarnamn efter ändring av för och/eller efternamn
-    string firstTwoLettersFirstName = user.FirstName.Length >= 2 ? user.FirstName.Substring(0, 2).ToLower() : user.FirstName.ToLower();
-    string firstTwoLettersLastName = user.LastName.Length >= 2 ? user.LastName.Substring(0, 2).ToLower() : user.LastName.ToLower();
-    
-    user.UserName = $"{firstTwoLettersFirstName}{firstTwoLettersLastName}{user.EmployeeNumber.ToLower()}";
-    user.NormalizedUserName = _userManager.NormalizeName(user.UserName);
+            // Skapar ett nytt användarnamn efter ändring av för och/eller efternamn
+            string firstTwoLettersFirstName = user.FirstName.Length >= 2 ? user.FirstName.Substring(0, 2).ToLower() : user.FirstName.ToLower();
+            string firstTwoLettersLastName = user.LastName.Length >= 2 ? user.LastName.Substring(0, 2).ToLower() : user.LastName.ToLower();
 
-    //Datum för skapad användare
+            user.UserName = $"{firstTwoLettersFirstName}{firstTwoLettersLastName}{user.EmployeeNumber.ToLower()}";
+            user.NormalizedUserName = _userManager.NormalizeName(user.UserName);
+
+            //Datum för skapad användare
             if (user.Created == DateTime.MinValue)
             {
                 user.Created = DateTime.Now;
             }
 
-       if (user.Updated == DateTime.MinValue || user.Updated == default(DateTime))
-{
-    user.Updated = DateTime.Now;
-}
+            if (user.Updated == DateTime.MinValue || user.Updated == default(DateTime))
+            {
+                user.Updated = DateTime.Now;
+            }
 
             var result = await _userManagerDal.EditUserAsync(user, null);
-           // var result = await _userManager.UpdateAsync(user);
+            // var result = await _userManager.UpdateAsync(user);
 
             if (!result)
             {
@@ -265,9 +267,22 @@ namespace InventoryManagementApplication.Pages
                 await PopulateAvailableRolesAsync();
                 return Page();
             }
-    await _signInManager.RefreshSignInAsync(user);
-    SelectedUser = await _userManagerDal.GetOneUserAsync(userId);
-    Console.WriteLine($"Updated Username: {SelectedUser.UserName}, Normalized: {SelectedUser.NormalizedUserName}");
+
+            var loggedInUserId = _userManager.GetUserId(User);
+            if (userId == loggedInUserId)
+            {
+                // Uppdaterar den inloggade användarens användarnamn
+                var identity = (ClaimsIdentity)User.Identity;
+                identity.RemoveClaim(identity.FindFirst(ClaimTypes.Name));
+                identity.AddClaim(new Claim(ClaimTypes.Name, user.UserName));
+
+                // Uppdatera autentiseringscookie med de nya claims
+                await HttpContext.SignInAsync(IdentityConstants.ApplicationScheme, new ClaimsPrincipal(identity));
+            }
+            SelectedUser = await _userManagerDal.GetOneUserAsync(userId);
+
+            TempData["UpdatedMessage"] = $"Updated Username: {user.UserName}, Normalized: {user.NormalizedUserName}";
+            TempData["SuccessMessage"] = "Användarnamnet har uppdaterats!";
 
             await PopulateAvailableRolesAsync();
             return Redirect("/UsersRoles");
@@ -275,33 +290,32 @@ namespace InventoryManagementApplication.Pages
 
         public async Task<IActionResult> OnPostDeleteAsync(string userId)
         {
-          /*  var user = await _userManagerDal.GetOneUserAsync(userId);
-            //var user = await _userManager.FindByIdAsync(userId);
+            /*  var user = await _userManagerDal.GetOneUserAsync(userId);
+              //var user = await _userManager.FindByIdAsync(userId);
+              if (user == null)
+              {
+                  return NotFound("Användaren hittades inte.");
+              }*/
+
+
+            var currentUser = await _userManager.GetUserAsync(User); // Hämta den inloggade användaren
+            if (currentUser == null)
+            {
+                return NotFound("Det gick inte att hämta den inloggade användaren.");
+            }
+
+            if (currentUser.Id == userId)
+            {
+                // Förhindrar att den inloggade användaren kan radera sitt eget konto
+                ModelState.AddModelError(string.Empty, "Du kan inte radera ditt eget konto medan du är inloggad.");
+                await PopulateAvailableRolesAsync();
+                return Page();
+            }
+            var user = await _userManagerDal.GetOneUserAsync(userId);
             if (user == null)
             {
                 return NotFound("Användaren hittades inte.");
-            }*/
-
-
-
- var currentUser = await _userManager.GetUserAsync(User); // Hämta den inloggade användaren
-    if (currentUser == null)
-    {
-        return NotFound("Det gick inte att hämta den inloggade användaren.");
-    }
-
-    if (currentUser.Id == userId)
-    {
-        // Förhindra att den inloggade användaren kan radera sitt eget konto
-        ModelState.AddModelError(string.Empty, "Du kan inte radera ditt eget konto medan du är inloggad.");
-        await PopulateAvailableRolesAsync();
-        return Page();
-    }
-   var user = await _userManagerDal.GetOneUserAsync(userId);
-    if (user == null)
-    {
-        return NotFound("Användaren hittades inte.");
-    }
+            }
 
             var result = await _userManagerDal.DeleteUserAsync(user.Id);
             //var result = await _userManager.DeleteAsync(user);
@@ -318,9 +332,9 @@ namespace InventoryManagementApplication.Pages
                 return Page();
             }
 
-    TempData["UserDeleted"] = true;
+            TempData["UserDeleted"] = true;
 
-    return Page();
+            return Page();
 
         }
     }
