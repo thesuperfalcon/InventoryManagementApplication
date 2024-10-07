@@ -228,12 +228,18 @@ namespace InventoryManagementApplication.Pages
                 return NotFound("Användaren kunde inte hittas.");
             }
 
-          //  Console.WriteLine($"Updating user: {user.FirstName}, {user.LastName}, {user.EmployeeNumber}");
-
             user.FirstName = SelectedUser.FirstName;
             user.LastName = SelectedUser.LastName;
           //  user.EmployeeNumber = SelectedUser.EmployeeNumber;
 
+    // Skapar ett nytt användarnamn efter ändring av för och/eller efternamn
+    string firstTwoLettersFirstName = user.FirstName.Length >= 2 ? user.FirstName.Substring(0, 2).ToLower() : user.FirstName.ToLower();
+    string firstTwoLettersLastName = user.LastName.Length >= 2 ? user.LastName.Substring(0, 2).ToLower() : user.LastName.ToLower();
+    
+    user.UserName = $"{firstTwoLettersFirstName}{firstTwoLettersLastName}{user.EmployeeNumber.ToLower()}";
+    user.NormalizedUserName = _userManager.NormalizeName(user.UserName);
+
+    //Datum för skapad användare
             if (user.Created == DateTime.MinValue)
             {
                 user.Created = DateTime.Now;
@@ -259,8 +265,9 @@ namespace InventoryManagementApplication.Pages
                 await PopulateAvailableRolesAsync();
                 return Page();
             }
-
-            Console.WriteLine("User updated successfully.");
+    await _signInManager.RefreshSignInAsync(user);
+    SelectedUser = await _userManagerDal.GetOneUserAsync(userId);
+    Console.WriteLine($"Updated Username: {SelectedUser.UserName}, Normalized: {SelectedUser.NormalizedUserName}");
 
             await PopulateAvailableRolesAsync();
             return Redirect("/UsersRoles");
