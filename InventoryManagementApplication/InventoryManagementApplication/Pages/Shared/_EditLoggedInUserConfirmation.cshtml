@@ -1,0 +1,26 @@
+@model string
+
+<head>
+    <link rel="stylesheet" href="~/css/confirmationview.css" asp-append-version="true" />
+</head>
+
+<div class="confirmation-container">
+    <div class="confirmation-box">
+        <h4 class="confirmation-heading">Bekräftelse</h4>
+        <p class="confirmation-message">@Model</p>
+        <a href="@TempData["RedirectLink"]" class="btn-confirmation">Gå tillbaka nu</a>
+        <p class="redirect-message">Du omdirigeras automatiskt om <span id="countdown">5</span> sekunder...</p>
+    </div>
+</div>
+
+<script>
+    var countdown = 5;
+    var countdownElement = document.getElementById("countdown");
+    setInterval(function () {
+        countdown--;
+        countdownElement.textContent = countdown;
+        if (countdown <= 0) {
+            window.location.href = '@TempData["RedirectLink"]';
+        }
+    }, 1000);
+</script>

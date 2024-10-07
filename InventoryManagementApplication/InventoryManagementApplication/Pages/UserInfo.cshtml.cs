@@ -86,7 +86,25 @@ namespace InventoryManagementApplication.Pages
                 return NotFound("Användaren kunde inte hittas.");
             }
 
-            await PopulateAvailableRolesAsync();
+
+     // Kontrollera om användaren har roller
+    var currentRoles = await _userManager.GetRolesAsync(SelectedUser);
+
+    // Om användaren inte har några roller, sätt SelectedRole till "Användare"
+    if (!currentRoles.Any())
+    {
+        SelectedRole = "Användare";
+    }
+    else if (currentRoles.Contains("Admin"))
+    {
+        SelectedRole = "Admin";
+    }
+ 
+    await PopulateAvailableRolesAsync();
+    return Page();
+    }
+
+       /*     await PopulateAvailableRolesAsync();
 
             var userRoles = await _roleManagerDal.GetAllRolesAsync();
             if (SelectedUser.RoleId == userRoles[0].Id)
@@ -101,7 +119,7 @@ namespace InventoryManagementApplication.Pages
             //SelectedRole = userRoles.FirstOrDefault() ?? ; // Om ingen roll, sätt "Användare"
 
             return Page();
-        }
+        }*/
 
 
         //Ser till att det alltid finns en admin
@@ -128,11 +146,46 @@ namespace InventoryManagementApplication.Pages
             }
 
             var currentRoles = await _userManager.GetRolesAsync(user);
-            if (SelectedRole == "Användare" && !currentRoles.Any())
+            
+      /*      if (SelectedRole == "Användare" && !currentRoles.Any())
             {
                 TempData["SuccessMessage"] = "Användaren har redan ingen tilldelad roll.";
                 return RedirectToPage(new { userId });
-            }
+            }*/
+
+            if (SelectedRole == "Användare" && !currentRoles.Any())
+{
+    TempData["SuccessMessage"] = "Användaren har redan ingen tilldelad roll.";
+    return RedirectToPage(new { userId });
+}
+
+// Om användaren är Admin och vi vill ta bort adminrollen
+
+if (SelectedRole == "Användare" && currentRoles.Contains("Admin"))
+{
+    var removeResult = await _userManager.RemoveFromRoleAsync(user, "Admin");
+    if (!removeResult.Succeeded)
+    {
+        ModelState.AddModelError(string.Empty, "Kunde inte ta bort adminrollen.");
+        await PopulateAvailableRolesAsync();
+        return Page();
+    }
+
+    var loggedInUserId = _userManager.GetUserId(User);
+    if (userId == loggedInUserId)
+    {
+        await _signInManager.SignOutAsync();
+        await _signInManager.SignInAsync(user, isPersistent: false);
+
+        TempData["ConfirmationMessage"] = "Du har förlorat din adminroll och kommer att omdirigeras till inloggningssidan om några sekunder.";
+        TempData["RedirectLink"] = "/Index";
+        return Partial("_EditLoggedInUserConfirmation", TempData["ConfirmationMessage"]);
+    }
+
+    TempData["SuccessMessage"] = "Användaren har nu ingen adminroll (är nu en vanlig användare).";
+    return RedirectToPage(new { userId });
+}
+
 
             if (SelectedRole == "Användare" && currentRoles.Contains("Admin"))
             {
@@ -152,9 +205,23 @@ namespace InventoryManagementApplication.Pages
                     return Page();
                 }
 
+                // Om den inloggade användaren är den som mister sin adminroll
+                var loggedInUserId = _userManager.GetUserId(User);
+                if (userId == loggedInUserId)
+                {
+                    await _signInManager.SignOutAsync();
+                    await _signInManager.SignInAsync(user, isPersistent: false);
+
+                    TempData["ConfirmationMessage"] = "Du har förlorat din adminroll och kommer att omdirigeras till inloggningssidan om några sekunder.";
+                    TempData["RedirectLink"] = "/Index";
+                    return Partial("_EditLoggedInUserConfirmation", TempData["ConfirmationMessage"]);
+
+                }
+
                 TempData["SuccessMessage"] = "Användaren har nu ingen adminroll (är nu en vanlig användare).";
                 return RedirectToPage(new { userId });
             }
+
 
             if (SelectedRole == "Admin" && !currentRoles.Contains("Admin"))
             {
@@ -170,7 +237,7 @@ namespace InventoryManagementApplication.Pages
                 return RedirectToPage(new { userId });
             }
 
-            TempData["SuccessMessage"] = "Ingen rolländring behövdes.";
+            TempData["SuccessMessage"] = "Ingen rolländring gjordes.";
             return RedirectToPage(new { userId });
         }
 
@@ -281,9 +348,6 @@ namespace InventoryManagementApplication.Pages
             }
             SelectedUser = await _userManagerDal.GetOneUserAsync(userId);
 
-            TempData["UpdatedMessage"] = $"Updated Username: {user.UserName}, Normalized: {user.NormalizedUserName}";
-            TempData["SuccessMessage"] = "Användarnamnet har uppdaterats!";
-
             await PopulateAvailableRolesAsync();
             return Redirect("/UsersRoles");
         }
@@ -306,7 +370,7 @@ namespace InventoryManagementApplication.Pages
 
             if (currentUser.Id == userId)
             {
-                // Förhindrar att den inloggade användaren kan radera sitt eget konto
+                // Förhindrar att den inloggade adminanvändaren kan radera sitt eget konto
                 ModelState.AddModelError(string.Empty, "Du kan inte radera ditt eget konto medan du är inloggad.");
                 await PopulateAvailableRolesAsync();
                 return Page();
@@ -332,9 +396,10 @@ namespace InventoryManagementApplication.Pages
                 return Page();
             }
 
-            TempData["UserDeleted"] = true;
+            TempData["ConfirmationMessage"] = "Användaren har raderats. Du kommer att omdirigeras till användaröversikten om några sekunder.";
+            TempData["RedirectLink"] = "/UsersRoles";
+            return Partial("_EditLoggedInUserConfirmation", TempData["ConfirmationMessage"]);
 
-            return Page();
 
         }
     }
