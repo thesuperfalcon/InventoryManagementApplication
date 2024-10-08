@@ -37,7 +37,7 @@ document.addEventListener("DOMContentLoaded", function () {
     productLinks.forEach(link => {
         link.addEventListener("click", function () {
             const productId = this.getAttribute("data-id");
-            window.location.href = `/admin/product?id=${productId}`;
+            window.location.href = `/admin/product/Details?id=${productId}`;
         });
     });
 
@@ -46,7 +46,7 @@ document.addEventListener("DOMContentLoaded", function () {
     storageLinks.forEach(link => {
         link.addEventListener("click", function () {
             const storageId = this.getAttribute("data-id");
-            window.location.href = `/admin/storage?id=${storageId}`;
+            window.location.href = `/admin/storage/Details?id=${storageId}`;
         });
     });
 
