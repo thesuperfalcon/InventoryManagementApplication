@@ -11,9 +11,14 @@ html, body {
 }
 
 @media (max-width: 768px) {
-  html {
-    font-size: 16px;
-  }
+    html {
+        font-size: 16px;
+    }
+
+    .hero-section {
+        background-image: none !important;
+        background-color: #f8f9fa;
+    }
 
     footer-container {
         flex-direction: column;
@@ -38,12 +43,12 @@ html, body {
     }
 
     .navbar-nav .nav-item {
-        margin-left: 0; 
-        padding-bottom: 10px; 
+        margin-left: 0;
+        padding-bottom: 10px;
     }
 
     .navbar-nav .nav-link {
-        font-size: 0.9rem; 
+        font-size: 0.9rem;
     }
 
     .footer-container {
@@ -53,7 +58,7 @@ html, body {
 
         .footer-container .col-md-6 {
             text-align: center;
-            margin-bottom: 10px; 
+            margin-bottom: 10px;
         }
 
         .footer-container .nav-link {
@@ -64,14 +69,14 @@ html, body {
 }
 
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 }
 
 body {
     background-color: #eef1f8 !important;
     display: flex;
     flex-direction: column;
-    margin: 0;    
+    margin: 0;
 }
 
 h1, h2, h3 {
@@ -98,11 +103,11 @@ p {
 }
 
 .card {
-    width: 100%;          
-    max-width: 300px;    
-    height: auto;         
-    overflow: hidden;    
-    margin: 1rem auto;      
+    width: 100%;
+    max-width: 300px;
+    height: auto;
+    overflow: hidden;
+    margin: 1rem auto;
 }
 
 .card-img-top {
@@ -110,25 +115,25 @@ p {
     height: 280px;
     object-fit: cover;
     -webkit-user-select: none;
-    -moz-user-select: none; 
-    -ms-user-select: none; 
-    user-select: none; 
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 
 .card-body {
     display: flex;
     flex-direction: column;
-    justify-content: space-between; 
-    text-align: center; 
-    padding: 0.5rem;    
+    justify-content: space-between;
+    text-align: center;
+    padding: 0.5rem;
 }
 
 .card-title {
-    font-size: 1.2rem;   
+    font-size: 1.2rem;
 }
 
 .card-text {
-    font-size: 0.9rem;  
+    font-size: 0.9rem;
 }
 
 
@@ -142,7 +147,7 @@ footer {
     font-size: 1rem;
 }
 
-.footer-container{
+.footer-container {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -160,9 +165,10 @@ footer {
 .footer-container .col-md-6 {
     flex: 1;
 }
+
 .footer-container .text-md-end {
-    display: flex; 
-    justify-content: flex-end; 
+    display: flex;
+    justify-content: flex-end;
 }
 
 .footer-container .nav-link {
@@ -173,9 +179,9 @@ footer {
     font-size: 1rem;
 }
 
-        .footer-container .nav-link:hover {
-            color: #0056b3;
-        }
+    .footer-container .nav-link:hover {
+        color: #0056b3;
+    }
 
 .hero-section {
     background-image: url('/images/logos/development.png');
@@ -189,10 +195,19 @@ footer {
     text-shadow: 2px 2px 4px rgba(0,0,0,0.4);
 }
 
+
     .hero-section .btn-primary {
         font-size: 1.2rem;
     }
 
+/* Custom styling for the container */
+.rounded-container {
+    background-color: #f8f9fa;
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    border: 1px solid #dee2e6;
+}
 
 .avatar-container {
     display: flex;
@@ -234,9 +249,10 @@ footer {
         padding: 8px;
         margin: 2px;
     }
-    .hero-section .btn-primary {
-        font-size: 1.2rem;
-    }
+
+.hero-section .btn-primary {
+    font-size: 1.2rem;
+}
 
 /* Custom Styles for the Header */
 .navbar {
@@ -293,16 +309,16 @@ footer {
     }
 
     .search-input:focus {
-        border-color: #0056b3; 
+        border-color: #0056b3;
         box-shadow: 0 0 0.2rem rgba(0, 123, 255, 0.25);
     }
 
 .search-button {
-    border: 1px solid steelblue; 
+    border: 1px solid steelblue;
     background-color: steelblue;
     color: white;
-    border-radius: 0.25rem; 
-    padding: 0.5rem 1rem; 
+    border-radius: 0.25rem;
+    padding: 0.5rem 1rem;
     transition: background-color 0.3s, color 0.3s;
 }
 
@@ -314,3 +330,20 @@ footer {
     .search-button i {
         color: white;
     }
+
+
+.social-icons {
+    display: inline-flex;
+    gap: 10px; 
+    align-items:center;
+}
+
+    .social-icons a {
+        color: #0056b3;
+        font-size: 1.5rem;
+        transition: color 0.3s;
+    }
+
+        .social-icons a:hover {
+            color: #000;
+        }
