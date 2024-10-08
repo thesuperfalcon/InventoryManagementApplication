@@ -1,73 +1,75 @@
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using InventoryManagementApplication.Models;
+using InventoryManagementApplication.DAL; 
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Mvc;
 using InventoryManagementApplication.Data;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+
 
 namespace InventoryManagementApplication.Pages
 {
-    public class StorageDetailsModel : PageModel
+     public class StorageDetailsModel : PageModel
     {
         private readonly InventoryManagementApplicationContext _context;
+        private readonly LogManager _logManager;
+        private readonly UserManager _userManager;
 
-        public StorageDetailsModel(InventoryManagementApplicationContext context)
+
+  
+        public StorageDetailsModel(InventoryManagementApplicationContext context, LogManager logManager, UserManager userManager)
         {
             _context = context;
+            _logManager = logManager;
+            _userManager = userManager;
         }
 
         public Storage Storage { get; set; }
-        public List<ActivityLog> ActivityLogs { get; set; }
+        public List<Log> ActivityLogs { get; set; } = new List<Log>();
+        public List<string> UserFullName { get; set; } = new List<string>();
+        public List<string> UserEmployeeNumbers { get; set; } = new List<string>();
+public ICollection<InventoryTracker> InventoryTrackers { get; set; }
 
-        public List<Storage> AllStorages { get; set; }
-        public int? ProductId { get; set; }
-        public List<InventoryTracker> InventoryTrackers { get; set; }
-
-//För sidor
-    public int PageNumber { get; set; } = 1; // Nuvarande sida
-    public int TotalPages { get; set; }
-    public bool HasPreviousPage => PageNumber > 1; // Har föregående sida
-    public bool HasNextPage => PageNumber < TotalPages; // Har nästa sida
-
-
-        public async Task<IActionResult> OnGetAsync(int id, int pageNumber = 1)
-    {
-        // Hämta lagret
-        Storage = await _context.Storages
-            .Include(s => s.InventoryTrackers)
-            .ThenInclude(it => it.Product)
-            .FirstOrDefaultAsync(s => s.Id == id);
-
-        if (Storage == null)
+        public async Task<IActionResult> OnGetAsync(int id)
         {
-            return NotFound();
+            // Hämta lagret
+            Storage = await _context.Storages
+                .Include(s => s.InventoryTrackers)
+                .ThenInclude(it => it.Product)
+                .FirstOrDefaultAsync(s => s.Id == id);
+
+            if (Storage == null)
+            {
+                return NotFound();
+            }
+
+            // Hämta alla loggar och filtrera efter lagret
+            var allLogs = await _logManager.GetAllLogsAsync();
+            ActivityLogs = allLogs.Where(log => log.EntityType.Contains("Storage") && log.EntityName == Storage.Name).ToList();
+
+            // Hämta användarinformation för varje logg
+            var users = await _userManager.GetAllUsersAsync();
+            var userDictinary = users.ToDictionary(
+                u => u.Id,
+                u => new { FullName = $"{u.LastName} {u.FirstName}", EmployeeNumber = u.EmployeeNumber });
+
+            foreach (var log in ActivityLogs)
+            {
+                if (userDictinary.TryGetValue(log.UserId, out var userInfo))
+                {
+                    UserFullName.Add(userInfo.FullName);
+                    UserEmployeeNumbers.Add(userInfo.EmployeeNumber);
+                }
+                else
+                {
+                    UserFullName.Add("Unknown User");
+                    UserEmployeeNumbers.Add("N/A");
+                }
+            }
+    InventoryTrackers = Storage.InventoryTrackers;
+            return Page();
         }
 
-        int pageSize = 10;
-
-        var totalProducts = Storage.InventoryTrackers.Count();
-        TotalPages = (int)Math.Ceiling(totalProducts / (double)pageSize);
-        PageNumber = pageNumber;
-
-        // Hämta endast de produkter som hör till aktuell sida
-        InventoryTrackers = Storage.InventoryTrackers
-            .Skip((PageNumber - 1) * pageSize)
-            .Take(pageSize)
-            .ToList();
-
-        // Hämta aktivitetsloggar
-        ActivityLogs = await _context.ActivityLog
-            .Include(log => log.User)
-            .Where(log => log.ItemType == ItemType.Storage && log.TypeId == id)
-            .OrderByDescending(log => log.TimeStamp)
-            .Take(5)
-            .ToListAsync();
-
-        return Page();
-    }
-
+    
         public async Task<IActionResult> OnPostUpdateStorageAsync(int StorageId, string StorageName, int StorageMaxCapacity)
         {
             var storage = await _context.Storages.FindAsync(StorageId);
@@ -77,18 +79,6 @@ namespace InventoryManagementApplication.Pages
             storage.MaxCapacity = StorageMaxCapacity;
             storage.Updated = DateTime.Now;
 
-            await _context.SaveChangesAsync();
-
-            return RedirectToPage(new { id = StorageId });
-        }
-
-        public async Task<IActionResult> OnPostUpdateStorageCapacityAsync(int StorageId, string StorageName, int StorageMaxCapacity)
-        {
-            var storage = await _context.Storages.FindAsync(StorageId);
-            if (storage == null) return NotFound();
-
-            storage.Name = StorageName;
-            storage.MaxCapacity = StorageMaxCapacity;
             await _context.SaveChangesAsync();
 
             return RedirectToPage(new { id = StorageId });

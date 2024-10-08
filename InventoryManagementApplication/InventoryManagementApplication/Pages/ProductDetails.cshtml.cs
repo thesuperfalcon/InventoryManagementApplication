@@ -1,105 +1,69 @@
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using InventoryManagementApplication.Models;
+using InventoryManagementApplication.DAL;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Mvc;
 using InventoryManagementApplication.Data;
-using InventoryManagementApplication.Areas.Identity.Data;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Collections.Generic;
+
+
 namespace InventoryManagementApplication.Pages
 {
-    public class ProductDetailsModel : PageModel
+public class ProductDetailsModel : PageModel
     {
         private readonly InventoryManagementApplicationContext _context;
+        private readonly LogManager _logManager;
+        private readonly UserManager _userManager;
 
-        public ProductDetailsModel(InventoryManagementApplicationContext context)
+        public ProductDetailsModel(InventoryManagementApplicationContext context, LogManager logManager, UserManager userManager)
         {
             _context = context;
+            _logManager = logManager;
+            _userManager = userManager;
         }
+
         public Product Product { get; set; }
+        public List<Log> ActivityLogs { get; set; } = new List<Log>();
+        public List<string> UserFullName { get; set; } = new List<string>();
+        public List<string> UserEmployeeNumbers { get; set; } = new List<string>();
 
-        //Sidor
-
-    // Deklarera variabler för sidhantering
-    public List<ActivityLog> PagedActivityLogs { get; set; } = new List<ActivityLog>();
-    public List<InventoryTracker> PagedInventoryTrackers { get; set; } = new List<InventoryTracker>();
-
-    public int PageNumber { get; set; } = 1;      // Aktuellt sidnummer
-    public int TotalPages { get; set; }           // Totalt antal sidor
-    public int PageSize { get; set; } = 5;        // Antal poster per sida
-
-    public bool HasPreviousPage => PageNumber > 1;
-    public bool HasNextPage => PageNumber < TotalPages;
-
-    public int ActivityPageNumber { get; set; } = 1;      // Aktuellt sidnummer för aktivitetsloggar
-    public int ActivityTotalPages { get; set; }           // Totalt antal sidor för aktivitetsloggar
-    public bool HasPreviousActivityPage => ActivityPageNumber > 1;
-    public bool HasNextActivityPage => ActivityPageNumber < ActivityTotalPages;
-
-    public int InventoryPageNumber { get; set; } = 1;     // Aktuellt sidnummer för lagerförändringar
-    public int InventoryTotalPages { get; set; }          // Totalt antal sidor för lagerförändringar
-    public bool HasPreviousInventoryPage => InventoryPageNumber > 1;
-    public bool HasNextInventoryPage => InventoryPageNumber < InventoryTotalPages;
-
-       
-        public List<Storage> Storages { get; set; }
-        public InventoryManagementUser SelectedUser { get; set; }
-         public List<InventoryTracker> InventoryTrackers { get; set; }
-
-        /* Commenting out the product movement related properties */
-        // public int? CurrentStorageId { get; set; }
-
-
-        public async Task<IActionResult> OnGetAsync(int id, int activityPageNumber = 1, int inventoryPageNumber = 1)
+        public async Task<IActionResult> OnGetAsync(int id)
         {
+            // Hämta produkten
             Product = await _context.Products
-                .Include(p => p.InventoryTrackers)
-                    .ThenInclude(it => it.Storage)
-                .Include(p => p.ActivityLogs)
-                    .ThenInclude(log => log.User)
                 .FirstOrDefaultAsync(p => p.Id == id);
 
-            // Check if the product exists
             if (Product == null)
             {
                 return NotFound();
             }
 
+            // Hämta alla loggar och filtrera efter produkten
+            var allLogs = await _logManager.GetAllLogsAsync();
+            ActivityLogs = allLogs.Where(log => log.EntityType.Contains("Product") && log.EntityName == Product.Name).ToList();
 
-    // Paginering för aktivitetsloggar
-    int totalLogs = Product.ActivityLogs.Count();
-    ActivityTotalPages = (int)Math.Ceiling(totalLogs / (double)PageSize);
-    ActivityPageNumber = activityPageNumber;
-    PagedActivityLogs = Product.ActivityLogs
-        .OrderByDescending(log => log.TimeStamp)
-        .Skip((ActivityPageNumber - 1) * PageSize)
-        .Take(PageSize)
-        .ToList();
+            // Hämta användarinformation för varje logg
+            var users = await _userManager.GetAllUsersAsync();
+            var userDictinary = users.ToDictionary(
+                u => u.Id,
+                u => new { FullName = $"{u.LastName} {u.FirstName}", EmployeeNumber = u.EmployeeNumber });
 
-    // Paginering för lagerförändringar
-    int totalTrackers = Product.InventoryTrackers.Count();
-    InventoryTotalPages = (int)Math.Ceiling(totalTrackers / (double)PageSize);
-    InventoryPageNumber = inventoryPageNumber;
-    PagedInventoryTrackers = Product.InventoryTrackers
-        .Skip((InventoryPageNumber - 1) * PageSize)
-        .Take(PageSize)
-        .ToList();
+            foreach (var log in ActivityLogs)
+            {
+                if (userDictinary.TryGetValue(log.UserId, out var userInfo))
+                {
+                    UserFullName.Add(userInfo.FullName);
+                    UserEmployeeNumbers.Add(userInfo.EmployeeNumber);
+                }
+                else
+                {
+                    UserFullName.Add("Unknown User");
+                    UserEmployeeNumbers.Add("N/A");
+                }
+            }
 
-    return Page();
-
-            /* Commenting out storage fetching logic */
-            // Storages = await _context.Storages.ToListAsync();
-
-            /* Commenting out logic to set CurrentStorageId */
-            // var tracker = Product.InventoryTrackers.FirstOrDefault();
-            // if (tracker != null)
-            // {
-            //     CurrentStorageId = tracker.StorageId;
-            // }
-
+            return Page();
         }
-
+    
         public async Task<IActionResult> OnPostUpdateProductInfoAsync(int ProductId, string ProductName, string ProductDescription /*, int StorageId*/)
         {
             var product = await _context.Products

@@ -1,3 +1,4 @@
+
 @page "{id:int}"
 @model InventoryManagementApplication.Pages.StorageDetailsModel
 
@@ -12,7 +13,7 @@
         <div class="col-md-7">
             <div class="card mb-4">
                 <div class="card-header">
-                    <h2>Lagerdetaljer</h2>
+                     <h2>Lagerdetaljer: @Model.Storage.Name</h2>
                     <button class="btn btn-generic" data-bs-toggle="modal" data-bs-target="#editStorageModal">
                         <i class="bi bi-pencil"></i>
                     </button>
@@ -29,10 +30,6 @@
                                 <th>Maxkapacitet</th>
                                 <td>@Model.Storage.MaxCapacity</td>
                             </tr>
-                            @* hur använda detta? <tr>
-                                <th>Nuvarande lager</th>
-                                <td>@Model.Storage.CurrentStock</td>
-                            </tr>*@ 
                             <tr>
                                 <th>Skapad</th>
                                 <td>@Model.Storage.Created</td>
@@ -50,135 +47,125 @@
                 </div>
             </div>
 
-            <!-- Produkter i lager sektion -->
-            <div class="card mb-4">
-                <div class="card-header">
-                    <h3>Produkter i detta lager</h3>
-                    <input type="text" id="productSearch" class="form-control mb-3" placeholder="Sök efter produkt i lager..." />
-                </div>
-                <div class="card-body">
-                    <table class="table" id="productTable">
-                        <thead>
-                            <tr>
-                                <th>Produktnamn</th>
-                                <th>Artikelnummer</th>
-                                <th>Antal i lager</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @if (Model.Storage.InventoryTrackers.Any())
-                            {
-                                @foreach (var tracker in Model.Storage.InventoryTrackers)
-                                {
-                                    if (tracker.Product != null)
-                                    {
-                                        <tr>
-                                            <td>
-                                                <a asp-page="/ProductDetails" asp-route-id="@tracker.Product.Id" class="custom-link">
-                                                    @tracker.Product.Name
-                                                </a>
-                                            </td>
-                                            <td>@tracker.Product.ArticleNumber</td>
-                                            <td>@tracker.Quantity</td>
-                                        </tr>
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                <tr>
-                                    <td colspan="3" class="text-center">Inga produkter i lager</td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+          <!-- Produkter i lager sektion -->
+<div class="card mb-4">
+    <div class="card-header">
+        <h3>Produkter i detta lager</h3>
+        <input type="text" id="productSearchInput" class="form-control mb-3" placeholder="Sök efter produkt i lager..." />
+    </div>
+    <div class="card-body">
+        <table class="table" id="productTable">
+            <thead>
+                <tr>
+                    <th onclick="sortProductTable(0)">Produktnamn</th>
+                    <th onclick="sortProductTable(1)">Artikelnummer</th>
+                    <th onclick="sortProductTable(2)">Antal i lager</th>
+                </tr>
+            </thead>
+         <tbody id="productTableBody">
+    @if (Model.InventoryTrackers.Any())
+    {
+        @foreach (var tracker in Model.InventoryTrackers)
+        {
+            if (tracker.Product != null)
+            {
+                <tr>
+                    <td>
+                        <a asp-page="/ProductDetails" asp-route-id="@tracker.Product.Id" class="custom-link">
+                            @tracker.Product.Name
+                        </a>
+                        @if (tracker.Quantity <= 50) // Tröskelvärde för låg lagerstatus
+                        {
+                            <span class="text-warning ms-2" data-bs-toggle="tooltip" title="Produkten håller på att ta slut!">
+                                <i class="bi bi-exclamation-triangle-fill"></i>
+                            </span>
+                        }
+                    </td>
+                    <td>@tracker.Product.ArticleNumber</td>
+                    <td>@tracker.Quantity</td>
+                </tr>
+            }
+        }
+    }
+    else
+    {
+        <tr>
+            <td colspan="3" class="text-center">Inga produkter i lager</td>
+        </tr>
+    }
+</tbody>
+
+        </table>
+        <!-- Paginering -->
+        <div class="d-flex justify-content-between align-items-center">
+            <button id="productPrevPage" class="btn btn-secondary">Föregående</button>
+            <span id="productPageNumber"></span>
+            <button id="productNextPage" class="btn btn-secondary">Nästa</button>
         </div>
-
-         <!-- För sidor -->
-    <div class="pagination">
-        @if (Model.HasPreviousPage)
-        {
-            <a asp-page="./StorageDetails" asp-route-id="@Model.Storage.Id" asp-route-pageNumber="@(Model.PageNumber - 1)" class="btn btn-primary">Föregående</a>
-        }
-
-        <span>Sida @Model.PageNumber av @Model.TotalPages</span>
-
-        @if (Model.HasNextPage)
-        {
-            <a asp-page="./StorageDetails" asp-route-id="@Model.Storage.Id" asp-route-pageNumber="@(Model.PageNumber + 1)" class="btn btn-primary">Nästa</a>
-        }
     </div>
 </div>
 
-        <!-- Senaste aktivitetsloggar sektion -->
-        <div class="col-md-5">
-            <div class="card mb-4" style="background-color: #eef1f8;">
-                <div class="card-header">
-                    <h2>Senaste aktivitetsloggar för lagret</h2>
-                    <input type="text" id="logSearch" class="form-control mb-3" placeholder="Sök i aktivitetsloggen..." />
-                </div>
-                <div class="card-body">
-                    <table class="table" id="logTable">
-                        <thead>
-                            <tr>
-                                <th>Åtgärd</th>
-                                <th>Datum</th>
-                                   <th>Anteckningar</th>
-                                   <th>Utförare</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @if (Model.ActivityLogs != null && Model.ActivityLogs.Any())
-                            {
-                                @foreach (var log in Model.ActivityLogs)
-                                {
-                                    <tr>  
-                                        <td>@log.Action</td>
-                                        <td>@log.TimeStamp</td>
-                                            <td>@log.Notes</td>
-                                         <td>@log.User?.UserName</td>
-                                    </tr>
-                                }
-                            }
-                            else
-                            {
-                                <tr>
-                                    <td colspan="3" class="text-center">Inga aktivitetsloggar tillgängliga.</td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+
+ <div class="col-md-5">
+    <div class="card mb-4">
+    <div class="card-header">
+        <h3>Aktivitetsloggar för detta lager</h3>
+        <input type="text" id="logSearchInput" class="form-control mb-3" placeholder="Sök i aktivitetsloggar..." />
+    </div>
+    <div class="card-body">
+        <table class="table table-striped" id="logTable">
+            <thead>
+                <tr>
+                    <th onclick="sortLogTable(0)">Namn</th>
+                    <th onclick="sortLogTable(1)">Anställningsnummer</th>
+                    <th onclick="sortLogTable(2)">Händelse</th>
+                    <th onclick="sortLogTable(3)">Datum</th>
+                </tr>
+            </thead>
+            <tbody id="logTableBody">
+                @if (Model.ActivityLogs.Any())
+                {
+                    for (int i = 0; i < Model.ActivityLogs.Count; i++)
+                    {
+                        var log = Model.ActivityLogs[i];
+                        <tr>
+                            <td>@Model.UserFullName[i]</td>
+                            <td>@Model.UserEmployeeNumbers[i]</td>
+                            <td>@log.Action</td>
+                            <td>@log.TimeStamp</td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="4" class="text-center">Inga aktivitetsloggar tillgängliga för detta lager.</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <!-- Paginering -->
+        <div class="d-flex justify-content-between align-items-center">
+            <button id="logPrevPage" class="btn btn-secondary">Föregående</button>
+            <span id="logPageNumber"></span>
+            <button id="logNextPage" class="btn btn-secondary">Nästa</button>
         </div>
-        
-    <!-- För sidor -->
-    <div class="pagination">
-        @if (Model.HasPreviousPage)
-        {
-            <a asp-page="./StorageDetails" asp-route-id="@Model.Storage.Id" asp-route-pageNumber="@(Model.PageNumber - 1)" class="btn btn-primary">Föregående</a>
-        }
-
-        <span>Sida @Model.PageNumber av @Model.TotalPages</span>
-
-        @if (Model.HasNextPage)
-        {
-            <a asp-page="./StorageDetails" asp-route-id="@Model.Storage.Id" asp-route-pageNumber="@(Model.PageNumber + 1)" class="btn btn-primary">Nästa</a>
-        }
     </div>
 </div>
 
-    </div>
-</div>
+<!-- Exempel på att referera till InventoryTrackers, om det finns i StorageDetailsModel -->
+<a asp-page="/Log" asp-route-id="@Model.InventoryTrackers.FirstOrDefault()?.Product.Id" class="btn btn-info mt-3">
+    Visa fullständig historik
+</a>
+
+
 
 <!-- Modal för att redigera lagerdetaljer -->
 <div class="modal fade" id="editStorageModal" tabindex="-1" aria-labelledby="editStorageModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="editStorageModalLabel">Ändra lagernamn och maxkapacitet</h5>
+                <h5 class="modal-title" id="editStorageModalLabel">Ändra lagernamn</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -187,10 +174,6 @@
                         <label for="StorageName">Nytt namn</label>
                         <input type="text" class="form-control" id="StorageName" name="StorageName" value="@Model.Storage.Name" required />
                     </div>
-                    <div class="form-group mb-3">
-                        <label for="StorageMaxCapacity">Maxkapacitet</label>
-                        <input type="number" class="form-control" id="StorageMaxCapacity" name="StorageMaxCapacity" value="@Model.Storage.MaxCapacity" required min="0" />
-                    </div>
                     <input type="hidden" name="StorageId" value="@Model.Storage.Id" />
                     <button type="submit" class="btn btn-primary">Spara</button>
                 </form>
@@ -198,24 +181,122 @@
         </div>
     </div>
 </div>
-
 @section Scripts {
-    <script>
-        // Sökfunktion för produkter i lager
-        document.getElementById("productSearch").addEventListener("input", function() {
-            let searchValue = this.value.toLowerCase();
-            let rows = document.querySelectorAll("#productTable tbody tr");
-            rows.forEach(function(row) {
-                row.style.display = row.innerText.toLowerCase().includes(searchValue) ? "" : "none";
-            });
-        });
+    <!-- Inkludera jQuery och Bootstrap JS om de inte redan är inkluderade -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Bootstrap JS behövs för tooltips -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 
-        // Sökfunktion för aktivitetsloggar
-        document.getElementById("logSearch").addEventListener("input", function() {
-            let searchValue = this.value.toLowerCase();
-            let rows = document.querySelectorAll("#logTable tbody tr");
-            rows.forEach(function(row) {
-                row.style.display = row.innerText.toLowerCase().includes(searchValue) ? "" : "none";
+    <script>
+        // Produkter i lager - JavaScript-kod
+        (function() {
+            const productRowsPerPage = 5;
+            let productCurrentPage = 1;
+            let productOriginalRows = [];
+            let productFilteredRows = [];
+            let productVisibleRows = [];
+
+            $(document).ready(function () {
+                productOriginalRows = Array.from(document.querySelectorAll("#productTableBody tr"));
+                productFilteredRows = [...productOriginalRows];
+
+                updateProductVisibleRows(productFilteredRows);
+
+                // Sökfunktion
+                $("#productSearchInput").on("keyup", function () {
+                    var value = $(this).val().toLowerCase();
+
+                    productFilteredRows = productOriginalRows.filter(row => {
+                        return row.innerText.toLowerCase().includes(value);
+                    });
+
+                    updateProductVisibleRows(productFilteredRows);
+                    productCurrentPage = 1;
+                    paginateProductTable();
+                });
+
+                // Paginering
+                $("#productPrevPage").on("click", function () {
+                    if (productCurrentPage > 1) {
+                        productCurrentPage--;
+                        paginateProductTable();
+                    }
+                });
+
+                $("#productNextPage").on("click", function () {
+                    if (productCurrentPage < Math.ceil(productFilteredRows.length / productRowsPerPage)) {
+                        productCurrentPage++;
+                        paginateProductTable();
+                    }
+                });
+
+                // Kör paginering initialt
+                paginateProductTable();
+            });
+
+            function updateProductVisibleRows(rows) {
+                productVisibleRows = rows;
+            }
+
+            function paginateProductTable() {
+                const start = (productCurrentPage - 1) * productRowsPerPage;
+                const end = start + productRowsPerPage;
+
+                // Dölj alla rader först
+                $("#productTableBody tr").hide();
+
+                // Visa endast raderna på den aktuella sidan
+                productVisibleRows.forEach((row, index) => {
+                    if (index >= start && index < end) {
+                        $(row).show();
+                    }
+                });
+
+                // Uppdatera sidnumret
+                const pageNumberElement = document.getElementById("productPageNumber");
+                pageNumberElement.innerText = `Sida ${productCurrentPage} av ${Math.ceil(productFilteredRows.length / productRowsPerPage)}`;
+            }
+
+            // Sorteringsfunktion
+            window.sortProductTable = function(columnIndex) {
+                const isAscending = $("#productTable").data("sort-direction") === "asc";
+
+                // Sortera filtrerade rader
+                productFilteredRows.sort((a, b) => {
+                    const cellA = a.cells[columnIndex].innerText.trim();
+                    const cellB = b.cells[columnIndex].innerText.trim();
+
+                    const isNumber = !isNaN(parseFloat(cellA)) && !isNaN(parseFloat(cellB));
+
+                    if (isNumber) {
+                        return isAscending
+                            ? parseFloat(cellA) - parseFloat(cellB)
+                            : parseFloat(cellB) - parseFloat(cellA);
+                    } else {
+                        return isAscending
+                            ? cellA.localeCompare(cellB, 'sv-SE', { sensitivity: 'base' })
+                            : cellB.localeCompare(cellA, 'sv-SE', { sensitivity: 'base' });
+                    }
+                });
+
+                // Växla sorteringsriktning
+                $("#productTable").data("sort-direction", isAscending ? "desc" : "asc");
+
+                // Återställ raderna i tabellen
+                const tbody = document.querySelector("#productTableBody");
+                productFilteredRows.forEach(row => tbody.appendChild(row));
+
+                productCurrentPage = 1;
+                paginateProductTable();
+            }
+        })();
+
+        // Separat initialisering av Bootstrap-tooltips
+        $(document).ready(function () {
+            // Initialisera Bootstrap-tooltips
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl);
             });
         });
     </script>
