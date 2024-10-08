@@ -18,10 +18,15 @@ html, body {
     footer-container {
         flex-direction: column;
         align-items: center;
+        font-size: 0.9rem;
     }
 
     .footer-column {
         text-align: center;
+    }
+
+    .navbar {
+        padding: 0.5rem;
     }
 
     .navbar-collapse {
@@ -33,13 +38,29 @@ html, body {
     }
 
     .navbar-nav .nav-item {
-        margin-left: 0; /* Remove left margin for mobile */
-        padding-bottom: 10px; /* Add padding between items */
+        margin-left: 0; 
+        padding-bottom: 10px; 
     }
 
     .navbar-nav .nav-link {
-        font-size: 0.9rem; /* Slightly smaller text on mobile */
+        font-size: 0.9rem; 
     }
+
+    .footer-container {
+        flex-direction: column;
+        align-items: center;
+    }
+
+        .footer-container .col-md-6 {
+            text-align: center;
+            margin-bottom: 10px; 
+        }
+
+        .footer-container .nav-link {
+            margin-left: 0;
+            margin-right: 0;
+            margin-bottom: 5px;
+        }
 }
 
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
@@ -114,28 +135,47 @@ p {
 
 footer {
     background-color: #f8f9fa;
-    border-top: 2px solid #ddd;
-    padding: 20px 0;
+    border-top: 1px solid #1C3144;
+    padding: 10px 0;
     color: #6c757d;
     text-align: center;
+    font-size: 1rem;
 }
 
 .footer-container{
     display: flex;
-    justify-content: space-around;
+    justify-content: space-between;
     align-items: center;
     max-width: 1200px;
     margin: 0 auto;
     padding: 0 15px;
 }
 
-.footer-left{
-    font-size: 14px; 
+.row {
+    display: flex;
+    width: 100%;
+    flex-wrap: wrap;
 }
 
-.footer-right{
-    font-size: 16px;
+.footer-container .col-md-6 {
+    flex: 1;
 }
+.footer-container .text-md-end {
+    display: flex; 
+    justify-content: flex-end; 
+}
+
+.footer-container .nav-link {
+    color: #6c757d;
+    margin-left: 10px;
+    margin-left: 10px;
+    transition: color 0.3s;
+    font-size: 1rem;
+}
+
+        .footer-container .nav-link:hover {
+            color: #0056b3;
+        }
 
 .hero-section {
     background-image: url('/images/logos/development.png');
@@ -202,6 +242,7 @@ footer {
 .navbar {
     padding: 1rem 2rem;
     background-color: #f8f9fa;
+    border-bottom: 1px solid #1C3144;
 }
 
 .navbar-brand img {
@@ -216,7 +257,8 @@ footer {
 .navbar-nav .nav-link {
     color: #343a40;
     font-weight: 500;
-    font-size: 16px;
+    font-size: 1.1rem;
+    padding: 10px 15px;
 }
 
     .navbar-nav .nav-link:hover {
@@ -230,3 +272,45 @@ footer {
     padding: 1rem 2rem;
     background-color: #f8f9fa;
 }
+
+
+/* Search function */
+.search-form {
+    display: flex;
+    align-items: center;
+}
+
+.search-input {
+    background-color: #f8f9fa;
+    border: 1px solid #343a40;
+    border-radius: 0.25rem;
+    padding: 0.5rem 1rem;
+    transition: border-color 0.3s;
+}
+
+    .search-input::placeholder {
+        color: #6c757d;
+    }
+
+    .search-input:focus {
+        border-color: #0056b3; 
+        box-shadow: 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    }
+
+.search-button {
+    border: 1px solid steelblue; 
+    background-color: steelblue;
+    color: white;
+    border-radius: 0.25rem; 
+    padding: 0.5rem 1rem; 
+    transition: background-color 0.3s, color 0.3s;
+}
+
+    .search-button:hover {
+        background-color: #1C3144;
+        color: white;
+    }
+
+    .search-button i {
+        color: white;
+    }
