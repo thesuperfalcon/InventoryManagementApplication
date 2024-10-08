@@ -14,18 +14,22 @@
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <a href="/">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="container-fluid">
+              <!-- Logo -->
+            <a class="navbar-brand" href="/">
                 <img src="/images/logos/ssabLogo.png" alt="ssabLogo" class="d-inline-block align-text-top custom-logo ms-3">
             </a>
             <div class="container">
 
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
+                <!-- Toggler for mobile screens -->
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
+
+                <!-- Navbar links -->
+                <div class="navbar-collapse collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto">
 
                         @if (User.Identity.IsAuthenticated)
                         {
@@ -38,34 +42,35 @@
                             @if (User.IsInRole("Admin"))
                             {
                                 <li class="nav-item">
-                                    <a class="nav-link text-dark" id="register" asp-area="Identity" asp-page="/Account/Register">Registrera användare</a>
+                                    <a class="nav-link text-dark text-nowrap" id="register" asp-area="Identity" asp-page="/Account/Register">Registrera användare</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="" asp-page="/UsersRoles">Användare och roller</a>
+                                    <a class="nav-link text-dark text-nowrap" asp-area="" asp-page="/UsersRoles">Användare och roller</a>
                                 </li>
                             }
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-page="/admin/product/index">Produktkatalog</a>
+                                <a class="nav-link text-dark text-nowrap" asp-area="" asp-page="/admin/product/index">Produktkatalog</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-page="/admin/storage/index">Lagerplatser</a>
+                                <a class="nav-link text-dark text-nowrap" asp-area="" asp-page="/admin/storage/index">Lagerplatser</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-page="/admin/tracker/index">Flytta produkt</a>
+                                <a class="nav-link text-dark text-nowrap" asp-area="" asp-page="/admin/tracker/index">Flytta produkt</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-page="/reportPage">Lagersaldo</a>
+                                <a class="nav-link text-dark text-nowrap" asp-area="" asp-page="/reportPage">Lagersaldo</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-page="/log">Loggning</a>
+                                <a class="nav-link text-dark text-nowrap" asp-area="" asp-page="/log">Loggning</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-page="/statistic">Statistik</a>
+                                <a class="nav-link text-dark text-nowrap" asp-area="" asp-page="/statistic">Statistik</a>
                             </li>
                         }
                     </ul>
                     <partial name="_LoginPartial" />
                 </div>
+            </div>
             </div>
         </nav>
     </header>
@@ -76,6 +81,7 @@
         </main>
     </div>
 
+    <!-- Footer -->
     <footer class="border-top text-muted">
         <div class="footer-container">
             <div class="footer-left">
