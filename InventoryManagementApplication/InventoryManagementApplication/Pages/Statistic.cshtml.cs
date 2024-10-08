@@ -25,7 +25,10 @@ namespace InventoryManagementApplication.Pages
         public async Task OnGetAsync(bool statisticSwitch)
         {
             var statistics = await _statisticManager.GetAllStatisticsAsync();
-            Statistics = statistics.ToList();
+            Statistics = statistics
+                .OrderByDescending(x => x.Moved)  
+                .ToList();   
+            
             StatisticSwitch = statisticSwitch;
 
             var personList = await _userManager.GetAllUsersAsync();
@@ -65,6 +68,7 @@ namespace InventoryManagementApplication.Pages
                     MovementPerPerson.Add(userStatistics);
                 }
             }
+
 
             if (MovementPerPerson.Count > 0)
             {

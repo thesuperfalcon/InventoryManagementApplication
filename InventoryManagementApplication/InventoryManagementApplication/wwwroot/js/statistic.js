@@ -1,4 +1,4 @@
-﻿const rowsPerPage = 10;
+﻿let rowsPerPage = 10;
 let currentPage = 1;
 let originalRows = [];
 let filteredRows = [];
@@ -15,11 +15,19 @@ function toggleHelp() {
 
 
 $(document).ready(function () {
-    originalRows = Array.from(document.querySelectorAll("#myTable tr:not(:first-child)"));
+
+    let select = document.getElementById('pageAmount');
+    select.addEventListener('change', function () {
+        rowsPerPage = parseInt(select.value);  
+        currentPage = 1;  
+        paginateTable();  
+    });
+    originalRows = Array.from(document.querySelectorAll("#myTable tr"));
     filteredRows = [...originalRows];
 
     updateVisibleRows(filteredRows);
     paginateTable();
+
 
     $("#leaderboardSearchInput").on("input", function () {
         var value = $(this).val().toLowerCase();
@@ -191,6 +199,7 @@ function closeAllExpandedRows() {
 
 function updateVisibleRows(rows) {
     visibleRows = rows;
+
     paginateTable();
 }
 
@@ -199,6 +208,7 @@ function paginateTable() {
     const end = start + rowsPerPage;
 
     $("#myTable tr").hide();
+
     visibleRows.forEach((row, index) => {
         if (index >= start && index < end) {
             $(row).show();
@@ -208,6 +218,7 @@ function paginateTable() {
     const pageNumberElement = document.getElementById("pageNumber");
     pageNumberElement.innerText = `Page ${currentPage} of ${Math.ceil(filteredRows.length / rowsPerPage)}`;
 }
+
 
 function sortTable(columnIndex) {
     const table = document.getElementById("statisticsTable");

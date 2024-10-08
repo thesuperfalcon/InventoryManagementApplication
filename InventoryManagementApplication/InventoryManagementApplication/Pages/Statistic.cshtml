@@ -111,7 +111,7 @@
         <div id="content2" class="mt-3" style="display: block;">
             <div style="display: flex; align-items: center;">
                 <h2>Statistik</h2>
-                <button id="helpButton" class="btn btn-info" style="margin-left: 10px;" onclick="toggleHelp()">Hjälp</button>
+                <button id="helpButton" class="btn btn-info" onclick="toggleHelp()"></button>
             </div>
 
             <div class="mb-3">
@@ -142,7 +142,11 @@
                         @foreach (var statistic in Model.Statistics)
                         {
                             <tr>
-                                <td>@statistic.UserName</td>
+                                <td>
+                                    <span id="tooltip" onclick="setMovementAttributes('@statistic.EmployeeNumber', '', '', '', '', '')">
+                                    @statistic.UserName
+                                    </span>
+                                    </td>
                                 <td>
                                     <span id="tooltip" onclick="setMovementAttributes('@statistic.EmployeeNumber', '', '', '', '', '')">
                                         @statistic.EmployeeNumber
@@ -170,7 +174,7 @@
                                 </td>
                                 <td>
                                     <span id="tooltip" onclick="setMovementAttributes('', '', '', '', '', '@(statistic.Moved.HasValue ? statistic.Moved.Value.ToString("yyyy/MM/dd") : "")')">
-                                        @(statistic.Moved.HasValue ? statistic.Moved.Value.ToString("yyyy/MM/dd") : "Ingen flytt")
+                                        @(statistic.Moved.HasValue ? statistic.Moved.Value.ToString("yyyy/MM/dd HH:mm") : "Ingen flytt")
                                     </span>
                                 </td>
                             </tr>
@@ -189,6 +193,14 @@
                 <button id="prevPage" class="btn btn-primary">Bak</button>
                 <span id="pageNumber" class="mx-3"></span>
                 <button id="nextPage" class="btn btn-primary">Fram</button>
+                <select id="pageAmount">
+                    <option value="10">10</option>
+                    <option value="20">20</option>
+                    <option value="25">25</option>
+                    <option value="50">50</option>
+                    <option value="75">75</option>
+                    <option value="100">100</option>
+                </select>
             </div>
         </div>
     </div>
@@ -239,3 +251,4 @@
     <script src="~/js/statistic.js"></script>
     <link rel="stylesheet" href="~/css/statistic.css">
 }
+
