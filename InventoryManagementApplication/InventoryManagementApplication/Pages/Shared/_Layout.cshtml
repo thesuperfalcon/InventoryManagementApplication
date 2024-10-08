@@ -16,9 +16,6 @@
                 <img src="/images/logos/ssabLogo.png" alt="ssabLogo" class="d-inline-block align-text-top custom-logo ms-3">
             </a>
             <div class="container">
-
-                <h2 class="text-center">Sökinformation</h2>
-
                 @* <a class="navbar-brand" asp-area="" asp-page="/Index">InventoryManagementApplication</a> *@
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
@@ -65,18 +62,22 @@
                             <li>
                                 <partial name="_LoginPartial" />
                             </li>
+                            <form method="get" action="/SearchBar" class="navbar-nav flex-grow-1">
+                                    <input type="text" name="query" placeholder="Sök här..." class="search-input" />
+                                    <button type="submit" class="btn btn-outline-primary">Sök</button>
+                            </form>
                         }
                     </ul>
                 </div>
             </div>
         </nav>
         <!-- Sökformulär -->
-        <div class="search-container">
+@*         <div class="search-container">
             <form method="get" action="/SearchBar" class="navbar-form">
                 <input type="text" name="query" placeholder="Sök här..." class="search-input" />
                 <button type="submit" class="btn btn-outline-primary">Sök</button>
             </form>
-        </div>
+        </div> *@
     </header>
     <div class="container">
         <main role="main" class="pb-3">

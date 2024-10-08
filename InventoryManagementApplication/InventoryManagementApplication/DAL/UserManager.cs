@@ -125,7 +125,6 @@ namespace InventoryManagementApplication.DAL
                 return response.IsSuccessStatusCode;
             }
         }
-
     }
 }
 //HttpResponseMessage response = await client.GetAsync("api/Users/");

@@ -31,3 +31,33 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 });
+document.addEventListener("DOMContentLoaded", function () {
+    // Hantera produktlänkar
+    const productLinks = document.querySelectorAll(".product-link");
+    productLinks.forEach(link => {
+        link.addEventListener("click", function () {
+            const productId = this.getAttribute("data-id");
+            window.location.href = `/admin/product?id=${productId}`;
+        });
+    });
+
+    // Hantera lagringslänkar
+    const storageLinks = document.querySelectorAll(".storage-link");
+    storageLinks.forEach(link => {
+        link.addEventListener("click", function () {
+            const storageId = this.getAttribute("data-id");
+            window.location.href = `/admin/storage?id=${storageId}`;
+        });
+    });
+
+    // Hantera användarlänkar med specifik URL-struktur
+    const userLinks = document.querySelectorAll(".user-link");
+    userLinks.forEach(link => {
+        link.addEventListener("click", function () {
+            const userId = this.getAttribute("data-id");
+            window.location.href = `/UserInfo/${userId}`;
+        });
+    });
+});
+
+

@@ -3,24 +3,19 @@
 @{
     ViewData["Title"] = "Sök";
 }
-@* <div class="search-container text-center">
-    <form method="get" action="/SearchBar">
-        <input type="text" name="query" value="@Model.Query" placeholder="Sök här..." class="search-input" />
-        <button type="submit" class="btn btn-outline-primary">Sök</button>
-    </form>
-</div> *@
-
 @if (!string.IsNullOrEmpty(Model.Query))
 {
     <h3>Sökresultat för "@Model.Query":</h3>
 
-    if (Model.Products.Any())
+    @if (Model.Products.Any())
     {
         <h4>Produkter:</h4>
         <ul>
             @foreach (var product in Model.Products)
             {
-                <li>@product.Name, @product.Id</li> 
+                <li>
+                    <a href="javascript:void(0);" class="product-link" data-id="@product.Id">@product.Name | (ID: @product.Id)</a>
+                </li>
             }
         </ul>
     }
@@ -29,13 +24,15 @@
         <p>Inga produkter hittades.</p>
     }
 
-    if (Model.Storages.Any())
+    @if (Model.Storages.Any())
     {
         <h4>Lager:</h4>
         <ul>
             @foreach (var storage in Model.Storages)
             {
-                <li>@storage.Name</li> 
+                <li>
+                    <a href="javascript:void(0);" class="storage-link" data-id="@storage.Id">@storage.Name</a>
+                </li>
             }
         </ul>
     }
@@ -44,13 +41,15 @@
         <p>Inga lager hittades.</p>
     }
 
-    if (Model.Users.Any())
+    @if (Model.Users.Any())
     {
         <h4>Användare:</h4>
         <ul>
             @foreach (var user in Model.Users)
             {
-                <li>@user.FirstName, @user.LastName, @user.EmployeeNumber</li>
+                <li>
+                    <a href="javascript:void(0);" class="user-link" data-id="@user.Id">@user.FirstName @user.LastName | @user.EmployeeNumber</a>
+                </li>
             }
         </ul>
     }
@@ -63,3 +62,4 @@ else
 {
     <p>Inga sökresultat att visa. Var vänlig ange en sökfråga.</p>
 }
+<script src="~/js/searchResults.js" defer></script>

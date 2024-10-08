@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel.DataAnnotations;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
-using Microsoft.AspNetCore.Identity;
 
 namespace InventoryManagementApplication.Pages
 {
@@ -47,8 +46,8 @@ namespace InventoryManagementApplication.Pages
                     .ToList();
 
                 Users = Users
-                    .Where(u => u.FirstName != null && u.LastName.Contains(Query, StringComparison.OrdinalIgnoreCase))
-                    .ToList();
+                    .Where(u =>(u.FirstName != null && u.FirstName.Contains(Query, StringComparison.OrdinalIgnoreCase)) ||
+                          (u.LastName != null && u.LastName.Contains(Query, StringComparison.OrdinalIgnoreCase))).ToList();
             }
             else
             {
