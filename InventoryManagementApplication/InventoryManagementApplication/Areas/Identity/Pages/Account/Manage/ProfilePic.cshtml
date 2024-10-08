@@ -1,0 +1,58 @@
+﻿@page
+@model InventoryManagementApplication.Areas.Identity.Pages.Account.Manage.ProfilePicModel
+@{
+}
+<h3>Byt profilbild</h3>
+
+
+
+<form  method="post">
+	<div class ="avatar-container">
+	<input type="hidden" asp-for="SelectedProfilePic" />
+	@foreach (var url in Model.ProfilePics)
+	{
+		if(url == Model.SelectedUser.ProfilePic)
+		{
+			<div class="current-avatar">
+				<img src="@Url.Content(url)" alt="Profile image" class="profile-image" data-url="@url" />
+			</div>
+		}
+		else
+		{
+			<div class="avatar">
+				<img src="@Url.Content(url)" alt="Profile image" class="profile-image" data-url="@url" />
+			</div>
+		}
+		
+	}
+	</div>
+	<button type="submit" class="btn-primary" >Byt Avatar</button>
+</form>
+<div class="alert-success mt-3">
+	@Model.StatusMessage
+</div>
+
+@section Scripts{
+	<script>
+		const avatars = document.querySelectorAll('.avatar, .current-avatar');
+		const hiddenInput = document.querySelector('input[name="SelectedProfilePic"]');
+
+		avatars.forEach(item => {
+			item.addEventListener('click', function (e) {
+				e.preventDefault(); // Prevent page reload
+
+				avatars.forEach(i => i.classList.remove('clicked-avatar'));
+				this.classList.add('clicked-avatar');
+
+				// Get the data-url attribute (which contains the profile pic URL)
+				const selectedUrl = this.querySelector('img').getAttribute('data-url');
+
+				// Set the hidden input's value to the selected profile picture URL
+				hiddenInput.value = selectedUrl;
+
+				console.log('Selected profile pic URL:', selectedUrl);
+				console.log('Hidden input value:', hiddenInput.value);
+			});
+		});
+	</script>
+}

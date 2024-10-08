@@ -34,6 +34,7 @@ namespace InventoryManagementApplication.Pages
             public string RoleName { get; set; }
             public DateTime Created { get; set; }
             public DateTime Updated { get; set; }
+            public bool IsDeleted { get; set; }
             public string Id { get; set; }
         }
 
@@ -41,6 +42,7 @@ namespace InventoryManagementApplication.Pages
         public async Task OnGetAsync()
         {
             var users = await _userManagerDAL.GetAllUsersAsync();
+            users = users.Where(x => x.IsDeleted == false).ToList();
 //          var users1 = _userManager.Users.ToList();
             UsersWithRoles = new List<UserWithRoleViewModel>();
 

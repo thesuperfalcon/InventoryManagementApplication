@@ -126,6 +126,25 @@ namespace InventoryManagementApplication.DAL
             }
         }
 
+        public async Task<List<string>> GetPicUrlAsync()
+        {
+            List<string>? picUrls = new List<string>();
+
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = BaseAddress;
+
+                var response = await client.GetAsync($"api/ProfilePic/");
+
+                if (response.IsSuccessStatusCode)
+                {
+                    string responseString = await response.Content.ReadAsStringAsync();
+                    picUrls = JsonSerializer.Deserialize<List<string>>(responseString);
+                }
+                return picUrls;
+            }
+        }
+
     }
 }
 //HttpResponseMessage response = await client.GetAsync("api/Users/");
