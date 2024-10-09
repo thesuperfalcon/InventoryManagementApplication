@@ -244,25 +244,22 @@ footer {
     margin: 2px;
 }
 
-    .clicked-avatar:hover {
-        background-color: steelblue;
-        padding: 8px;
-        margin: 2px;
-    }
+.clicked-avatar:hover {
+    background-color: steelblue;
+    padding: 8px;
+    margin: 2px;
+}
 
 .hero-section .btn-primary {
     font-size: 1.2rem;
 }
-
-<<<<<<< HEAD
 .button-container{
-    width:300px;
+    width:400px;
     display:flex;
     flex-direction:row;
-    justify-content:space-around
+    justify-content:space-evenly;
+    
 }
-
-=======
 /* Custom Styles for the Header */
 .navbar {
     padding: 1rem 2rem;
@@ -356,4 +353,3 @@ footer {
         .social-icons a:hover {
             color: #000;
         }
->>>>>>> 1cfcbb50b2dba0fa6a8877d5827775340514a554

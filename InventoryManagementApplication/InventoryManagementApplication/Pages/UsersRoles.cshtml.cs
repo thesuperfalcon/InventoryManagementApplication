@@ -76,7 +76,6 @@ namespace InventoryManagementApplication.Pages
             return UsersWithRoles;
         }
         //Skapar en viewmodel för en given användare
-
         private async Task<UserWithRoleViewModel> CreateUserWithRoleViewModel(InventoryManagementUser user)
         {
             var roles = await _userManager.GetRolesAsync(user);

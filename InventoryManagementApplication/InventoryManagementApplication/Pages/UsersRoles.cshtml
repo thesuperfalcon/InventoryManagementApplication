@@ -40,7 +40,6 @@
         <tbody>
             @foreach (var user in Model.UsersWithRoles)
             {
-<<<<<<< HEAD
                     if (user.IsDeleted == false)
                     {
                         <tr>
@@ -58,25 +57,6 @@
                             </td>
                         </tr>
                     }                                     
-=======
-                if(user.IsDeleted == false)
-                {
-                    <tr>
-                        <td>@user.EmployeeNumber</td>
-                        <td>@user.FirstName</td>
-                        <td>@user.LastName</td>
-                        <td>@user.RoleName</td>
-                        <td>@user.Created</td>
-                        <td>@user.Updated</td>
-                        <td>
-                            <a asp-page="/UserInfo" asp-route-userId="@user.Id" class="btn btn-info">
-                                <i class="fas fa-cog"></i>
-                            </a>
-                        </td>
-                    </tr>
-                }
-                
->>>>>>> 1cfcbb50b2dba0fa6a8877d5827775340514a554
             }
         </tbody>
     </table>
