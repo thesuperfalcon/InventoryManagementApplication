@@ -31,11 +31,7 @@ namespace InventoryManagementApplication.Pages
             
             StatisticSwitch = statisticSwitch;
 
-<<<<<<< HEAD
-                var personList = await _userManager.GetAllUsersAsync(null);
-                foreach (var person in personList)
-=======
-            var personList = await _userManager.GetAllUsersAsync();
+            var personList = await _userManager.GetAllUsersAsync(null);
             foreach (var person in personList)
             {
                 var movementsByUser = statistics.Where(stat => stat.UserId == person.Id);
@@ -53,7 +49,6 @@ namespace InventoryManagementApplication.Pages
                 //                   IsSameDay(stat.Moved.Value));
 
                 if (movementsByUser.Any())
->>>>>>> 1cfcbb50b2dba0fa6a8877d5827775340514a554
                 {
                     var totalMovements = movementsByUser.Count();
                     var totalQuantity = movementsByUser.Sum(stat => stat.Quantity ?? 0);
