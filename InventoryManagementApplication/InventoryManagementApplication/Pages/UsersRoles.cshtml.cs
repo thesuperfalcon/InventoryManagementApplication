@@ -4,6 +4,7 @@ using InventoryManagementApplication.Areas.Identity.Data;
 using Microsoft.AspNetCore.Authorization;
 using InventoryManagementApplication.DAL;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Mvc;
 
 namespace InventoryManagementApplication.Pages
 {
@@ -23,9 +24,9 @@ namespace InventoryManagementApplication.Pages
             _userManagerDAL = userManagerDAL;
         }
 
-        public List<UserWithRoleViewModel> UsersWithRoles { get; set; }
+        public List<UserWithRoleViewModel> UsersWithRoles { get; set; } = new List<UserWithRoleViewModel>();
         public string LoggedInUserName { get; set; }
-
+        
         public class UserWithRoleViewModel
         {
             public string EmployeeNumber { get; set; }
@@ -38,19 +39,15 @@ namespace InventoryManagementApplication.Pages
             public string Id { get; set; }
         }
 
-        //Hämtar användare
-        public async Task OnGetAsync()
-        {
-            var users = await _userManagerDAL.GetAllUsersAsync();
-            users = users.Where(x => x.IsDeleted == false).ToList();
-//          var users1 = _userManager.Users.ToList();
-            UsersWithRoles = new List<UserWithRoleViewModel>();
+        [BindProperty]
+        public bool IsDeletedToggle { get; set; }
 
-            foreach (var user in users)
-            {
-                UsersWithRoles.Add(await CreateUserWithRoleViewModel(user));
-            }
-            //var loggedInUser = await _userManagerDAL.GetOneUserAsync(User);
+        //Hämtar användare
+        public async Task OnGetAsync(bool isDeleted)
+        {
+            IsDeletedToggle = true ? false : true;
+            UsersWithRoles = await LoadUsers(IsDeletedToggle);
+
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var loggedInUser = await _userManagerDAL.GetOneUserAsync(userId);
 
@@ -58,6 +55,34 @@ namespace InventoryManagementApplication.Pages
             LoggedInUserName = loggedInUser != null ? FormatUserName(loggedInUser) : string.Empty;
         }
 
+        public async Task<IActionResult> OnPostToggleDeletedAsync()
+        {
+            
+            IsDeletedToggle = !IsDeletedToggle;
+            UsersWithRoles = await LoadUsers(IsDeletedToggle);
+
+            return Page();
+        }
+
+        private async Task<List<UserWithRoleViewModel>> LoadUsers(bool? isDeleted)
+        {
+            var users = await _userManagerDAL.GetAllUsersAsync();
+            UsersWithRoles = new List<UserWithRoleViewModel>();
+            if (isDeleted == false)
+            {
+                users = users.Where(x => x.IsDeleted == isDeleted).ToList();
+            }
+            else
+            {
+                users = users.Where(x => x.IsDeleted == isDeleted).ToList();
+            }
+
+            foreach (var user in users)
+            {
+                UsersWithRoles.Add(await CreateUserWithRoleViewModel(user));
+            }
+            return UsersWithRoles;
+        }
         //Skapar en viewmodel för en given användare
         private async Task<UserWithRoleViewModel> CreateUserWithRoleViewModel(InventoryManagementUser user)
         {
