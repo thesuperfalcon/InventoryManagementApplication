@@ -31,7 +31,7 @@ namespace InventoryManagementApplication.Pages
             
             StatisticSwitch = statisticSwitch;
 
-            var personList = await _userManager.GetAllUsersAsync();
+            var personList = await _userManager.GetAllUsersAsync(null);
             foreach (var person in personList)
             {
                 var movementsByUser = statistics.Where(stat => stat.UserId == person.Id);
