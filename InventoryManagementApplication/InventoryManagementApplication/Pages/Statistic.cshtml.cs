@@ -26,7 +26,7 @@ namespace InventoryManagementApplication.Pages
             Statistics = statistics.ToList();
             StatisticSwitch = statisticSwitch;
 
-                var personList = await _userManager.GetAllUsersAsync();
+                var personList = await _userManager.GetAllUsersAsync(null);
                 foreach (var person in personList)
                 {
                     var quantityPerPerson = new Statistic

@@ -58,3 +58,10 @@ body {
     margin: 2px;
 }
 
+.button-container{
+    width:300px;
+    display:flex;
+    flex-direction:row;
+    justify-content:space-around
+}
+

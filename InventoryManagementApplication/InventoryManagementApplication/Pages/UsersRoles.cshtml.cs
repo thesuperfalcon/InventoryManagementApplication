@@ -43,9 +43,8 @@ namespace InventoryManagementApplication.Pages
         public bool IsDeletedToggle { get; set; }
 
         //Hämtar användare
-        public async Task OnGetAsync(bool isDeleted)
+        public async Task OnGetAsync()
         {
-            IsDeletedToggle = true ? false : true;
             UsersWithRoles = await LoadUsers(IsDeletedToggle);
 
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -66,21 +65,14 @@ namespace InventoryManagementApplication.Pages
 
         private async Task<List<UserWithRoleViewModel>> LoadUsers(bool? isDeleted)
         {
-            var users = await _userManagerDAL.GetAllUsersAsync();
+            var users = await _userManagerDAL.GetAllUsersAsync(isDeleted);
             UsersWithRoles = new List<UserWithRoleViewModel>();
-            if (isDeleted == false)
-            {
-                users = users.Where(x => x.IsDeleted == isDeleted).ToList();
-            }
-            else
-            {
-                users = users.Where(x => x.IsDeleted == isDeleted).ToList();
-            }
-
+            
             foreach (var user in users)
             {
                 UsersWithRoles.Add(await CreateUserWithRoleViewModel(user));
             }
+
             return UsersWithRoles;
         }
         //Skapar en viewmodel för en given användare
