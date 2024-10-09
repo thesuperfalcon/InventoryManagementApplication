@@ -53,7 +53,6 @@ namespace InventoryManagementApplication.Pages
             //var loggedInUser1 = await _userManager.GetUserAsync(User);
             LoggedInUserName = loggedInUser != null ? FormatUserName(loggedInUser) : string.Empty;
         }
-<<<<<<< HEAD
 
         public async Task<IActionResult> OnPostToggleDeletedAsync()
         {
@@ -77,8 +76,7 @@ namespace InventoryManagementApplication.Pages
             return UsersWithRoles;
         }
         //Skapar en viewmodel för en given användare
-=======
->>>>>>> 1cfcbb50b2dba0fa6a8877d5827775340514a554
+
         private async Task<UserWithRoleViewModel> CreateUserWithRoleViewModel(InventoryManagementUser user)
         {
             var roles = await _userManager.GetRolesAsync(user);
