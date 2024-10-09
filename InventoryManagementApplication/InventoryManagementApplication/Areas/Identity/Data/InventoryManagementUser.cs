@@ -37,5 +37,12 @@ public class InventoryManagementUser : IdentityUser
 	[JsonPropertyName("updated")]
 	[PersonalData]
     public DateTime Updated { get; set; }
+
+    [JsonPropertyName("profilePic")]
+    [PersonalData]
+    public string? ProfilePic { get; set; }
+
+    [JsonPropertyName("isDeleted")]
+    public bool? IsDeleted { get; set; } = false;
 }
 

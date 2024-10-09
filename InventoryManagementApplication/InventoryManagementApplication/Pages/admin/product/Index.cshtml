@@ -3,18 +3,39 @@
 
 @{
     ViewData["Title"] = "Index";
-    var amountOfProducts = @Model.Products.Where(x => x.IsDeleted == false).Count();
+    
+
 }
 
-
-
 <h1>Produktkatalog</h1>
+<h3>Antal produkter: @Model.ProductCount</h3>
+<div class="button-container">
+    <form method="post" asp-route-buttonId="1">
+        <input type="hidden" name="IsDeletedToggle" value="@Model.IsDeletedToggle.ToString().ToLower()" />
+        <button class="btn btn-primary" type="submit">
+            @if (Model.IsDeletedToggle)
+            {
+                <span>Borttagna Produkter</span>
 
-@* < id="createForm" method="post" class="d-flex justify-content-start align-items-center"> *@
+            }
+            else
+            {
+                <span>Aktiva Produkter</span>
+            }
+        </button>
+    </form>
 
-    <a asp-page ="./Create" type="button" id="createButton" class="btn btn-primary me-2">Lägg till</a>
-    <h3>Antal produkter: @amountOfProducts </h3>
-@* </> *@
+    <a asp-page="./Create" type="button" id="createButton" class="btn btn-primary me-2">Lägg till</a>
+    
+</div>
+
+        @* </> *@
+
+    
+    @* < id="createForm" method="post" class="d-flex justify-content-start align-items-center"> *@
+   
+
+
 
 <!-- Bootstrap Modal -->
 @* <div class="modal fade" id="confirmCreateModal" tabindex="-1" aria-labelledby="confirmCreateModalLabel" aria-hidden="true">
@@ -55,8 +76,7 @@
     <tbody>
         @foreach (var item in Model.Products)
         {
-            if (item.IsDeleted == false )
-            {
+           
                 
             
 
@@ -76,7 +96,7 @@
                     <a asp-page="./Delete" asp-route-id="@item.Id">Ta bort</a>
                 </td>
             </tr>
-            }
+            
             
         }
     </tbody>
@@ -108,6 +128,13 @@
 
         });
     </script> *@
+    <script>
+        function formSubmit() {
+            var form = document.getElementById('toggleForm');
+            console.log('Submitting form...');  // Debugging
+            form.submit();
+        }
+    </script>
     <script>
         function sortTable(columnIndex) {
             const table = document.getElementById("productTable");

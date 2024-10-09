@@ -34,14 +34,19 @@ namespace InventoryManagementApplication.DAL
             return response;
         }
 
-        public async Task<List<InventoryManagementUser>> GetAllUsersAsync()
+        public async Task<List<InventoryManagementUser>> GetAllUsersAsync(bool? isDeleted)
         {
             using (var client = new HttpClient())
             {
 
                 client.BaseAddress = BaseAddress;
-                HttpResponseMessage response = await client.GetAsync("api/Users/");
-
+                
+                string uri = "api/Users/";
+                if (isDeleted != null)
+                {
+                    uri += isDeleted == false ? "ExistingUsers" : "DeletedUsers";
+                }
+                HttpResponseMessage response = await client.GetAsync(uri);
                 if (response.IsSuccessStatusCode)
                 {
                     string responseString = await response.Content.ReadAsStringAsync();
@@ -64,16 +69,20 @@ namespace InventoryManagementApplication.DAL
             using (var client = new HttpClient())
             {
                 client.BaseAddress = BaseAddress;
+
                 HttpResponseMessage response = await client.GetAsync($"api/Users/{id}");
 
                 if (response.IsSuccessStatusCode)
                 {
-                    string responseString = await response.Content.ReadAsStringAsync();
-                    InventoryManagementUser user = JsonSerializer.Deserialize<InventoryManagementUser>(responseString);
-                    User = user;
+                    InventoryManagementUser user = await response.Content.ReadFromJsonAsync<InventoryManagementUser>();
+
+                    if (user != null)
+                    {
+                        return user; 
+                    }
                 }
 
-                return User;
+                return null;
             }
         }
 
@@ -105,6 +114,7 @@ namespace InventoryManagementApplication.DAL
             }
         }
 
+
         public async Task<bool> ResetPassword(InventoryManagementUser? user, List<string?>? currentRoles)
         {
             using (var client = new HttpClient())
@@ -126,6 +136,8 @@ namespace InventoryManagementApplication.DAL
         }
         public async Task<bool> EditUserAsync(InventoryManagementUser? user, List<string?>? currentRoles)
         {
+
+   
             using (var client = new HttpClient())
             {
 

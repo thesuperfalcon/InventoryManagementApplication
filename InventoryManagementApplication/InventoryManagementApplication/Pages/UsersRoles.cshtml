@@ -7,11 +7,27 @@
 </head>
 
 <body>
-    <h2>Användaröversikt</h2>
+     <h2>Användaröversikt</h2>
+
+
+    <form method="post" asp-page-handler="ToggleDeleted" id="toggleForm">
+        <input type="hidden" name="IsDeletedToggle" value="@Model.IsDeletedToggle.ToString().ToLower()" />
+        <button class="btn btn-primary" type="button" onclick="formSubmit()">
+            @if (Model.IsDeletedToggle)
+            {
+                <span>Borttagna Användare</span>
+            }
+            else
+            {
+                <span>Aktiva  Användare</span>
+            }
+        </button>
+    </form>
+
+
     <table class="table table-striped">
         <thead>
             <tr>
-                <th>Id</th>
                 <th>Anställningsnummer</th>
                 <th>Förnamn</th>
                 <th>Efternamn</th>
@@ -24,21 +40,34 @@
         <tbody>
             @foreach (var user in Model.UsersWithRoles)
             {
-                <tr>
-                    <td>@user.Id</td>
-                    <td>@user.EmployeeNumber</td>
-                    <td>@user.FirstName</td>
-                    <td>@user.LastName</td>
-                    <td>@user.RoleName</td>
-                    <td>@user.Created</td>
-                    <td>@user.Updated</td>
-                    <td>
-                        <a asp-page="/UserInfo" asp-route-userId="@user.Id" class="btn btn-info">
-                            <i class="fas fa-cog"></i>
-                        </a>
-                    </td>
-                </tr>
+                    if (user.IsDeleted == false)
+                    {
+                        <tr>
+                            <td>@user.EmployeeNumber</td>
+                            <td>@user.FirstName</td>
+                            <td>@user.LastName</td>
+                            <td>@user.RoleName</td>
+                            <td>@user.Created</td>
+                            <td>@user.Updated</td>
+                            <td>
+                                <a asp-page="/UserInfo" asp-route-userId="@user.Id" class="btn btn-info">
+                                    <i class="fas fa-cog"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    }                                     
             }
         </tbody>
     </table>
 </body>
+
+ @section Scripts{
+    <script>
+        function formSubmit() {
+            var form = document.getElementById('toggleForm');
+            console.log('Submitting form...');  // Debugging
+            form.submit();
+        }
+    </script>
+    
+} 

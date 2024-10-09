@@ -2,6 +2,7 @@ using InventoryManagementApplication.DAL;
 using InventoryManagementApplication.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.Globalization;
 
 namespace InventoryManagementApplication.Pages
 {
@@ -9,6 +10,7 @@ namespace InventoryManagementApplication.Pages
     {
         private readonly StatisticManager _statisticManager;
         private readonly UserManager _userManager;
+
         public StatisticModel(StatisticManager statisticManager, UserManager userManager)
         {
             _statisticManager = statisticManager;
@@ -18,36 +20,82 @@ namespace InventoryManagementApplication.Pages
         [BindProperty]
         public bool StatisticSwitch { get; set; }
         public List<Statistic> Statistics { get; set; }
-        public List<Statistic> MovementPerPerson { get; set; } = new List<Statistic>();
+        public List<UserStatisticsViewModel> MovementPerPerson { get; set; } = new List<UserStatisticsViewModel>();
+
         public async Task OnGetAsync(bool statisticSwitch)
         {
-
             var statistics = await _statisticManager.GetAllStatisticsAsync();
-            Statistics = statistics.ToList();
+            Statistics = statistics
+                .OrderByDescending(x => x.Moved)  
+                .ToList();   
+            
             StatisticSwitch = statisticSwitch;
 
-                var personList = await _userManager.GetAllUsersAsync();
-                foreach (var person in personList)
+            var personList = await _userManager.GetAllUsersAsync(null);
+            foreach (var person in personList)
+            {
+                var movementsByUser = statistics.Where(stat => stat.UserId == person.Id);
+
+                
+                var currentWeek = GetCurrentWeekNumber();
+                movementsByUser = movementsByUser
+                    .Where(stat => stat.Moved.HasValue &&
+                                   GetWeekNumber(stat.Moved.Value) == currentWeek &&
+                                   DateTime.Now.Year == stat.Moved.Value.Year);
+                
+
+                //movementsByUser = movementsByUser
+                //    .Where(stat => stat.Moved.HasValue &&
+                //                   IsSameDay(stat.Moved.Value));
+
+                if (movementsByUser.Any())
                 {
-                    var quantityPerPerson = new Statistic
+                    var totalMovements = movementsByUser.Count();
+                    var totalQuantity = movementsByUser.Sum(stat => stat.Quantity ?? 0);
+
+                    var recentMovements = movementsByUser
+                        .OrderByDescending(stat => stat.Moved)
+                        .Take(5)
+                        .ToList();
+
+                    var userStatistics = new UserStatisticsViewModel
                     {
                         EmployeeNumber = person.EmployeeNumber,
-                        Quantity = await GetTotalQuantityByUserAsync(Statistics, person.Id)
+                        TotalMovements = totalMovements,
+                        TotalQuantity = totalQuantity,
+                        RecentMovements = recentMovements
                     };
-                    MovementPerPerson.Add(quantityPerPerson);
+                    MovementPerPerson.Add(userStatistics);
                 }
-                if (MovementPerPerson.Count > 0)
-                {
-                    MovementPerPerson.OrderBy(x => x.Quantity);
-                }
+            }
+
+
+            if (MovementPerPerson.Count > 0)
+            {
+                MovementPerPerson = MovementPerPerson.OrderByDescending(x => x.TotalQuantity).ToList();
+            }
         }
 
         public async Task<int> GetTotalQuantityByUserAsync(List<Statistic> statistics, string userId)
         {
             return statistics
-                .Where(stat => stat.UserId == userId && stat.Quantity.HasValue) // Filtrerar på användarens ID och att Quantity inte är null
-                .Sum(stat => stat.Quantity.Value); // Summerar alla Quantity-värden  
+                .Where(stat => stat.UserId == userId && stat.Quantity.HasValue)
+                .Sum(stat => stat.Quantity.Value);
+        }
 
+        public static int GetCurrentWeekNumber()
+        {
+            return CultureInfo.CurrentCulture.Calendar.GetWeekOfYear(DateTime.Now, CalendarWeekRule.FirstDay, DayOfWeek.Monday);
+        }
+
+        public static int GetWeekNumber(DateTime date)
+        {
+            return CultureInfo.CurrentCulture.Calendar.GetWeekOfYear(date, CalendarWeekRule.FirstDay, DayOfWeek.Monday);
+        }
+
+        public static bool IsSameDay(DateTime date)
+        {
+            return DateTime.Now.Date == date.Date; 
         }
     }
 }

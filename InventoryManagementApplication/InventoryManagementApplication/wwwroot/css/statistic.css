@@ -1,0 +1,177 @@
+﻿body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f8f9fa;
+    margin: 0;
+    padding: 0;
+    color: #343a40;
+}
+
+h1 {
+    color: #007bff;
+    font-size: 2.5rem;
+    text-align: center;
+    margin-top: 20px;
+}
+
+.btn {
+    border-radius: 0.375rem; 
+    padding: 10px 20px;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    color: white;
+}
+
+    .btn-primary:hover {
+        background-color: #0056b3;
+    }
+
+.table {
+    border-collapse: collapse;
+    width: 100%;
+    margin-top: 20px;
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: #f2f2f2;
+}
+
+.table-bordered th, .table-bordered td {
+    border: 1px solid #ddd;
+    padding: 8px 12px;
+}
+
+.table-hover tbody tr:hover {
+    background-color: #f1f1f1;
+}
+
+.table th {
+    background-color: black;
+    color: white;
+    text-align: center;
+}
+
+.table td {
+    color: black;
+}
+
+    .table td:hover {
+        color: #007bff; 
+    }
+
+.input-group {
+    margin-bottom: 15px;
+    width: 100%;
+}
+
+    .input-group input {
+        border-radius: 0.375rem;
+        border: 1px solid #ced4da;
+    }
+
+    .input-group button {
+        border-radius: 0.375rem;
+        border: 1px solid #ced4da;
+        background-color: #17a2b8;
+        color: white;
+        margin-left: 5px;
+    }
+
+        .input-group button:hover {
+            background-color: #138496;
+        }
+
+.table a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+    .table a:hover {
+        text-decoration: underline;
+    }
+
+.sidebar {
+    background-color: #f1f1f1;
+    border-radius: 5px;
+    padding: 20px;
+    margin-top: 20px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+    .sidebar h4 {
+        color: #17a2b8;
+        margin-bottom: 10px;
+    }
+
+    .sidebar ul {
+        list-style-type: none;
+        padding: 0;
+    }
+
+        .sidebar ul li {
+            padding-bottom: 10px;
+        }
+
+            .sidebar ul li code {
+                background-color: #007bff;
+                color: white;
+                padding: 2px 5px;
+                border-radius: 5px;
+            }
+
+            .sidebar ul li ul {
+                padding-left: 20px;
+            }
+
+#tooltip {
+    cursor: pointer;
+}
+
+    #tooltip:hover {
+        color: #0056b3;
+        text-decoration: underline;
+    }
+
+a[href="javascript:void(0);"] {
+    color: white;
+    text-decoration: none;
+}
+
+    a[href="javascript:void(0);"]:hover {
+        color: #007bff; 
+        text-decoration: none; 
+    }
+
+#helpButton {
+    width: 17px; /* Sätt en bredd */
+    height: 17px; /* Sätt en lika stor höjd */
+    border-radius: 50%; /* Gör knappen cirkulär */
+    background-color: #17a2b8;
+    color: white;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    outline: none;
+    transition: background-color 0.3s ease;
+    margin-left: 10px;
+    margin-bottom: 5px;
+    padding: 0;
+    text-align: center;
+    line-height: 1; /* För att förhindra textsträckning */
+}
+
+    #helpButton:hover {
+        background-color: #007bff;
+        box-shadow: 0 6px 12px rgba(0,0,0,0.4);
+    }
+
+    #helpButton::before {
+        content: "?";
+        font-size: 12px; /* För att texten ska vara anpassad till knappen */
+    }
+

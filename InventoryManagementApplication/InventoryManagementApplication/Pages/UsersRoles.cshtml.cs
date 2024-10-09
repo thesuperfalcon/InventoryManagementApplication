@@ -4,11 +4,12 @@ using InventoryManagementApplication.Areas.Identity.Data;
 using Microsoft.AspNetCore.Authorization;
 using InventoryManagementApplication.DAL;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Mvc;
 
 namespace InventoryManagementApplication.Pages
 {
     // Bara admin har tillgång
-    [Authorize(Roles = "Admin")]
+  [Authorize(Roles = "Admin")]
     public class UsersRolesModel : PageModel
     {
         private readonly UserManager<InventoryManagementUser> _userManager;
@@ -23,9 +24,9 @@ namespace InventoryManagementApplication.Pages
             _userManagerDAL = userManagerDAL;
         }
 
-        public List<UserWithRoleViewModel> UsersWithRoles { get; set; }
+        public List<UserWithRoleViewModel> UsersWithRoles { get; set; } = new List<UserWithRoleViewModel>();
         public string LoggedInUserName { get; set; }
-
+        
         public class UserWithRoleViewModel
         {
             public string EmployeeNumber { get; set; }
@@ -34,21 +35,18 @@ namespace InventoryManagementApplication.Pages
             public string RoleName { get; set; }
             public DateTime Created { get; set; }
             public DateTime Updated { get; set; }
+            public bool IsDeleted { get; set; }
             public string Id { get; set; }
         }
+
+        [BindProperty]
+        public bool IsDeletedToggle { get; set; }
 
         //Hämtar användare
         public async Task OnGetAsync()
         {
-            var users = await _userManagerDAL.GetAllUsersAsync();
-//          var users1 = _userManager.Users.ToList();
-            UsersWithRoles = new List<UserWithRoleViewModel>();
+            UsersWithRoles = await LoadUsers(IsDeletedToggle);
 
-            foreach (var user in users)
-            {
-                UsersWithRoles.Add(await CreateUserWithRoleViewModel(user));
-            }
-            //var loggedInUser = await _userManagerDAL.GetOneUserAsync(User);
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var loggedInUser = await _userManagerDAL.GetOneUserAsync(userId);
 
@@ -56,6 +54,27 @@ namespace InventoryManagementApplication.Pages
             LoggedInUserName = loggedInUser != null ? FormatUserName(loggedInUser) : string.Empty;
         }
 
+        public async Task<IActionResult> OnPostToggleDeletedAsync()
+        {
+            
+            IsDeletedToggle = !IsDeletedToggle;
+            UsersWithRoles = await LoadUsers(IsDeletedToggle);
+
+            return Page();
+        }
+
+        private async Task<List<UserWithRoleViewModel>> LoadUsers(bool? isDeleted)
+        {
+            var users = await _userManagerDAL.GetAllUsersAsync(isDeleted);
+            UsersWithRoles = new List<UserWithRoleViewModel>();
+            
+            foreach (var user in users)
+            {
+                UsersWithRoles.Add(await CreateUserWithRoleViewModel(user));
+            }
+
+            return UsersWithRoles;
+        }
         //Skapar en viewmodel för en given användare
         private async Task<UserWithRoleViewModel> CreateUserWithRoleViewModel(InventoryManagementUser user)
         {

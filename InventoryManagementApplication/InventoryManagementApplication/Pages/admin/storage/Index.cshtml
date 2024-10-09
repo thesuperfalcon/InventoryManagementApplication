@@ -6,8 +6,25 @@
 
 
 <div class="container mt-4">
-    <h1>Lagerplatser, antal: @Model.StorageCount</h1>
-    <a asp-page="Create" class="btn btn-primary mb-3">Lägg till</a>
+    <h1>Lagerplatser</h1>
+    <h3>Antal lager: @Model.StorageCount</h3>
+    <div class="button-container">
+        <form method="post" asp-route-buttonId="1">
+            <input type="hidden" name="IsDeletedToggle" value="@Model.IsDeletedToggle.ToString().ToLower()" />
+            <button class="btn btn-primary" type="submit">
+                @if (Model.IsDeletedToggle)
+                {
+                    <span>Borttagna Lagerplatser</span>
+
+                }
+                else
+                {
+                    <span>Aktiva Lagerplatser</span>
+                }
+            </button>
+        </form>
+        <a asp-page="Create" class="btn btn-primary mb-3">Lägg till</a>
+</div>
 
     <div class="mb-3">
         <div class="input-group">
@@ -34,8 +51,6 @@
         <tbody>
             @foreach (var item in Model.Storages)
             {
-                @if (item.IsDeleted == false)
-                {
                     <tr>
                         <td>@Html.DisplayFor(modelItem => item.Name)</td>
                         <td>@Html.DisplayFor(modelItem => item.MaxCapacity)</td>
@@ -55,8 +70,7 @@
                                 <a asp-page="./Delete" asp-route-id="@item.Id" class="btn btn-danger btn-sm" title="Ta bort"><i class="bi bi-trash"></i></a>
                             }
                         </td>
-                    </tr>
-                }
+                    </tr>               
             }
         </tbody>
     </table>

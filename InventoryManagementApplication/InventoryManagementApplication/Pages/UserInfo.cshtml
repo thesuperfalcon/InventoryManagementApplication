@@ -1,8 +1,19 @@
 @page "{userId}"
 @model InventoryManagementApplication.Pages.UserInfoModel
+@using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.Mvc.RazorPages
+@using InventoryManagementApplication.Areas.Identity.Data
+
+@inject UserManager<InventoryManagementUser> UserManager
+@{
+    var loggedInUserId = UserManager.GetUserId(User);
+    var adminCount = await Model.GetAdminCountAsync();
+}
+
 @{
     ViewData["Title"] = "Användarinformation";
 }
+
 
 <head>
     <link rel="stylesheet" href="~/css/admin.css" asp-append-version="true" />
@@ -11,9 +22,16 @@
 </head>
 
 <body>
+    @if (TempData["UserDeleted"] != null && TempData["UserDeleted"].ToString() == "True")
+    {
+            <!-- Visar partial view -->
+            <partial name="_EditLoggedInUserConfirmation" />
+    }
+    else
+    {
     <div class="user-info">
         <h2>@ViewData["Title"]</h2>
-        <img src="/images/logos/avatar-default-icon.png" alt="Profile image" class="profile-image" />
+        <img src="@Url.Content(@Model.SelectedUser.ProfilePic)" alt="Profile image" class="profile-image" />
         <hr />
         <ul class="nav nav-tabs" id="userSettingsTab" role="tablist">
             <li class="nav-item">
@@ -22,94 +40,191 @@
             </li>
             <li class="nav-item">
                 <a class="nav-link" id="advanced-tab" data-toggle="tab" href="#advanced" role="tab"
-                    aria-controls="advanced" aria-selected="false">Avancerade Inställningar</a>
+                    aria-controls="advanced" aria-selected="false">Avancerade Inställningar </a>
             </li>
         </ul>
         <div class="tab-content" id="userSettingsTabContent">
-            <div class="tab-pane fade show active" id="basic" role="tabpanel" aria-labelledby="basic-tab">
-                <form method="post">
-                    <input type="hidden" name="userId" value="@Model.SelectedUser.Id" />
-                    <input type="hidden" asp-for="SelectedRole" />
-                    <div class="form-group">
-                        <label for="FirstName">Förnamn</label>
-                        <input asp-for="SelectedUser.FirstName" class="form-control" />
-                    </div>
+          <div class="tab-pane fade show active" id="basic" role="tabpanel" aria-labelledby="basic-tab">
+    <form method="post" asp-page-handler="Save">
+        <input type="hidden" name="userId" value="@Model.SelectedUser.Id" />
+        <input type="hidden" asp-for="SelectedRole" />
+        <div class="form-group">
+            <label for="FirstName">Förnamn</label>
+            <input asp-for="SelectedUser.FirstName" class="form-control" />
+            <span asp-validation-for="SelectedUser.FirstName" class="text-danger"></span>
+        </div>
 
-                    <div class="form-group">
-                        <label for="LastName">Efternamn</label>
-                        <input asp-for="SelectedUser.LastName" class="form-control" />
-                    </div>
-
-                    <br>
-
-                    <div class="form-floating mb-3 d-flex align-items-center">
-                        <input asp-for="SelectedUser.EmployeeNumber" class="form-control me-2" id="employeeNumber"
-                            aria-required="true" placeholder="Anställningsnummer" readonly />
-                        <label asp-for="SelectedUser.EmployeeNumber">Anställningsnummer</label>
-                        <button id="generateEmployeeNumber" type="button" class="btn btn-generic">Generera</button>
-                        <span asp-validation-for="SelectedUser.EmployeeNumber" class="text-danger"></span>
-                    </div>
-                    <br>
-                    @if (TempData["SuccessMessage"] != null)
-                    {
-                        <div class="alert alert-success">
-                            @TempData["SuccessMessage"]
-                        </div>
-                    }
-                    <button type="button" class="btn btn-secondary"
-                        onclick="window.location='@Url.Page("/UsersRoles")'">Avbryt</button>
-                    <button type="submit" asp-page-handler="Save" class="btn btn-generic">
-                        <i class="fas fa-save me-1"></i> Spara ändringar
-                    </button>
-                </form>
+            <div class="form-group">
+                <label for="LastName">Efternamn</label>
+                <input asp-for="SelectedUser.LastName" class="form-control" />
+                <span asp-validation-for="SelectedUser.LastName" class="text-danger"></span>
             </div>
 
-            <div class="tab-pane fade" id="advanced" role="tabpanel" aria-labelledby="advanced-tab">
-                <div id="userInfoContainer"
-                    data-check-url="@Url.Page("/Account/Register", "CheckEmployeeNumberExists")">
-                                          
-                    <h5>Rollhantering</h5>
-                    <form method="post" asp-page-handler="AssignRole">
-  <div class="form-floating mb-3 d-flex align-items-center">
+            <br>
 
-                            <select asp-for="SelectedRole" asp-items="@(new SelectList(Model.AvailableRoles))"
-                                class="form-control me-2" id="RoleSelection">
-                                <option value="">-- Välj en roll --</option>
-                            </select>
-                            <label for="RoleSelection">Roll</label>
-                            <button type="submit" class="btn btn-generic">Tilldela</button>
-                            <span asp-validation-for="SelectedRole" class="text-danger"></span>
-                        </div>
+                        @*  <div class="form-floating mb-3 d-flex align-items-center">
+            <input asp-for="SelectedUser.EmployeeNumber" class="form-control me-2" id="employeeNumber"
+                aria-required="true" placeholder="Anställningsnummer" readonly />
+            <label asp-for="SelectedUser.EmployeeNumber">Anställningsnummer</label>
+            <button id="generateEmployeeNumber" type="button" class="btn btn-generic">Generera</button>
+            <span asp-validation-for="SelectedUser.EmployeeNumber" class="text-danger"></span>
+        </div>*@  
 
-                        <div class="save-or-delete-btn-container d-flex flex-column align-items-start gap-4">
-                            <div class="d-grid gap-2" style="width: 100%;">
-                                <h5>Lösenordshantering</h5>
-                                <p>Återställer användarens personliga lösenord till ett standardlösenord.</p>
-                                <button type="submit" asp-page-handler="ResetPassword"
-                                    class="btn btn-passwordchange d-flex align-items-center w-100">
-                                    <i class="fas fa-key me-1"></i> Återställ lösenord
-                                </button>
-                            </div>
-                            <div class="d-grid gap-2" style="width: 100%;">
-                                <hr>
-                                <h5>Ta bort konto</h5>
-                                <p>Denna åtgärd tar bort kontot permanent.</p>
-                                <button type="submit" asp-page-handler="Delete"
-                                    class="btn btn-danger d-flex align-items-center w-100">
+                <div class="form-group">
+            <label for="EmployeeNumber">Anställningsnummer</label>
+            <input asp-for="SelectedUser.EmployeeNumber" class="form-control" readonly /> <!-- Gör fältet readonly -->
+            <span asp-validation-for="SelectedUser.EmployeeNumber" class="text-danger"></span>
+        </div>
+
+            <br>
+
+                        @if (TempData["SuccessMessage"] != null)
+                        {
+                    <div class="alert alert-success">
+                                @TempData["SuccessMessage"]
+                    </div>
+                        }
+
+            <button type="button" class="btn btn-secondary"
+                onclick="window.location='@Url.Page("/UsersRoles")'">Avbryt</button>
+            <button type="submit" asp-page-handler="Save" class="btn btn-generic">
+                <i class="fas fa-save me-1"></i> Spara ändringar
+            </button>
+        </form>
+    </div>
+
+    <div class="tab-pane fade" id="advanced" role="tabpanel" aria-labelledby="advanced-tab">
+        <div id="userInfoContainer" data-check-url="@Url.Page("/Account/Register", "CheckEmployeeNumberExists")">
+
+            <h5>Rollhantering</h5>
+            <form method="post" asp-page-handler="AssignRole" id="roleChangeForm">
+                <div class="form-floating mb-3 d-flex align-items-center">
+                    <select asp-for="SelectedRole" asp-items="@(new SelectList(Model.AvailableRoles))" class="form-control me-2" id="RoleSelection">
+                        <option value="">-- Välj en roll --</option>
+                    </select>
+                    <label for="RoleSelection">Roll</label>
+                    <button type="button" class="btn btn-generic"  id="openRoleChangeModalBtn"
+        data-admin-count="@adminCount" data-current-role="@Model.SelectedRole">Tilldela</button>
+                    <span asp-validation-for="SelectedRole" class="text-danger"></span>
+                </div>
+            </form>
+
+            <div class="save-or-delete-btn-container d-flex flex-column align-items-start gap-4">
+                <div class="d-grid gap-2" style="width: 100%;">
+                    <h5>Lösenordshantering</h5>
+                    <p>Återställer användarens personliga lösenord till ett standardlösenord.</p>
+
+                    <form method="post" asp-page-handler="ResetPassword">
+                        <button type="submit" class="btn btn-passwordchange d-flex align-items-center w-100">
+                            <i class="fas fa-key me-1"></i> Återställ lösenord
+                        </button>
+                    </form>
+                </div>
+
+                <div class="d-grid gap-2" style="width: 100%;">
+                    <hr>
+
+
+                    <form method="post" asp-page-handler="Delete" id="deleteAccountForm">
+                                    @if (Model.SelectedUser.Id != loggedInUserId)
+                                    {
+                                         <h5>Ta bort konto</h5>
+                        <p>Denna åtgärd tar bort kontot permanent.</p>
+                                <button type="button" class="btn btn-danger d-flex align-items-center w-100" id="openDeleteModalBtn">
                                     <i class="fas fa-trash-alt me-1"></i> Ta bort
                                 </button>
+                                    }
+                                    else
+                                    {
+                                <p class="text-danger">Du kan inte ta bort ditt eget konto medan du är inloggad som administratör.</p>
+                                    }
+                    </form>
+                </div>
+
+                            @if (TempData["SuccessMessage"] != null)
+                            {
+            <div class="alert alert-success">
+                                    @TempData["SuccessMessage"]
+            </div>
+                            }
+
+
+                            @if (ViewData.ModelState.Values.Any(v => v.Errors.Count > 0))
+                            {
+            <div class="alert alert-danger">
+                                    @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                                    {
+                        <p>@error.ErrorMessage</p>
+                                    }
+
+            </div>
+                            }
+
+
+
+
+            </div>
+        </div>
+    </div>
+
+                <!-- Modal för att bekräfta borttagning -->
+                <div class="modal fade" id="deleteAccountModal" tabindex="-1" role="dialog"
+                    aria-labelledby="deleteAccountModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="deleteAccountModalLabel">Bekräfta borttagning av konto</h5>
+                                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Stäng">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                Är du säker på att du vill ta bort detta konto permanent? Denna åtgärd kan inte ångras.
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Avbryt</button>
+                                <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Ta bort</button>
                             </div>
                         </div>
-                    </form>
+                    </div>
+                </div>
+
+
+
+                <div class="modal fade" id="roleChangeModal" tabindex="-1" role="dialog"
+        aria-labelledby="roleChangeModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="roleChangeModalLabel">Bekräfta Rolländring</h5>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Stäng">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    Är du säker på att du vill ändra användarens roll till: <strong id="modalRole"></strong>?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Avbryt</button>
+                    <button type="button" class="btn btn-primary" id="confirmRoleChangeBtn">Bekräfta</button>
                 </div>
             </div>
         </div>
     </div>
+
+            </div>
+        </div>
+    }
 </body>
 
 @section Scripts {
-    <script src="https://ajax.aspnetcdn.com/ajax/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
-    <partial name="_ValidationScriptsPartial" />
+        <script src="https://ajax.aspnetcdn.com/ajax/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+       
+
+            <script src="~/js/usermanagement.js" asp-append-version="true"></script>
+        <partial name="_ValidationScriptsPartial" />
+      
+    
 }

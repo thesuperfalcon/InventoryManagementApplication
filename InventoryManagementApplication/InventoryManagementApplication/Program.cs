@@ -76,7 +76,17 @@ namespace InventoryManagementApplication
             .AddJsonOptions(options =>
              options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve);
 
+            // Cookies
+            builder.Services.Configure<CookiePolicyOptions>(options =>
+            {
+                options.CheckConsentNeeded = context => true;
+                options.MinimumSameSitePolicy = SameSiteMode.None;
+            });
+
             var app = builder.Build();
+
+            // Cookies
+            app.UseCookiePolicy();
 
             //L�gger till rollen f�r Admin
             using (var scope = app.Services.CreateScope())
