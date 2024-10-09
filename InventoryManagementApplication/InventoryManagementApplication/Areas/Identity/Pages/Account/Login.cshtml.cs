@@ -16,6 +16,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
+using InventoryManagementApplication.DAL;
 
 namespace InventoryManagementApplication.Areas.Identity.Pages.Account
 {
@@ -61,6 +62,7 @@ namespace InventoryManagementApplication.Areas.Identity.Pages.Account
             [Required]
             [DataType(DataType.Text)]
             public string UserName { get; set; }
+
         }
 
         public async Task OnGetAsync(string returnUrl = null)
@@ -69,6 +71,7 @@ namespace InventoryManagementApplication.Areas.Identity.Pages.Account
             {
                 ModelState.AddModelError(string.Empty, ErrorMessage);
             }
+
 
             returnUrl ??= Url.Content("~/");
 

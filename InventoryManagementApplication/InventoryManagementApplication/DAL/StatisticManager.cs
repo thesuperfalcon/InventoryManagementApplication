@@ -79,7 +79,7 @@ namespace InventoryManagementApplication.DAL
 
 			}
 		}
-        public async Task CreateStatisticAsync(string userId, int fromStorageId, int toStorageId, int productId, int quantity, string? notes)
+        public async Task GetValueFromStatisticAsync(string userId, int fromStorageId, int toStorageId, int productId, int quantity, string? notes)
         {
             var user = await _userManager.GetOneUserAsync(userId);
             var product = await _productManager.GetProductByIdAsync(productId, false);
