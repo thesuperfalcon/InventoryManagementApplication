@@ -40,7 +40,7 @@ namespace InventoryManagementApplication.DAL
             {
 
                 client.BaseAddress = BaseAddress;
-                
+
                 string uri = "api/Users/";
                 if (isDeleted != null)
                 {
@@ -78,7 +78,7 @@ namespace InventoryManagementApplication.DAL
 
                     if (user != null)
                     {
-                        return user; 
+                        return user;
                     }
                 }
 
@@ -137,7 +137,7 @@ namespace InventoryManagementApplication.DAL
         public async Task<bool> EditUserAsync(InventoryManagementUser? user, List<string?>? currentRoles)
         {
 
-   
+
             using (var client = new HttpClient())
             {
 
@@ -164,6 +164,25 @@ namespace InventoryManagementApplication.DAL
                 var response = await client.DeleteAsync($"api/Users/{id}");
 
                 return response.IsSuccessStatusCode;
+            }
+        }
+
+        public async Task<List<string>> GetPicUrlAsync()
+        {
+            List<string>? picUrls = new List<string>();
+
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = BaseAddress;
+
+                var response = await client.GetAsync($"api/ProfilePic/");
+
+                if (response.IsSuccessStatusCode)
+                {
+                    string responseString = await response.Content.ReadAsStringAsync();
+                    picUrls = JsonSerializer.Deserialize<List<string>>(responseString);
+                }
+                return picUrls;
             }
         }
     }

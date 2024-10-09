@@ -39,7 +39,7 @@ namespace InventoryManagementApplication.DAL
 			using (var client = new HttpClient())
 			{
 				client.BaseAddress = BaseAddress;
-				string uri = "/api/Products";
+				string uri = "/api/Products/";
 				if (isDeleted != null)
 				{
 					uri += isDeleted == false ? "ExistingProducts" : "DeletedProducts";
