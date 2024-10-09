@@ -1,0 +1,148 @@
+﻿@page
+@model InventoryManagementApplication.Pages.AboutUsModel
+@{
+    ViewData["Title"] = "Om oss";
+}
+
+
+<div class="container rounded-container mt-5">
+
+    <div class="hero-section text-center">
+        <h1 class="display-4">Välkommen till vårt projekt</h1>
+        <p class="lead">Lagerhanteringsapplikation</p>
+        <a href="#team-section" class="btn btn-primary">Vårt Team</a>
+    </div>
+
+
+    <!--Om Oss-->
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-md-6">
+                <h1 class="display-4">Om oss</h1>
+                <p class="lead">
+                    Vi är ett team bestående av sex engagerade studenter från <strong>Campus Nyköping</strong>, där vi studerar <strong>Systemutveckling .NET</strong>.
+                    I vårt pågående projekt under <strong>LIA1</strong> (Lärande i Arbete) arbetar vi med att utveckla en modern och effektiv lagerhanteringsapplikation.
+                </p>
+                <p>
+                    Vårt mål är att bygga en lösning som underlättar och optimerar lagerhantering för företag, genom att tillhandahålla användarvänliga verktyg för spårning, organisering och hantering av varor.
+                    Under detta projekt får vi möjlighet att tillämpa de kunskaper vi har förvärvat under utbildningen, samtidigt som vi utvecklar verkliga, praktiska lösningar för näringslivet.
+                </p>
+                <p>
+                    Med en kombination av teamwork, kreativ problemlösning och en stark passion för systemutveckling, ser vi fram emot att leverera en robust applikation som möter våra uppdragsgivares behov.
+                </p>
+            </div>
+            <div class="col-md-6">
+                <h2 class="mt-5">Vårat uppdrag</h2>
+                <p>
+                    Att utveckla effektiva lagerhanteringslösningar som hjälper företag att optimera sina processer och skapa värde genom teknisk innovation och användarvänliga verktyg.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <hr class="my-4">
+
+    <div class="text-center" id="team-section">
+        <div>
+            <h3>Vårt Team</h3>
+        </div>
+    </div>
+
+
+    <!-- TeamCards-->
+    <div class="container">
+        <div class="row mt-3">
+            <div class="col-md-4">
+                <div class="card mb-4">
+                    <img src="~/images/ProfilePic/gb.jpg" class="card-img-top" alt="Gustav Berg" oncontextmenu="return false;" draggable="false">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">Gustav Berg</h5>
+                        <h6 class="card-text">LIA student</h6>
+                        <div class="social-icons">
+                            <a href="https://github.com/gurranb" target="_blank"><i class="bi bi-github"></i></a>
+                            <a href="https://www.linkedin.com/in/gustav-berg7/" target="_blank"><i class="bi bi-linkedin"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card mb-4">
+                    <img src="~/images/ProfilePic/tt.jpg" class="card-img-top" alt="Tim Tallberg" oncontextmenu="return false;" draggable="false">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">Tim Tallberg</h5>
+                        <h6 class="card-text">LIA student</h6>
+                        <div class="social-icons">
+                            <a href="https://github.com/Tallis92" target="_blank"><i class="bi bi-github"></i></a>
+                            <a href="https://www.linkedin.com/in/tim-tallberg/" target="_blank"><i class="bi bi-linkedin"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card mb-4">
+                    <img src="~/images/ProfilePic/ab.jpg" class="card-img-top" alt="Alicia Blomqvist" oncontextmenu="return false;" draggable="false">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">Alicia Blomqvist</h5>
+                        <h6 class="card-text">LIA student</h6>
+                        <div class="social-icons">
+                            <a href="https://github.com/aliciablomqvist" target="_blank"><i class="bi bi-github"></i></a>
+                            <a href="https://www.linkedin.com/in/alicia-blomqvist-43624a242/" target="_blank"><i class="bi bi-linkedin"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-3">
+            <div class="col-md-4">
+                <div class="card mb-4">
+                    <img src="~/images/ProfilePic/tf.jpg" class="card-img-top" alt="Tintin Falk" oncontextmenu="return false;" draggable="false">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">Tintin Falk</h5>
+                        <h6 class="card-text">LIA student</h6>
+                        <div class="social-icons">
+                            <a href="https://github.com/thesuperfalcon" target="_blank"><i class="bi bi-github"></i></a>
+                            <a href="https://www.linkedin.com/in/tintinfalk/" target="_blank"><i class="bi bi-linkedin"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card mb-4">
+                    <img src="~/images/ProfilePic/es.jpg" class="card-img-top" alt="Elin Sand" oncontextmenu="return false;" draggable="false">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">Elin Sand</h5>
+                        <h6 class="card-text">LIA student</h6>
+                        <div class="social-icons">
+                            <a href="https://github.com/ElinSand" target="_blank"><i class="bi bi-github"></i></a>
+                            <a href="https://www.linkedin.com/in/elin-sand-43b9732a3/" target="_blank"><i class="bi bi-linkedin"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card">
+                    <img src="~/images/ProfilePic/rj.jpg" class="card-img-top" alt="Robin Jonsson" oncontextmenu="return false;" draggable="false">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">Robin Jonsson</h5>
+                        <h6 class="card-text">LIA student</h6>
+                        <div class="social-icons">
+                            <a href="https://github.com/ilhobbito" target="_blank"><i class="bi bi-github"></i></a>
+                            <a href="https://www.linkedin.com/in/jonsson-robin/" target="_blank"><i class="bi bi-linkedin"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+
+    document.addEventListener('contextmenu', function (e) {
+        if (e.target.tagName === 'IMG') {
+            e.preventDefault();
+        }
+    });
+</script>

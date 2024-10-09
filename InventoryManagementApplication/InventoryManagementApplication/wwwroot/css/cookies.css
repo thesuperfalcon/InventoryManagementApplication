@@ -56,14 +56,13 @@
     margin-bottom: 15px;
 }
 
-/* Link styling */
-.cookie-policy-link {
-    color: #00aced;
-    text-decoration: underline;
+.cookie-consent-link {
+    color: steelblue; /* Change the color as desired */
+    text-decoration: none; /* Remove underline */
 }
 
-    .cookie-policy-link:hover {
-        text-decoration: none;
+    .cookie-consent-link:hover {
+        text-decoration: underline; /* Add underline on hover */
     }
 
 /* Button styling */
