@@ -1,6 +1,7 @@
 using InventoryManagementApplication.Areas.Identity.Data;
 using InventoryManagementApplication.DAL;
 using InventoryManagementApplication.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,6 +9,7 @@ using System.Threading.Tasks;
 
 namespace InventoryManagementApplication.Pages
 {
+    [Authorize]
     public class LogModel : PageModel
     {
         private readonly LogManager _activityLogManager;

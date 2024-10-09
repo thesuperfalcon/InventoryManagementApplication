@@ -1,13 +1,15 @@
 ﻿using InventoryManagementApplication.DAL;
 using InventoryManagementApplication.Data;
 using InventoryManagementApplication.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 
 namespace InventoryManagementApplication.Pages.admin.product
 {
-	public class DeleteModel : PageModel
+    [Authorize(Roles = "Admin")]
+    public class DeleteModel : PageModel
 	{
 		private readonly ProductManager _productManager;
 		private readonly StorageManager _storageManager;

@@ -1,5 +1,6 @@
 ﻿using InventoryManagementApplication.DAL;
 using InventoryManagementApplication.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
@@ -8,7 +9,8 @@ using static InventoryManagementApplication.Pages.UsersRolesModel;
 
 namespace InventoryManagementApplication.Pages.admin.product
 {
-	public class IndexModel : PageModel
+    [Authorize]
+    public class IndexModel : PageModel
 	{
 		private readonly ProductManager _manager;
 

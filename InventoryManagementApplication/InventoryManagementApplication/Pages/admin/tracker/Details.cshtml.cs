@@ -9,9 +9,11 @@ using InventoryManagementApplication.Data;
 using InventoryManagementApplication.Models;
 using System.Runtime.CompilerServices;
 using InventoryManagementApplication.DAL;
+using Microsoft.AspNetCore.Authorization;
 
 namespace InventoryManagementApplication.Pages.admin.tracker
 {
+    [Authorize]
     public class DetailsModel : PageModel
     {
         private readonly TrackerManager _trackerManager;

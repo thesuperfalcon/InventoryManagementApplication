@@ -1,11 +1,13 @@
 ﻿using InventoryManagementApplication.DAL;
 using InventoryManagementApplication.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace InventoryManagementApplication.Pages.admin.tracker
 {
-	public class DeleteModel : PageModel
+    [Authorize(Roles = "Admin")]
+    public class DeleteModel : PageModel
 	{
 		private readonly InventoryManagementApplication.Data.InventoryManagementApplicationContext _context;
 		private readonly TrackerManager _trackerManager;

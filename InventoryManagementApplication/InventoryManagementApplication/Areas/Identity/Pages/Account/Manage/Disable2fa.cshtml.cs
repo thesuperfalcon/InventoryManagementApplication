@@ -12,6 +12,7 @@ using Microsoft.Extensions.Logging;
 
 namespace InventoryManagementApplication.Areas.Identity.Pages.Account.Manage
 {
+    [Authorize]
     public class Disable2faModel : PageModel
     {
         private readonly UserManager<InventoryManagementUser> _userManager;

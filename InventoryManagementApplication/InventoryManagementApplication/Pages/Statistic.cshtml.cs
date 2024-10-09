@@ -1,11 +1,13 @@
 using InventoryManagementApplication.DAL;
 using InventoryManagementApplication.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Globalization;
 
 namespace InventoryManagementApplication.Pages
 {
+    [Authorize]
     public class StatisticModel : PageModel
     {
         private readonly StatisticManager _statisticManager;

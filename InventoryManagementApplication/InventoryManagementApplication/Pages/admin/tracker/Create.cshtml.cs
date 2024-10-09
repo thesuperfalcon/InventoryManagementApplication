@@ -2,6 +2,7 @@ using InventoryManagementApplication.Areas.Identity.Data;
 using InventoryManagementApplication.DAL;
 using InventoryManagementApplication.Helpers;
 using InventoryManagementApplication.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -10,8 +11,10 @@ using Microsoft.Identity.Client.Extensions.Msal;
 
 namespace InventoryManagementApplication.Pages.admin.tracker
 {
-	public class CreateModel : PageModel
+    [Authorize]
+    public class CreateModel : PageModel
 	{
+		
 		private readonly TrackerManager _trackerManager;
 		private readonly ProductManager _productManager;
 		private readonly StorageManager _storageManager;

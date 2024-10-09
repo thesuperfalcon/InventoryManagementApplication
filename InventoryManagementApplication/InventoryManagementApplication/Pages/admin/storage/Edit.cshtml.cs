@@ -12,9 +12,11 @@ using System.Text.Json;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Shared;
 using System.Text;
 using InventoryManagementApplication.DAL;
+using Microsoft.AspNetCore.Authorization;
 
 namespace InventoryManagementApplication.Pages.admin.storage
 {
+    [Authorize(Roles = "Admin")]
     public class EditModel : PageModel
     {
 		private readonly StorageManager _storageManager;
