@@ -3,11 +3,14 @@
 @{
     ViewData["Title"] = "Sök";
 }
+
+
+
 @if (!string.IsNullOrEmpty(Model.Query))
 {
     <h3>Sökresultat för "@Model.Query":</h3>
 
-    @if (Model.Products.Any())
+    @if (Model.Products != null && Model.Products.Any())
     {
         <h4>Produkter:</h4>
         <ul>

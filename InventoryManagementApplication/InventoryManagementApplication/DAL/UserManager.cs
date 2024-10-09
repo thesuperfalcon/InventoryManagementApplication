@@ -1,4 +1,5 @@
 ﻿using InventoryManagementApplication.Areas.Identity.Data;
+using InventoryManagementApplication.Models;
 using System.Text;
 using System.Text.Json;
 
@@ -76,6 +77,34 @@ namespace InventoryManagementApplication.DAL
             }
         }
 
+
+        public async Task<List<InventoryManagementUser>> SearchUsersAsync(string? name, string? employeeNumber)
+        {
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = BaseAddress;
+                string uri = "api/Users/SearchUsers";
+
+
+                if (!string.IsNullOrEmpty(name) || !string.IsNullOrEmpty(employeeNumber))
+                {
+                    uri += $"?name={Uri.EscapeDataString(name ?? "")}&employeeNumber={Uri.EscapeDataString(employeeNumber ?? "")}";
+                }
+
+                HttpResponseMessage responseUsers = await client.GetAsync(uri);
+
+                List<InventoryManagementUser> users = new List<InventoryManagementUser>();
+
+                if (responseUsers.IsSuccessStatusCode)
+                {
+                    string responseString = await responseUsers.Content.ReadAsStringAsync();
+                    users = JsonSerializer.Deserialize<List<InventoryManagementUser>>(responseString) ?? new List<InventoryManagementUser>();
+                }
+
+                return users;
+            }
+        }
+
         public async Task<bool> ResetPassword(InventoryManagementUser? user, List<string?>? currentRoles)
         {
             using (var client = new HttpClient())
@@ -127,17 +156,3 @@ namespace InventoryManagementApplication.DAL
         }
     }
 }
-//HttpResponseMessage response = await client.GetAsync("api/Users/");
-
-//if (response.IsSuccessStatusCode)
-//{
-//    string responseString = await response.Content.ReadAsStringAsync();
-//    Console.WriteLine(responseString);
-//    var options = new JsonSerializerOptions
-//    {
-//        PropertyNameCaseInsensitive = true
-//    };
-
-//    InventoryManagementUser user = JsonSerializer.Deserialize<List<InventoryManagementUser>>(responseString);
-//    Roles = roles.ToList();
-//}

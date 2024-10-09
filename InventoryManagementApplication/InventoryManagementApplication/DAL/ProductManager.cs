@@ -1,6 +1,10 @@
 ﻿using InventoryManagementApplication.Models;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.Linq;
 using System.Text;
 using System.Text.Json;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace InventoryManagementApplication.DAL
 {
@@ -10,7 +14,7 @@ namespace InventoryManagementApplication.DAL
 		public Product Product { get; set; }
 		public List<Product> Products { get; set; }
 
-		public async Task CreateProductAsync(Product product)
+        public async Task CreateProductAsync(Product product)
 		{
 			if(product != null)
 			{
@@ -35,7 +39,7 @@ namespace InventoryManagementApplication.DAL
 			using (var client = new HttpClient())
 			{
 				client.BaseAddress = BaseAddress;
-				string uri = "api/Products/";
+				string uri = "/api/Products";
 				if (isDeleted != null)
 				{
 					uri += isDeleted == false ? "ExistingProducts" : "DeletedProducts";
@@ -112,6 +116,54 @@ namespace InventoryManagementApplication.DAL
 
         }
 
+        //public async Task<List<Product>> SearchProductAsync(bool? isDeleted)
+        //{
+        //    using (var client = new HttpClient())
+        //    {
+        //        client.BaseAddress = BaseAddress;
+        //        string uri = "/api/Products";
+        //        if (isDeleted != null)
+        //        {
+        //            uri += isDeleted == false ? "ExistingProducts" : "DeletedProducts";
+        //        }
+        //        HttpResponseMessage responseProducts = await client.GetAsync(uri);
+
+        //        if (responseProducts.IsSuccessStatusCode)
+        //        {
+        //            string responseString = await responseProducts.Content.ReadAsStringAsync();
+        //            List<Models.Product> products = JsonSerializer.Deserialize<List<Models.Product>>(responseString);
+        //            Products = products.ToList();
+        //        }
+
+        //        return Products;
+        //    }
+        //}
+        public async Task<List<Product>> SearchProductsAsync(string? name, string? articleNumber)
+        {
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = BaseAddress;
+                string uri = "api/Products/SearchProducts";
+
+
+                if (!string.IsNullOrEmpty(name) || !string.IsNullOrEmpty(articleNumber))
+                {
+                    uri += $"?name={Uri.EscapeDataString(name ?? "")}&articleNumber={Uri.EscapeDataString(articleNumber ?? "")}";
+                }
+
+                HttpResponseMessage responseProducts = await client.GetAsync(uri);
+
+                List<Product> products = new List<Product>();
+
+                if (responseProducts.IsSuccessStatusCode)
+                {
+                    string responseString = await responseProducts.Content.ReadAsStringAsync();
+                    products = JsonSerializer.Deserialize<List<Product>>(responseString) ?? new List<Product>();
+                }
+
+                return products;
+            }
+        }
         public async Task EditProductAsync(Product? product)
 		{
 			using (var client = new HttpClient())

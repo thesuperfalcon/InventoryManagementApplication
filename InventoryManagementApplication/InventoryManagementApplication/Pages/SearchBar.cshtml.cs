@@ -18,7 +18,7 @@ namespace InventoryManagementApplication.Pages
         public List<Storage> Storages { get; set; }
         public List<InventoryManagementUser> Users { get; set; }
 
-        public string Query { get; set; } 
+        public string Query { get; set; }
 
         public SearchBarModel(ProductManager productManager, StorageManager storageManager, UserManager userManager)
         {
@@ -29,34 +29,21 @@ namespace InventoryManagementApplication.Pages
 
         public async Task OnGetAsync(string query)
         {
-            Products = await _productManager.GetProductsAsync(false);
-            Storages = await _storageManager.GetStoragesAsync(false);
-            Users = await _userManager.GetAllUsersAsync();
+            Products = new List<Product>();
+            Storages = new List<Storage>();
+            Users = new List<InventoryManagementUser>();
+
+            
+
+            if (!string.IsNullOrWhiteSpace(query))
+            {
+                Products = await _productManager.SearchProductsAsync(query, null);
+                Storages = await _storageManager.SearchStoragesAsync(query);
+                Users = await _userManager.SearchUsersAsync(query, null);
+            }
 
             Query = query;
-
-            if (!string.IsNullOrWhiteSpace(Query))
-            {
-                Products = Products
-                    .Where(p => p.Id != null && p.Name.Contains(Query, StringComparison.OrdinalIgnoreCase))
-                    .ToList();
-
-                Storages = Storages
-                    .Where(s => s.Name != null && s.Name.Contains(Query, StringComparison.OrdinalIgnoreCase))
-                    .ToList();
-
-                Users = Users
-                    .Where(u =>(u.FirstName != null && u.FirstName.Contains(Query, StringComparison.OrdinalIgnoreCase)) ||
-                          (u.LastName != null && u.LastName.Contains(Query, StringComparison.OrdinalIgnoreCase))).ToList();
-            }
-            else
-            {
-                Products = await _productManager.GetProductsAsync(false);
-                Storages = await _storageManager.GetStoragesAsync(false);
-                Users = await _userManager.GetAllUsersAsync();
-            }
         }
-
     }
 
 }

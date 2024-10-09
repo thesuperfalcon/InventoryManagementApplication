@@ -125,6 +125,33 @@ namespace InventoryManagementApplication.DAL
             }
         }
 
+        public async Task<List<Storage>> SearchStoragesAsync(string? name)
+        {
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = BaseAddress;
+                string uri = "api/Storages/SearchStorages";
+
+
+                if (!string.IsNullOrEmpty(name))
+                {
+                    uri += $"?name={Uri.EscapeDataString(name ?? "")}&articleNumber={Uri.EscapeDataString(name ?? "")}";
+                }
+
+                HttpResponseMessage responseStorages = await client.GetAsync(uri);
+
+                List<Storage> storages = new List<Storage>();
+
+                if (responseStorages.IsSuccessStatusCode)
+                {
+                    string responseString = await responseStorages.Content.ReadAsStringAsync();
+                    storages = JsonSerializer.Deserialize<List<Storage>>(responseString) ?? new List<Storage>();
+                }
+
+                return storages;
+            }
+        }
+
         public async Task DeleteStorageAsync(int? id)
         {
             using (var client = new HttpClient())
