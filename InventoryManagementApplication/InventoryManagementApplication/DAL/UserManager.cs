@@ -1,4 +1,5 @@
 ﻿using InventoryManagementApplication.Areas.Identity.Data;
+using System;
 using System.Text;
 using System.Text.Json;
 
@@ -33,14 +34,19 @@ namespace InventoryManagementApplication.DAL
             return response;
         }
 
-        public async Task<List<InventoryManagementUser>> GetAllUsersAsync()
+        public async Task<List<InventoryManagementUser>> GetAllUsersAsync(bool? isDeleted)
         {
             using (var client = new HttpClient())
             {
 
                 client.BaseAddress = BaseAddress;
-                HttpResponseMessage response = await client.GetAsync("api/Users/");
-
+                
+                string uri = "api/Users/";
+                if (isDeleted != null)
+                {
+                    uri += isDeleted == false ? "ExistingUsers" : "DeletedUsers";
+                }
+                HttpResponseMessage response = await client.GetAsync(uri);
                 if (response.IsSuccessStatusCode)
                 {
                     string responseString = await response.Content.ReadAsStringAsync();

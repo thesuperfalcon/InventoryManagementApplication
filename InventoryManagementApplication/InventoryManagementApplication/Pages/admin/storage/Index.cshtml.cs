@@ -22,12 +22,32 @@ namespace InventoryManagementApplication.Pages.admin.storage
         }
 		public IList<Storage> Storages { get;set; } = default!;
 
+        [BindProperty]
+        public bool IsDeletedToggle { get; set; }
+
         public async Task OnGetAsync()
         {
             //ändra till false
-			Storages = await _storageManager.GetStoragesAsync(null);
-            var storages = await _storageManager.GetStoragesAsync(false);
-            StorageCount = storages.Count();
+			Storages = await LoadStorages(IsDeletedToggle);
+            StorageCount = Storages.Count();
 		}
+
+        public async Task<IActionResult> OnPostAsync(int buttonId)
+        {
+            if(buttonId == 1)
+            {
+                IsDeletedToggle = !IsDeletedToggle;
+                Storages = await LoadStorages(IsDeletedToggle);
+                StorageCount = Storages.Count();
+            }
+           
+            return Page();
+        }
+        private async Task<IList<Storage>> LoadStorages(bool isDeleted)
+        {
+            var storages = await _storageManager.GetStoragesAsync(isDeleted);
+
+            return storages;
+        }
     }
 }
