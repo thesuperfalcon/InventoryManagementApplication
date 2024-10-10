@@ -36,13 +36,13 @@
                     {
                         var log = Model.Logs[i];
                         <tr>
-                            <td>@Model.UserFullName[i]</td>
-                            <td>@Model.UserEmployeeNumbers[i]</td>
-                            <td>@log.EntityType</td>
-                            <td>@log.EntityDetails</td>                       
-                            <td>@(log.Id)</td>
-                            <td>@log.TimeStamp</td>
-                            <td>@log.Action</td>
+                            <td>@(Model.UserFullName[i] != null && !string.IsNullOrWhiteSpace(Model.UserFullName[i]) ? Model.UserFullName[i] : "Data finns ej")</td>
+                            <td>@(Model.UserEmployeeNumbers[i] != null && !string.IsNullOrWhiteSpace(Model.UserEmployeeNumbers[i]) ? Model.UserEmployeeNumbers[i] : "Data finns ej")</td>
+                            <td>@(log.EntityType != null ? log.EntityType : "Data finns ej")</td>
+                            <td>@(log.EntityDetails != null && !string.IsNullOrWhiteSpace(log.EntityDetails) ? log.EntityDetails : "Data finns ej")</td>
+                            <td>@(log.Id != null ? log.Id.ToString() : "Data finns ej")</td>
+                            <td>@(log.TimeStamp != null ? log.TimeStamp.ToString() : "Data finns ej")</td>
+                            <td>@(log.Action != null ? log.Action : "Data finns ej")</td>
                         </tr>
                     }
                 }

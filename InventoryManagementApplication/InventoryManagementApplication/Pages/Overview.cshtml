@@ -24,19 +24,19 @@
                     <div class="card-body bg-white">
                         <div class="card mb-3">
                             <div class="card-body">
-                                <h5>@Model.ProductQuantity</h5>
+                                <h5>@(Model.ProductQuantity != null ? Model.ProductQuantity.ToString() : "Data finns ej")</h5>
                                 <p>Antal Produkter</p>
                             </div>
                         </div>
                         <div class="card mb-3">
                             <div class="card-body">
-                                <h5>@Model.Product.Name - @Model.Product.CurrentStock</h5>
+                                <h5>@(Model.Product != null ? Model.Product.Name : "Data finns ej") - @(Model.Product?.CurrentStock != null ? Model.Product.CurrentStock.ToString() : "Data finns ej")</h5>
                                 <p>Produkt med högst antal</p>
                             </div>
                         </div>
                         <div class="card mb-3">
                             <div class="card-body">
-                                <h5>@Model.NewestProduct.Name</h5>
+                                <h5>@(Model.NewestProduct != null ? Model.NewestProduct.Name : "Data finns ej")</h5>
                                 <p>Nyaste produkt</p>
                             </div>
                         </div>
@@ -52,19 +52,19 @@
                     <div class="card-body bg-white">
                         <div class="card mb-3">
                             <div class="card-body">
-                                <h5>@Model.StorageQuantity</h5>
+                                <h5>@(Model.StorageQuantity != null ? Model.StorageQuantity.ToString() : "Data finns ej")</h5>
                                 <p>Antal Lagerplatser</p>
                             </div>
                         </div>
                         <div class="card mb-3">
                             <div class="card-body">
-                                <h5>@Model.Storage.Name - @Model.Storage.CurrentStock</h5>
+                                <h5>@(Model.Storage != null ? Model.Storage.Name : "Data finns ej") - @(Model.Storage?.CurrentStock != null ? Model.Storage.CurrentStock.ToString() : "Data finns ej")</h5>
                                 <p>Lagerplats med mest produkter</p>
                             </div>
                         </div>
                         <div class="card mb-3">
                             <div class="card-body">
-                                <h5>@Model.NewestStorage.Name</h5>
+                                <h5>@(Model.NewestStorage != null ? Model.NewestStorage.Name : "Data finns ej")</h5>
                                 <p>Nyaste lagerplatsen</p>
                             </div>
                         </div>
@@ -80,19 +80,19 @@
                     <div class="card-body bg-white">
                         <div class="card mb-3">
                             <div class="card-body">
-                                <h5>@Model.UserStatistic.EmployeeNumber - @Model.UserStatistic.TotalQuantity</h5>
+                                <h5>@(Model.UserStatistic != null ? Model.UserStatistic.EmployeeNumber : "Data finns ej") - @(Model.UserStatistic?.TotalQuantity != null ? Model.UserStatistic.TotalQuantity.ToString() : "Data finns ej")</h5>
                                 <p>Anställd med mest förflyttade produkter</p>
                             </div>
                         </div>
                         <div class="card mb-3">
                             <div class="card-body">
-                                <h5>@Model.User.FirstName @Model.User.LastName - @Model.User.EmployeeNumber</h5>
-                                <p>Senast anställd (@Model.User.Created)</p>
+                                <h5>@(Model.User != null ? Model.User.FirstName : "Data finns ej") @Model.User?.LastName - @(Model.User?.EmployeeNumber ?? "Data finns ej")</h5>
+                                <p>Senast anställd (@(Model.User?.Created != null ? Model.User.Created.ToString() : "Data finns ej"))</p>
                             </div>
                         </div>
                         <div class="card mb-3">
                             <div class="card-body">
-                                <h5>@Model.NewestStatistic.UserName - @Model.NewestStatistic.ProductName</h5>
+                                <h5>@(Model.NewestStatistic != null ? Model.NewestStatistic.UserName : "Data finns ej") - @(Model.NewestStatistic?.ProductName ?? "Data finns ej")</h5>
                                 <p>Senast förflyttning</p>
                             </div>
                         </div>

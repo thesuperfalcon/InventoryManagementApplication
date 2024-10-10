@@ -41,9 +41,9 @@
                 @foreach (var item in Model.InventoryTracker)
                 {
                     <tr>
-                        <td>@Html.DisplayFor(modelItem => item.Product.Name)</td>
-                        <td>@Html.DisplayFor(modelItem => item.Quantity)</td>                       
-                        <td>@Html.DisplayFor(modelItem => item.Storage.Name)</td>
+                        <td>@(item.Product != null && !string.IsNullOrWhiteSpace(item.Product.Name) ? item.Product.Name : "Data finns ej")</td>
+                        <td>@(item.Quantity.HasValue ? item.Quantity.ToString() : "Data finns ej")</td>
+                        <td>@(item.Storage != null && !string.IsNullOrWhiteSpace(item.Storage.Name) ? item.Storage.Name : "Data finns ej")</td>
                         <td class="text-center">
                             <a asp-page="./moveProduct" asp-route-id="@item.Id" class="btn btn-warning btn-sm" title="Flytta produkt">
                                 <i class="bi bi-arrow-left-right"></i> Flytta

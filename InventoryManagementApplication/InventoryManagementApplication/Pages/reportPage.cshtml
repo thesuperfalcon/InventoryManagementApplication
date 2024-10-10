@@ -16,93 +16,124 @@
 <table class="table table-striped table-bordered">
     <thead>
         <tr>
-              <th></th>
             <th>Lagernamn</th>
             <th>Max antal</th>
             <th>Antal</th>
         </tr>
     </thead>
-<tbody>
-    @foreach (var storage in Model.Storages)
-    {
-        var uniqueId = $"nestedTable{storage.Id}";
+        <tbody>
+            @foreach (var storage in Model.Storages)
+            {
+                var uniqueId = $"nestedTable{storage.Id}";
+                <tr>
+                    <td>
+                        @if (string.IsNullOrEmpty(storage.Name))
+                        {
+                            <span>Data finns ej</span>
+                        }
+                        else
+                        {
+                            <a asp-page="/StorageDetails" asp-route-id="@storage.Id" class="custom-link">
+                                @storage.Name
+                            </a>
+                        }
+                    </td>
+                    <td>
+                        @if (storage.MaxCapacity == null)
+                        {
+                            <span>Data finns ej</span>
+                        }
+                        else
+                        {
+                            <span>@storage.MaxCapacity</span>
+                        }
+                    </td>
+                    <td>
+                        @if (storage.CurrentStock == null || storage.CurrentStock == 0)
+                        {
+                            <span>Data finns ej</span>
+                        }
+                        else
+                        {
+                            <span>@storage.CurrentStock</span>
+                        }
+                    </td>
+                </tr>
 
-        <tr>
-            <td>
-                <!-- Toggle-ikon inom lagernamnscellen -->
-                <span class="toggle-row" data-target="#@uniqueId" style="cursor: pointer; margin-right: 5px;">
-                    <i class="bi bi-plus-square toggle-icon" data-target="#@uniqueId"></i>
-                </span>
-        <a asp-page="/StorageDetails" asp-route-id="@storage.Id" class="custom-link">
-            @storage.Name
-        </a>
-    </td>
-    <td>
-        @storage.MaxCapacity
-    </td>
-    <td>
-        @storage.CurrentStock
-    </td>
-</tr>
-
-            <tr id="@uniqueId" class="nested-table-row" style="display: none;">
-                <td colspan="3">
-
-                    <table class="table mb-0">
-                        <thead>
-                            <tr>
-                                <th>Produktnamn</th>
-                                <th>Artikelnummer</th>
-                                <th>Antal i lager</th>
-                                <th>Ändrad</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @if (storage.InventoryTrackers.Any())
-                            {
-                                @foreach (var product in storage.InventoryTrackers)
+                <tr id="@uniqueId" class="nested-table-row" style="display: none;">
+                    <td colspan="3">
+                        <table class="table mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Produktnamn</th>
+                                    <th>Artikelnummer</th>
+                                    <th>Antal i lager</th>
+                                    <th>Ändrad</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (storage.InventoryTrackers.Any())
                                 {
-                                    if (product?.Product != null)
+                                    @foreach (var product in storage.InventoryTrackers)
                                     {
                                         <tr>
                                             <td>
-                                                <a asp-page="/ProductDetails" asp-route-id="@product.Product.Id" class="custom-link">
-                                                    @product.Product.Name
-                                                </a>
+                                                @if (product.Product == null || string.IsNullOrEmpty(product.Product.Name))
+                                                {
+                                                    <span>Data finns ej</span>
+                                                }
+                                                else
+                                                {
+                                                    <a asp-page="/ProductDetails" asp-route-id="@product.Product.Id" class="custom-link">
+                                                        @product.Product.Name
+                                                    </a>
+                                                }
                                             </td>
-
-                                            <td>@product.Product.ArticleNumber</td>
-                                            <td>@product.Quantity</td>
-                                            @if (product.Modified.HasValue)
-                                            {
-                                                <td>@product.Modified</td>
-                                            }
-                                            else
-                                            {
-                                                <td>@product.Product.Updated</td>
-                                            }
-                                        </tr>
-                                    }
-                                    else
-                                    {
-                                        <tr>
-                                            <td colspan="4" class="text-center">Produktinformation saknas</td>
+                                            <td>
+                                                @if (product.Product?.ArticleNumber == null)
+                                                {
+                                                    <span>Data finns ej</span>
+                                                }
+                                                else
+                                                {
+                                                    <span>@product.Product.ArticleNumber</span>
+                                                }
+                                            </td>
+                                            <td>
+                                                @if (product.Quantity == null || product.Quantity == 0)
+                                                {
+                                                    <span>Data finns ej</span>
+                                                }
+                                                else
+                                                {
+                                                    <span>@product.Quantity</span>
+                                                }
+                                            </td>
+                                            <td>
+                                                @if (product.Modified.HasValue)
+                                                {
+                                                    <span>@product.Modified</span>
+                                                }
+                                                else
+                                                {
+                                                    <span>Data finns ej</span>
+                                                }
+                                            </td>
                                         </tr>
                                     }
                                 }
-                            }
-                            else
-                            {
-                                <tr>
-                                    <td colspan="4" class="text-center">Produktinformation saknas</td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
-                </td>
-            </tr>
-        }
-    </tbody>
+                                else
+                                {
+                                    <tr>
+                                        <td colspan="4" class="text-center">Produktinformation saknas</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+            }
+        </tbody>
 </table>
 </div>
 
