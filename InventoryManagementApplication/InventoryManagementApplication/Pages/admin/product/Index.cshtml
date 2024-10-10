@@ -24,8 +24,11 @@
             }
         </button>
     </form>
-
-    <a asp-page="./Create" type="button" id="createButton" class="btn btn-primary me-2">Lägg till</a>
+    @if (User.IsInRole("Admin"))
+    {
+        <a asp-page="./Create" type="button" id="createButton" class="btn btn-primary me-2">Lägg till</a>
+    }
+    
     
 </div>
 
@@ -91,9 +94,19 @@
                 <td>@Html.DisplayFor(modelItem => item.Created)</td>
                 <td>@Html.DisplayFor(modelItem => item.Updated)</td>
                 <td>
-                    <a asp-page="./Edit" asp-route-id="@item.Id">Ändra</a> |
-                    <a asp-page="./Details" asp-route-id="@item.Id">Info</a> |
-                    <a asp-page="./Delete" asp-route-id="@item.Id">Ta bort</a>
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <a asp-page="./Edit" asp-route-id="@item.Id">Ändra</a><span> | </span>
+                        <a asp-page="./Details" asp-route-id="@item.Id">Info</a><span> | </span>
+                        <a asp-page="./Delete" asp-route-id="@item.Id">Ta bort</a> <span> | </span>
+                    }
+                    else
+                    {
+                        <span> | <a asp-page="./Details" asp-route-id="@item.Id">Info</a> | </span>
+                    }
+
+                    
+                    
                 </td>
             </tr>
             
