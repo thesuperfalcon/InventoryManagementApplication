@@ -350,6 +350,47 @@ footer {
         transition: color 0.3s;
     }
 
-        .social-icons a:hover {
-            color: #000;
-        }
+body {
+  margin-bottom: 60px;
+}
+
+
+
+/*.container {
+    display: flex;
+}
+
+.box1, .box2 {
+    flex: 1;*/ /* Detta gör att båda divarna tar lika mycket plats */
+    /*padding: 80px;
+}*/
+
+/*html, body {
+    background-color: darkblue;
+    font-size: 14px;
+}*/
+
+
+.logedin-page-background {
+    background-color: darkblue;
+}
+.container-boxes {
+   
+    /*border: 1px solid #ccc;  Svart ram */
+    padding: 20px;  /*Ger lite utrymme inuti ramen*/ 
+    margin: 10px;  /*Ger lite utrymme runt containern */
+    display: flex; /* Flexbox för att anpassa boxarna sida vid sida*/ 
+    justify-content: space-between;  /*Sprid ut boxarna jämnt*/ 
+}
+
+.box1, .box2 {
+    background-color: white;
+    border: 1px solid #ccc; /* En lättare ram för varje box */
+    padding: 10px; /* Ger lite utrymme inuti varje box */
+    flex: 1; /* Gör boxarna lika stora */
+    margin-right: 20px; /* Lägger till lite mellanrum mellan boxarna */
+}
+
+.box2 {
+    margin-right: 0; /* Tar bort höger marginal för den sista boxen */
+}
