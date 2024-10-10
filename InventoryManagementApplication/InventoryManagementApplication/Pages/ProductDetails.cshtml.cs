@@ -10,13 +10,15 @@ namespace InventoryManagementApplication.Pages
 {
 public class ProductDetailsModel : PageModel
     {
-        private readonly InventoryManagementApplicationContext _context;
         private readonly LogManager _logManager;
         private readonly UserManager _userManager;
 
-        public ProductDetailsModel(InventoryManagementApplicationContext context, LogManager logManager, UserManager userManager)
+     private readonly ProductManager _productManager;
+
+        public ProductDetailsModel(ProductManager productManager,  LogManager logManager, UserManager userManager)
         {
-            _context = context;
+            _productManager = productManager;
+          
             _logManager = logManager;
             _userManager = userManager;
         }
@@ -26,85 +28,61 @@ public class ProductDetailsModel : PageModel
         public List<string> UserFullName { get; set; } = new List<string>();
         public List<string> UserEmployeeNumbers { get; set; } = new List<string>();
 
-        public async Task<IActionResult> OnGetAsync(int id)
+      public async Task<IActionResult> OnGetAsync(int id)
+{
+    // Hämta produkten via API:et
+    Product = await _productManager.GetProductByIdAsync(id, null);
+
+    if (Product == null)
+    {
+        return NotFound();
+    }
+
+    // Hämta alla loggar och filtrera efter produkten
+    var allLogs = await _logManager.GetAllLogsAsync();
+    ActivityLogs = allLogs.Where(log => log.EntityType.Contains("Product") && log.EntityName == Product.Name).ToList();
+
+    // Hämta användarinformation för varje logg
+    var users = await _userManager.GetAllUsersAsync(false);
+
+    var userDictionary = users.ToDictionary(
+        u => u.Id,
+        u => new { FullName = $"{u.LastName} {u.FirstName}", EmployeeNumber = u.EmployeeNumber });
+
+    foreach (var log in ActivityLogs)
+    {
+        if (userDictionary.TryGetValue(log.UserId, out var userInfo))
         {
-            // Hämta produkten
-            Product = await _context.Products
-                .FirstOrDefaultAsync(p => p.Id == id);
-
-            if (Product == null)
-            {
-                return NotFound();
-            }
-
-            // Hämta alla loggar och filtrera efter produkten
-            var allLogs = await _logManager.GetAllLogsAsync();
-            ActivityLogs = allLogs.Where(log => log.EntityType.Contains("Product") && log.EntityName == Product.Name).ToList();
-
-            // Hämta användarinformation för varje logg
-           //Denna hämtar icke-raderade användare
-            var users = await _userManager.GetAllUsersAsync(null);
-           
-           //Denna hämtar alla: var users = await _userManager.GetAllUsersAsync(null);
-            //denna hämtar endast raderade användare: var users = await _userManager.GetAllUsersAsync(true);
-
-            var userDictinary = users.ToDictionary(
-                u => u.Id,
-                u => new { FullName = $"{u.LastName} {u.FirstName}", EmployeeNumber = u.EmployeeNumber });
-
-            foreach (var log in ActivityLogs)
-            {
-                if (userDictinary.TryGetValue(log.UserId, out var userInfo))
-                {
-                    UserFullName.Add(userInfo.FullName);
-                    UserEmployeeNumbers.Add(userInfo.EmployeeNumber);
-                }
-                else
-                {
-                    UserFullName.Add("Unknown User");
-                    UserEmployeeNumbers.Add("N/A");
-                }
-            }
-
-            return Page();
+            UserFullName.Add(userInfo.FullName);
+            UserEmployeeNumbers.Add(userInfo.EmployeeNumber);
         }
+        else
+        {
+            UserFullName.Add("Unknown User");
+            UserEmployeeNumbers.Add("N/A");
+        }
+    }
+
+    return Page();
+}
     
-        public async Task<IActionResult> OnPostUpdateProductInfoAsync(int ProductId, string ProductName, string ProductDescription /*, int StorageId*/)
-        {
-            var product = await _context.Products
-                .Include(p => p.InventoryTrackers)
-                .FirstOrDefaultAsync(p => p.Id == ProductId);
+public async Task<IActionResult> OnPostUpdateProductInfoAsync(int ProductId, string ProductName, string ProductDescription)
+{
+    // Hämta produkten via API
+    var product = await _productManager.GetProductByIdAsync(ProductId, null);
 
-            if (product == null)
-            {
-                return NotFound();
-            }
+    if (product == null)
+    {
+        return NotFound();
+    }
 
-            product.Name = ProductName;
-            product.Description = ProductDescription;
+    product.Name = ProductName;
+    product.Description = ProductDescription;
 
-            /* Commenting out product movement related logic */
-            // var tracker = product.InventoryTrackers.FirstOrDefault();
-            // if (tracker != null)
-            // {
-            //     tracker.StorageId = StorageId;
-            // }
-            // else
-            // {
-            //     product.InventoryTrackers.Add(new InventoryTracker
-            //     {
-            //         ProductId = ProductId,
-            //         StorageId = StorageId,
-            //         Quantity = product.CurrentStock,
-            //         Modified = DateTime.Now
-            //     });
-            // }
+    // Spara ändringarna via API:et
+    await _productManager.EditProductAsync(product);
 
-            
-
-            await _context.SaveChangesAsync();
-
-            return RedirectToPage(new { id = ProductId });
-        }
+    return RedirectToPage(new { id = ProductId });
+}
     }
 }
