@@ -1,15 +1,84 @@
 ﻿@page
+@using InventoryManagementApplication.Areas.Identity.Data
 @using InventoryManagementApplication.Areas.Identity.Pages.Account
 @using Microsoft.AspNetCore.Identity
 @model LoginModel
+@* @model InventoryManagementApplication.Pages.IndexModel *@
+@inject UserManager<InventoryManagementUser> UserManager
+@inject SignInManager<InventoryManagementUser> SignInManager
 @{
-    ViewData["Title"] = "Startsida";
+    ViewData["Title"] = "Logga in";
+    var user = await UserManager.GetUserAsync(User);
 }
+
+<body class=" logedin-page-background">
 
 @if (User.Identity.IsAuthenticated)
 {
-    <div>
-        <p>Du är inloggad!</p>
+    <div class="container-boxes" >
+
+
+    <div class="box1">
+
+                <table id="userTable" border="1" cellpadding="10" cellspacing="0" style="border-collapse: collapse; width: 100%;">
+            <thead>
+                <tr>
+                  <th>Du är inloggad som:</th> 
+                  <th>Registrerad sedan: </th> 
+
+                    @if (User.IsInRole("Admin"))
+                    {
+                       <th>Din roll: </th> 
+
+                    }
+                    else
+                    {
+                      <th>Din roll: </th>
+                    }
+             </tr>        
+           </thead>
+           <tbody>
+               <tr>
+                  <td>@user.FirstName  @user.LastName</td>
+                  <td>@user.Created</td>
+                            @if (User.IsInRole("Admin"))
+                            {
+                              <td>@User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value</td>
+                            }
+                            else
+                            {
+                              <td>Användare</td>
+                            }
+               </tr>
+           </tbody>
+        </table>
+    </div>
+
+    <div class="box2">
+        <h1>Leaderboard</h1>
+          <table id="leaderboardTable" class="table table-striped table-bordered">
+            <thead>
+                <tr>
+                    <th>Användare</th>
+                    <th>Totalt förflyttade produkter</th>
+                    <th>Antal förflyttningar</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach(var person in Model.MovementPerPerson.OrderByDescending(x=> x.TotalQuantity))
+                {
+                     <tr>
+                         <td>@person.EmployeeNumber</td>
+                         <td>@person.TotalQuantity</td>
+                         <td>@person.TotalMovements</td>
+                     </tr>       
+                }
+            </tbody>
+        </table>
+       
+    </div>
+
+
     </div>
 }
 else
@@ -49,7 +118,7 @@ else
                     </div> *@
 
                     <div>
-                        <button id="login-submit" type="submit" class="w-100 btn btn-lg btn-primary">Log in</button>
+                        <button id="login-submit" type="submit" class="w-100 btn btn-lg btn-primary">Logga in</button>
                     </div>
                 </form>
             </section>
@@ -58,7 +127,7 @@ else
     </div>
 }
 
-
+</body>
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 }

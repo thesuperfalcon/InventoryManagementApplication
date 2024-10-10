@@ -17,6 +17,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
 using InventoryManagementApplication.DAL;
+using InventoryManagementApplication.Models;
 
 namespace InventoryManagementApplication.Areas.Identity.Pages.Account
 {
@@ -24,11 +25,15 @@ namespace InventoryManagementApplication.Areas.Identity.Pages.Account
     {
         private readonly SignInManager<InventoryManagementUser> _signInManager;
         private readonly ILogger<LoginModel> _logger;
+        private readonly UserManager _userManager;
+        private readonly StatisticManager _statisticManager;
 
-        public LoginModel(SignInManager<InventoryManagementUser> signInManager, ILogger<LoginModel> logger)
+        public LoginModel(SignInManager<InventoryManagementUser> signInManager, ILogger<LoginModel> logger, UserManager userManager, StatisticManager statisticManager)
         {
             _signInManager = signInManager;
             _logger = logger;
+            _userManager = userManager;
+            _statisticManager = statisticManager;
         }
         [BindProperty]
         public InputModel Input { get; set; }
@@ -65,6 +70,8 @@ namespace InventoryManagementApplication.Areas.Identity.Pages.Account
 
         }
 
+        public List<UserStatisticsViewModel> MovementPerPerson { get; set; } = new List<UserStatisticsViewModel>(); 
+        
         public async Task OnGetAsync(string returnUrl = null)
         {
             if (!string.IsNullOrEmpty(ErrorMessage))
@@ -72,8 +79,47 @@ namespace InventoryManagementApplication.Areas.Identity.Pages.Account
                 ModelState.AddModelError(string.Empty, ErrorMessage);
             }
 
-
+            var users = await _userManager.GetAllUsersAsync();
             returnUrl ??= Url.Content("~/");
+
+            var statistics = await _statisticManager.GetAllStatisticsAsync();
+
+
+            var personList = await _userManager.GetAllUsersAsync();
+            foreach (var person in personList)
+            {
+                var movementsByUser = statistics.Where(stat => stat.UserId == person.Id);
+
+
+                //var currentWeek = GetCurrentWeekNumber();
+                //movementsByUser = movementsByUser
+                //    .Where(stat => stat.Moved.HasValue &&
+                //                   GetWeekNumber(stat.Moved.Value) == currentWeek &&
+                //                   DateTime.Now.Year == stat.Moved.Value.Year);
+
+
+                //movementsByUser = movementsByUser
+                //    .Where(stat => stat.Moved.HasValue &&
+                //                   IsSameDay(stat.Moved.Value));
+
+                if (movementsByUser.Any())
+                {
+                    var totalMovements = movementsByUser.Count();
+                    var totalQuantity = movementsByUser.Sum(stat => stat.Quantity ?? 0);
+
+
+
+                    var userStatistics = new UserStatisticsViewModel
+                    {
+                        EmployeeNumber = person.EmployeeNumber,
+                        TotalMovements = totalMovements,
+                        TotalQuantity = totalQuantity,
+                        RecentMovements = null
+
+                    };
+                    MovementPerPerson.Add(userStatistics);
+                }
+            }
 
             // Clear the existing external cookie to ensure a clean login process
             await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
