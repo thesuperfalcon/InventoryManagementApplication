@@ -14,11 +14,14 @@ namespace InventoryManagementApplication.Pages
         private readonly LogManager _logManager;
         private readonly UserManager _userManager;
 
-        public StorageDetailsModel(StorageManager storageManager, LogManager logManager, UserManager userManager)
+        private readonly TrackerManager _trackerManager;
+
+        public StorageDetailsModel(StorageManager storageManager, LogManager logManager, UserManager userManager,TrackerManager trackerManager)
         {
             _storageManager = storageManager;
             _logManager = logManager;
             _userManager = userManager;
+            _trackerManager = trackerManager;
         }
 
         public Storage Storage { get; set; }
@@ -39,8 +42,11 @@ Storage = await _storageManager.GetStorageByIdAsync(id, null);
                 return NotFound();
             }
 
-            // Hämta InventoryTrackers och tillhörande produkter
-            InventoryTrackers = Storage.InventoryTrackers;
+              var allTrackers = await _trackerManager.GetAllTrackersAsync();
+
+    // Filtrera InventoryTrackers för det specifika lagret
+    InventoryTrackers = allTrackers.Where(it => it.StorageId == id).ToList();
+
 
             // Hämta alla loggar och filtrera efter lagret
             var allLogs = await _logManager.GetAllLogsAsync();
