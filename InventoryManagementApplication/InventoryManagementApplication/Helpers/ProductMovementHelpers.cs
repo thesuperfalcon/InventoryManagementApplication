@@ -43,7 +43,7 @@ namespace InventoryManagementApplication.Helpers
                         message = "Kan ej finna lagersaldo från lager";
                         return new Tuple<bool, string>(false, message);
                     case false when fromStorageTracker.Quantity < quantity:
-                        message = "Finns ej den mängden produkter i lagret. Försök med mindre antal..";
+                        message = "Finns ej den mängden produkter i lagret.";
                         return new Tuple<bool, string>(false, message);
                     default:
                         success = true;
@@ -99,7 +99,7 @@ namespace InventoryManagementApplication.Helpers
                 await _productManager.EditProductAsync(product);
             }
 
-            message = "Förflyttning lyckades";
+            //message = "Förflyttning lyckades";
             return new Tuple<bool, string>(true, message);
         }
     }
