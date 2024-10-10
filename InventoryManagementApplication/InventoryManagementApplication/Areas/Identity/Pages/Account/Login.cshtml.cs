@@ -79,13 +79,13 @@ namespace InventoryManagementApplication.Areas.Identity.Pages.Account
                 ModelState.AddModelError(string.Empty, ErrorMessage);
             }
 
-            var users = await _userManager.GetAllUsersAsync();
+            var users = await _userManager.GetAllUsersAsync(false);
             returnUrl ??= Url.Content("~/");
 
             var statistics = await _statisticManager.GetAllStatisticsAsync();
 
 
-            var personList = await _userManager.GetAllUsersAsync();
+            var personList = await _userManager.GetAllUsersAsync(false);
             foreach (var person in personList)
             {
                 var movementsByUser = statistics.Where(stat => stat.UserId == person.Id);
