@@ -43,7 +43,10 @@ namespace InventoryManagementApplication.Pages
             var allLogs = await _logManager.GetAllLogsAsync();
             ActivityLogs = allLogs.Where(log => log.EntityType.Contains("Storage") && log.EntityName == Storage.Name).ToList();
 
-            var users = await _userManager.GetAllUsersAsync();
+            
+            // Hämta användarinformation för varje logg
+           //Denna hämtar icke-raderade användare
+            var users = await _userManager.GetAllUsersAsync(false);
             var userDictinary = users.ToDictionary(
                 u => u.Id,
                 u => new { FullName = $"{u.LastName} {u.FirstName}", EmployeeNumber = u.EmployeeNumber });

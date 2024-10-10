@@ -42,7 +42,12 @@ public class ProductDetailsModel : PageModel
             ActivityLogs = allLogs.Where(log => log.EntityType.Contains("Product") && log.EntityName == Product.Name).ToList();
 
             // Hämta användarinformation för varje logg
-            var users = await _userManager.GetAllUsersAsync();
+           //Denna hämtar icke-raderade användare
+            var users = await _userManager.GetAllUsersAsync(false);
+           
+           //Denna hämtar alla: var users = await _userManager.GetAllUsersAsync(null);
+            //denna hämtar endast raderade användare: var users = await _userManager.GetAllUsersAsync(true);
+
             var userDictinary = users.ToDictionary(
                 u => u.Id,
                 u => new { FullName = $"{u.LastName} {u.FirstName}", EmployeeNumber = u.EmployeeNumber });
