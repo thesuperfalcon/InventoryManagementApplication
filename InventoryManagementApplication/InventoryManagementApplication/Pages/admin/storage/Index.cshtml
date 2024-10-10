@@ -63,7 +63,11 @@
             @foreach (var item in Model.Storages)
             {
                     <tr>
-                        <td>@Html.DisplayFor(modelItem => item.Name)</td>
+                       <td>
+                <a asp-page="/StorageDetails" asp-route-id="@item.Id" class="custom-link">
+                    @Html.DisplayFor(modelItem => item.Name)
+                </a>
+            </td>
                         <td>@Html.DisplayFor(modelItem => item.MaxCapacity)</td>
                         <td>@Html.DisplayFor(modelItem => item.CurrentStock)</td>
                         <td>@(item.MaxCapacity - item.CurrentStock)</td>

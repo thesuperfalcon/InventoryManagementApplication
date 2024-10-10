@@ -2,9 +2,9 @@
 @model InventoryManagementApplication.Pages.ProductDetailsModel
 
 <div class="container">
-    <div class="row">
-        <div class="col-md-7">
-            <div class="card mb-4">
+   <div class="row">
+        <div class="col-md-6">
+            <div class="card mb-6">
                 <div class="card-header">
                     <h2>Produktdetaljer: @Model.Product.Name</h2>
                 </div>
@@ -59,8 +59,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-5">
-            <div class="card mb-4">
+         <div class="col-md-6">
                 <div class="card-header">
                     <h3>Aktivitetsloggar för denna produkt</h3>
                     <input type="text" id="activityLogSearchInput" placeholder="Sök i aktivitetsloggar..." class="form-control mb-2" />
