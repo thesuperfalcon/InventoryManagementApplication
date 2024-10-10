@@ -1,11 +1,37 @@
-﻿.icon{
-    font-size: xx-large;
+﻿.card-header {
+    padding: 10px;
+    font-size: 1.25rem;
+    font-weight: 600;
+    text-align: center;
 }
 
-.textContent{
-    margin-left: auto;
-    margin-right: .5rem;
-    margin-bottom: .5rem;
-    text-align: end;
+.bg-primary {
+    background-color: #007bff !important;
+}
 
+.bg-success {
+    background-color: #28a745 !important;
+}
+
+.bg-warning {
+    background-color: #ffc107 !important;
+}
+
+.card-body {
+    padding: 15px;
+}
+
+.card {
+    border-radius: 10px;
+    border: none;
+}
+
+.card-body .card {
+    box-shadow: none;
+    border-radius: 5px;
+    border: 1px solid #e7e7e7;
+}
+
+.shadow-lg {
+    box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.175) !important;
 }

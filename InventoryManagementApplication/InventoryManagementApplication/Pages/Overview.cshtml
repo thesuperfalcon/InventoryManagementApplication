@@ -7,163 +7,93 @@
 <link href="~/css/overview.css" rel="stylesheet" />
 
 <div class="container-fluid bg-light">
-    <section id="minimal-statistics">
+    <section id="overview-section">
         <div class="row">
-            <div class="col-12 mt-3 mb-1 ms-2 me-2">
-                <h4 class="text-uppercase">Minimal Statistics Cards</h4>
-                <p>Statistics on minimal cards.</p>
+            <div class="col-12 mt-3 mb-1 text-center">
+                <h4 class="text-uppercase">Översikt</h4>
+                <p>Statistik över produkter, lager och användare.</p>
             </div>
         </div>
+
         <div class="row">
-            <div class="col-xl-3 col-sm-6 col-12">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="d-flex">
-                            <div class="align-self-center ms-2">
-                                <i class="icon bi bi-pencil-square text-primary"></i>
+            <div class="col-lg-4 col-md-12">
+                <div class="card shadow-lg mb-3">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="text-center mb-0">Produkt</h5>
+                    </div>
+                    <div class="card-body bg-white">
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <h5>@Model.ProductQuantity</h5>
+                                <p>Antal Produkter</p>
                             </div>
-                            <div class="textContent">
-                                <h3>@Model.ProductQuantity</h3>
-                                <span>Antal Produkter</span>
+                        </div>
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <h5>@Model.Product.Name - @Model.Product.CurrentStock</h5>
+                                <p>Produkt med högst antal</p>
+                            </div>
+                        </div>
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <h5>@Model.NewestProduct.Name</h5>
+                                <p>Nyaste produkt</p>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="col-xl-3 col-sm-6 col-12">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="d-flex">
-                            <div class="align-self-center ms-2">
-                                <i class="icon bi bi-pencil-square text-primary"></i>
+
+            <div class="col-lg-4 col-md-12">
+                <div class="card shadow-lg mb-3">
+                    <div class="card-header bg-success text-white">
+                        <h5 class="text-center mb-0">Lager</h5>
+                    </div>
+                    <div class="card-body bg-white">
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <h5>@Model.StorageQuantity</h5>
+                                <p>Antal Lagerplatser</p>
                             </div>
-                            <div class="textContent">
-                                <h3>@Model.StorageQuantity</h3>
-                                <span>Antal Lagerplatser</span>
+                        </div>
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <h5>@Model.Storage.Name - @Model.Storage.CurrentStock</h5>
+                                <p>Lagerplats med mest produkter</p>
+                            </div>
+                        </div>
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <h5>@Model.NewestStorage.Name</h5>
+                                <p>Nyaste lagerplatsen</p>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="col-xl-3 col-sm-6 col-12">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="d-flex">
-                            <div class="align-self-center ms-2">
-                                <i class="icon bi bi-pencil-square text-primary"></i>
-                            </div>
-                            <div class="textContent">
-                                <h3>@Model.Product.Name - @Model.Product.CurrentStock</h3>
-                                <span>Produkt med högst antal</span>
+
+            <div class="col-lg-4 col-md-12">
+                <div class="card shadow-lg mb-3">
+                    <div class="card-header bg-warning text-white">
+                        <h5 class="text-center mb-0">Användare</h5>
+                    </div>
+                    <div class="card-body bg-white">
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <h5>@Model.UserStatistic.EmployeeNumber - @Model.UserStatistic.TotalQuantity</h5>
+                                <p>Anställd med mest förflyttade produkter</p>
                             </div>
                         </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-xl-3 col-sm-6 col-12">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="d-flex">
-                            <div class="align-self-center ms-2">
-                                <i class="icon bi bi-bag-fill text-primary"></i>
-                            </div>
-                            <div class="textContent">
-                                <h3>@Model.Storage.Name - @Model.Storage.CurrentStock</h3>
-                                <span>Lagerplats med mest produkter</span>
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <h5>@Model.User.FirstName @Model.User.LastName - @Model.User.EmployeeNumber</h5>
+                                <p>Senast anställd (@Model.User.Created)</p>
                             </div>
                         </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row mt-3">
-            <div class="col-xl-3 col-sm-6 col-12">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="d-flex">
-                            <div class="align-self-center ms-2">
-                                <i class="icon bi bi-award-fill text-primary"></i>
-                            </div>
-                            <div class="textContent">
-                                <h3>@Model.UserStatistic.EmployeeNumber - @Model.UserStatistic.TotalQuantity</h3>
-                                <span>Anställd med mest förflyttade produkter</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-xl-3 col-sm-6 col-12">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="d-flex">
-                            <div class="align-self-center ms-2">
-                                <i class="icon bi bi-pencil-square text-primary"></i>
-                            </div>
-                            <div class="textContent">
-                                <h3>@Model.NewestStatistic.UserName - @Model.NewestStatistic.ProductName - @Model.NewestStatistic.IntitialStorageName - @Model.NewestStatistic.DestinationStorageName</h3>
-                                <span>Senast förflyttning (@Model.NewestStatistic.Moved)</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-xl-3 col-sm-6 col-12">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="d-flex">
-                            <div class="align-self-center ms-2">
-                                <i class="icon bi bi-person-fill text-primary"></i>
-                            </div>
-                            <div class="textContent">
-                                <h3>@Model.User.FirstName @Model.User.LastName - @Model.User.EmployeeNumber</h3>
-                                <span>Senast anställd (@Model.User.Created)</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-xl-3 col-sm-6 col-12">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="d-flex">
-                            <div class="align-self-center ms-2">
-                                <i class="icon bi bi-pencil-square text-primary"></i>
-                            </div>
-                            <div class="textContent">
-                                <h3>@Model.ProductQuantity</h3>
-                                <span>Antal Produkter</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row mt-3">
-            <div class="col-xl-3 col-sm-6 col-12">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="d-flex">
-                            <div class="align-self-center ms-2">
-                                <i class="icon bi bi-pencil-square text-primary"></i>
-                            </div>
-                            <div class="textContent">
-                                <h3>@Model.NewestProduct.Name</h3>
-                                <span>Nyaste produkt</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-xl-3 col-sm-6 col-12">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="d-flex">
-                            <div class="align-self-center ms-2">
-                                <i class="icon bi bi-pencil-square text-primary"></i>
-                            </div>
-                            <div class="textContent">
-                                <h3>@Model.NewestStorage.Name</h3>
-                                <span>Nyaste lagerplatsen</span>
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <h5>@Model.NewestStatistic.UserName - @Model.NewestStatistic.ProductName</h5>
+                                <p>Senast förflyttning</p>
                             </div>
                         </div>
                     </div>

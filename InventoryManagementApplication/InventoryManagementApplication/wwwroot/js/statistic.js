@@ -63,73 +63,79 @@ $(document).ready(function () {
 
     $("#searchInput").on("input", function () {
         var value = $(this).val().toLowerCase();
-        console.log(`Inmatat värde: ${value}`);
 
-        var filters = value.split(',').map(item => item.trim()).filter(item => item);
+        var cleanedValue = value.replace(/[.,]+$/, '');
+        console.log(`Inmatat värde (rensat): ${cleanedValue}`);
+
+        var filters = cleanedValue.split(',').map(item => item.trim()).filter(item => item);
         console.log(`Filter: ${JSON.stringify(filters)}`);
 
-        filteredRows = originalRows.filter(row => {
-            console.log(`Rada: ${JSON.stringify(row.cells)}`);
-
-
-            if (filters.length === 1 && !filters[0].includes(':')) {
-                return (
-                    row.cells[1].innerText.toLowerCase().includes(filters[0]) ||
-                    row.cells[2].innerText.toLowerCase().includes(filters[0]) ||
-                    row.cells[3].innerText.includes(filters[0]) ||
-                    row.cells[4].innerText.toLowerCase().includes(filters[0]) ||
-                    row.cells[5].innerText.toLowerCase().includes(filters[0]) ||
-                    row.cells[6].innerText.includes(filters[0])
-                );
-            }
-
-            return filters.every(filter => {
-                let [key, searchTerm] = filter.split(':').map(item => item.trim());
-                searchTerm = searchTerm.toLowerCase();
-
-                const exactMatch = searchTerm.endsWith('.');
-                if (exactMatch) {
-                    searchTerm = searchTerm.slice(0, -1).trim();
+        if (filters.length === 0) {
+            filteredRows = originalRows;
+            console.log("Inga filter, visar alla rader");
+        } else {
+            filteredRows = originalRows.filter(row => {
+                if (filters.length === 1 && !filters[0].includes(':')) {
+                    return (
+                        row.cells[1].innerText.toLowerCase().includes(filters[0]) ||
+                        row.cells[2].innerText.toLowerCase().includes(filters[0]) ||
+                        row.cells[3].innerText.includes(filters[0]) ||
+                        row.cells[4].innerText.toLowerCase().includes(filters[0]) ||
+                        row.cells[5].innerText.toLowerCase().includes(filters[0]) ||
+                        row.cells[6].innerText.includes(filters[0])
+                    );
                 }
 
-                console.log(`Nyckel: ${key}, Sökterm: ${searchTerm}, Exakt matchning: ${exactMatch}`);
+                return filters.every(filter => {
+                    let [key, searchTerm] = filter.split(':').map(item => item.trim());
+                    searchTerm = searchTerm.toLowerCase();
 
-                switch (key) {
-                    case "#a":
-                        return exactMatch
-                            ? row.cells[1].innerText.toLowerCase() === searchTerm
-                            : row.cells[1].innerText.toLowerCase().includes(searchTerm);
-                    case "#p":
-                        return exactMatch
-                            ? row.cells[2].innerText.toLowerCase() === searchTerm
-                            : row.cells[2].innerText.toLowerCase().includes(searchTerm);
-                    case "#pf":
-                        return exactMatch
-                            ? row.cells[3].innerText === searchTerm
-                            : row.cells[3].innerText.includes(searchTerm);
-                    case "#ff":
-                        return exactMatch
-                            ? row.cells[4].innerText.toLowerCase() === searchTerm
-                            : row.cells[4].innerText.toLowerCase().includes(searchTerm);
-                    case "#ft":
-                        return exactMatch
-                            ? row.cells[5].innerText.toLowerCase() === searchTerm
-                            : row.cells[5].innerText.toLowerCase().includes(searchTerm);
-                    case "#n":
-                        return exactMatch
-                            ? row.cells[6].innerText === searchTerm
-                            : row.cells[6].innerText.includes(searchTerm);
-                    default:
-                        return true;
-                }
+                    const exactMatch = searchTerm.endsWith('.');
+                    if (exactMatch) {
+                        searchTerm = searchTerm.slice(0, -1).trim();
+                    }
+
+                    console.log(`Nyckel: ${key}, Sökterm: ${searchTerm}, Exakt matchning: ${exactMatch}`);
+
+                    switch (key) {
+                        case "#a":
+                            return exactMatch
+                                ? row.cells[1].innerText.toLowerCase() === searchTerm
+                                : row.cells[1].innerText.toLowerCase().includes(searchTerm);
+                        case "#p":
+                            return exactMatch
+                                ? row.cells[2].innerText.toLowerCase() === searchTerm
+                                : row.cells[2].innerText.toLowerCase().includes(searchTerm);
+                        case "#pf":
+                            return exactMatch
+                                ? row.cells[3].innerText === searchTerm
+                                : row.cells[3].innerText.includes(searchTerm);
+                        case "#ff":
+                            return exactMatch
+                                ? row.cells[4].innerText.toLowerCase() === searchTerm
+                                : row.cells[4].innerText.toLowerCase().includes(searchTerm);
+                        case "#ft":
+                            return exactMatch
+                                ? row.cells[5].innerText.toLowerCase() === searchTerm
+                                : row.cells[5].innerText.toLowerCase().includes(searchTerm);
+                        case "#n":
+                            return exactMatch
+                                ? row.cells[6].innerText === searchTerm
+                                : row.cells[6].innerText.includes(searchTerm);
+                        default:
+                            return true;
+                    }
+                });
             });
-        });
+        }
 
         console.log(`Filtrerade rader: ${filteredRows.length}`);
         updateVisibleRows(filteredRows);
         currentPage = 1;
         paginateTable();
     });
+
+
 
 
 
