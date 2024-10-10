@@ -9,9 +9,11 @@ using InventoryManagementApplication.Data;
 using InventoryManagementApplication.Models;
 using System.Text.Json;
 using InventoryManagementApplication.DAL;
+using Microsoft.AspNetCore.Authorization;
 
 namespace InventoryManagementApplication.Pages.admin.storage
 {
+    [Authorize]
     public class IndexModel : PageModel
     {
         private readonly StorageManager _storageManager;

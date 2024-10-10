@@ -1,9 +1,11 @@
 using InventoryManagementApplication.DAL;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace InventoryManagementApplication.Pages.admin.product
 {
+    [Authorize]
     public class SellProductModel : PageModel
     {
         private readonly ProductManager _productManager;

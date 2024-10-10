@@ -3,6 +3,7 @@ using InventoryManagementApplication.DAL;
 using InventoryManagementApplication.Data;
 using InventoryManagementApplication.Helpers;
 using InventoryManagementApplication.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -12,6 +13,7 @@ using System.Text.Json;
 
 namespace InventoryManagementApplication.Pages.admin.tracker
 {
+    [Authorize]
     public class moveProductModel : PageModel
     {
 

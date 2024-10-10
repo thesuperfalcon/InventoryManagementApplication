@@ -11,6 +11,10 @@
         <div class="card-header bg-primary text-white">
             <h4 class="mb-0">Lagerplatsinformation</h4>
         </div>
+        @if (Model.Storage.IsDeleted == true)
+        {
+            <h2 class="alert-danger">* Borttagen</h2>
+        }
         <div class="card-body">
             <dl class="row">
                 <dt class="col-sm-3 font-weight-bold">Namn</dt>
@@ -38,7 +42,11 @@
         }
         else
         {
-            <a class="btn btn-primary me-2" asp-page="./Edit" asp-route-id="@Model.Storage.Id">Ändra</a>
+            if (User.IsInRole("Admin"))
+            {
+                <a class="btn btn-primary me-2" asp-page="./Edit" asp-route-id="@Model.Storage.Id">Ändra</a>
+            }
+            
             <a class="btn btn-secondary" asp-page="./Index">Tillbaka till lista</a>
         }
 

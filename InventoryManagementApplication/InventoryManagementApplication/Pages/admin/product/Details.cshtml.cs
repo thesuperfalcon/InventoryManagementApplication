@@ -9,9 +9,11 @@ using InventoryManagementApplication.Data;
 using InventoryManagementApplication.Models;
 using System.Text.Json;
 using InventoryManagementApplication.DAL;
+using Microsoft.AspNetCore.Authorization;
 
 namespace InventoryManagementApplication.Pages.admin.product
 {
+    [Authorize]
     public class DetailsModel : PageModel
     {
 		private readonly ProductManager _manager;

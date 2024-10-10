@@ -1,12 +1,14 @@
 using InventoryManagementApplication.DAL;
 using InventoryManagementApplication.Data;
 using InventoryManagementApplication.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 
 namespace InventoryManagementApplication.Pages
 {
+    [Authorize]
     public class reportPageModel : PageModel
     {
         private readonly StorageManager _storageManager;

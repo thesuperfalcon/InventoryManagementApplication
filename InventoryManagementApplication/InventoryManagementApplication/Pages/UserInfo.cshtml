@@ -30,8 +30,12 @@
     else
     {
     <div class="user-info">
-        <h2>@ViewData["Title"]</h2>
-        <img src="@Url.Content(@Model.SelectedUser.ProfilePic)" alt="Profile image" class="profile-image" />
+            <h2>@ViewData["Title"]<span>@if (Model.SelectedUser.IsDeleted == true)
+                    {
+                        <h2 class="alert-danger">* Borttagen</h2>
+                    }
+                </span></h2>
+            <img src="@Url.Content(@Model.SelectedUser.ProfilePic)" alt="Profile image" class="profile-image" />
         <hr />
         <ul class="nav nav-tabs" id="userSettingsTab" role="tablist">
             <li class="nav-item">

@@ -1,5 +1,6 @@
 ﻿using InventoryManagementApplication.DAL;
 using InventoryManagementApplication.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
@@ -10,7 +11,8 @@ using System.Text.Json;
 
 namespace InventoryManagementApplication.Pages.admin.product
 {
-	public class EditModel : PageModel
+    [Authorize(Roles = "Admin")]
+    public class EditModel : PageModel
 	{
 		private readonly ProductManager _productManager;
 		private readonly TrackerManager _trackerManager;
