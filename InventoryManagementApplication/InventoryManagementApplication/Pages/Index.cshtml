@@ -20,7 +20,7 @@
 
     <div class="box1">
 
-                <table id="userTable" border="1" cellpadding="10" cellspacing="0" style="border-collapse: collapse; width: 100%;">
+        <table id="userTable" border="1" cellpadding="10" cellspacing="0" style="border-collapse: collapse; width: 100%;">
             <thead>
                 <tr>
                   <th>Du är inloggad som:</th> 
@@ -43,7 +43,9 @@
                   <td>@user.Created</td>
                             @if (User.IsInRole("Admin"))
                             {
+                              @*Kolle igenom om rollen hämtas från API eller databas!*@
                               <td>@User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value</td>
+                             
                             }
                             else
                             {
