@@ -35,7 +35,7 @@ namespace InventoryManagementApplication.Pages
             var statistics = await _statisticManager.GetAllStatisticsAsync();
            
                 
-            var personList = await _userManager.GetAllUsersAsync();
+            var personList = await _userManager.GetAllUsersAsync(false);
             foreach (var person in personList)
             {
                 var movementsByUser = statistics.Where(stat => stat.UserId == person.Id);
@@ -70,7 +70,7 @@ namespace InventoryManagementApplication.Pages
                 }
             }
 
-            Users = await _userManager.GetAllUsersAsync();
+            Users = await _userManager.GetAllUsersAsync(false);
 
             var user = new InventoryManagementUser();
 

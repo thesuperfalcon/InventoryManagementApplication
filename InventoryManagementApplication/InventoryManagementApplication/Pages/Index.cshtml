@@ -40,7 +40,7 @@
            <tbody>
                <tr>
                   <td>@user.FirstName  @user.LastName</td>
-                  <td>@user.Created</td>
+                            <td>@user.Created.ToString("yyyy-MM-dd")</td>
                             @if (User.IsInRole("Admin"))
                             {
                               @*Kolle igenom om rollen hämtas från API eller databas!*@

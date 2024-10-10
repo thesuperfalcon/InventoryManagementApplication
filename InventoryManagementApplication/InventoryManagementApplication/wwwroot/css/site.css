@@ -372,8 +372,31 @@ body {
 
 
 .logedin-page-background {
-    background-color: darkblue;
+    background-image: url('/images/logos/ssabLogo2.png');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    
 }
+    .logedin-page-background::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-image: url('/images/logos/ssabLogo2.png');
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: contain;
+        background-color: rgba(255, 255, 255, 0.7);
+        /*opacity: 1.5;*/ /*Genomskinlighet för endast bakgrundsbilden */
+        /*pointer-events: none;*/
+        z-index: -1; /*Placera bakgrundsbilden bakom allt annat*/
+    }
+
+
+
 .container-boxes {
    
     /*border: 1px solid #ccc;  Svart ram */
