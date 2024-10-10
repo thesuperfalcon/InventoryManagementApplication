@@ -1,0 +1,126 @@
+body {
+  background-color: #eef1f8 !important;
+}
+
+.btn-generic,.btn-info, .btn-secondary,.btn-primary{
+  background-color: rgb(39, 62, 125) !important;
+  border: 2px solid rgb(39, 62, 125) !important;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+  color: #f8f7f7 !important;
+  min-width: 100px;
+}
+
+.btn-generic,.btn-info,.btn-secondary,.btn-primary:hover{
+  background-color: rgb(49, 78, 156) !important;
+  border: 2px solid rgb(49, 78, 156) !important;
+  color: #f8f7f7 !important;
+}
+
+.btn-container{
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+}
+
+.container {
+  padding: 24px; 
+}
+
+.card {
+  padding: 24px; 
+}
+
+.product-details-list ul {
+  list-style: none;
+  padding: 0;
+}
+
+.product-details-list li {
+  padding-bottom: 10px;
+  font-size: 1.1rem;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.pagination a {
+  margin: 0 10px;
+  padding: 10px 15px;
+  border: 1px solid rgb(39, 62, 125);
+  border-radius: 5px;
+  color:rgb(39, 62, 125);
+  text-decoration: none;
+}
+
+.pagination a:hover {
+  background-color: rgb(39, 62, 125);
+  color: white;
+}
+
+.pagination span {
+  margin: 0 10px;
+  font-size: 16px;
+}
+
+.card {
+ display: flex;
+ justify-content: center;
+ align-items: center;
+}
+
+.flex-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+}
+
+.first-column {
+  flex: 0 0 50%;
+  max-width: 50%;
+  padding-right: 1%;
+}
+
+.second-column {
+  flex: 0 0 50%;
+  max-width: 50%;
+  padding-left: 5%;
+}
+
+.accordion {
+  background-color: #eee;
+  color: #444;
+  cursor: pointer;
+  padding: 18px;
+  width: 100%;
+  text-align: left;
+  border: none;
+  outline: none;
+  transition: 0.4s;
+}
+
+/* Add a background color to the button if it is clicked on (add the .active class with JS), and when you move the mouse over it (hover) */
+.active, .accordion:hover {
+  background-color: #ccc;
+}
+
+/* Style the accordion panel. Note: hidden by default */
+.panel {
+  padding: 0 18px;
+  background-color: white;
+  display: none;
+  overflow: hidden;
+}
+
+@media (max-width: 768px) {
+  .first-column, .second-column {
+      flex: 0 0 100%;
+      max-width: 100%;
+      padding: 0;
+  }
+}
