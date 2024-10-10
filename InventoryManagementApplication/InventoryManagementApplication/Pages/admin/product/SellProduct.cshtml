@@ -6,6 +6,8 @@
     
 }
 
+    <a asp-page="./Index" type="button" id="createButton" class="btn btn-secondary me-2">Tillbaka</a>
+
 <table id="productTable" class="table" data-sort-direction="asc">
     <thead>
         <tr>
@@ -61,16 +63,21 @@
         {
             @foreach (var item in Model.InventoryTrackers)
             {
-                <tr>
-                    <td>@Html.DisplayFor(modelItem => item.Storage.Name)</td>
-                    <td>@Html.DisplayFor(modelItem => item.Product.Name)</td>
-                    <td>@Html.DisplayFor(modelItem => Model.CurrentProductAmountList[x]) / @Html.DisplayFor(modelItem => item.Storage.MaxCapacity)</td>
-                    <td>@String.Format(new System.Globalization.CultureInfo("sv-SE"), "{0:C}", item.Product.Price)</td>
+                
+                if(Model.CurrentProductAmountList[x].Value != 0)
+                {
+                    <tr>
+                        <td>@Html.DisplayFor(modelItem => item.Storage.Name)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Product.Name)</td>
+                        <td>@Html.DisplayFor(modelItem => Model.CurrentProductAmountList[x]) / @Html.DisplayFor(modelItem => item.Storage.MaxCapacity)</td>
+                        <td>@String.Format(new System.Globalization.CultureInfo("sv-SE"), "{0:C}", item.Product.Price)</td>
 
-                    <td>
-                        <a asp-page="./SellProduct" asp-route-index="@x" asp-route-storageId="@item.StorageId" asp-route-id="@item.ProductId">Sälj</a> |
-                    </td>
-                </tr>
+                        <td>
+                            <a asp-page="./SellProduct" asp-route-index="@x" asp-route-storageId="@item.StorageId" asp-route-id="@item.ProductId">Sälj</a> |
+                        </td>
+                    </tr>
+                }
+               
                 x++;
 
             }

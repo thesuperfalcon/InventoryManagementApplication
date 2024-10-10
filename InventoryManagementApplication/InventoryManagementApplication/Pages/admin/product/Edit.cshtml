@@ -15,49 +15,97 @@
                 </div>
                 <div class="card-body">
                     <form method="post">
+
                         <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
                         <input type="hidden" asp-for="Product.Id" />
+                        @if (User.IsInRole("Admin"))
+                        {
+                            
 
-                        <div class="mb-3">
-                            <label asp-for="Product.Name" class="form-label">Namn</label>
-                            <input asp-for="Product.Name" class="form-control" />
-                            <span asp-validation-for="Product.Name" class="text-danger"></span>
-                        </div>
+                            <div class="mb-3">
+                                <label asp-for="Product.Name" class="form-label">Namn</label>
+                                <input asp-for="Product.Name" class="form-control" />
+                                <span asp-validation-for="Product.Name" class="text-danger"></span>
+                            </div>
 
-                        <div class="mb-3">
-                            <label asp-for="Product.ArticleNumber" class="form-label">Artikelnummer</label>
-                            <input asp-for="Product.ArticleNumber" class="form-control" />
-                            <span asp-validation-for="Product.ArticleNumber" class="text-danger"></span>
-                        </div>
+                            <div class="mb-3">
+                                <label asp-for="Product.ArticleNumber" class="form-label">Artikelnummer</label>
+                                <input asp-for="Product.ArticleNumber" class="form-control" readonly/>
+                                <span asp-validation-for="Product.ArticleNumber" class="text-danger"></span>
+                            </div>
 
-                        <div class="mb-3">
-                            <label asp-for="Product.Description" class="form-label">Beskrivning</label>
-                            <input asp-for="Product.Description" class="form-control" />
-                            <span asp-validation-for="Product.Description" class="text-danger"></span>
-                        </div>
+                            <div class="mb-3">
+                                <label asp-for="Product.Description" class="form-label">Beskrivning</label>
+                                <input asp-for="Product.Description" class="form-control" />
+                                <span asp-validation-for="Product.Description" class="text-danger"></span>
+                            </div>
 
-                        <div class="mb-3">
-                            <label asp-for="Product.Price" class="form-label">Pris</label>
-                            <input asp-for="Product.Price" type="number" class="form-control" />
-                            <span asp-validation-for="Product.Price" class="text-danger"></span>
-                        </div>
+                            <div class="mb-3">
+                                <label asp-for="Product.Price" class="form-label">Pris</label>
+                                <input asp-for="Product.Price" type="number" class="form-control" />
+                                <span asp-validation-for="Product.Price" class="text-danger"></span>
+                            </div>
 
-                        <div class="mb-3">
-                            <label asp-for="Product.TotalStock" class="form-label">Fyll på</label>
-                            <input asp-for="Product.TotalStock" class="form-control" />
-                            <span asp-validation-for="Product.TotalStock" class="text-danger"></span>
-                        </div>                       
+                            <div class="mb-3">
+                                <label asp-for="Product.TotalStock" class="form-label">Fyll på</label>
+                                <input asp-for="Product.TotalStock" class="form-control" />
+                                <span asp-validation-for="Product.TotalStock" class="text-danger"></span>
+                            </div>
 
-                        <div class="mb-3">
-                            <label asp-for="Product.CurrentStock" class="form-label">Aktuellt lager</label>
-                            <input asp-for="Product.CurrentStock" class="form-control" readonly />
-                            <span asp-validation-for="Product.CurrentStock" class="text-danger"></span>
-                        </div>
+                            <div class="mb-3">
+                                <label asp-for="Product.CurrentStock" class="form-label">Aktuellt lager</label>
+                                <input asp-for="Product.CurrentStock" class="form-control" readonly />
+                                <span asp-validation-for="Product.CurrentStock" class="text-danger"></span>
+                            </div>
 
+                            
+
+                        }
+                        else
+                        {
+                           
+
+                            <div class="mb-3">
+                                <label asp-for="Product.Name" class="form-label" >Namn</label>
+                                <input asp-for="Product.Name" class="form-control" readonly/>
+                                <span asp-validation-for="Product.Name" class="text-danger"></span>
+                            </div>
+
+                            <div class="mb-3">
+                                <label asp-for="Product.ArticleNumber" class="form-label">Artikelnummer</label>
+                                <input asp-for="Product.ArticleNumber" class="form-control" readonly />
+                                <span asp-validation-for="Product.ArticleNumber" class="text-danger"></span>
+                            </div>
+
+                            <div class="mb-3">
+                                <label asp-for="Product.Description" class="form-label">Beskrivning</label>
+                                <input asp-for="Product.Description" class="form-control" readonly />
+                                <span asp-validation-for="Product.Description" class="text-danger"></span>
+                            </div>
+
+                            <div class="mb-3">
+                                <label asp-for="Product.Price" class="form-label">Pris</label>
+                                <input asp-for="Product.Price" type="number" class="form-control" readonly />
+                                <span asp-validation-for="Product.Price" class="text-danger"></span>
+                            </div>
+
+                            <div class="mb-3">
+                                <label asp-for="Product.TotalStock" class="form-label">Fyll på</label>
+                                <input asp-for="Product.TotalStock" class="form-control" />
+                                <span asp-validation-for="Product.TotalStock" class="text-danger"></span>
+                            </div>
+
+                            <div class="mb-3">
+                                <label asp-for="Product.CurrentStock" class="form-label">Aktuellt lager</label>
+                                <input asp-for="Product.CurrentStock" class="form-control" readonly />
+                                <span asp-validation-for="Product.CurrentStock" class="text-danger"></span>
+                            </div>
+
+                            
+                        }
                         <input type="hidden" asp-for="Product.Created" />
                         <input type="hidden" asp-for="Product.Updated" value="@DateTime.Now" />
-
                         <div class="d-flex">
                             <input type="submit" value="Spara" class="btn btn-primary me-2" />
                             <a asp-page="./Index" class="btn btn-secondary">Tillbaka till lista</a>

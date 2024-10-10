@@ -25,6 +25,7 @@ using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Sha
 
 namespace InventoryManagementApplication.Areas.Identity.Pages.Account
 {
+    [Authorize]
     public class RegisterModel : PageModel
     {
         private readonly SignInManager<InventoryManagementUser> _signInManager;

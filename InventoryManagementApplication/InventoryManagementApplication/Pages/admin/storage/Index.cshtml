@@ -7,19 +7,27 @@
 
 <div class="container mt-4">
     <h1>Lagerplatser</h1>
-    <h3>Antal lager: @Model.StorageCount</h3>
+    @if (Model.IsDeletedToggle)
+    {
+        <h3>Antal borttagna lager: @Model.StorageCount</h3>
+    }
+    else
+    {
+        <h3>Antal aktiva lager: @Model.StorageCount</h3>
+    }
+    
     <div class="button-container">
         <form method="post" asp-route-buttonId="1">
             <input type="hidden" name="IsDeletedToggle" value="@Model.IsDeletedToggle.ToString().ToLower()" />
             <button class="btn btn-primary" type="submit">
                 @if (Model.IsDeletedToggle)
                 {
-                    <span>Borttagna Lagerplatser</span>
+                    <span>Aktiva Lagerplatser</span>
 
                 }
                 else
                 {
-                    <span>Aktiva Lagerplatser</span>
+                    <span>Borttagna Lagerplatser</span>
                 }
             </button>
         </form>
