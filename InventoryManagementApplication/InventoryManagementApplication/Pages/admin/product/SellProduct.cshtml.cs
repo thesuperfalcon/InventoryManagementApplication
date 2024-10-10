@@ -76,6 +76,13 @@ namespace InventoryManagementApplication.Pages.admin.product
             {
                 Tracker.Quantity -= SellAmount;
                 Storage.CurrentStock -= SellAmount;
+                Product.TotalStock -= SellAmount;
+                if(Storage.Id == 1)
+                {
+                    Product.CurrentStock -= SellAmount;
+                }
+                
+                await _productManager.EditProductAsync(Product);
                 await _trackerManager.EditTrackerAsync(Tracker);
                 await _storageManager.EditStorageAsync(Storage);
                 StatusMessage = "Nu har du sålt " + SellAmount + " antal " + Product.Name;

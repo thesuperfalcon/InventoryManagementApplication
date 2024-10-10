@@ -11,7 +11,7 @@ using System.Text.Json;
 
 namespace InventoryManagementApplication.Pages.admin.product
 {
-    [Authorize(Roles = "Admin")]
+    [Authorize]
     public class EditModel : PageModel
 	{
 		private readonly ProductManager _productManager;

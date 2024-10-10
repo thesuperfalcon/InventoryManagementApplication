@@ -23,8 +23,10 @@ namespace InventoryManagementApplication.Pages.admin.product
 		public bool IsDeletedToggle { get; set; }
 		public int ProductCount { get; set; }
 
-		public async Task OnGet()
+		public async Task OnGet(bool isDeletedToggle = false)
 		{
+
+            IsDeletedToggle = isDeletedToggle;
             Products = await LoadProducts(IsDeletedToggle);
 			ProductCount = Products.Count();         
 		}
@@ -33,10 +35,8 @@ namespace InventoryManagementApplication.Pages.admin.product
 		{
 			if(buttonId == 1)
 			{
-				IsDeletedToggle = !IsDeletedToggle;
-				Products = await LoadProducts(IsDeletedToggle);
-                ProductCount = Products.Count();
-                return Page();
+				IsDeletedToggle = !IsDeletedToggle;				
+                return RedirectToPage("./Index", new { isDeletedToggle = IsDeletedToggle });
 			}
 			else
 			{
