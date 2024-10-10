@@ -1,43 +1,59 @@
-@page "{id:int}" 
+@page "{id:int}"
 @model InventoryManagementApplication.Pages.ProductDetailsModel
 
 <head>
     <link rel="stylesheet" href="~/css/detailspages.css" asp-append-version="true" />
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.8.1/font/bootstrap-icons.min.css">
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.8.1/font/bootstrap-icons.min.css">
 </head>
 <div class="container">
     <div class="row">
-        <!-- Produktdetaljer sektion -->
         <div class="col-md-7">
             <div class="card mb-4">
                 <div class="card-header">
-                  <h2>Produktdetaljer: @Model.Product.Name</h2>
+                    <h2>Produktdetaljer: @Model.Product.Name</h2>
                 </div>
                 <div class="card-body">
-                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editProductModal">Redigera produktdetaljer</button>
+@* Bara admin kan göra ändringar *@
+@if (User.IsInRole("Admin"))
+{
+    <button class="btn btn-generic" data-bs-toggle="modal" data-bs-target="#editStorageModal">
+        <i class="bi bi-pencil"></i>
+    </button>
+}
                     @if (Model.Product != null)
                     {
-                      
-                      <table class="table">
+                       <table class="table">
     <tr>
         <th><strong>Namn</strong></th>
-        <th><strong>Artikelnummer</strong></th>
-        <th><strong>Beskrivning</strong></th>
-        <th><strong>Totalantal</strong></th>
-        <th><strong>Tillgängligt antal</strong></th>
-        <th><strong>Produkt skapad</strong></th>
-        <th><strong>Information uppdaterad</strong></th>
+        <td>@Model.Product.Name</td>
     </tr>
     <tr>
-        <td>@Model.Product.Name</td>
+        <th><strong>Artikelnummer</strong></th>
         <td>@Model.Product.ArticleNumber</td>
+    </tr>
+    <tr>
+        <th><strong>Beskrivning</strong></th>
         <td>@Model.Product.Description</td>
+    </tr>
+    <tr>
+        <th><strong>Totalantal</strong></th>
         <td>@Model.Product.TotalStock</td>
+    </tr>
+    <tr>
+        <th><strong>Tillgängligt antal</strong></th>
         <td>@Model.Product.CurrentStock</td>
+    </tr>
+    <tr>
+        <th><strong>Produkt skapad</strong></th>
         <td>@Model.Product.Created</td>
+    </tr>
+    <tr>
+        <th><strong>Information uppdaterad</strong></th>
         <td>@Model.Product.Updated</td>
     </tr>
 </table>
+
 
                     }
                     else
@@ -47,204 +63,196 @@
                 </div>
             </div>
         </div>
-
-        <!-- Aktiviteter och Lagerförändringar sektion -->
         <div class="col-md-5">
-            <!-- Sammanfattning av allmänna aktiviteter (ActivityLog) -->
             <div class="card mb-4">
                 <div class="card-header">
-                 <!-- Sektion för aktivitetsloggar -->
-    <h3>Aktivitetsloggar för denna produkt</h3>
-<input type="text" id="searchInput" placeholder="Sök i aktivitetsloggar..." class="form-control mb-2" />
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th onclick="sortTable(0)">Namn</th>
-            <th onclick="sortTable(1)">Anställningsnummer</th>
-            <th onclick="sortTable(2)">Händelse</th>
-            <th onclick="sortTable(3)">Datum</th>
-        </tr>
-    </thead>
-    <tbody id="myActivityLogTable">
-        @if (Model.ActivityLogs.Any())
-        {
-            for (int i = 0; i < Model.ActivityLogs.Count; i++)
-            {
-                var log = Model.ActivityLogs[i];
-                <tr>
-                    <td>@Model.UserFullName[i]</td>
-                    <td>@Model.UserEmployeeNumbers[i]</td>
-                    <td>@log.Action</td>
-                    <td>@log.TimeStamp</td>
-                </tr>
-            }
-        }
-        else
-        {
-            <tr>
-                <td colspan="4" class="text-center">Inga aktivitetsloggar tillgängliga för denna produkt.</td>
-            </tr>
-        }
-    </tbody>
-</table>
-
-<!-- Paginering -->
-<div class="d-flex justify-content-between align-items-center">
-    <button id="prevPage" class="btn btn-secondary">Föregående</button>
-    <span id="pageNumber"></span>
-    <button id="nextPage" class="btn btn-secondary">Nästa</button>
-</div>
-
-<!-- Lägg till knappen för att visa fullständig historik -->
-<a asp-page="/Log" asp-route-id="@Model.Product.Id" class="btn btn-info mt-3">
-    Visa fullständig historik
-</a>
-
-
-
-<div class="modal fade" id="editProductModal" tabindex="-1" aria-labelledby="editProductModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg"> <!-- Ger större utrymme för redigering -->
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="editProductModalLabel">Ändra produktinformation</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form method="post" asp-page-handler="UpdateProductInfo" onsubmit="return validateForm();">
-                    <input type="hidden" name="ProductId" value="@Model.Product.Id" />
-                    <div class="form-group mb-3">
-                        <label for="ProductName">Nytt namn</label>
-                        <input type="text" class="form-control" id="ProductName" name="ProductName"
-                            value="@Model.Product.Name" required />
+                    <h3>Aktivitetsloggar för denna produkt</h3>
+                    <input type="text" id="searchInput" placeholder="Sök i aktivitetsloggar..."
+                        class="form-control mb-2" />
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th onclick="sortTable(0)">Namn</th>
+                                <th onclick="sortTable(1)">Anställningsnummer</th>
+                                <th onclick="sortTable(2)">Händelse</th>
+                                <th onclick="sortTable(3)">Datum</th>
+                            </tr>
+                        </thead>
+                        <tbody id="myActivityLogTable">
+                            @if (Model.ActivityLogs.Any())
+                            {
+                                for (int i = 0; i < Model.ActivityLogs.Count; i++)
+                                {
+                                    var log = Model.ActivityLogs[i];
+                                    <tr>
+                                        <td>@Model.UserFullName[i]</td>
+                                        <td>@Model.UserEmployeeNumbers[i]</td>
+                                        <td>@log.Action</td>
+                                        <td>@log.TimeStamp</td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="4" class="text-center">Inga aktivitetsloggar är tillgängliga för denna
+                                        produkt.</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <button id="prevPage" class="btn btn-secondary">Föregående</button>
+                        <span id="pageNumber"></span>
+                        <button id="nextPage" class="btn btn-secondary">Nästa</button>
                     </div>
-                    <div class="form-group mb-3">
-                        <label for="ProductDescription">Ny beskrivning</label>
-                        <textarea class="form-control" id="ProductDescription" name="ProductDescription" required>@Model.Product.Description</textarea>
+                    <a asp-page="/Log" asp-route-id="@Model.Product.Id" class="btn btn-info mt-3">
+                        Visa fullständig historik
+                    </a>
+                    <div class="modal fade" id="editProductModal" tabindex="-1" aria-labelledby="editProductModalLabel"
+                        aria-hidden="true">
+                        <div class="modal-dialog modal-lg">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="editProductModalLabel">Ändra produktinformation</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <form method="post" asp-page-handler="UpdateProductInfo"
+                                        onsubmit="return validateForm();">
+                                        <input type="hidden" name="ProductId" value="@Model.Product.Id" />
+                                        <div class="form-group mb-3">
+                                            <label for="ProductName">Nytt namn</label>
+                                            <input type="text" class="form-control" id="ProductName" name="ProductName"
+                                                value="@Model.Product.Name" required />
+                                        </div>
+                                        <div class="form-group mb-3">
+                                            <label for="ProductDescription">Ny beskrivning</label>
+                                            <textarea class="form-control" id="ProductDescription"
+                                                name="ProductDescription" required>@Model.Product.Description</textarea>
+                                        </div>
+                                        <button type="submit" class="btn btn-primary">Spara ändringar</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <button type="submit" class="btn btn-primary">Spara ändringar</button>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
 
-@section Scripts {
-    <script>
-        // Enkel validering för modalformuläret
-        function validateForm() {
-            const name = document.getElementById("ProductName").value;
-            const description = document.getElementById("ProductDescription").value;
-            if (!name || !description) {
-                alert("Alla fält måste fyllas i!");
-                return false;
-            }
-            return true;
-        }
+                    @section Scripts {
+                        <script>
+                            function validateForm() {
+                                const name = document.getElementById("ProductName").value;
+                                const description = document.getElementById("ProductDescription").value;
+                                if (!name || !description) {
+                                    alert("Alla fält måste fyllas i!");
+                                    return false;
+                                }
+                                return true;
+                            }
+                        </script>
+                        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+                        <script>
+                            const rowsPerPage = 5;
+                            let currentPage = 1;
+                            let originalRows = [];
+                            let filteredRows = [];
+                            let visibleRows = [];
 
-       
-    </script>
-     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
-        const rowsPerPage = 5;
-        let currentPage = 1;
-        let originalRows = [];
-        let filteredRows = [];
-        let visibleRows = [];
+                            $(document).ready(function () {
+                                originalRows = Array.from(document.querySelectorAll("#myActivityLogTable tr"));
+                                filteredRows = [...originalRows];
 
-        $(document).ready(function () {
-            originalRows = Array.from(document.querySelectorAll("#myActivityLogTable tr"));
-            filteredRows = [...originalRows];
+                                updateVisibleRows(filteredRows);
+                                paginateTable();
 
-            updateVisibleRows(filteredRows);
-            paginateTable();
+                                // Search functionality
+                                $("#searchInput").on("keyup", function () {
+                                    var value = $(this).val().toLowerCase();
 
-            // Search functionality
-            $("#searchInput").on("keyup", function () {
-                var value = $(this).val().toLowerCase();
+                                    filteredRows = originalRows.filter(row => {
+                                        return row.innerText.toLowerCase().includes(value);
+                                    });
 
-                filteredRows = originalRows.filter(row => {
-                    return row.innerText.toLowerCase().includes(value);
-                });
+                                    updateVisibleRows(filteredRows);
+                                    currentPage = 1;
+                                    paginateTable();
+                                });
 
-                updateVisibleRows(filteredRows);
-                currentPage = 1;
-                paginateTable();
-            });
+                                // Pagination buttons
+                                $("#prevPage").on("click", function () {
+                                    if (currentPage > 1) {
+                                        currentPage--;
+                                        paginateTable();
+                                    }
+                                });
 
-            // Pagination buttons
-            $("#prevPage").on("click", function () {
-                if (currentPage > 1) {
-                    currentPage--;
-                    paginateTable();
-                }
-            });
+                                $("#nextPage").on("click", function () {
+                                    if (currentPage < Math.ceil(filteredRows.length / rowsPerPage)) {
+                                        currentPage++;
+                                        paginateTable();
+                                    }
+                                });
+                            });
 
-            $("#nextPage").on("click", function () {
-                if (currentPage < Math.ceil(filteredRows.length / rowsPerPage)) {
-                    currentPage++;
-                    paginateTable();
-                }
-            });
-        });
+                            function updateVisibleRows(rows) {
+                                visibleRows = rows;
+                                paginateTable();
+                            }
 
-        function updateVisibleRows(rows) {
-            visibleRows = rows;
-            paginateTable();
-        }
+                            function paginateTable() {
+                                const start = (currentPage - 1) * rowsPerPage;
+                                const end = start + rowsPerPage;
 
-        function paginateTable() {
-            const start = (currentPage - 1) * rowsPerPage;
-            const end = start + rowsPerPage;
+                                // Hide all rows first
+                                $("#myActivityLogTable tr").hide();
 
-            // Hide all rows first
-            $("#myActivityLogTable tr").hide();
+                                // Show only the rows that fall within the current page
+                                visibleRows.forEach((row, index) => {
+                                    if (index >= start && index < end) {
+                                        $(row).show();
+                                    }
+                                });
 
-            // Show only the rows that fall within the current page
-            visibleRows.forEach((row, index) => {
-                if (index >= start && index < end) {
-                    $(row).show();
-                }
-            });
+                                // Update the current page number display
+                                const pageNumberElement = document.getElementById("pageNumber");
+                                pageNumberElement.innerText = `Sida ${currentPage} av ${Math.ceil(filteredRows.length / rowsPerPage)}`;
+                            }
 
-            // Update the current page number display
-            const pageNumberElement = document.getElementById("pageNumber");
-            pageNumberElement.innerText = `Sida ${currentPage} av ${Math.ceil(filteredRows.length / rowsPerPage)}`;
-        }
+                            // Sort function
+                            function sortTable(columnIndex) {
+                                const table = document.querySelector("#myActivityLogTable");
+                                const isAscending = table.getAttribute("data-sort-direction") === "asc";
 
-        // Sort function
-        function sortTable(columnIndex) {
-            const table = document.querySelector("#myActivityLogTable");
-            const isAscending = table.getAttribute("data-sort-direction") === "asc";
+                                // Sort filtered rows
+                                filteredRows.sort((a, b) => {
+                                    const cellA = a.cells[columnIndex].innerText.trim();
+                                    const cellB = b.cells[columnIndex].innerText.trim();
 
-            // Sort filtered rows
-            filteredRows.sort((a, b) => {
-                const cellA = a.cells[columnIndex].innerText.trim();
-                const cellB = b.cells[columnIndex].innerText.trim();
+                                    // Check if the column is a date or number
+                                    const isNumber = !isNaN(Date.parse(cellA)) || !isNaN(parseFloat(cellA));
 
-                // Check if the column is a date or number
-                const isNumber = !isNaN(Date.parse(cellA)) || !isNaN(parseFloat(cellA));
+                                    if (isNumber) {
+                                        return isAscending
+                                            ? new Date(cellA) - new Date(cellB)
+                                            : new Date(cellB) - new Date(cellA);
+                                    } else {
+                                        return isAscending
+                                            ? cellA.localeCompare(cellB, 'sv-SE', { sensitivity: 'base' })
+                                            : cellB.localeCompare(cellA, 'sv-SE', { sensitivity: 'base' });
+                                    }
+                                });
 
-                if (isNumber) {
-                    return isAscending
-                        ? new Date(cellA) - new Date(cellB)
-                        : new Date(cellB) - new Date(cellA);
-                } else {
-                    return isAscending
-                        ? cellA.localeCompare(cellB, 'sv-SE', { sensitivity: 'base' })
-                        : cellB.localeCompare(cellA, 'sv-SE', { sensitivity: 'base' });
-                }
-            });
+                                // Toggle sorting direction
+                                table.setAttribute("data-sort-direction", isAscending ? "desc" : "asc");
 
-            // Toggle sorting direction
-            table.setAttribute("data-sort-direction", isAscending ? "desc" : "asc");
+                                // Re-append sorted rows
+                                const tbody = document.querySelector("#myActivityLogTable");
+                                filteredRows.forEach(row => tbody.appendChild(row));
 
-            // Re-append sorted rows
-            const tbody = document.querySelector("#myActivityLogTable");
-            filteredRows.forEach(row => tbody.appendChild(row));
+                                currentPage = 1;
+                                paginateTable();
+                            }
 
-            currentPage = 1;
-            paginateTable();
-        }
-
-    </script>
-}
+                        </script>
+                    }

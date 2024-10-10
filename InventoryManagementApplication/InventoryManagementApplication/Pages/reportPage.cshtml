@@ -4,7 +4,6 @@
 }
 
 <h1>Lagersaldo</h1>
-
 <head>
     <link rel="stylesheet" href="~/css/reportpage.css" asp-append-version="true" />
 </head>
@@ -23,30 +22,28 @@
             <th>Antal</th>
         </tr>
     </thead>
-    <tbody>
-        @foreach (var storage in Model.Storages)
-        {
-            var uniqueId = $"nestedTable{storage.Id}";
+<tbody>
+    @foreach (var storage in Model.Storages)
+    {
+        var uniqueId = $"nestedTable{storage.Id}";
 
-               <tr>
-                <!-- Plusikon, separat från lagernamnet -->
-                <td class="toggle-row" data-target="#@uniqueId">
+        <tr>
+            <td>
+                <!-- Toggle-ikon inom lagernamnscellen -->
+                <span class="toggle-row" data-target="#@uniqueId" style="cursor: pointer; margin-right: 5px;">
                     <i class="bi bi-plus-square toggle-icon" data-target="#@uniqueId"></i>
-                </td>
-
-                <!-- Lagernamn, som länk -->
-                <td>
-                    <a asp-page="/StorageDetails" asp-route-id="@storage.Id" class="custom-link">
-                        @storage.Name
-                    </a>
-                </td>
-                <td>
-                    @storage.MaxCapacity
-                </td>
-                <td>
-                    @storage.CurrentStock
-                </td>
-            </tr>
+                </span>
+        <a asp-page="/StorageDetails" asp-route-id="@storage.Id" class="custom-link">
+            @storage.Name
+        </a>
+    </td>
+    <td>
+        @storage.MaxCapacity
+    </td>
+    <td>
+        @storage.CurrentStock
+    </td>
+</tr>
 
             <tr id="@uniqueId" class="nested-table-row" style="display: none;">
                 <td colspan="3">

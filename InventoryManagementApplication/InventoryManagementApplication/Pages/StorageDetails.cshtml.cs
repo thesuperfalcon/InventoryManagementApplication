@@ -1,5 +1,5 @@
 using InventoryManagementApplication.Models;
-using InventoryManagementApplication.DAL; 
+using InventoryManagementApplication.DAL;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
@@ -8,14 +8,12 @@ using InventoryManagementApplication.Data;
 
 namespace InventoryManagementApplication.Pages
 {
-     public class StorageDetailsModel : PageModel
+    public class StorageDetailsModel : PageModel
     {
         private readonly InventoryManagementApplicationContext _context;
         private readonly LogManager _logManager;
         private readonly UserManager _userManager;
 
-
-  
         public StorageDetailsModel(InventoryManagementApplicationContext context, LogManager logManager, UserManager userManager)
         {
             _context = context;
@@ -27,11 +25,11 @@ namespace InventoryManagementApplication.Pages
         public List<Log> ActivityLogs { get; set; } = new List<Log>();
         public List<string> UserFullName { get; set; } = new List<string>();
         public List<string> UserEmployeeNumbers { get; set; } = new List<string>();
-public ICollection<InventoryTracker> InventoryTrackers { get; set; }
+        public ICollection<InventoryTracker> InventoryTrackers { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int id)
         {
-            // Hämta lagret
+            // Hämtar lagret
             Storage = await _context.Storages
                 .Include(s => s.InventoryTrackers)
                 .ThenInclude(it => it.Product)
@@ -42,11 +40,9 @@ public ICollection<InventoryTracker> InventoryTrackers { get; set; }
                 return NotFound();
             }
 
-            // Hämta alla loggar och filtrera efter lagret
             var allLogs = await _logManager.GetAllLogsAsync();
             ActivityLogs = allLogs.Where(log => log.EntityType.Contains("Storage") && log.EntityName == Storage.Name).ToList();
 
-            // Hämta användarinformation för varje logg
             var users = await _userManager.GetAllUsersAsync();
             var userDictinary = users.ToDictionary(
                 u => u.Id,
@@ -65,18 +61,18 @@ public ICollection<InventoryTracker> InventoryTrackers { get; set; }
                     UserEmployeeNumbers.Add("N/A");
                 }
             }
-    InventoryTrackers = Storage.InventoryTrackers;
+
+            InventoryTrackers = Storage.InventoryTrackers;
             return Page();
         }
 
-    
-        public async Task<IActionResult> OnPostUpdateStorageAsync(int StorageId, string StorageName, int StorageMaxCapacity)
+        //Uppdaterar lagerinformation
+        public async Task<IActionResult> OnPostUpdateStorageAsync(int StorageId, string StorageName)
         {
             var storage = await _context.Storages.FindAsync(StorageId);
             if (storage == null) return NotFound();
 
             storage.Name = StorageName;
-            storage.MaxCapacity = StorageMaxCapacity;
             storage.Updated = DateTime.Now;
 
             await _context.SaveChangesAsync();
