@@ -27,7 +27,7 @@ namespace InventoryManagementApplication.Pages
             _userManager = userManager;
         }
 
-        public async Task OnGetAsync(string query)
+        public async Task OnGetAsync(string query, string articleNumber, string employeeNumber)
         {
             Products = new List<Product>();
             Storages = new List<Storage>();
@@ -37,9 +37,9 @@ namespace InventoryManagementApplication.Pages
 
             if (!string.IsNullOrWhiteSpace(query))
             {
-                Products = await _productManager.SearchProductsAsync(query, null);
+                Products = await _productManager.SearchProductsAsync(query, query);
                 Storages = await _storageManager.SearchStoragesAsync(query);
-                Users = await _userManager.SearchUsersAsync(query, null);
+                Users = await _userManager.SearchUsersAsync(query, query);
             }
 
             Query = query;
