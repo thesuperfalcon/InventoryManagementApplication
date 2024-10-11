@@ -117,15 +117,15 @@ namespace InventoryManagementApplication.Areas.Identity.Pages.Account
 
             // Tillagt manuellt
 
-            [Required]
+            [Required(ErrorMessage = "Förnamn är obligatoriskt.")]
             [Display(Name = "Förnamn")]
             public string FirstName { get; set; }
 
-            [Required]
+            [Required(ErrorMessage = "Efternamn är obligatoriskt.")]
             [Display(Name = "Efternamn")]
             public string LastName { get; set; }
 
-            [Required]
+            [Required(ErrorMessage = "Anställningsnummer är obligatoriskt.")]
             [Display(Name = "Anställningsnummer")]
             public string EmployeeNumber { get; set; }
 
