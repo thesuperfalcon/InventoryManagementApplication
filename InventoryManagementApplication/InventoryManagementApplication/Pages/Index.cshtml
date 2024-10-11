@@ -11,8 +11,8 @@
     var user = await UserManager.GetUserAsync(User);
 }
 
-<body class=" logedin-page-background">
-
+<body class="logedin-page-background">
+    
 @if (User.Identity.IsAuthenticated)
 {
     <div class="container-boxes" >
@@ -128,7 +128,7 @@ else
         </div>
     </div>
 }
-
+   
 </body>
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
