@@ -31,6 +31,7 @@ namespace InventoryManagementApplication.Pages
         {
             if (!string.IsNullOrWhiteSpace(query))
             {
+                Query = query;
                 Products = await _productManager.SearchProductsAsync(query, query);
                 Storages = await _storageManager.SearchStoragesAsync(query);
                 Users = await _userManager.SearchUsersAsync(query, query);
