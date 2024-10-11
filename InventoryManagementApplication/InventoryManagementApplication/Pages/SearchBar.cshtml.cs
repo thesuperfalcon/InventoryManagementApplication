@@ -27,22 +27,50 @@ namespace InventoryManagementApplication.Pages
             _userManager = userManager;
         }
 
-        public async Task OnGetAsync(string query)
+        public async Task<IActionResult> OnGetAsync(string query)
         {
-            Products = new List<Product>();
-            Storages = new List<Storage>();
-            Users = new List<InventoryManagementUser>();
-
-            
-
             if (!string.IsNullOrWhiteSpace(query))
             {
+                Query = query; // Set the query to the property
                 Products = await _productManager.SearchProductsAsync(query, null);
                 Storages = await _storageManager.SearchStoragesAsync(query);
                 Users = await _userManager.SearchUsersAsync(query, null);
             }
 
-            Query = query;
+            return Page(); // Render the page
+        }
+
+        public async Task<IActionResult> OnGetSearchSuggestionsAsync(string query)
+        {
+            //Products = new List<Product>();
+            //Storages = new List<Storage>();
+            //Users = new List<InventoryManagementUser>();
+
+            if (string.IsNullOrWhiteSpace(query))
+            {
+                return new JsonResult(new List<Object>());
+            }
+
+            var productSuggestions = await _productManager.SearchProductsAsync(query, null);
+            var storageSuggestions = await _storageManager.SearchStoragesAsync(query);
+            var userSuggestions = await _userManager.SearchUsersAsync(query, null);
+
+
+            // Combine the results into a single list
+            var suggestions = productSuggestions.Select(p => new { name = p.Name })
+                                .Concat(storageSuggestions.Select(s => new { name = s.Name }))
+                                .Concat(userSuggestions.Select(u => new { name = u.UserName }))
+                                .ToList();
+
+            return new JsonResult(suggestions);
+            //if (!string.IsNullOrWhiteSpace(query))
+            //{
+            //    Products = await _productManager.SearchProductsAsync(query, null);
+            //    Storages = await _storageManager.SearchStoragesAsync(query);
+            //    Users = await _userManager.SearchUsersAsync(query, null);
+            //}
+
+            //Query = query;
         }
     }
 
