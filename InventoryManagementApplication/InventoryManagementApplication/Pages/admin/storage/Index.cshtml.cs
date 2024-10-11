@@ -27,10 +27,10 @@ namespace InventoryManagementApplication.Pages.admin.storage
         [BindProperty]
         public bool IsDeletedToggle { get; set; }
 
-        public async Task OnGetAsync()
+        public async Task OnGetAsync(bool isDeletedToggle = false)
         {
-            //ändra till false
-			Storages = await LoadStorages(IsDeletedToggle);
+            IsDeletedToggle = isDeletedToggle;
+            Storages = await LoadStorages(IsDeletedToggle);
             StorageCount = Storages.Count();
 		}
 
@@ -38,9 +38,8 @@ namespace InventoryManagementApplication.Pages.admin.storage
         {
             if(buttonId == 1)
             {
-                IsDeletedToggle = !IsDeletedToggle;
-                Storages = await LoadStorages(IsDeletedToggle);
-                StorageCount = Storages.Count();
+                IsDeletedToggle = !IsDeletedToggle;              
+                return RedirectToPage("./Index", new {isDeletedToggle = IsDeletedToggle});
             }
            
             return Page();

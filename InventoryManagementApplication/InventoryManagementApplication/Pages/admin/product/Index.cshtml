@@ -1,4 +1,4 @@
-﻿@page
+@page
 @model InventoryManagementApplication.Pages.admin.product.IndexModel
 
 @{
@@ -18,7 +18,7 @@
             }
             else
             {
-                <span>Aktiva Produkter</span>
+                <span>Borttagna Produkter</span>
             }
         </button>
     </form>
@@ -68,6 +68,7 @@
                     }
                     else
                     {
+                        <a asp-page="./Edit" asp-route-id="@item.Id">Fyll på</a>
                         <span> | <a asp-page="./Details" asp-route-id="@item.Id">Info</a> | </span>
                     }
                 </td>

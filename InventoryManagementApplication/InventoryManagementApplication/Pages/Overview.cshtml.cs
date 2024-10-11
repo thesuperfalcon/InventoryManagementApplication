@@ -1,11 +1,13 @@
 using InventoryManagementApplication.Areas.Identity.Data;
 using InventoryManagementApplication.DAL;
 using InventoryManagementApplication.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace InventoryManagementApplication.Pages
 {
+    [Authorize]
     public class OverviewModel : PageModel
     {
         private readonly UserManager _userManager;
