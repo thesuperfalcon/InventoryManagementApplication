@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.CodeAnalysis.Operations;
 using Microsoft.Identity.Client.Extensions.Msal;
 
 namespace InventoryManagementApplication.Pages.admin.tracker
@@ -37,6 +38,8 @@ namespace InventoryManagementApplication.Pages.admin.tracker
 		}
 		[TempData]
 		public string StatusMessage { get; set; }
+		[TempData]
+        public string StatusMessage1 { get; set; }
         public InventoryManagementUser MyUser { get; set; }
         [BindProperty]
         public InventoryTracker InventoryTracker { get; set; } = default!;
@@ -76,7 +79,7 @@ namespace InventoryManagementApplication.Pages.admin.tracker
 			int toStorageId = (int)InventoryTracker.StorageId;
 			int quantity = (int)InventoryTracker.Quantity;
 
-            if (productId < 0 || fromStorageId < 0 || toStorageId < 0 || quantity < 0)
+            if (productId <= 0 || fromStorageId <= 0 || toStorageId <= 0 || quantity <= 0)
             {
                 return RedirectToPage("./Create", new { id = InventoryTracker.Id });
             }
@@ -94,12 +97,12 @@ namespace InventoryManagementApplication.Pages.admin.tracker
                 }
                 else
                 {
-                    StatusMessage = tuple.Item2 != string.Empty ? tuple.Item2 : "Förflyttning lyckades!";
+                    StatusMessage1 = tuple.Item2 != string.Empty ? tuple.Item2 : "Förflyttning lyckades!";
 					await _statisticManager.GetValueFromStatisticAsync(MyUser.Id, fromStorageId, toStorageId, productId, quantity, null);
-                    return RedirectToPage("./Index");
+                    return RedirectToPage("./Create");
                 }
             }
-            StatusMessage = "Förflyttning lyckades ej";
+            //StatusMessage = "Förflyttning lyckades ej";
             return RedirectToPage("./Create", new { id = InventoryTracker.Id });
 
         }

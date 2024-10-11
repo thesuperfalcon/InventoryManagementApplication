@@ -28,7 +28,7 @@
                         <div class="mb-3">
                             <label asp-for="InventoryTracker.StorageId" class="form-label">Lagerplats</label>
                             <select asp-for="InventoryTracker.StorageId" class="form-select" asp-items="Model.StorageSelectList"></select>
-                        </div>             
+                        </div>
 
                         <div class="mb-3">
                             <label asp-for="InventoryTracker.Quantity" class="form-label">Antal</label>
@@ -41,12 +41,14 @@
                             <a asp-page="Index" class="btn btn-secondary">Tillbaka till lista</a>
                         </div>
 
-                      @if (!string.IsNullOrEmpty(Model.StatusMessage))
-{
-    <div class="mt-3 alert alert-danger">
-        @Model.StatusMessage
-    </div>
-}
+                        @if (!string.IsNullOrEmpty(Model.StatusMessage))
+                        {
+                            <div class="mt-3 alert alert-danger">@Model.StatusMessage</div>
+                        }
+                        @if (!string.IsNullOrEmpty(Model.StatusMessage1))
+                        {
+                            <div class="mt-3 alert alert-success">@Model.StatusMessage1</div>
+                        }
                     </form>
                 </div>
             </div>
@@ -61,5 +63,5 @@
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
 
-   <script src="~/js/tooltipvalidationadvanced.js"></script>
+    <script src="~/js/tooltipvalidationadvanced.js"></script>
 }
