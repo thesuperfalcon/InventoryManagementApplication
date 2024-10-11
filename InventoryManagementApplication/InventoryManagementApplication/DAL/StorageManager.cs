@@ -125,7 +125,7 @@ namespace InventoryManagementApplication.DAL
             }
         }
 
-        public async Task<List<Storage>> SearchStoragesAsync(string? name)
+        public async Task<List<Storage>> SearchStoragesAsync(string? inputValue)
         {
             using (var client = new HttpClient())
             {
@@ -133,9 +133,9 @@ namespace InventoryManagementApplication.DAL
                 string uri = "api/Storages/SearchStorages";
 
 
-                if (!string.IsNullOrEmpty(name))
+                if (!string.IsNullOrEmpty(inputValue))
                 {
-                    uri += $"?name={Uri.EscapeDataString(name ?? "")}&articleNumber={Uri.EscapeDataString(name ?? "")}";
+                    uri += $"?inputValue={inputValue}";
                 }
 
                 HttpResponseMessage responseStorages = await client.GetAsync(uri);
