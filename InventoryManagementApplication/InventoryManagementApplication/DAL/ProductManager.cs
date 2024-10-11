@@ -138,7 +138,7 @@ namespace InventoryManagementApplication.DAL
         //        return Products;
         //    }
         //}
-        public async Task<List<Product>> SearchProductsAsync(string? name, string? articleNumber)
+        public async Task<List<Product>> SearchProductsAsync(string? inputValue)
         {
             using (var client = new HttpClient())
             {
@@ -146,10 +146,11 @@ namespace InventoryManagementApplication.DAL
                 string uri = "api/Products/SearchProducts";
 
 
-                if (!string.IsNullOrEmpty(name) || !string.IsNullOrEmpty(articleNumber))
+                if (!string.IsNullOrEmpty(inputValue))
                 {
-                    uri += $"?name={Uri.EscapeDataString(name ?? "")}&articleNumber={Uri.EscapeDataString(articleNumber ?? "")}";
-                }
+					uri += $"?inputValue={inputValue}";
+
+				}
 
                 HttpResponseMessage responseProducts = await client.GetAsync(uri);
 

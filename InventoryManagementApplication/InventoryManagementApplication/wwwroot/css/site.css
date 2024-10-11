@@ -309,6 +309,7 @@ footer {
 .search-form {
     display: flex;
     align-items: center;
+    position: relative;
 }
 
 .search-input {
@@ -317,14 +318,43 @@ footer {
     border-radius: 0.25rem;
     padding: 0.5rem 1rem;
     transition: border-color 0.3s;
-    margin-bottom: 5px;
+    margin-bottom: 0;
+    width: 100%;
+    max-width: 400px;
 }
 
-    .search-input::placeholder {
+#suggestionsList {
+    max-height: 200px;
+    overflow-y: auto;
+    background-color: white;
+    border: 1px solid #ced4da;
+    border-radius: 0.25rem;
+    margin-top: 0;
+    padding: 0;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    display: none;
+    top: calc(100%);
+    left: 0;
+    min-width: calc(100% - 2px);
+}
+
+
+#suggestionsList li {
+    padding: 8px 12px;
+}
+
+    #suggestionsList li:hover {
+        background-color: #f8f9fa;
+        cursor: pointer;
+    }
+
+
+.search-input::placeholder {
         color: #6c757d;
     }
 
-    .search-input:focus {
+.search-input:focus {
         border-color: #0056b3;
         box-shadow: 0 0 0.2rem rgba(0, 123, 255, 0.25);
     }
@@ -405,29 +435,3 @@ body {
     margin-right: 0; /* Tar bort höger marginal för den sista boxen */
 }
 
-#suggestionsList {
-    max-height: 200px; /* Set a max-height */
-    overflow-y: auto; /* Enable scrolling if there are many suggestions */
-    background-color: white; /* Ensure it's visible */
-    border: 1px solid #ced4da; /* Border like form-control */
-    border-radius: 0.25rem; /* Rounded corners for the dropdown */
-    margin-top: 0; /* Ensure there is no margin at the top */
-    padding: 0; /* Remove padding */
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for better visibility */
-    z-index: 1000; /* Ensure it appears on top */
-    display: none; /* Initially hidden, show when there are suggestions */
-    top: calc(100%); /* Position directly below the input */
-}
-
-#searchInput {
-    margin-bottom: 0; /* Remove bottom margin */
-}
-
-    #suggestionsList li {
-        padding: 8px 12px; /* Add some padding for the list items */
-    }
-
-        #suggestionsList li:hover {
-            background-color: #f8f9fa; /* Light background on hover */
-            cursor: pointer; /* Change cursor to pointer */
-        }

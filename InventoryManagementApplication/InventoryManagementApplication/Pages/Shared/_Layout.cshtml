@@ -75,12 +75,12 @@
                     {
                         <div class="d-flex ms-auto">
                             <form method="get" action="/SearchBar" class="search-form" id="searchForm">
-                                <input type="search" id="searchInput" name="query" placeholder="Sök..." aria-label="Search" class="form-control search-input me-2" 
+                                <input type="search" id="searchInputNav" name="query" placeholder="Sök..." aria-label="Search" class="form-control search-input me-2" 
                                 onkeyup="fetchSuggestions()" autocomplete="off" />
                                 <button type="submit" class="btn search-button">
                                     <i class="bi bi-search"></i>
                                 </button>
-                                <ul id="suggestionsList" class="list-group position-absolute" style="display: none; width: 100%; z-index: 1000;"></ul>
+                                <ul id="suggestionsList" class="list-group position-absolute"></ul>
                             </form>
                         </div>
                     }
@@ -161,7 +161,7 @@
         function fetchSuggestions() {
             clearTimeout(debounceTimer);  // Clear previous timer if it exists
             debounceTimer = setTimeout(function () {  // Set a new timer for debouncing
-                let query = document.getElementById('searchInput').value;
+                let query = document.getElementById('searchInputNav').value;
 
                 if (query.length > 0) {
                     $.ajax({
@@ -179,7 +179,9 @@
                             if (data.$values && data.$values.length > 0) {
                                 suggestions.show();  // Show the dropdown
                                 data.$values.forEach(function (item) {
-                                    suggestions.append(`<li onclick="selectSuggestion('${item.name}')" class="list-group-item">${item.name}</li>`);
+
+                                    suggestions.append(`<li onclick="selectSuggestion('${item.name}')" class="list-group-item">${item.secondValue}</li>`);
+                                   
                                 });
                             } else {
                                 suggestions.hide();  // Hide the dropdown if no results
@@ -197,7 +199,7 @@
         }
 
         function selectSuggestion(value) {
-            document.getElementById('searchInput').value = value;
+            document.getElementById('searchInputNav').value = value;
             $('#suggestionsList').hide(); // Hide suggestions after selection
         }
     </script>
