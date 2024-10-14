@@ -1,21 +1,16 @@
 @page "{id:int}"
 @model InventoryManagementApplication.Pages.StorageDetailsModel
 @using System.Text.Json
-
-
-
-
-
 <div class="container">
     <div class="row">
-        <div class="col-md-6">
-            <div class="card mb-6">
+           <div class="col-md-8 first-column">
+            <div class="card mb-8">
                 <div class="card-header">
                     <h2>Lagerdetaljer: @Model.Storage.Name</h2>
                     @* Bara admin kan göra ändringar *@
                     @if (User.IsInRole("Admin"))
                     {
-                        <button class="btn btn-generic" data-bs-toggle="modal" data-bs-target="#editStorageModal">
+                        <button class="btn btn-generic float-end" data-bs-toggle="modal" data-bs-target="#editStorageModal">
                             <i class="bi bi-pencil"></i>
                         </button>
                     }
@@ -53,9 +48,12 @@
 
 
         
-        <div class="col-md-6">
-            <br>
-            <button class="accordion">Produkter i detta lager</button>
+        <div class="col-md-4 second-column">
+            <!-- Accordion för produkter -->
+            <button class="accordion">
+                <span>Produkter i detta lager</span>
+                <i class="bi bi-chevron-down"></i>
+            </button>
             <div class="panel">
 
   
@@ -131,7 +129,13 @@ else
 
 </div>
 
-            <button class="accordion">Aktivitetslogg</button>
+ <button class="accordion">
+                                 <a asp-page="/Log" asp-route-id="@Model.Storage.Id" class="btn btn-info mt-3">
+                Fullständig logg
+            </a>
+                <span>Aktivitetslogg</span>
+                <i class="bi bi-chevron-down"></i>
+            </button>
             <div class="panel">
 
                     <div id="logsCollapse" class="accordion-collapse collapse show" aria-labelledby="logsHeading" data-bs-parent="#logsAccordion">
@@ -189,9 +193,7 @@ else
     <button id="logNextPage" class="btn btn-secondary">Nästa</button>
 </div>
 
-                             <a asp-page="/Log" asp-route-id="@Model.Storage.Id" class="btn btn-info mt-3">
-                Visa fullständig historik
-            </a>
+
                         </div>
                     </div>
                 </div>
@@ -237,7 +239,7 @@ else
             // *** Produkttabellen ***
 
             // Variabler för produkttabellen
-            const productRowsPerPage = 5;
+            const productRowsPerPage = 3;
             let productCurrentPage = 1;
             let productOriginalRows = [];
             let productFilteredRows = [];
@@ -245,7 +247,7 @@ else
             // *** Loggtabellen ***
 
             // Variabler för loggtabellen
-            const logRowsPerPage = 5;
+            const logRowsPerPage = 3;
             let logCurrentPage = 1;
             let logOriginalRows = [];
             let logFilteredRows = [];
