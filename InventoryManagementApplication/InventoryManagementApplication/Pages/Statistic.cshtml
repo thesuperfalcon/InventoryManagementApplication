@@ -7,9 +7,6 @@
 <input hidden value="@Model.EmployeeNumber" id="emplyeeNumber"/>
 <h1>Lagersaldo och Förflyttningsstatistik @formattedDate</h1>
 
-<div class="mb-3">
-    <button id="toggleButton" class="btn btn-primary" onclick="toggleContent()">Visa Leaderboard</button>
-</div>
 
 <div style="display: flex;">
     <div style="flex-grow: 1;">
@@ -118,8 +115,8 @@
 
         <div id="content2" class="mt-3" style="display: block;">
             <div style="display: flex; align-items: center;">
-                <h2>Statistik</h2>
-                <button class="btn btn-info" data-bs-toggle="modal" data-bs-target="#cheatsheetModal">Visa Cheatsheet för Sökning</button>
+                    <button id="toggleButton" class="btn btn-primary" onclick="toggleContent()">Visa Leaderboard</button>
+                <button id="helpButton" class="btn btn-info" onclick="toggleHelp()"></button>
             </div>
 
             <div class="mb-3">
@@ -199,6 +196,7 @@
             </table>
 
             <div class="mb-3">
+                <div class="pagination-wrapper">
                 <button id="prevPage" class="btn btn-primary">Bak</button>
                 <span id="pageNumber" class="mx-3"></span>
                 <button id="nextPage" class="btn btn-primary">Fram</button>

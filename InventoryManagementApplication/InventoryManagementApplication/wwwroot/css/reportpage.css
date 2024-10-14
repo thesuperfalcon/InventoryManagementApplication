@@ -13,3 +13,92 @@
         cursor: pointer; 
         transition: background-color 0.2s ease-in-out; 
     }
+
+.table-bordered th, .table-bordered td {
+    border: 2px solid #dee2e6; 
+    padding: 12px;
+    background-color: #f9f9f9;
+  }
+  
+
+  a.custom-link {
+    text-decoration: none;
+    color: inherit;
+    font-weight: bold;
+    display: inline-block;
+    padding: 2px 5px;
+    transition: background-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  }
+  
+  a.custom-link:hover {
+    background-color: #8f8d8d;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
+  }
+  
+
+  button#toggleAll, button[data-bs-target="#cheatsheetModal"] {
+    background-color: #6c757d;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    margin-right: 10px;
+    font-size: 1rem;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  button#toggleAll:hover, button[data-bs-target="#cheatsheetModal"]:hover {
+    background-color: #5a6268;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
+  }
+
+  button#clearSearch {
+    background-color: #f44336;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 8px 15px;
+    margin-left: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+  }
+  
+  button#clearSearch:hover {
+    background-color: #d32f2f;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  }
+
+  .pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+  }
+  
+  .pagination a, .pagination span {
+    margin: 0 10px;
+    padding: 10px 15px;
+    border: 1px solid #6c757d;
+    border-radius: 5px;
+    color: #6c757d;
+    text-decoration: none;
+  }
+  
+  .pagination a:hover {
+    background-color: #555d64;
+    color: white;
+    transition: background-color 0.3s ease;
+  }
+  
+  button {
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  button:hover {
+    background-color: #555d64;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  

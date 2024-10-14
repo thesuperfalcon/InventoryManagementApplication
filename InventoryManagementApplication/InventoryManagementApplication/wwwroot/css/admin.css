@@ -1,6 +1,4 @@
-body {
-  background-color: #eef1f8 !important;
-}
+
 
 h2 {
   text-align: center;
@@ -14,6 +12,12 @@ p {
 h5 {
   margin-top: 20px !important;
 }
+
+#userInfoContainer
+{
+  background-color: white;
+}
+
 
 .edit-div {
   width: 30px;
@@ -29,6 +33,7 @@ h5 {
   justify-content: center;
   align-items: flex-end;
   margin-left: 40px;
+ background-color: white;
 }
 
 .user-info {
@@ -59,6 +64,7 @@ h5 {
   transition: background-color 0.3s ease;
   color: #f8f7f7 !important;
   min-width: 100px;
+  transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .btn-info:hover,
@@ -67,7 +73,17 @@ h5 {
   background-color: rgb(49, 78, 156) !important;
   border: 2px solid rgb(49, 78, 156) !important;
   color: #f8f7f7 !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
 }
+
+.btn-info,
+.btn-generic,
+.btn-passwordchange.custom-small-btn:active, .btn-go-back:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
+}
+
 
 .btn-passwordchange {
   padding: 5px 10px;
@@ -110,4 +126,55 @@ margin: 20px;
 .text-danger {
     display: block; /* Gör felmeddelandet till block-element så det hamnar under fältet */
     margin-top: 5px;
+}
+
+
+/*Registering*/
+.registration-title
+{
+ justify-content: center;
+ text-align: center;
+ margin-right:40px;
+ margin-top: 20px;
+}
+
+/* Användarroller samt användarinfo*/
+.custom-small-btn {
+  padding: 5px 10px;
+  font-size: 15px; 
+  height: 40px;  
+  width: auto;
+  margin: 20px;
+  background-color: #6c757d; 
+  color: white;             
+  border: none;          
+  border-radius: 5px;    
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease; 
+}
+
+.btn-go-back {
+  background-color: #6c757d;
+  color: white;             
+  border-radius: 5px;     
+  cursor: pointer;
+  border: none;
+  padding: .375rem .75rem;
+  font-size: 1rem;
+  line-height: 1.5;
+  border-radius: .25rem;
+  text-align: center;
+  padding-bottom: 9px;
+  margin-right: 5px;
+  transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.custom-small-btn:hover, .btn-go-back:hover {
+  background-color: #5a6268; 
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+}
+
+.user-form{
+  background-color: white;
 }
