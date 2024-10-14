@@ -15,6 +15,8 @@ namespace InventoryManagementApplication.DTO
         public string? AddRole { get; set; }
 
         [JsonPropertyName("resetPassword")]
-        public bool ResetPassword { get; set; }  
+        public bool ResetPassword { get; set; }
+        [JsonPropertyName("isDeleted")]
+        public bool IsDeleted { get; set; }
     }
 }
