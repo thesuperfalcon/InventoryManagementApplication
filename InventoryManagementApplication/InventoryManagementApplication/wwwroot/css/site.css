@@ -394,7 +394,10 @@ body {
         z-index: -1;
     }
 
-   
+   #userTable
+   {
+       border: 1px solid lightgray;
+   }
 
 
 
