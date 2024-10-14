@@ -144,9 +144,14 @@ namespace InventoryManagementApplication.Areas.Identity.Pages.Account
                     ModelState.AddModelError(string.Empty, "Användarnamnet finns ej!");
                     return Page();
                 }
+                if(user.IsDeleted == true)
+                {
+					ModelState.AddModelError(string.Empty, "Användaren existerar inte!");
+					return Page();
+				}
 
 
-                var result = await _signInManager.PasswordSignInAsync(user.UserName, Input.Password, Input.RememberMe, lockoutOnFailure: false);
+				var result = await _signInManager.PasswordSignInAsync(user.UserName, Input.Password, Input.RememberMe, lockoutOnFailure: false);
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User logged in.");

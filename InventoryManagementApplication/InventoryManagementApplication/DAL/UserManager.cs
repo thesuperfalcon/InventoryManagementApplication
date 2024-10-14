@@ -147,7 +147,8 @@ namespace InventoryManagementApplication.DAL
                     User = user,
                     CurrentRoles = null,
                     AddRole = null,
-                    ResetPassword = false
+                    ResetPassword = false,
+                    IsDeleted = user.IsDeleted != null ? user.IsDeleted.Value : false
                 };
                 var content = new StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(editUserRequest), Encoding.UTF8, "application/json");
                 HttpResponseMessage response = await client.PutAsync($"api/Users/{user.Id}", content);
