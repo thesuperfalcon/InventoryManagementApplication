@@ -46,6 +46,6 @@ public class InventoryManagementUser : IdentityUser
     public bool? IsDeleted { get; set; } = false;
 
     [JsonPropertyName("userName")]
-    public string UserName { get; set; }
+    public override string UserName { get; set; }
 }
 
