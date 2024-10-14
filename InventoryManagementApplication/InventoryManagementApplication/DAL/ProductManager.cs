@@ -1,6 +1,7 @@
 ﻿using InventoryManagementApplication.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Text.Json;
@@ -57,7 +58,23 @@ namespace InventoryManagementApplication.DAL
 			}
 		}
 
-		public async Task<Product> GetProductByIdAsync(int? id, bool? isDeleted)
+		public async Task<bool> CheckProductName(string name)
+		{
+			using (var client = new HttpClient())
+			{
+				client.BaseAddress = BaseAddress;
+				string uri = $"/api/Products/ProductByName/{name}";
+				HttpResponseMessage response = await client.GetAsync(uri);
+				if (response.IsSuccessStatusCode)
+				{
+					string responseString = await response.Content.ReadAsStringAsync();
+					return JsonSerializer.Deserialize<bool>(responseString);
+				}
+			}
+			return false;	
+        }
+
+        public async Task<Product> GetProductByIdAsync(int? id, bool? isDeleted)
 		{
 			using (var client = new HttpClient())
 			{

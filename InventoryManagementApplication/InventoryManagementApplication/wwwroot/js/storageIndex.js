@@ -40,6 +40,7 @@ document.getElementById('searchInput').addEventListener('keyup', function () {
     const table = document.getElementById('storageTable');
     const rows = table.getElementsByTagName('tbody')[0].getElementsByTagName('tr'); // Get the rows of the table body
 
+
     // Loop through the rows and hide those that don't match the search
     Array.from(rows).forEach(row => {
         const cells = row.getElementsByTagName('td');
