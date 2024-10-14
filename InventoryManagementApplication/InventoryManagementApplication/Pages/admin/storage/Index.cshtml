@@ -2,19 +2,13 @@
 @model InventoryManagementApplication.Pages.admin.storage.IndexModel
 @{
     ViewData["Title"] = "Index";
+    string isDeletedMessage = Model.IsDeletedToggle == false ? "Aktiva" : "Borttagna";
 }
 
 
 <div class="container mt-4">
     <h1>Lagerplatser</h1>
-    @if (Model.IsDeletedToggle)
-    {
-        <h3>Antal borttagna lager: @Model.StorageCount</h3>
-    }
-    else
-    {
-        <h3>Antal aktiva lager: @Model.StorageCount</h3>
-    }
+    <h3>Antal (@isDeletedMessage) lagerplatser: @Model.StorageCount</h3>
     
     <div class="button-container">
         <form method="post" asp-route-buttonId="1">
@@ -22,7 +16,7 @@
             <button class="btn btn-primary" type="submit">
                 @if (Model.IsDeletedToggle)
                 {
-                    <span>Borttagna Lagerplatser</span>
+                    <span>Aktiva Lagerplatser</span>
                 }
                 else
                 {
@@ -68,23 +62,33 @@
                     <td>@(item.Created.HasValue ? item.Created.Value.ToString("yyyy-MM-dd") : "Data finns ej")</td>
                     <td>@(item.Updated.HasValue ? item.Updated.Value.ToString("yyyy-MM-dd") : "Data finns ej")</td>
                     <td>
-                        @if (item.Id == 1)
+                        
+                        @if (item.IsDeleted == false)
                         {
-                            <a asp-page="./Details" asp-route-id="@item.Id" class="btn btn-info btn-sm" title="Se mer information"><i class="bi bi-info-circle"></i></a>
-                        }
-                        @if (User.IsInRole("Admin") && item.Id != 1)
-                        {
-                            <div>
+
+                            @if (User.IsInRole("Admin"))
+                            {
                                 <a asp-page="./Edit" asp-route-id="@item.Id" class="btn btn-warning btn-sm" title="Ändra"><i class="bi bi-pencil"></i></a>
-                                <a asp-page="./Details" asp-route-id="@item.Id" class="btn btn-info btn-sm" title="Se mer information"><i class="bi bi-info-circle"></i></a>
+                                <a asp-page="/StorageDetails" asp-route-id="@item.Id" class="btn btn-info btn-sm" title="Se mer information"><i class="bi bi-info-circle"></i></a>
                                 <a asp-page="./Delete" asp-route-id="@item.Id" class="btn btn-danger btn-sm" title="Ta bort"><i class="bi bi-trash"></i></a>
-                            </div>
+                            }
+                            else
+                            {
+                                <a asp-page="/StorageDetails" asp-route-id="@item.Id" class="btn btn-info btn-sm" title="Se mer information"><i class="bi bi-info-circle"></i></a>
+                            }
+
                         }
                         else
                         {
-                            if (item.Id != 1)
+                            @if (User.IsInRole("Admin"))
                             {
-                                <a asp-page="./Details" asp-route-id="@item.Id" class="btn btn-info btn-sm" title="Se mer information"><i class="bi bi-info-circle"></i></a>
+                                <a asp-page="./Edit" asp-route-id="@item.Id" class="btn btn-warning btn-sm" title="Återskapa"><i class="bi bi-pencil"></i></a>
+                                <a asp-page="/StorageDetails" asp-route-id="@item.Id" class="btn btn-info btn-sm" title="Se mer information"><i class="bi bi-info-circle"></i></a>
+                                <a asp-page="./Delete" asp-route-id="@item.Id" class="btn btn-danger btn-sm" title="Ta bort"><i class="bi bi-trash"></i></a>
+                            }
+                            else
+                            {
+                                <a asp-page="/StorageDetails" asp-route-id="@item.Id" class="btn btn-info btn-sm" title="Se mer information"><i class="bi bi-info-circle"></i></a>
                             }
                         }
                     </td>

@@ -46,17 +46,13 @@ namespace InventoryManagementApplication.Pages.admin.storage
 				return Page();
 			}
 
-			var existingStorages = await _storageManager.GetStoragesAsync(false);
-
-			var existingStorageName = existingStorages.FirstOrDefault(x => x.Name.Equals(Storage.Name, StringComparison.OrdinalIgnoreCase));
-			StorageCount = existingStorages.Count();
-
-			if(existingStorageName != null)
+			var result = await _storageManager.CheckStorageName(Storage.Name);
+			if(result == true)
 			{
-				StatusMessage = "Ett lager med detta namn finns redan. Välj ett annat namn";
+				StatusMessage = "Lagerplats med samma namn existerar. Skriv in nytt namn";
 				return Page();
 			}
-
+			
 			await _storageManager.CreateStorageAsync(Storage);
 			StatusMessage1 = $"Du har skapat {Storage.Name} med {Storage.MaxCapacity} platser!";
 

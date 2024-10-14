@@ -3,18 +3,20 @@
 
 @{
     ViewData["Title"] = "Produktkatalog";
+    string IsDeletedMessage = Model.IsDeletedToggle == false ? "Aktiva" : "Borttagna";
+
 }
 
 <h1>Produktkatalog</h1>
-<h3>Antal produkter: @Model.ProductCount</h3>
+<h3>Antal (@IsDeletedMessage)produkter: @Model.ProductCount</h3>
 
 <div class="button-container">
-    <form method="post">
+    <form method="post" asp-route-buttonId="1">
         <input type="hidden" name="IsDeletedToggle" value="@Model.IsDeletedToggle.ToString().ToLower()" />
         <button class="btn btn-primary" type="submit">
             @if (Model.IsDeletedToggle)
             {
-                <span>Borttagna Produkter</span>
+                <span>Aktiva Produkter</span>
             }
             else
             {
@@ -26,6 +28,17 @@
     {
         <a asp-page="./Create" class="btn btn-primary me-2">Lägg till</a>
     }
+</div>
+
+<div class="row mb-3">
+    <div class="col-md-6">
+        <div class="input-group shadow-sm">
+            <input type="text" id="searchInput" class="form-control" placeholder="Filtrera produkter..." onkeyup="filterTable()" />
+            <span class="input-group-text bg-primary text-white">
+                <i class="bi bi-search"></i>
+            </span>
+        </div>
+    </div>
 </div>
 
 <table id="productTable" class="table" data-sort-direction="asc">
@@ -52,24 +65,45 @@
                 <td>@(item.Price.HasValue ? String.Format(new System.Globalization.CultureInfo("sv-SE"), "{0:C}", item.Price) : "Data finns ej")</td>
                 <td>
                     @(item.TotalStock.HasValue ? item.TotalStock.ToString() : "Data finns ej")
-                    <a asp-page="./SellProduct" asp-route-storageId="0" asp-route-id="@item.Id">Sälj produkt</a>
+                    @if (item.IsDeleted == false)
+                    {
+                        <a asp-page="./SellProduct" asp-route-storageId="0" asp-route-id="@item.Id">Sälj produkt</a>
+                    }
                 </td>
                 <td>@(item.CurrentStock.HasValue ? item.CurrentStock.ToString() : "Data finns ej")</td>
                 <td>@(item.Created.HasValue ? item.Created.Value.ToString("yyyy-MM-dd") : "Data finns ej")</td>
                 <td>@(item.Updated.HasValue ? item.Updated.Value.ToString("yyyy-MM-dd") : "Data finns ej")</td>
                 <td>
-                    @if (User.IsInRole("Admin"))
+                    @if (item.IsDeleted == false)
                     {
-                        <a asp-page="./Edit" asp-route-id="@item.Id">Ändra</a>
-                        <span> | </span>
-                        <a asp-page="./Details" asp-route-id="@item.Id">Info</a>
-                        <span> | </span>
-                        <a asp-page="./Delete" asp-route-id="@item.Id">Ta bort</a>
+
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <a asp-page="./Edit" asp-route-id="@item.Id">Ändra</a>
+                            <span> | </span>
+                            <a asp-page="/ProductDetails" asp-route-id="@item.Id">Info</a>
+                            <span> | </span>
+                            <a asp-page="./Delete" asp-route-id="@item.Id">Ta bort</a>
+                        }
+                        else
+                        {
+                            <a asp-page="./Edit" asp-route-id="@item.Id">Fyll på</a>
+                            <span> | <a asp-page="/ProductDetails" asp-route-id="@item.Id">Info</a> | </span>
+                        }
                     }
                     else
                     {
-                        <a asp-page="./Edit" asp-route-id="@item.Id">Fyll på</a>
-                        <span> | <a asp-page="./Details" asp-route-id="@item.Id">Info</a> | </span>
+                        @if(User.IsInRole("Admin"))
+                        {
+                            <a asp-page="./Edit" asp-route-id="@item.Id">Återskapa</a>
+                            <a asp-page="/ProductDetails" asp-route-id="@item.Id">Info</a>
+                            <span> | </span>
+                            <a asp-page="./Delete" asp-route-id="@item.Id">Ta bort</a>
+                        }
+                        else
+                        {
+                            <a asp-page="/ProductDetails" asp-route-id="@item.Id">Info</a>
+                        }
                     }
                 </td>
             </tr>
@@ -80,4 +114,31 @@
 
 @section Scripts {
     <script src="~/js/productIndex.js"></script>
+    <script>
+             document.addEventListener('DOMContentLoaded', function () {
+            // Search functionality
+            document.getElementById('searchInput').addEventListener('keyup', function () {
+                const searchValue = this.value.toLowerCase();
+                const table = document.getElementById('productTable');
+                const rows = table.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+
+                Array.from(rows).forEach(row => {
+                    const cells = row.getElementsByTagName('td');
+                    let rowMatches = false;
+
+                    // Check if any cell contains the search text
+                    for (let i = 0; i < cells.length; i++) {
+                        const cell = cells[i].innerText.toLowerCase();
+                        if (cell.includes(searchValue)) {
+                            rowMatches = true;
+                            break;
+                        }
+                    }
+
+                    // Show or hide the row based on whether it matches
+                    row.style.display = rowMatches ? '' : 'none';
+                });
+            });
+        });
+    </script>
 }

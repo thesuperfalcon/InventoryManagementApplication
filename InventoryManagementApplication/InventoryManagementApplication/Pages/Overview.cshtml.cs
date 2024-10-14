@@ -23,8 +23,8 @@ namespace InventoryManagementApplication.Pages
         }
         public int ProductQuantity { get; set; }
         public int StorageQuantity { get; set; }
-        public Product Product { get; set; }
-        public Storage Storage { get; set; }
+        public Product ProductHighestQuantity { get; set; }
+        public Storage StorageHighestQuantity { get; set; }
         public Product NewestProduct { get; set; }
         public Storage NewestStorage { get; set; }
         public UserStatisticsViewModel UserStatistic { get; set; }
@@ -45,9 +45,9 @@ namespace InventoryManagementApplication.Pages
             ProductQuantity = products.Count;
             StorageQuantity = storages.Count;
 
-            Product = products.MaxBy(x => x.CurrentStock);
+            ProductHighestQuantity = products.MaxBy(x => x.CurrentStock);
 
-            Storage = storages.MaxBy(x => x.CurrentStock);
+            StorageHighestQuantity = storages.MaxBy(x => x.CurrentStock);
 
             NewestProduct = products.MaxBy(x => x.Created);
 

@@ -54,9 +54,8 @@ namespace InventoryManagementApplication.DAL
             }
         }
 
-        public async Task<Storage> GetStorageByNameAsync(string storageName)
+        public async Task<bool> CheckStorageName(string storageName)
         {
-            Storage = new Storage();
             using (var client = new HttpClient())
             {
                 client.BaseAddress = BaseAddress;
@@ -67,10 +66,9 @@ namespace InventoryManagementApplication.DAL
                 if (response.IsSuccessStatusCode)
                 {
                     string responseString = await response.Content.ReadAsStringAsync();
-                    Storage storage = JsonSerializer.Deserialize<Storage>(responseString);
-                    Storage = storage;
+                    return JsonSerializer.Deserialize<bool>(responseString);
                 }
-                return Storage;
+                return false;
             }
         }
 
