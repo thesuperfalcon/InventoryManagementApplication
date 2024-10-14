@@ -34,74 +34,82 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var person in Model.MovementPerPerson.OrderByDescending(p => p.TotalQuantity))
+                    @if (Model.MovementPerPerson.Any())
                     {
-                        <tr class="search">
-                            <td>
-                                <span class="toggle-icon" data-target="#recentMovements_@person.EmployeeNumber">
-                                    <i class="bi bi-plus-square"></i>
-                                </span>
-                                <span class="employee-number" onclick="setMovementAttributes('@person.EmployeeNumber', null, null, null, null, null)">@person.EmployeeNumber</span>
-                            </td>
-                            <td>@person.TotalQuantity</td>
-                            <td>@person.TotalMovements</td>
-                        </tr>
-                        <tr id="recentMovements_@person.EmployeeNumber" class="nested-table-row" style="display:none;">
-                            <td colspan="3">
-                                <table class="table table-striped">
-                                    <thead>
-                                        <tr>
-                                            <th>Produkt</th>
-                                            <th>Produkter flyttade</th>
-                                            <th>Flyttad från</th>
-                                            <th>Flyttad till</th>
-                                            <th>När</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @if (person.RecentMovements.Any())
-                                        {
-                                            foreach (var movement in person.RecentMovements)
+                        @foreach (var person in Model.MovementPerPerson.OrderByDescending(p => p.TotalQuantity))
+                        {
+                            <tr class="search">
+                                <td>
+                                    <span class="toggle-icon" data-target="#recentMovements_@person.EmployeeNumber">
+                                        <i class="bi bi-plus-square"></i>
+                                    </span>
+                                    <span class="employee-number" onclick="setMovementAttributes('@person.EmployeeNumber', null, null, null, null, null)">@person.EmployeeNumber</span>
+                                </td>
+                                <td>@person.TotalQuantity</td>
+                                <td>@person.TotalMovements</td>
+                            </tr>
+                            <tr id="recentMovements_@person.EmployeeNumber" class="nested-table-row" style="display:none;">
+                                <td colspan="3">
+                                    <table class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>Produkt</th>
+                                                <th>Produkter flyttade</th>
+                                                <th>Flyttad från</th>
+                                                <th>Flyttad till</th>
+                                                <th>När</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @if (person.RecentMovements.Any())
+                                            {
+                                                foreach (var movement in person.RecentMovements)
+                                                {
+                                                    <tr>
+                                                        <td>
+                                                            <span id="tooltip" onclick="setMovementAttributes('@person.EmployeeNumber', '@movement.ProductName', '', '', '', '')">
+                                                                @movement.ProductName
+                                                            </span>
+                                                        </td>
+                                                        <td>
+                                                            <span id="tooltip" onclick="setMovementAttributes('@person.EmployeeNumber', '', '@movement.Quantity', '', '', '')">
+                                                                @movement.Quantity
+                                                            </span>
+                                                        </td>
+                                                        <td>
+                                                            <span id="tooltip" onclick="setMovementAttributes('@person.EmployeeNumber', '', '', '@movement.IntitialStorageName', '', '')">
+                                                                @movement.IntitialStorageName
+                                                            </span>
+                                                        </td>
+                                                        <td>
+                                                            <span id="tooltip" onclick="setMovementAttributes('@person.EmployeeNumber', '', '', '', '@movement.DestinationStorageName', '')">
+                                                                @movement.DestinationStorageName
+                                                            </span>
+                                                        </td>
+                                                        <td>
+                                                            <span id="tooltip" onclick="setMovementAttributes('@person.EmployeeNumber', '', '', '', '', '@(movement.Moved.HasValue ? movement.Moved.Value.ToString("yyyy/MM/dd") : "")')">
+                                                                @(movement.Moved.HasValue ? movement.Moved.Value.ToString("yyyy/MM/dd") : "Ingen flytt")
+                                                            </span>
+                                                        </td>
+                                                    </tr>
+                                                }
+                                            }
+                                            else
                                             {
                                                 <tr>
-                                                    <td>
-                                                        <span id="tooltip" onclick="setMovementAttributes('@person.EmployeeNumber', '@movement.ProductName', '', '', '', '')">
-                                                            @movement.ProductName
-                                                        </span>
-                                                    </td>
-                                                    <td>
-                                                        <span id="tooltip" onclick="setMovementAttributes('@person.EmployeeNumber', '', '@movement.Quantity', '', '', '')">
-                                                            @movement.Quantity
-                                                        </span>
-                                                    </td>
-                                                    <td>
-                                                        <span id="tooltip" onclick="setMovementAttributes('@person.EmployeeNumber', '', '', '@movement.IntitialStorageName', '', '')">
-                                                            @movement.IntitialStorageName
-                                                        </span>
-                                                    </td>
-                                                    <td>
-                                                        <span id="tooltip" onclick="setMovementAttributes('@person.EmployeeNumber', '', '', '', '@movement.DestinationStorageName', '')">
-                                                            @movement.DestinationStorageName
-                                                        </span>
-                                                    </td>
-                                                    <td>
-                                                        <span id="tooltip" onclick="setMovementAttributes('@person.EmployeeNumber', '', '', '', '', '@(movement.Moved.HasValue ? movement.Moved.Value.ToString("yyyy/MM/dd") : "")')">
-                                                            @(movement.Moved.HasValue ? movement.Moved.Value.ToString("yyyy/MM/dd") : "Ingen flytt")
-                                                        </span>
-                                                    </td>
+                                                    <td colspan="5" class="text-center">Ingen data..</td>
                                                 </tr>
-
                                             }
-                                        }
-                                        else
-                                        {
-                                            <tr>
-                                                <td colspan="6" class="text-center">Ingen data..</td>
-                                            </tr>
-                                        }
-                                    </tbody>
-                                </table>
-                            </td>
+                                        </tbody>
+                                    </table>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="3" class="text-center">Ingen data..</td>
                         </tr>
                     }
                 </tbody>
@@ -144,36 +152,36 @@
                             <tr>
                                 <td>
                                     <span id="tooltip" onclick="setMovementAttributes('@statistic.EmployeeNumber', '', '', '', '', '')">
-                                    @statistic.UserName
+                                        @statistic.UserName
                                     </span>
-                                    </td>
+                                </td>
                                 <td>
-                                    <span id="tooltip" onclick="setMovementAttributes('@statistic.EmployeeNumber', '', '', '', '', '')">
+                                    <span id="tooltip" onclick="setMovementAttributes('@statistic.EmployeeNumber', '', '', " ", " ", " ")">
                                         @statistic.EmployeeNumber
                                     </span>
                                 </td>
                                 <td>
-                                    <span id="tooltip" onclick="setMovementAttributes('', '@statistic.ProductName', '', '', '', '')">
+                                    <span id="tooltip" onclick="setMovementAttributes(" ", " @statistic.ProductName", "" , "" , "" , "" )">
                                         @statistic.ProductName
                                     </span>
                                 </td>
                                 <td>
-                                    <span id="tooltip" onclick="setMovementAttributes('', '', '@statistic.Quantity', '', '', '')">
+                                    <span id="tooltip" onclick="setMovementAttributes(" ", " ", " @statistic.Quantity", "" , "" , "" )">
                                         @statistic.Quantity
                                     </span>
                                 </td>
                                 <td>
-                                    <span id="tooltip" onclick="setMovementAttributes('', '', '', '@statistic.IntitialStorageName', '', '')">
+                                    <span id="tooltip" onclick="setMovementAttributes(" ", " ", " ", " @statistic.IntitialStorageName", "" , "" )">
                                         @statistic.IntitialStorageName
                                     </span>
                                 </td>
                                 <td>
-                                    <span id="tooltip" onclick="setMovementAttributes('', '', '', '', '@statistic.DestinationStorageName', '')">
+                                    <span id="tooltip" onclick="setMovementAttributes(" ", " ", " ", " ", " @statistic.DestinationStorageName", "" )">
                                         @statistic.DestinationStorageName
                                     </span>
                                 </td>
                                 <td>
-                                    <span id="tooltip" onclick="setMovementAttributes('', '', '', '', '', '@(statistic.Moved.HasValue ? statistic.Moved.Value.ToString("yyyy/MM/dd") : "")')">
+                                    <span id="tooltip" onclick="setMovementAttributes(" ", " ", " ", " ", " ", " @(statistic.Moved.HasValue ? statistic.Moved.Value.ToString("yyyy/MM/dd") : "")")">
                                         @(statistic.Moved.HasValue ? statistic.Moved.Value.ToString("yyyy/MM/dd HH:mm") : "Ingen flytt")
                                     </span>
                                 </td>
@@ -183,7 +191,7 @@
                     else
                     {
                         <tr>
-                            <td colspan="8" class="text-center">Ingen data..</td>
+                            <td colspan="7" class="text-center">Ingen data..</td>
                         </tr>
                     }
                 </tbody>

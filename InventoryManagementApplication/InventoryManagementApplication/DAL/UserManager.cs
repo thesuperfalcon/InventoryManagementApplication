@@ -87,7 +87,7 @@ namespace InventoryManagementApplication.DAL
         }
 
 
-        public async Task<List<InventoryManagementUser>> SearchUsersAsync(string? name, string? employeeNumber)
+        public async Task<List<InventoryManagementUser>> SearchUsersAsync(string? inputValue)
         {
             using (var client = new HttpClient())
             {
@@ -95,9 +95,9 @@ namespace InventoryManagementApplication.DAL
                 string uri = "api/Users/SearchUsers";
 
 
-                if (!string.IsNullOrEmpty(name) || !string.IsNullOrEmpty(employeeNumber))
+                if (!string.IsNullOrEmpty(inputValue))
                 {
-                    uri += $"?name={Uri.EscapeDataString(name ?? "")}&employeeNumber={Uri.EscapeDataString(employeeNumber ?? "")}";
+                    uri += $"?inputValue={inputValue}";
                 }
 
                 HttpResponseMessage responseUsers = await client.GetAsync(uri);

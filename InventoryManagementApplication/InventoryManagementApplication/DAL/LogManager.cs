@@ -99,9 +99,9 @@ namespace InventoryManagementApplication.DAL
 
             string action = state switch
             {
-                EntityState.Added => "Created",
-                EntityState.Modified => "Updated",
-                EntityState.Deleted => "Deleted",
+                EntityState.Added => "Skapad",
+                EntityState.Modified => "Uppdaterad",
+                EntityState.Deleted => "Borttagen",
                 _ => throw new ArgumentException($"Unexpected entity state: {state}"),
             };
 
@@ -116,18 +116,18 @@ namespace InventoryManagementApplication.DAL
                 }
 
                 string changes = CheckChanges(entity, entityNoChanges);
-                details = $"{entityName} {action}: {entity.GetType().Name}. Changes: {changes}";
+                details = $"{action}: {entityName}. Ändringar: {changes}";
             }
             else
             {
-                details = $"{entityName} {action}: {entity.GetType().Name}";
+                details = $"{action}: {entityName}";
             }
 
             var log = new Log
             {
                 UserId = userId,
                 Action = action,
-                EntityType = $"{entity.GetType().Name}: {GetEntityName(entity)}",
+                EntityType = $"{entity.GetType().Name}",
                 EntityName = entityName,
                 EntityDetails = details,
                 TimeStamp = DateTime.UtcNow

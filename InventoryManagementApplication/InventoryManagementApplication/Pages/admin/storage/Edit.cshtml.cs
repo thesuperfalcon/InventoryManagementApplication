@@ -45,7 +45,7 @@ namespace InventoryManagementApplication.Pages.admin.storage
 				return NotFound();
 			}
 
-			var storage = await _storageManager.GetStorageByIdAsync(id, false);
+			var storage = await _storageManager.GetStorageByIdAsync(id, null);
 
 			if (storage == null)
 			{
@@ -59,19 +59,23 @@ namespace InventoryManagementApplication.Pages.admin.storage
         public async Task<IActionResult> OnPostAsync()
         {
 			int id = Storage.Id;
-			string name = Storage.Name;
-            var storageNoChanges = await _storageManager.GetStorageByIdAsync(id, false);
+            var storageNoChanges = await _storageManager.GetStorageByIdAsync(id, null);
 
             if (!ModelState.IsValid)
 			{
 				return Page();
 			}
-			var storages = await _storageManager.GetStoragesAsync(false);	
 
-            if (storages.Any(x => x.Id != id && x.Name.Equals(Storage.Name, StringComparison.OrdinalIgnoreCase)))
+            var result = await _storageManager.CheckStorageName(Storage.Name);
+            if (result == true)
             {
-                StatusMessage = "Ett lager med detta namn finns redan. Välj ett annat namn";
+                StatusMessage = "Lagerplats med samma namn existerar. Skriv in nytt namn";
                 return Page();
+            }
+
+            if(Storage.IsDeleted == true)
+            {
+                Storage.IsDeleted = false;
             }
 
             try

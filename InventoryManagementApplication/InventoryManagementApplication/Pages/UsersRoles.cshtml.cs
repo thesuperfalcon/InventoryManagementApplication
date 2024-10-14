@@ -41,26 +41,31 @@ namespace InventoryManagementApplication.Pages
 
         [BindProperty]
         public bool IsDeletedToggle { get; set; }
+        public int UserCount { get; set; }
 
         //Hämtar användare
-        public async Task OnGetAsync()
+        public async Task OnGetAsync(bool isDeletedToggle = false)
         {
+            IsDeletedToggle = isDeletedToggle;
             UsersWithRoles = await LoadUsers(IsDeletedToggle);
-
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var loggedInUser = await _userManagerDAL.GetOneUserAsync(userId);
 
-            //var loggedInUser1 = await _userManager.GetUserAsync(User);
             LoggedInUserName = loggedInUser != null ? FormatUserName(loggedInUser) : string.Empty;
+            UserCount = UsersWithRoles.Count();
         }
 
-        public async Task<IActionResult> OnPostToggleDeletedAsync()
+        public async Task<IActionResult> OnPostAsync(int buttonId)
         {
-            
-            IsDeletedToggle = !IsDeletedToggle;
-            UsersWithRoles = await LoadUsers(IsDeletedToggle);
-
-            return Page();
+            if(buttonId == 1)
+            {
+                IsDeletedToggle = !IsDeletedToggle;
+                return RedirectToPage("/UsersRoles", new { isDeletedToggle = IsDeletedToggle });
+            }
+            else
+            {
+                return Page();
+            }
         }
 
         private async Task<List<UserWithRoleViewModel>> LoadUsers(bool? isDeleted)

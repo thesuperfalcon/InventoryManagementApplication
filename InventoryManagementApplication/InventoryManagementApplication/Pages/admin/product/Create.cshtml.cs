@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualBasic;
 using System.ComponentModel.DataAnnotations;
 
 
@@ -43,6 +44,14 @@ namespace InventoryManagementApplication.Pages.admin.product
             {
                 return Page();
             }
+
+            var existingProductName = await _manager.CheckProductName(Product.Name);
+            if(existingProductName == true)
+            {
+                StatusMessage = "Produkt finns med samma namn. Skriv in ett nytt namn";
+                return Page();
+            }
+
             Product.CurrentStock = Product.TotalStock;
             Product.Created = DateTime.Now;
             Product.ArticleNumber = ArticleNumber;

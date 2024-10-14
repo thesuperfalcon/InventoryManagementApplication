@@ -1,25 +1,24 @@
 ﻿@page
 @model InventoryManagementApplication.Pages.UsersRolesModel
-
-<head>
-    <link rel="stylesheet" href="~/css/admin.css" asp-append-version="true" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
-</head>
+@{
+    string isDeletedMessage = Model.IsDeletedToggle == false ? "Aktiva" : "Borttagna";
+}
 
 <body>
      <h2>Användaröversikt</h2>
+     <h3>Antal (@isDeletedMessage) användare: @Model.UserCount</h3>
 
 
-    <form method="post" asp-page-handler="ToggleDeleted" id="toggleForm">
+    <form method="post" asp-route-buttonId="1">
         <input type="hidden" name="IsDeletedToggle" value="@Model.IsDeletedToggle.ToString().ToLower()" />
-        <button class="btn btn-primary" type="button" onclick="formSubmit()">
+        <button class="btn btn-primary" type="submit">
             @if (Model.IsDeletedToggle)
             {
-                <span>Borttagna Användare</span>
+                <span>Aktiva  Användare</span>
             }
             else
             {
-                <span>Aktiva  Användare</span>
+                <span>Borttagna Användare</span>
             }
         </button>
     </form>

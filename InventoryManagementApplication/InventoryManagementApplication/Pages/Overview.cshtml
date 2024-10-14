@@ -2,9 +2,9 @@
 @model InventoryManagementApplication.Pages.OverviewModel
 @{
 }
-<link href="https://fonts.googleapis.com/css?family=Montserrat&display=swap" rel="stylesheet">
+@* <link href="https://fonts.googleapis.com/css?family=Montserrat&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
-<link href="~/css/overview.css" rel="stylesheet" />
+<link href="~/css/overview.css" rel="stylesheet" /> *@
 
 <div class="container-fluid bg-light">
     <section id="overview-section">
@@ -24,19 +24,25 @@
                     <div class="card-body bg-white">
                         <div class="card mb-3">
                             <div class="card-body">
-                                <h5>@Model.ProductQuantity</h5>
+                                <a asp-page="/admin/product/index" style="text-decoration: none;">
+                                <h5>@(Model.ProductQuantity != null ? Model.ProductQuantity.ToString() : "Data finns ej")</h5>
+                                </a>
                                 <p>Antal Produkter</p>
                             </div>
                         </div>
                         <div class="card mb-3">
                             <div class="card-body">
-                                <h5>@Model.Product.Name - @Model.Product.CurrentStock</h5>
+                                <a asp-page="productDetails" asp-route-id="@Model.ProductHighestQuantity.Id">
+                                <h5>@(Model.ProductHighestQuantity != null ? Model.ProductHighestQuantity.Name : "Data finns ej") - @(Model.ProductHighestQuantity?.CurrentStock != null ? Model.ProductHighestQuantity.CurrentStock.ToString() : "Data finns ej")</h5>
+                                </a>
                                 <p>Produkt med högst antal</p>
                             </div>
                         </div>
                         <div class="card mb-3">
                             <div class="card-body">
-                                <h5>@Model.NewestProduct.Name</h5>
+                                <a asp-page="productDetails" asp-route-id="@Model.NewestProduct.Id">
+                                <h5>@(Model.NewestProduct != null ? Model.NewestProduct.Name : "Data finns ej")</h5>
+                                </a>
                                 <p>Nyaste produkt</p>
                             </div>
                         </div>
@@ -52,19 +58,25 @@
                     <div class="card-body bg-white">
                         <div class="card mb-3">
                             <div class="card-body">
-                                <h5>@Model.StorageQuantity</h5>
+                                <a asp-page="/admin/storage/index" style="text-decoration: none;">
+                                <h5>@(Model.StorageQuantity != null ? Model.StorageQuantity.ToString() : "Data finns ej")</h5>
+                                </a>
                                 <p>Antal Lagerplatser</p>
                             </div>
                         </div>
                         <div class="card mb-3">
                             <div class="card-body">
-                                <h5>@Model.Storage.Name - @Model.Storage.CurrentStock</h5>
+                                <a asp-page="storageDetails" asp-route-id="@Model.StorageHighestQuantity.Id">
+                                <h5>@(Model.StorageHighestQuantity != null ? Model.StorageHighestQuantity.Name : "Data finns ej") - @(Model.StorageHighestQuantity?.CurrentStock != null ? Model.StorageHighestQuantity.CurrentStock.ToString() : "Data finns ej")</h5>
+                                </a>
                                 <p>Lagerplats med mest produkter</p>
                             </div>
                         </div>
                         <div class="card mb-3">
                             <div class="card-body">
-                                <h5>@Model.NewestStorage.Name</h5>
+                                <a asp-page="storageDetails" asp-route-id="@Model.NewestStorage.Id">
+                                <h5>@(Model.NewestStorage != null ? Model.NewestStorage.Name : "Data finns ej")</h5>
+                                </a>
                                 <p>Nyaste lagerplatsen</p>
                             </div>
                         </div>
@@ -80,19 +92,19 @@
                     <div class="card-body bg-white">
                         <div class="card mb-3">
                             <div class="card-body">
-                                <h5>@Model.UserStatistic.EmployeeNumber - @Model.UserStatistic.TotalQuantity</h5>
+                                <h5>@(Model.UserStatistic != null ? Model.UserStatistic.EmployeeNumber : "Data finns ej") - @(Model.UserStatistic?.TotalQuantity != null ? Model.UserStatistic.TotalQuantity.ToString() : "Data finns ej")</h5>
                                 <p>Anställd med mest förflyttade produkter</p>
                             </div>
                         </div>
                         <div class="card mb-3">
                             <div class="card-body">
-                                <h5>@Model.User.FirstName @Model.User.LastName - @Model.User.EmployeeNumber</h5>
-                                <p>Senast anställd (@Model.User.Created)</p>
+                                <h5>@(Model.User != null ? Model.User.FirstName : "Data finns ej") @Model.User?.LastName - @(Model.User?.EmployeeNumber ?? "Data finns ej")</h5>
+                                <p>Senast anställd (@(Model.User?.Created != null ? Model.User.Created.ToString() : "Data finns ej"))</p>
                             </div>
                         </div>
                         <div class="card mb-3">
                             <div class="card-body">
-                                <h5>@Model.NewestStatistic.UserName - @Model.NewestStatistic.ProductName</h5>
+                                <h5>@(Model.NewestStatistic != null ? Model.NewestStatistic.UserName : "Data finns ej") - @(Model.NewestStatistic?.ProductName ?? "Data finns ej")</h5>
                                 <p>Senast förflyttning</p>
                             </div>
                         </div>

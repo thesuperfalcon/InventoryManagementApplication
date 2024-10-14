@@ -1,22 +1,14 @@
-﻿@page
+@page
 @model InventoryManagementApplication.Pages.admin.product.IndexModel
 
 @{
-    ViewData["Title"] = "Index";
-
+    ViewData["Title"] = "Produktkatalog";
+    string IsDeletedMessage = Model.IsDeletedToggle == false ? "Aktiva" : "Borttagna";
 
 }
 
 <h1>Produktkatalog</h1>
-@if (Model.IsDeletedToggle)
-{
-    <h3>Antal borttagna produkter: @Model.ProductCount</h3>
-}
-else
-{
-    <h3>Antal aktiva produkter: @Model.ProductCount</h3>
-}
-
+<h3>Antal (@IsDeletedMessage)produkter: @Model.ProductCount</h3>
 
 <div class="button-container">
     <form method="post" asp-route-buttonId="1">
@@ -25,7 +17,6 @@ else
             @if (Model.IsDeletedToggle)
             {
                 <span>Aktiva Produkter</span>
-
             }
             else
             {
@@ -35,41 +26,20 @@ else
     </form>
     @if (User.IsInRole("Admin"))
     {
-        <a asp-page="./Create" type="button" id="createButton" class="btn btn-primary me-2">Lägg till</a>
+        <a asp-page="./Create" class="btn btn-primary me-2">Lägg till</a>
     }
-    
-    
 </div>
 
-        @* </> *@
-
-    
-    @* < id="createForm" method="post" class="d-flex justify-content-start align-items-center"> *@
-   
-
-
-
-<!-- Bootstrap Modal -->
-@* <div class="modal fade" id="confirmCreateModal" tabindex="-1" aria-labelledby="confirmCreateModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="confirmCreateModalLabel">Bekräfta</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body" id="modalMessage">
-                Är du säker på att du vill lägga till en produkt? Det finns redan 15 produkter i listan.
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Nej</button>
-                <button type="submit" form="createForm" class="btn btn-danger">Ja</button>
-            </div>
+<div class="row mb-3">
+    <div class="col-md-6">
+        <div class="input-group shadow-sm">
+            <input type="text" id="searchInput" class="form-control" placeholder="Filtrera produkter..." onkeyup="filterTable()" />
+            <span class="input-group-text bg-primary text-white">
+                <i class="bi bi-search"></i>
+            </span>
         </div>
     </div>
-</div> *@
-
-@*<a asp-page="Create" id="confirmProducts" class="btn btn-primary">Lägg till</a>*@
-
+</div>
 
 <table id="productTable" class="table" data-sort-direction="asc">
     <thead>
@@ -88,107 +58,87 @@ else
     <tbody>
         @foreach (var item in Model.Products)
         {
-           
-                
-            
-
-            
             <tr>
-                <td>@Html.DisplayFor(modelItem => item.Name)</td>
-                <td>@Html.DisplayFor(modelItem => item.ArticleNumber)</td>
-                <td>@Html.DisplayFor(modelItem => item.Description)</td>
-                <td>@String.Format(new System.Globalization.CultureInfo("sv-SE"), "{0:C}", item.Price)</td>
-                    <td>@Html.DisplayFor(modelItem => item.TotalStock) <a asp-page="./SellProduct" asp-route-storageId="0" asp-route-id="@item.Id">Sälj produkt</a></td>
-                <td>@Html.DisplayFor(modelItem => item.CurrentStock)</td>
-                <td>@Html.DisplayFor(modelItem => item.Created)</td>
-                <td>@Html.DisplayFor(modelItem => item.Updated)</td>
+                <td>@(string.IsNullOrWhiteSpace(item.Name) ? "Data finns ej" : item.Name)</td>
+                <td>@(string.IsNullOrWhiteSpace(item.ArticleNumber) ? "Data finns ej" : item.ArticleNumber)</td>
+                <td>@(string.IsNullOrWhiteSpace(item.Description) ? "Data finns ej" : item.Description)</td>
+                <td>@(item.Price.HasValue ? String.Format(new System.Globalization.CultureInfo("sv-SE"), "{0:C}", item.Price) : "Data finns ej")</td>
                 <td>
-                    @if (User.IsInRole("Admin"))
+                    @(item.TotalStock.HasValue ? item.TotalStock.ToString() : "Data finns ej")
+                    @if (item.IsDeleted == false)
                     {
-                        <a asp-page="./Edit" asp-route-id="@item.Id">Ändra</a><span> | </span>
-                        <a asp-page="./Details" asp-route-id="@item.Id">Info</a><span> | </span>
-                        <a asp-page="./Delete" asp-route-id="@item.Id">Ta bort</a> <span> | </span>
+                        <a asp-page="./SellProduct" asp-route-storageId="0" asp-route-id="@item.Id">Sälj produkt</a>
+                    }
+                </td>
+                <td>@(item.CurrentStock.HasValue ? item.CurrentStock.ToString() : "Data finns ej")</td>
+                <td>@(item.Created.HasValue ? item.Created.Value.ToString("yyyy-MM-dd") : "Data finns ej")</td>
+                <td>@(item.Updated.HasValue ? item.Updated.Value.ToString("yyyy-MM-dd") : "Data finns ej")</td>
+                <td>
+                    @if (item.IsDeleted == false)
+                    {
+
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <a asp-page="./Edit" asp-route-id="@item.Id">Ändra</a>
+                            <span> | </span>
+                            <a asp-page="/ProductDetails" asp-route-id="@item.Id">Info</a>
+                            <span> | </span>
+                            <a asp-page="./Delete" asp-route-id="@item.Id">Ta bort</a>
+                        }
+                        else
+                        {
+                            <a asp-page="./Edit" asp-route-id="@item.Id">Fyll på</a>
+                            <span> | <a asp-page="/ProductDetails" asp-route-id="@item.Id">Info</a> | </span>
+                        }
                     }
                     else
                     {
-                        <a asp-page="./Edit" asp-route-id="@item.Id">Fyll på</a>
-                        <span> | <a asp-page="./Details" asp-route-id="@item.Id">Info</a> | </span>
+                        @if(User.IsInRole("Admin"))
+                        {
+                            <a asp-page="./Edit" asp-route-id="@item.Id">Återskapa</a>
+                            <a asp-page="/ProductDetails" asp-route-id="@item.Id">Info</a>
+                            <span> | </span>
+                            <a asp-page="./Delete" asp-route-id="@item.Id">Ta bort</a>
+                        }
+                        else
+                        {
+                            <a asp-page="/ProductDetails" asp-route-id="@item.Id">Info</a>
+                        }
                     }
-
-                    
-                    
                 </td>
             </tr>
-            
-            
         }
     </tbody>
 </table>
 
+
 @section Scripts {
-    @* <script>
-        document.addEventListener('DOMContentLoaded', function () {
-
-            var createButton = document.getElementById('createButton');
-            var form = document.getElementById('createForm');
-            var amountOfProducts = @amountOfProducts; // Get the product count from Razor
-
-            if (amountOfProducts >= 15) {
-                var modalMessage = "Är du säker på att du vill lägga till en produkt? Det finns redan 15 produkter i listan.";
-                document.getElementById('modalMessage').textContent = modalMessage;
-
-                // Show the modal when the "Lägg till" button is clicked
-                createButton.addEventListener('click', function () {
-                    var modal = new bootstrap.Modal(document.getElementById('confirmCreateModal'));
-                    modal.show();
-                });
-            } else {
-                // If products are less than 15, submit the form directly
-                createButton.addEventListener('click', function () {
-                    form.submit(); // Directly submit the form
-                });
-            }
-
-        });
-    </script> *@
+    <script src="~/js/productIndex.js"></script>
     <script>
-        function formSubmit() {
-            var form = document.getElementById('toggleForm');
-            console.log('Submitting form...');  // Debugging
-            form.submit();
-        }
-    </script>
-    <script>
-        function sortTable(columnIndex) {
-            const table = document.getElementById("productTable");
-            const rows = Array.from(table.rows).slice(1); // Get all rows except the header
+             document.addEventListener('DOMContentLoaded', function () {
+            // Search functionality
+            document.getElementById('searchInput').addEventListener('keyup', function () {
+                const searchValue = this.value.toLowerCase();
+                const table = document.getElementById('productTable');
+                const rows = table.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
 
-            const isAscending = table.getAttribute("data-sort-direction") === "asc";
+                Array.from(rows).forEach(row => {
+                    const cells = row.getElementsByTagName('td');
+                    let rowMatches = false;
 
-            rows.sort((a, b) => {
-                const cellA = a.cells[columnIndex].innerText.trim();
-                const cellB = b.cells[columnIndex].innerText.trim();
+                    // Check if any cell contains the search text
+                    for (let i = 0; i < cells.length; i++) {
+                        const cell = cells[i].innerText.toLowerCase();
+                        if (cell.includes(searchValue)) {
+                            rowMatches = true;
+                            break;
+                        }
+                    }
 
-                // Handle sorting for different data types
-                if (columnIndex === 3) { // Assuming "Pris" is at index 3
-                    return isAscending
-                        ? parseFloat(cellA.replace(/[^0-9.-]+/g, "")) - parseFloat(cellB.replace(/[^0-9.-]+/g, ""))
-                        : parseFloat(cellB.replace(/[^0-9.-]+/g, "")) - parseFloat(cellA.replace(/[^0-9.-]+/g, ""));
-                } else {
-                    return isAscending
-                        ? cellA.localeCompare(cellB, 'sv-SE') // For Swedish alphabetical order
-                        : cellB.localeCompare(cellA, 'sv-SE');
-                }
+                    // Show or hide the row based on whether it matches
+                    row.style.display = rowMatches ? '' : 'none';
+                });
             });
         });
-        // Clear the table body and append sorted rows
-        const tbody = table.querySelector('tbody');
-        tbody.innerHTML = ""; // Clear existing rows
-        rows.forEach(row => tbody.appendChild(row)); // Append sorted rows
-
-        // Toggle sort direction
-        table.setAttribute("data-sort-direction", isAscending ? "desc" : "asc");
-            }
     </script>
-
 }

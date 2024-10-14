@@ -22,7 +22,7 @@
 
                         <div class="mb-3">
                             <label asp-for="Product.Name" class="form-label">Namn</label>
-                            <input asp-for="Product.Name" class="form-control" required />
+                            <input asp-for="Product.Name" class="form-control" required maxlength="25" title="Max antal tecken: 25"/>
                             <span asp-validation-for="Product.Name" class="text-danger"></span>
                         </div>
 

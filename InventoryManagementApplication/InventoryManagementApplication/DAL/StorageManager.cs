@@ -54,9 +54,8 @@ namespace InventoryManagementApplication.DAL
             }
         }
 
-        public async Task<Storage> GetStorageByNameAsync(string storageName)
+        public async Task<bool> CheckStorageName(string storageName)
         {
-            Storage = new Storage();
             using (var client = new HttpClient())
             {
                 client.BaseAddress = BaseAddress;
@@ -67,10 +66,9 @@ namespace InventoryManagementApplication.DAL
                 if (response.IsSuccessStatusCode)
                 {
                     string responseString = await response.Content.ReadAsStringAsync();
-                    Storage storage = JsonSerializer.Deserialize<Storage>(responseString);
-                    Storage = storage;
+                    return JsonSerializer.Deserialize<bool>(responseString);
                 }
-                return Storage;
+                return false;
             }
         }
 
@@ -125,7 +123,7 @@ namespace InventoryManagementApplication.DAL
             }
         }
 
-        public async Task<List<Storage>> SearchStoragesAsync(string? name)
+        public async Task<List<Storage>> SearchStoragesAsync(string? inputValue)
         {
             using (var client = new HttpClient())
             {
@@ -133,9 +131,9 @@ namespace InventoryManagementApplication.DAL
                 string uri = "api/Storages/SearchStorages";
 
 
-                if (!string.IsNullOrEmpty(name))
+                if (!string.IsNullOrEmpty(inputValue))
                 {
-                    uri += $"?name={Uri.EscapeDataString(name ?? "")}&articleNumber={Uri.EscapeDataString(name ?? "")}";
+                    uri += $"?inputValue={inputValue}";
                 }
 
                 HttpResponseMessage responseStorages = await client.GetAsync(uri);
