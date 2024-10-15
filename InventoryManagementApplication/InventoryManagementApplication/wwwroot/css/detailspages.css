@@ -54,16 +54,43 @@ body {
   align-self: flex-start; /* Förhindra att den påverkas av andra kolumnen */
   position: sticky;
 }
+/* Flexibel layout för att placera produktdetaljer och aktivitetslogg bredvid varandra */
+.flex-container {
+  display: flex; /* Använd flexbox för att placera dem bredvid varandra */
+  justify-content: space-between; /* Ger jämn fördelning mellan kolumnerna */
+  gap: 20px; /* Mellanrum mellan produktdetaljer och aktivitetslogg */
+  justify-content: center;
+}
+
+
+/* Anpassa för mindre skärmar */
+@media (max-width: 768px) {
+  .flex-container {
+      flex-direction: column; /* Lägger dem under varandra på små skärmar */
+  }
+  .first-column, .second-column {
+      max-width: 100%; /* Se till att de tar upp 100% bredd på små skärmar */
+  }
+}
+
 
 /* Mindre högerkolumn för accordion */
-.second-column {
+.second-column,.custom-second-column  {
   flex-grow: 1; /* Låter denna kolumn växa med mindre utrymme */
-  max-width: 30%; /* Ger den 30% av bredden */
   padding-left: 20px;
   margin-top: 20px; /* Justering för att ge andrum */
   align-self: flex-start; /* Gör så att den placeras oberoende av den första kolumnen */
   position: sticky;
 }
+
+.second-column {
+  flex-grow: 1;
+  max-width: 30%; /* Ger den 30% av bredden */
+}
+.custom-second-column  {
+  max-width: 55%; /* Ger den 30% av bredden */
+}
+
 
 /* Se till att kortet i första kolumnen fyller ut hela utrymmet */
 .first-column .card {
@@ -118,13 +145,13 @@ body {
   z-index: 1;
   max-height: 0; /* Dölj panelens innehåll som standard */
   overflow: hidden; /* Förhindra att innehåll visas om det är dolt */
-  transition: max-height 0.3s ease-out;
+
 }
 /* När accordionen är aktiv och öppen */
 .accordion.active + .panel {
   max-height: 500px; /* Öppnar panelen utan att påverka layouten */
   overflow: visible; /* Tillräckligt stort värde för att rymma innehållet */
-  transition: max-height 0.5s ease-in-out; /* Mjuk övergång för att expandera */
+
 }
 /* Pagination justering för bättre centrering */
 .pagination {

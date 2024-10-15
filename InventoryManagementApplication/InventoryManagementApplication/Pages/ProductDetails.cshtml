@@ -2,14 +2,12 @@
 @model InventoryManagementApplication.Pages.ProductDetailsModel
 
 <div class="container">
-   <div class="row">
-        <div class="col-md-6">
-            <div class="card mb-6">
+ <div class="row flex-container">
+         <div class="col-md-8 first-column">
+            <div class="card mb-8">
               
          <div class="card-header d-flex align-items-center justify-content-between">
-
                     <h2>Produktdetaljer: @Model.Product.Name</h2>
-             
 @* Bara admin kan göra ändringar *@
 @if (User.IsInRole("Admin"))
 {
@@ -20,8 +18,6 @@
    </div>
                 <div class="card-body">
 
-
-}
                     @if (Model.Product != null)
                     {
                         <table class="table">
@@ -64,9 +60,13 @@
                 </div>
             </div>
         </div>
-         <div class="col-md-6">
-                <div class="card-header">
+
+      <div class="col-md-8 custom-second-column">
+          <div class="card mb-8">
+                      <div class="card-header d-flex align-items-center justify-content-between">
                     <h3>Aktivitetsloggar för denna produkt</h3>
+                    </div>
+                     <div class="card-body">
                     <input type="text" id="activityLogSearchInput" placeholder="Sök i aktivitetsloggar..." class="form-control mb-2" />
 
                     <table class="table table-striped" id="activityLogTable" data-sort-direction="asc">
@@ -122,11 +122,9 @@
     <span id="activityLogPageNumber"></span>
     <button id="activityLogNextPage" class="btn btn-secondary">Nästa</button>
 </div>
-
-                    <a asp-page="/Log" asp-route-id="@Model.Product.Id" class="btn btn-info mt-3">
-                        Visa fullständig historik
-                    </a>
-
+        </div>
+    </div>
+</div>
 
 <div class="modal fade" id="editProductModal" tabindex="-1" aria-labelledby="editProductModalLabel" aria-hidden="true">
     <div class="modal-dialog">
