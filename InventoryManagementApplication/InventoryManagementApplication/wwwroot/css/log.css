@@ -1,0 +1,44 @@
+    /* Grå header för tabellen likt "Lagersaldo"-tabellen */
+    .table-bordered thead {
+        background-color: #f0f0f0; /* Ljusgrå bakgrundsfärg */
+        font-weight: bold; /* Fetstil för rubrikerna */
+    }
+
+
+    .table-bordered thead {
+        background-color: #f0f0f0; /* Ljusgrå bakgrundsfärg */
+        font-weight: bold; /* Fetstil för rubrikerna */
+    }
+
+
+    .table-bordered a {
+        background-color: #c2c1c1; /* Ljusgrå bakgrundsfärg */
+        font-weight: bold; /* Fetstil för rubrikerna */
+    }
+
+    /* Centrerar pagination och ger den samma utseende som "Lagersaldo"-sidan */
+    .pagination-container {
+        display: flex;
+        justify-content: center; /* Centrerar paginationsknapparna */
+        align-items: center;
+        margin-top: 20px;
+    }
+
+    .pagination-container button {
+        margin: 0 10px;
+    }
+
+    /* Knappstil för rensa sökning */
+    #clearSearch {
+        background-color: #f44336;
+        color: white;
+        border: none;
+        padding: 5px 10px;
+        margin-left: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    #clearSearch:hover {
+        background-color: #d32f2f;
+    }
