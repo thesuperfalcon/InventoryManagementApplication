@@ -5,69 +5,67 @@
     ViewData["Title"] = "Create";
 }
 
-
 <body>
+    <div class="container mt-5" style="margin-bottom: 40px;">
+        <div class="row justify-content-center">
+            <div class="col-md-6 col-lg-5">
 
-<div class="container mt-5" style="margin-bottom: 40px;">
-    <div class="row justify-content-center">
-        <div class="col-md-6 col-lg-5">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-primary text-white">
+                        <h4 class="mb-0">Lägg till ny produkt</h4>
+                    </div>
+                    <div class="card-body">
+                        <form method="post">
+                            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
-            <div class="card shadow-sm">
-                <div class="card-header bg-primary text-white">
-                    <h4 class="mb-0">Lägg till ny produkt</h4>
-                </div>
-                <div class="card-body">
-                    <form method="post">
-                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                            <div class="mb-3">
+                                <label asp-for="Product.Name" class="form-label">Namn</label>
+                                <input asp-for="Product.Name" class="form-control" required maxlength="25" title="Max antal tecken: 25" />
+                                <span asp-validation-for="Product.Name" class="text-danger"></span>
+                            </div>
 
-                        <div class="mb-3">
-                            <label asp-for="Product.Name" class="form-label">Namn</label>
-                            <input asp-for="Product.Name" class="form-control" required maxlength="25" title="Max antal tecken: 25"/>
-                            <span asp-validation-for="Product.Name" class="text-danger"></span>
-                        </div>
+                            <div class="mb-3">
+                                <label asp-for="ArticleNumber" class="form-label">Artikelnummer</label>
+                                <input asp-for="ArticleNumber" class="form-control" required readonly />
+                                <button type="button" id="generateArticleNumberBtn" class="btn btn-primary mt-2">Generera</button>
+                                <span asp-validation-for="ArticleNumber" class="text-danger"></span>
+                            </div>
 
-                        <div class="mb-3">
-                            <label asp-for="ArticleNumber" class="form-label">Artikelnummer</label>
-                            <input asp-for="ArticleNumber" class="form-control" required readonly />
-                            <button type="button" id="generateArticleNumberBtn" class="btn btn-primary mt-2">Generera</button>
-                            <span asp-validation-for="ArticleNumber" class="text-danger"></span>
-                        </div>
+                            <div class="mb-3">
+                                <label asp-for="Product.Description" class="form-label">Beskrivning</label>
+                                <input asp-for="Product.Description" class="form-control" required data-bs-toggle="tooltip" title="Ange beskrivning" />
+                                <span asp-validation-for="Product.Description" class="text-danger d-none"></span>
+                            </div>
 
-                        <div class="mb-3">
-                            <label asp-for="Product.Description" class="form-label">Beskrivning</label>
-                            <input asp-for="Product.Description" class="form-control" required data-bs-toggle="tooltip" title="Ange beskrivning" />
-                            <span asp-validation-for="Product.Description" class="text-danger d-none"></span>
-                        </div>
+                            <div class="mb-3">
+                                <label asp-for="Product.Price" class="form-label">Pris</label>
+                                <input asp-for="Product.Price" type="number" class="form-control" required />
+                                <span asp-validation-for="Product.Price" class="text-danger"></span>
+                            </div>
 
-                        <div class="mb-3">
-                            <label asp-for="Product.Price" class="form-label">Pris</label>
-                            <input asp-for="Product.Price" type="number" class="form-control" required />
-                            <span asp-validation-for="Product.Price" class="text-danger"></span>
-                        </div>
+                            <div class="mb-3">
+                                <label asp-for="Product.TotalStock" class="form-label">Antal</label>
+                                <input asp-for="Product.TotalStock" type="number" class="form-control" required min="0" step="1" data-bs-toggle="tooltip" title="Ange antal i lager" />
+                                <span asp-validation-for="Product.TotalStock" class="text-danger d-none"></span>
+                            </div>
 
-                        <div class="mb-3">
-                            <label asp-for="Product.TotalStock" class="form-label">Antal</label>
-                            <input asp-for="Product.TotalStock" type="number" class="form-control" required min="0" step="1" data-bs-toggle="tooltip" title="Ange antal i lager" />
-                            <span asp-validation-for="Product.TotalStock" class="text-danger d-none"></span>
-                        </div>
+                            <input type="hidden" asp-for="Product.CurrentStock" value="0" />
+                            <input type="hidden" asp-for="Product.Created" value="@DateTime.Now" />
 
-                        <input type="hidden" asp-for="Product.CurrentStock" value="0" />
-                        <input type="hidden" asp-for="Product.Created" value="@DateTime.Now" />
+                            <div class="d-flex">
+                                <input type="submit" value="Lägg till" class="btn btn-primary me-2" />
+                                <a asp-page="Index" class="btn btn-secondary">Tillbaka till lista</a>
+                            </div>
 
-                        <div class="d-flex">
-                            <input type="submit" value="Lägg till" class="btn btn-primary me-2" />
-                            <a asp-page="Index" class="btn btn-secondary">Tillbaka till lista</a>
-                        </div>
-
-                        <div class="alert-info mt-3">
-                            @Model.StatusMessage
-                        </div>
-                    </form>
+                            <div class="alert-info mt-3">
+                                @Model.StatusMessage
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 </body>
 @section Scripts {
     <script>

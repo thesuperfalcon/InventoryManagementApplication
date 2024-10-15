@@ -93,7 +93,7 @@
                     }
                     else
                     {
-                        @if(User.IsInRole("Admin"))
+                        @if (User.IsInRole("Admin"))
                         {
                             <a asp-page="./Edit" asp-route-id="@item.Id">Återskapa</a>
                             <a asp-page="/ProductDetails" asp-route-id="@item.Id">Info</a>
@@ -110,7 +110,6 @@
         }
     </tbody>
 </table>
-
 
 @section Scripts {
     <script src="~/js/productIndex.js"></script>

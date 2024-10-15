@@ -9,45 +9,45 @@
                     <h2>Produktdetaljer: @Model.Product.Name</h2>
                 </div>
                 <div class="card-body">
-@* Bara admin kan göra ändringar *@
-@if (User.IsInRole("Admin"))
-{
-    <button class="btn btn-generic" data-bs-toggle="modal" data-bs-target="#editStorageModal">
-        <i class="bi bi-pencil"></i>
-    </button>
-}
+                    @* Bara admin kan göra ändringar *@
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <button class="btn btn-generic" data-bs-toggle="modal" data-bs-target="#editStorageModal">
+                            <i class="bi bi-pencil"></i>
+                        </button>
+                    }
                     @if (Model.Product != null)
                     {
-                       <table class="table">
-    <tr>
-        <th><strong>Namn</strong></th>
-        <td>@Model.Product.Name</td>
-    </tr>
-    <tr>
-        <th><strong>Artikelnummer</strong></th>
-        <td>@Model.Product.ArticleNumber</td>
-    </tr>
-    <tr>
-        <th><strong>Beskrivning</strong></th>
-        <td>@Model.Product.Description</td>
-    </tr>
-    <tr>
-        <th><strong>Totalantal</strong></th>
-        <td>@Model.Product.TotalStock</td>
-    </tr>
-    <tr>
-        <th><strong>Tillgängligt antal</strong></th>
-        <td>@Model.Product.CurrentStock</td>
-    </tr>
-    <tr>
-        <th><strong>Produkt skapad</strong></th>
-        <td>@Model.Product.Created</td>
-    </tr>
-    <tr>
-        <th><strong>Information uppdaterad</strong></th>
-        <td>@Model.Product.Updated</td>
-    </tr>
-</table>
+                        <table class="table">
+                            <tr>
+                                <th><strong>Namn</strong></th>
+                                <td>@Model.Product.Name</td>
+                            </tr>
+                            <tr>
+                                <th><strong>Artikelnummer</strong></th>
+                                <td>@Model.Product.ArticleNumber</td>
+                            </tr>
+                            <tr>
+                                <th><strong>Beskrivning</strong></th>
+                                <td>@Model.Product.Description</td>
+                            </tr>
+                            <tr>
+                                <th><strong>Totalantal</strong></th>
+                                <td>@Model.Product.TotalStock</td>
+                            </tr>
+                            <tr>
+                                <th><strong>Tillgängligt antal</strong></th>
+                                <td>@Model.Product.CurrentStock</td>
+                            </tr>
+                            <tr>
+                                <th><strong>Produkt skapad</strong></th>
+                                <td>@Model.Product.Created</td>
+                            </tr>
+                            <tr>
+                                <th><strong>Information uppdaterad</strong></th>
+                                <td>@Model.Product.Updated</td>
+                            </tr>
+                        </table>
 
 
                     }
@@ -63,7 +63,7 @@
                 <div class="card-header">
                     <h3>Aktivitetsloggar för denna produkt</h3>
                     <input type="text" id="searchInput" placeholder="Sök i aktivitetsloggar..."
-                        class="form-control mb-2" />
+                           class="form-control mb-2" />
                     <table class="table table-striped">
                         <thead>
                             <tr>
@@ -90,8 +90,10 @@
                             else
                             {
                                 <tr>
-                                    <td colspan="4" class="text-center">Inga aktivitetsloggar är tillgängliga för denna
-                                        produkt.</td>
+                                    <td colspan="4" class="text-center">
+                                        Inga aktivitetsloggar är tillgängliga för denna
+                                        produkt.
+                                    </td>
                                 </tr>
                             }
                         </tbody>
@@ -105,27 +107,27 @@
                         Visa fullständig historik
                     </a>
                     <div class="modal fade" id="editProductModal" tabindex="-1" aria-labelledby="editProductModalLabel"
-                        aria-hidden="true">
+                         aria-hidden="true">
                         <div class="modal-dialog modal-lg">
                             <div class="modal-content">
                                 <div class="modal-header">
                                     <h5 class="modal-title" id="editProductModalLabel">Ändra produktinformation</h5>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                        aria-label="Close"></button>
+                                            aria-label="Close"></button>
                                 </div>
                                 <div class="modal-body">
                                     <form method="post" asp-page-handler="UpdateProductInfo"
-                                        onsubmit="return validateForm();">
+                                          onsubmit="return validateForm();">
                                         <input type="hidden" name="ProductId" value="@Model.Product.Id" />
                                         <div class="form-group mb-3">
                                             <label for="ProductName">Nytt namn</label>
                                             <input type="text" class="form-control" id="ProductName" name="ProductName"
-                                                value="@Model.Product.Name" required />
+                                                   value="@Model.Product.Name" required />
                                         </div>
                                         <div class="form-group mb-3">
                                             <label for="ProductDescription">Ny beskrivning</label>
                                             <textarea class="form-control" id="ProductDescription"
-                                                name="ProductDescription" required>@Model.Product.Description</textarea>
+                                                      name="ProductDescription" required>@Model.Product.Description</textarea>
                                         </div>
                                         <button type="submit" class="btn btn-primary">Spara ändringar</button>
                                     </form>

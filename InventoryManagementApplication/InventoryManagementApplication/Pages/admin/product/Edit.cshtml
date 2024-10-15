@@ -22,17 +22,15 @@
                         <input type="hidden" asp-for="Product.IsDeleted" />
                         @if (User.IsInRole("Admin"))
                         {
-                            
-
                             <div class="mb-3">
                                 <label asp-for="Product.Name" class="form-label">Namn</label>
-                                <input asp-for="Product.Name" class="form-control" maxlength="25"/>
+                                <input asp-for="Product.Name" class="form-control" maxlength="25" />
                                 <span asp-validation-for="Product.Name" class="text-danger"></span>
                             </div>
 
                             <div class="mb-3">
                                 <label asp-for="Product.ArticleNumber" class="form-label">Artikelnummer</label>
-                                <input asp-for="Product.ArticleNumber" class="form-control" readonly/>
+                                <input asp-for="Product.ArticleNumber" class="form-control" readonly />
                                 <span asp-validation-for="Product.ArticleNumber" class="text-danger"></span>
                             </div>
 
@@ -59,17 +57,12 @@
                                 <input asp-for="Product.CurrentStock" class="form-control" readonly />
                                 <span asp-validation-for="Product.CurrentStock" class="text-danger"></span>
                             </div>
-
-                            
-
                         }
                         else
                         {
-                           
-
                             <div class="mb-3">
-                                <label asp-for="Product.Name" class="form-label" >Namn</label>
-                                <input asp-for="Product.Name" class="form-control" readonly/>
+                                <label asp-for="Product.Name" class="form-label">Namn</label>
+                                <input asp-for="Product.Name" class="form-control" readonly />
                                 <span asp-validation-for="Product.Name" class="text-danger"></span>
                             </div>
 
@@ -102,8 +95,6 @@
                                 <input asp-for="Product.CurrentStock" class="form-control" readonly />
                                 <span asp-validation-for="Product.CurrentStock" class="text-danger"></span>
                             </div>
-
-                            
                         }
                         <input type="hidden" asp-for="Product.Created" />
                         <input type="hidden" asp-for="Product.Updated" value="@DateTime.Now" />

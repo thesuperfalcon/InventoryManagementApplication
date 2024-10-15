@@ -5,8 +5,8 @@
 }
 
 <body>
-     <h2>Användaröversikt</h2>
-     <h3>Antal (@isDeletedMessage) användare: @Model.UserCount</h3>
+    <h2>Användaröversikt</h2>
+    <h3>Antal (@isDeletedMessage) användare: @Model.UserCount</h3>
 
 
     <form method="post" asp-route-buttonId="1">
@@ -39,28 +39,28 @@
         <tbody>
             @foreach (var user in Model.UsersWithRoles)
             {
-                    if (user.IsDeleted == false)
-                    {
-                        <tr>
-                            <td>@user.EmployeeNumber</td>
-                            <td>@user.FirstName</td>
-                            <td>@user.LastName</td>
-                            <td>@user.RoleName</td>
-                            <td>@user.Created</td>
-                            <td>@user.Updated</td>
-                            <td>
-                                <a asp-page="/UserInfo" asp-route-userId="@user.Id" class="btn btn-info">
-                                    <i class="fas fa-cog"></i>
-                                </a>
-                            </td>
-                        </tr>
-                    }                                     
+                if (user.IsDeleted == false)
+                {
+                    <tr>
+                        <td>@user.EmployeeNumber</td>
+                        <td>@user.FirstName</td>
+                        <td>@user.LastName</td>
+                        <td>@user.RoleName</td>
+                        <td>@user.Created</td>
+                        <td>@user.Updated</td>
+                        <td>
+                            <a asp-page="/UserInfo" asp-route-userId="@user.Id" class="btn btn-info">
+                                <i class="fas fa-cog"></i>
+                            </a>
+                        </td>
+                    </tr>
+                }
             }
         </tbody>
     </table>
 </body>
 
- @section Scripts{
+@section Scripts {
     <script>
         function formSubmit() {
             var form = document.getElementById('toggleForm');
@@ -68,5 +68,5 @@
             form.submit();
         }
     </script>
-    
+
 } 
