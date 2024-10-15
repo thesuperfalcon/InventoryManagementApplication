@@ -12,7 +12,6 @@
     <div class="button-container">
         <form method="post" asp-route-buttonId="1">
             <input type="hidden" name="IsDeletedToggle" value="@Model.IsDeletedToggle.ToString().ToLower()" />
-            <!-- <button id="toggleAll" class="btn btn-primary" type="submit">-->
             <button class="custom-secondary-btn" type="submit"/>
                 @if (Model.IsDeletedToggle)
                 {
