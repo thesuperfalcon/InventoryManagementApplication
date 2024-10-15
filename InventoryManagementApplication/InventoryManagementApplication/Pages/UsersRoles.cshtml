@@ -8,6 +8,8 @@
     <h3>Antal (@isDeletedMessage) användare: @Model.UserCount</h3>
 
     <form method="post" asp-route-buttonId="1">
+    
+      
         <input type="hidden" name="IsDeletedToggle" value="@Model.IsDeletedToggle.ToString().ToLower()" />
        <button class="btn custom-small-btn" type="submit">
             @if (Model.IsDeletedToggle)

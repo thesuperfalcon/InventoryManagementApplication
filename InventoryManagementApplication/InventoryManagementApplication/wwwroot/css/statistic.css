@@ -182,18 +182,6 @@ a[href="javascript:void(0);"] {
 
 
 
-#helpButton i {
-    margin: 0;
-    font-size: 1rem; /* Ändra ikonens storlek */
-    min-width: 20px;
-    min-height: 20px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color:   #6c757d;
-    color:white;
-}
-
 
 #helpButton {
     text-align: center;
@@ -210,6 +198,19 @@ a[href="javascript:void(0);"] {
     margin-bottom: 15px
   }
 
+
+
+  #helpButton i {
+    margin: 0;
+    font-size: 1rem; /* Ändra ikonens storlek */
+    min-width: 20px;
+    min-height: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color:   #6c757d;
+    color:white;
+}
 
 /* Hover-effekt för hjälpknappen */
 #helpButton:hover {
@@ -232,7 +233,7 @@ h2.text-center {
 .numeric-container {
     display: flex;
     align-items: center;
-    margin-left: 20px; /* Skapar mellanrum till vänster om knapparna om det behövs */
+    margin-left: auto; 
 }
 
 .numeric-container label {
@@ -258,7 +259,7 @@ h2.text-center {
         justify-content: center;
         align-items: center;
         margin-top: 20px;
-
+ 
     }
     .centered-container {
         display: flex;
@@ -291,4 +292,25 @@ h2.text-center {
     text-align: center;       /* Centrerar texten horisontellt */
     vertical-align: middle;   /* Centrerar innehållet vertikalt */
     min-width: 180px;
+}
+/* Style för cheatsheet popup */
+.sidebar {
+    position: fixed;
+    right: 20px;
+    top: 100px;
+    width: 300px;
+    height: 400px; /* Begränsar höjden på cheatsheetet */
+    background-color: #f1f1f1;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    padding: 20px;
+    border-radius: 10px;
+    overflow-y: auto; /* Gör innehållet scrollbart */
+    overflow-x: hidden; /* Dölj horisontell rullning */
+}
+
+
+/* Style för cheatsheet-innehållet */
+.sidebar-content {
+    padding: 20px;
 }

@@ -7,25 +7,36 @@
 
 <div class="mb-3">
 
+
+        
+
+
     <!-- Sökfält och rensa-knapp -->
     <div class="input-group mt-2">
         <input id="searchInput" type="text" class="form-control" placeholder="Sök..." style="margin-top:10px;" />
-    
-        <span class="input-group-text" style="margin-top:10px;">
+         <button id="clearSearch" onclick="clearSearch()">Rensa Sök</button>
+        <span class="input-group-text" >
             <i class="bi bi-search" ></i>
         </span>
-            <button id="clearSearch" onclick="clearSearch()">Rensa Sök</button>
+
+       
                 <!-- Knapp för att öppna cheatsheet-modal -->
-    <button class="btn btn-info" data-bs-toggle="modal" data-bs-target="#cheatsheetModal" style="margin-left:10px; border-radius: 5px;">
-        Visa Cheatsheet för Sökning
-    </button>
+    <button id="helpButton" data-bs-toggle="modal" data-bs-target="#cheatsheetModal">
+        <i class="bi bi-question-circle"></i>
+                </button>
+
+
     </div>
 </div>
+
+
+
 
 <div class="table-responsive">
         <!-- Knapp för att visa alla lagersaldo -->
     <button id="toggleAll" class="btn btn-primary" style="margin-bottom: 20px; margin-top: 10px;">Visa alla</button>
     <table class="table table-striped table-bordered">
+
         <thead>
             <tr>
                 <th>Lagernamn</th>
@@ -174,4 +185,5 @@
 
 @section Scripts {
     <script src="~/js/reportPage.js"></script>
+         <link rel="stylesheet" href="~/css/reportpage.css" asp-append-version="true">
 }

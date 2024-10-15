@@ -19,6 +19,14 @@
     padding: 12px;
     background-color: #f9f9f9;
   }
+
+  .table th {
+    background-color: #343a40; /* Mörkare rubrikbakgrund */
+    color: white; /* Vit text på rubrikerna */
+    font-weight: bold;
+    text-align: center; /* Centrerar rubriker */
+}
+
   
 
   a.custom-link {
@@ -55,22 +63,25 @@
   }
 
   button#clearSearch {
+
+    border: 1px solid #ced4da;
+margin-top:10px;
     background-color: #f44336;
     color: white;
-    border: none;
-    border-radius: 5px;
-    padding: 8px 15px;
-    margin-left: 10px;
+   
     cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.2s ease;
+    transition: background-color 0.3s ease;
   }
   
   button#clearSearch:hover {
     background-color: #d32f2f;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
   }
 
+.input-group-text
+{
+margin-top:10px;
+
+}
   .pagination {
     display: flex;
     justify-content: center;
@@ -102,3 +113,38 @@
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   }
   
+#helpButton {
+  text-align: center;
+  padding: 0;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-width: 0;
+  background-color:#6c757d;
+  border:none;
+
+  margin-left:10px ;
+  margin-top:12px;
+}
+
+
+
+#helpButton i {
+  margin: 0;
+  font-size: 1rem; /* Ändra ikonens storlek */
+  min-width: 20px;
+  min-height: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color:   #6c757d;
+  color:white;
+}
+
+/* Hover-effekt för hjälpknappen */
+#helpButton:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
