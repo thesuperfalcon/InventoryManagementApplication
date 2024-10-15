@@ -72,12 +72,52 @@ html, body {
     box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 }
 
-body {
-    background-color: #eef1f8 !important;
-    display: flex;
-    flex-direction: column;
-    margin: 0;
+button#toggleAll.btn-primary {
+    border: none !important; 
 }
+#toggleAll {
+    padding: 5px 10px;
+    font-size: 15px;
+    height: 40px;
+    width: auto;
+    margin: 20px;
+    color: white;
+    border: none !important;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
+    height: 40px !important;
+}
+#toggleAll:hover {
+    border: none !important;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+.custom-secondary-btn {
+    padding: 5px 10px;
+    font-size: 15px;
+    height: 40px;
+    width: auto;
+    margin-right: 10px;
+    background-color: #6c757d;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    transform: translateY(3px);
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+    .custom-secondary-btn:hover {
+        background-color: #495057 !important;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+    }
+    body {
+        background-color: #eef1f8 !important;
+        display: flex;
+        flex-direction: column;
+        margin: 0;
+    }
 
 h1, h2, h3 {
     color: #0056b3;
@@ -263,6 +303,8 @@ footer {
     font-size: 1.2rem;
 }
 .button-container{
+    margin:0;
+    padding: 0;
     width:400px;
     display:flex;
     flex-direction:row;
