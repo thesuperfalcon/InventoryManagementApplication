@@ -43,7 +43,7 @@ public class ProductDetailsModel : PageModel
 
             // Hämta användarinformation för varje logg
            //Denna hämtar icke-raderade användare
-            var users = await _userManager.GetAllUsersAsync(false);
+            var users = await _userManager.GetAllUsersAsync(null);
            
            //Denna hämtar alla: var users = await _userManager.GetAllUsersAsync(null);
             //denna hämtar endast raderade användare: var users = await _userManager.GetAllUsersAsync(true);

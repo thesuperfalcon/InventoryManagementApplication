@@ -46,7 +46,7 @@ namespace InventoryManagementApplication.Pages
             
             // Hämta användarinformation för varje logg
            //Denna hämtar icke-raderade användare
-            var users = await _userManager.GetAllUsersAsync(false);
+            var users = await _userManager.GetAllUsersAsync(null);
             var userDictinary = users.ToDictionary(
                 u => u.Id,
                 u => new { FullName = $"{u.LastName} {u.FirstName}", EmployeeNumber = u.EmployeeNumber });
