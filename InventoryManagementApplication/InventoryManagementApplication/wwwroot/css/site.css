@@ -135,7 +135,8 @@ html {
     margin-right: 5px;
 }
 h1, h2, h3 {
-    color: #0056b3;
+color: rgb(39, 62, 125) !important;
+font-weight: bold;
 }
 
 .container {
