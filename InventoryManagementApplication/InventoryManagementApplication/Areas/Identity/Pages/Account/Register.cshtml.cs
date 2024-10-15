@@ -126,20 +126,12 @@ namespace InventoryManagementApplication.Areas.Identity.Pages.Account
             public string LastName { get; set; }
 
             [Required(ErrorMessage = "Anställningsnummer är obligatoriskt.")]
+            [BindProperty]
             [Display(Name = "Anställningsnummer")]
             public string EmployeeNumber { get; set; }
 
 
         }
-
-        //public static string GenerateRandomEmplyeeNumber()
-        //{
-        //    Random random = new Random();
-
-        //    int employeeNumber = random.Next(1000, 10000);
-
-        //    return employeeNumber.ToString();
-        //}
 
         public async Task<IActionResult> OnGetCheckEmployeeNumberExists(string employeeNumber)
         {
@@ -161,6 +153,7 @@ namespace InventoryManagementApplication.Areas.Identity.Pages.Account
 
             returnUrl ??= Url.Content("/Identity/Account/Register");
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+
             if (ModelState.IsValid)
             {
                 var user = CreateUser();
@@ -168,7 +161,7 @@ namespace InventoryManagementApplication.Areas.Identity.Pages.Account
 
 
                 user.FirstName = Input.FirstName;
-                user.LastName = Input.LastName;
+                user.LastName = Input.LastName; 
                 user.EmployeeNumber = Input.EmployeeNumber;
                 user.ProfilePic = "images/ProfileAvatars/profile_avatar_1.png";
 
@@ -253,6 +246,32 @@ namespace InventoryManagementApplication.Areas.Identity.Pages.Account
                 throw new NotSupportedException("The default UI requires a user store with email support.");
             }
             return (IUserEmailStore<InventoryManagementUser>)_userStore;
+        }
+
+        private async Task<string> GenerateUniqueEmployeeNumber()
+        {
+            Random random = new Random();
+            string employeeNumber;
+            bool exists;
+
+            do
+            {
+                employeeNumber = random.Next(0, 10000).ToString("D4");
+
+                var users = await _userManagerDAL.GetAllUsersAsync(null);
+                exists = users.Any(x => x.EmployeeNumber == employeeNumber);
+
+            }
+            while (exists);
+
+            return employeeNumber;
+        }
+
+        // This method goes to registerUser.js
+        public async Task<IActionResult> OnGetGenerateEmployeeNumberAsync()
+        {
+            string generatedNumber = await GenerateUniqueEmployeeNumber();
+            return new JsonResult(new { employeeNumber = generatedNumber });
         }
     }
 }

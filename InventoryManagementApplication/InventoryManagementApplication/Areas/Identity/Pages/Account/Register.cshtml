@@ -7,57 +7,38 @@
 <head>
     <link rel="stylesheet" href="~/css/admin.css" asp-append-version="true" />
 </head>
-    <h1 class="row justify-content-center">@ViewData["Title"]</h1>
+<h1 class="row justify-content-center">@ViewData["Title"]</h1>
 
 <div id="registerContainer" data-check-url="@Url.Page("/Account/Register", "CheckEmployeeNumberExists")">
     <div class="row">
         <div class="row justify-content-center">
             <div class="col-md-4">
                 <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
-            <hr />
-            <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+                    <hr />
+                    <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
 
-            <div class="form-floating mb-3">
-                <input asp-for="Input.FirstName" class="form-control" autocomplete="firstname" aria-required="true" placeholder="Förnamn" />
-                <label asp-for="Input.FirstName">Förnamn</label>
-                <span asp-validation-for="Input.FirstName" class="text-danger"></span>
-            </div>
+                    <div class="form-floating mb-3">
+                        <input asp-for="Input.FirstName" class="form-control" autocomplete="firstname" aria-required="true" placeholder="Förnamn" />
+                        <label asp-for="Input.FirstName">Förnamn</label>
+                        <span asp-validation-for="Input.FirstName" class="text-danger"></span>
+                    </div>
 
-            <div class="form-floating mb-3">
-                <input asp-for="Input.LastName" class="form-control" autocomplete="lastname" aria-required="true" placeholder="Efternamn" />
-                <label asp-for="Input.LastName">Efternamn</label>
-                <span asp-validation-for="Input.LastName" class="text-danger"></span>
-            </div>
-
-
-            <div class="form-floating mb-3 d-flex align-items-center">
-                <input asp-for="Input.EmployeeNumber" class="form-control me-2" id="employeeNumber" aria-required="true" placeholder="Anställningsnummer" readonly />
-                <label asp-for="Input.EmployeeNumber">Anställningsnummer</label>
-<button id="generateEmployeeNumber" type="button" class="btn btn-generic mt-2">Generera</button>
-   </div>
-  <span asp-validation-for="Input.EmployeeNumber" class="text-danger"></span>
-
-            @* <partial name="_StatusMessage" for="StatusMessage" /> *@     
+                    <div class="form-floating mb-3">
+                        <input asp-for="Input.LastName" class="form-control" autocomplete="lastname" aria-required="true" placeholder="Efternamn" />
+                        <label asp-for="Input.LastName">Efternamn</label>
+                        <span asp-validation-for="Input.LastName" class="text-danger"></span>
+                    </div>
 
 
-@*             <div class="form-floating mb-3">
-                <input asp-for="Input.Password" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
-                <label asp-for="Input.Password">Lösenord</label>
-                <span asp-validation-for="Input.Password" class="text-danger"></span>
-            </div>
-            <div class="form-floating mb-3">
-                <input asp-for="Input.ConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
-                <label asp-for="Input.ConfirmPassword">Bekräfta lösenord</label>
-                <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
-            </div> *@
+                    <div class="form-floating mb-3 d-flex align-items-center">
+                        <input asp-for="Input.EmployeeNumber" class="form-control me-2" id="employeeNumber" aria-required="true" placeholder="Anställningsnummer" readonly />
+                        <label asp-for="Input.EmployeeNumber">Anställningsnummer</label>
+                        <button id="generateEmployeeNumberButton" type="button" class="btn btn-generic mt-2">Generera</button>
+                    </div>
+                    <span asp-validation-for="Input.EmployeeNumber" class="text-danger"></span>
 
-@*             <div class="form-floating mb-3">
-                <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
-                <label asp-for="Input.Email">Email</label>
-                <span asp-validation-for="Input.Email" class="text-danger"></span>
-            </div> *@
 
-                <button id="registerSubmit" type="submit" class="w-100 btn btn-generic" style="margin-top: 20px">Registrera</button>
+                    <button id="registerSubmit" type="submit" class="w-100 btn btn-generic" style="margin-top: 20px">Registrera</button>
 
                     @if (!string.IsNullOrEmpty(Model.StatusMessage))
                     {
@@ -66,43 +47,12 @@
                         </div>
                     }
 
-        </form>
-    </div>
-    @* <div class="col-md-6 col-md-offset-2">
-        <section>
-            <h3>Use another service to register.</h3>
-            <hr />
-            @{
-                if ((Model.ExternalLogins?.Count ?? 0) == 0)
-                {
-                    <div>
-                        <p>
-                            There are no external authentication services configured. See this <a href="https://go.microsoft.com/fwlink/?LinkID=532715">article
-                            about setting up this ASP.NET application to support logging in via external services</a>.
-                        </p>
-                    </div>
-                }
-                else
-                {
-                    <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="form-horizontal">
-                        <div>
-                            <p>
-                                @foreach (var provider in Model.ExternalLogins!)
-                                {
-                                    <button type="submit" class="btn btn-primary" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">@provider.DisplayName</button>
-                                }
-                            </p>
-                        </div>
-                    </form>
-                }
-            }
-        </section>
-    </div> *@
-</div>
+                </form>
+            </div>
+
         </div>
     </div>
+</div>
 @section Scripts {
-    <script src="https://ajax.aspnetcdn.com/ajax/jquery/3.5.1/jquery.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
-    <partial name="_ValidationScriptsPartial" />
+    <script src="~/js/registerUser.js" asp-append-version="true"></script>
 }

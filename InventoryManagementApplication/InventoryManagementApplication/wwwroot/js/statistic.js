@@ -14,6 +14,8 @@ function toggleHelp() {
 }
 
 
+
+
 $(document).ready(function () {
 
     let select = document.getElementById('pageAmount');
@@ -272,17 +274,6 @@ function setEmployeeNumber(employeeNumber) {
     toggleContent();
 }
 
-function clearSearch() {
-    const searchInput = document.getElementById("searchInput");
-    searchInput.value = ""; 
-
-    const event = new Event('input', {
-        bubbles: true,
-        cancelable: true,
-    });
-    searchInput.dispatchEvent(event);
-}
-
 function clearLeaderboardSearch() {
     const leaderboardSearchInput = document.getElementById("leaderboardSearchInput");
     leaderboardSearchInput.value = ""; 
@@ -336,4 +327,23 @@ function resetTableVisibility(tableId) {
         rows[i].style.display = ""; 
     }
 }
+
+
+$(document).ready(function () {
+    // Retrieve the employee number from the model
+    var employeeNumber = document.getElementById('emplyeeNumber').value;
+
+    // Check if the employee number is available
+    if (employeeNumber) {
+        // Set the search input with the appropriate format
+        $('#searchInput').val(`#a:${employeeNumber}., `);
+
+        // Create and dispatch an input event to trigger filtering
+        var event = new Event('input', {
+            bubbles: true,
+            cancelable: true,
+        });
+        document.getElementById('searchInput').dispatchEvent(event);
+    }
+});
 

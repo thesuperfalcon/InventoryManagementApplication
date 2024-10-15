@@ -4,7 +4,7 @@
     string formattedDate = DateTime.Now.ToString("dddd dd/MM yyyy");
     formattedDate = char.ToUpper(formattedDate[0]) + formattedDate.Substring(1);
 }
-
+<input hidden value="@Model.EmployeeNumber" id="emplyeeNumber"/>
 <h1>Lagersaldo och Förflyttningsstatistik @formattedDate</h1>
 
 <div class="mb-3">
@@ -125,7 +125,8 @@
             <div class="mb-3">
                 <div class="input-group">
                     <input id="searchInput" type="text" class="form-control" placeholder="Sök..." />
-                    <button id="clearButton" onclick="clearSearch()">Rensa Sök</button>
+                    @* <button id="clearButton" onclick="clearSearch()">Rensa Sök</button> *@
+                    <a asp-page="Statistic" class="btn btn-secondary">Rensa Sök</a>
                     <span class="input-group-text">
                         <i class="bi bi-search"></i>
                     </span>

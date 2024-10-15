@@ -50,6 +50,7 @@ namespace InventoryManagementApplication.Areas.Identity.Pages.Account.Manage
             /// </summary>
             [Required]
             [DataType(DataType.Password)]
+            [Display (Name  = "Lösenord")]
             public string Password { get; set; }
         }
 
