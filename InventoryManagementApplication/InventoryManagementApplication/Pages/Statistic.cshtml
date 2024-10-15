@@ -8,13 +8,14 @@
 <h1>Lagersaldo och Förflyttningsstatistik</h1> 
 <h2 class="text-center">@formattedDate</h2>
 
-
+<div class="toggle-container">
 <div class="toggle-switch">
   <input type="radio" id="statistics" name="view" checked>
   <label for="statistics" class="toggle-option">Statistik</label>
 
   <input type="radio" id="leaderboard" name="view">
   <label for="leaderboard" class="toggle-option">Leaderboard</label>
+</div>
 </div>
 
 <div class="centered-container">
@@ -131,8 +132,8 @@
                 <div class="search-bar-container">
                 <div class="input-group">
                     <input id="searchInput" type="text" class="form-control" placeholder="Sök..." />
-                    @* <button id="clearButton" onclick="clearSearch()">Rensa Sök</button> *@
-                    <a asp-page="Statistic"  id="clearButton" class="btn btn-secondary">Rensa Sök</a>
+                    <button id="clearButton" onclick="clearSearch()">Rensa Sök</button> 
+                   @*   <a asp-page="Statistic" id="clearButton" >Rensa Sök</a> *@
                     <span class="input-group-text">
                         <i class="bi bi-search"></i>
                     </span>

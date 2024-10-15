@@ -43,6 +43,10 @@
     border-radius: 5px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
   }
+
+  .input-group {
+    max-width: 700px;
+  }
   
 
   button#toggleAll, button[data-bs-target="#cheatsheetModal"] {
@@ -105,6 +109,7 @@ margin-top:10px;
   }
   
   button {
+    margin-left: 1px;
     transition: background-color 0.3s ease, box-shadow 0.3s ease;
   }
   
