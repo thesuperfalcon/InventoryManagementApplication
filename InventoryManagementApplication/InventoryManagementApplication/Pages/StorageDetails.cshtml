@@ -5,17 +5,16 @@
     <div class="row">
            <div class="col-md-8 first-column">
             <div class="card mb-8">
-                <div class="card-header">
-                    <h2>Lagerdetaljer: @Model.Storage.Name</h2>
-                    @* Bara admin kan göra ändringar *@
-                    @if (User.IsInRole("Admin"))
-                    {
-                        <button class="btn btn-generic float-end" data-bs-toggle="modal" data-bs-target="#editStorageModal">
-                            <i class="bi bi-pencil"></i>
-                        </button>
-                    }
-
-                </div>
+         <div class="card-header d-flex align-items-center justify-content-between">
+    <h2 class="mb-0">Lagerdetaljer: @Model.Storage.Name</h2>
+    @* Bara admin kan göra ändringar *@
+    @if (User.IsInRole("Admin"))
+    {
+        <button class="btn btn-generic ms-3" data-bs-toggle="modal" data-bs-target="#editStorageModal">
+            <i class="bi bi-pencil"></i>
+        </button>
+    }
+</div>
                 <div class="card-body">
                     @if (Model.Storage != null)
                     {
@@ -130,9 +129,7 @@ else
 </div>
 
  <button class="accordion">
-                                 <a asp-page="/Log" asp-route-id="@Model.Storage.Id" class="btn btn-info mt-3">
-                Fullständig logg
-            </a>
+                               
                 <span>Aktivitetslogg</span>
                 <i class="bi bi-chevron-down"></i>
             </button>
@@ -140,6 +137,9 @@ else
 
                     <div id="logsCollapse" class="accordion-collapse collapse show" aria-labelledby="logsHeading" data-bs-parent="#logsAccordion">
                         <div class="accordion-body">
+
+
+
                             <input type="text" id="logSearchInput" class="form-control mb-3" placeholder="Sök i aktivitetsloggar..." />
           <table class="table table-striped" id="logTable" data-sort-direction="asc">
 
@@ -187,7 +187,7 @@ else
                                 </tbody>
                             </table>
                               <div class="d-flex justify-content-between align-items-center">
-                   <div class="d-flex justify-content-between align-items-center">
+        
     <button id="logPrevPage" class="btn btn-secondary">Föregående</button>
     <span id="logPageNumber"></span>
     <button id="logNextPage" class="btn btn-secondary">Nästa</button>

@@ -77,6 +77,7 @@ body {
 
 /* Separera accordion-element och ge tydlig indikation på att de kan öppnas */
 .accordion {
+  margin-bottom: 0px;
   background-color: #fff;
   color: #333;
   cursor: pointer;
@@ -90,6 +91,8 @@ body {
   align-items: center;
   font-weight: bold;
   min-width: 500px;
+  position: relative; /* Behåll sin position utan att flytta andra element */
+  z-index: 1; 
 }
 
 .accordion:hover {
@@ -104,21 +107,35 @@ body {
 
 /* Paneler som expanderar med mjuk övergång */
 .panel {
-  padding: 15px;
+  margin-top: -12px;
   background-color: #fff;
   border: 1px solid #ddd;
   border-radius: 5px;
   margin-bottom: 20px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
   min-width: 500px;
+  position: relative;
+  z-index: 1;
+  max-height: 0; /* Dölj panelens innehåll som standard */
+  overflow: hidden; /* Förhindra att innehåll visas om det är dolt */
+  transition: max-height 0.3s ease-out;
 }
-
+/* När accordionen är aktiv och öppen */
+.accordion.active + .panel {
+  max-height: 500px; /* Öppnar panelen utan att påverka layouten */
+  overflow: visible; /* Tillräckligt stort värde för att rymma innehållet */
+  transition: max-height 0.5s ease-in-out; /* Mjuk övergång för att expandera */
+}
 /* Pagination justering för bättre centrering */
 .pagination {
   display: flex;
   justify-content: center;
   align-items: center;
   margin-top: 20px;
+  position: relative;
+  z-index: 1;
+     background-color: #fff; /* Säkerställ att bakgrunden förblir vit */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05); /* Skapa en lätt skugga för separering */
 }
 
 .pagination a {
@@ -157,7 +174,9 @@ body {
   padding: 5px;
   border-radius: 4px;
 }
-
+.ms-3 {
+  margin-left: 1rem; /* Ger lite mellanrum mellan lagernamnet och knappen */
+}
 /* Responsiv justering för mindre skärmar */
 @media (max-width: 768px) {
   .first-column, .second-column {
