@@ -92,7 +92,9 @@
                     <div class="card-body bg-white">
                         <div class="card mb-3">
                             <div class="card-body">
+                                <a asp-page="/Statistic" asp-route-employeeNumber="@Model.UserStatistic?.EmployeeNumber" style="text-decoration: none;">
                                 <h5>@(Model.UserStatistic != null ? Model.UserStatistic.EmployeeNumber : "Data finns ej") - @(Model.UserStatistic?.TotalQuantity != null ? Model.UserStatistic.TotalQuantity.ToString() : "Data finns ej")</h5>
+                                </a>
                                 <p>Anställd med mest förflyttade produkter</p>
                             </div>
                         </div>
@@ -104,7 +106,9 @@
                         </div>
                         <div class="card mb-3">
                             <div class="card-body">
+                                <a asp-page="/Statistic" style="text-decoration: none;">
                                 <h5>@(Model.NewestStatistic != null ? Model.NewestStatistic.UserName : "Data finns ej") - @(Model.NewestStatistic?.ProductName ?? "Data finns ej")</h5>
+                                </a>
                                 <p>Senast förflyttning</p>
                             </div>
                         </div>

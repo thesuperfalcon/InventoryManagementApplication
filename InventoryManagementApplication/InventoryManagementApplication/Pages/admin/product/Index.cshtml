@@ -33,7 +33,7 @@
 <div class="row mb-3">
     <div class="col-md-6">
         <div class="input-group shadow-sm">
-            <input type="text" id="searchInput" class="form-control" placeholder="Filtrera produkter..." onkeyup="filterTable()" />
+            <input type="text" id="searchInput" class="form-control" placeholder="Filtrera produkter..." />
             <span class="input-group-text bg-primary text-white">
                 <i class="bi bi-search"></i>
             </span>
@@ -114,31 +114,4 @@
 
 @section Scripts {
     <script src="~/js/productIndex.js"></script>
-    <script>
-             document.addEventListener('DOMContentLoaded', function () {
-            // Search functionality
-            document.getElementById('searchInput').addEventListener('keyup', function () {
-                const searchValue = this.value.toLowerCase();
-                const table = document.getElementById('productTable');
-                const rows = table.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
-
-                Array.from(rows).forEach(row => {
-                    const cells = row.getElementsByTagName('td');
-                    let rowMatches = false;
-
-                    // Check if any cell contains the search text
-                    for (let i = 0; i < cells.length; i++) {
-                        const cell = cells[i].innerText.toLowerCase();
-                        if (cell.includes(searchValue)) {
-                            rowMatches = true;
-                            break;
-                        }
-                    }
-
-                    // Show or hide the row based on whether it matches
-                    row.style.display = rowMatches ? '' : 'none';
-                });
-            });
-        });
-    </script>
 }
