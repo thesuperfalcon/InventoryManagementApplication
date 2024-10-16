@@ -1,8 +1,8 @@
 @page "{id:int}"
 @model InventoryManagementApplication.Pages.StorageDetailsModel
 @using System.Text.Json
-<div class="container">
-    <div class="row">
+<div class="storage-container">
+     <div class="row flex-container">
            <div class="col-md-8 first-column">
             <div class="card mb-8">
          <div class="card-header d-flex align-items-center justify-content-between">
@@ -150,7 +150,7 @@ else
             <i class="bi bi-chevron-expand" id="logSortIcon0"></i>
         </th>
         <th onclick="sortLogTable(1)" style="cursor:pointer;">
-            Anställningsnummer 
+            Anställd
             <i class="bi bi-chevron-expand" id="logSortIcon1"></i>
         </th>
         <th onclick="sortLogTable(2)" style="cursor:pointer;">
@@ -223,267 +223,12 @@ else
 
 
 @section Scripts {
-    <!-- Serialisering av data från modellen -->
+
     <script>
         var activityLogs = @Html.Raw(JsonSerializer.Serialize(Model.ActivityLogs));
         var userFullNames = @Html.Raw(JsonSerializer.Serialize(Model.UserFullName));
         var userEmployeeNumbers = @Html.Raw(JsonSerializer.Serialize(Model.UserEmployeeNumbers));
     </script>
-
-    <!-- Inkludera nödvändiga scriptlänkar -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-
-    <!-- JavaScript-kod -->
-    <script>
-        (function() {
-            // *** Produkttabellen ***
-
-            // Variabler för produkttabellen
-            const productRowsPerPage = 3;
-            let productCurrentPage = 1;
-            let productOriginalRows = [];
-            let productFilteredRows = [];
-
-            // *** Loggtabellen ***
-
-            // Variabler för loggtabellen
-            const logRowsPerPage = 3;
-            let logCurrentPage = 1;
-            let logOriginalRows = [];
-            let logFilteredRows = [];
-
-            $(document).ready(function () {
-                // *** Produkttabellen ***
-
-                // Initialisera produktrows
-                productOriginalRows = Array.from(document.querySelectorAll("#productTableBody tr"));
-                productFilteredRows = [...productOriginalRows];
-
-                paginateProductTable();
-
-                // Sökfunktion för produkter
-                $("#productSearchInput").on("keyup", function () {
-                    var value = $(this).val().toLowerCase();
-
-                            productFilteredRows = productOriginalRows.filter(row => {
-                                return row.innerText.toLowerCase().includes(value);
-                            });
-
-                    productCurrentPage = 1;
-                    paginateProductTable();
-                });
-
-                        $("#productPrevPage").on("click", function () {
-                            if (productCurrentPage > 1) {
-                                productCurrentPage--;
-                                paginateProductTable();
-                            }
-                        });
-
-                        $("#productNextPage").on("click", function () {
-                            if (productCurrentPage < Math.ceil(productFilteredRows.length / productRowsPerPage)) {
-                                productCurrentPage++;
-                                paginateProductTable();
-                            }
-                        });
-
-                // *** Loggtabellen ***
-
-                // Initialisera loggrows
-                logOriginalRows = Array.from(document.querySelectorAll("#logTableBody tr"));
-                logFilteredRows = [...logOriginalRows];
-
-                paginateLogTable();
-
-                $("#logPrevPage").on("click", function () {
-                    if (logCurrentPage > 1) {
-                        logCurrentPage--;
-                        paginateLogTable();
-                    }
-                });
-
-                $("#logNextPage").on("click", function () {
-                    if (logCurrentPage < Math.ceil(logFilteredRows.length / logRowsPerPage)) {
-                        logCurrentPage++;
-                        paginateLogTable();
-                    }
-                });
-
-                // Sökfunktion för loggar
-                $("#logSearchInput").on("keyup", function () {
-                    var value = $(this).val().toLowerCase();
-
-                    logFilteredRows = logOriginalRows.filter(row => {
-                        return row.innerText.toLowerCase().includes(value);
-                    });
-
-                    logCurrentPage = 1;
-                    paginateLogTable();
-                });
-
-                // Initialisera Bootstrap-tooltips
-                var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-                var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-                    return new bootstrap.Tooltip(tooltipTriggerEl);
-                });
-            });
-
-            // Funktion för paginering av produkttabellen
-            function paginateProductTable() {
-                const start = (productCurrentPage - 1) * productRowsPerPage;
-                const end = start + productRowsPerPage;
-
-                // Dölj alla rader först
-                document.querySelectorAll("#productTableBody tr").forEach(row => {
-                    row.style.display = "none";
-                });
-
-                // Visa endast raderna på den aktuella sidan
-                productFilteredRows.slice(start, end).forEach(row => {
-                    row.style.display = "";
-                });
-
-                const pageNumberElement = document.getElementById("productPageNumber");
-                pageNumberElement.innerText = `Sida ${productCurrentPage} av ${Math.ceil(productFilteredRows.length / productRowsPerPage)}`;
-            }
-
-            // Funktion för paginering av loggtabellen
-            function paginateLogTable() {
-                const start = (logCurrentPage - 1) * logRowsPerPage;
-                const end = start + logRowsPerPage;
-
-                // Dölj alla rader först
-                document.querySelectorAll("#logTableBody tr").forEach(row => {
-                    row.style.display = "none";
-                });
-
-                // Visa endast raderna på den aktuella sidan
-                logFilteredRows.slice(start, end).forEach(row => {
-                    row.style.display = "";
-                });
-
-                const pageNumberElement = document.getElementById("logPageNumber");
-                pageNumberElement.innerText = `Sida ${logCurrentPage} av ${Math.ceil(logFilteredRows.length / logRowsPerPage)}`;
-            }
-
-            // Sorteringsfunktion för produkttabellen
-            window.sortProductTable = function(columnIndex) {
-                const isAscending = $("#productTable").data("sort-direction") === "asc";
-
-                // Sortera raderna
-                productFilteredRows.sort((a, b) => {
-                    const cellA = a.cells[columnIndex].innerText.trim();
-                    const cellB = b.cells[columnIndex].innerText.trim();
-
-                    const isNumber = !isNaN(parseFloat(cellA)) && !isNaN(parseFloat(cellB));
-
-                    let comparisonResult;
-                    if (isNumber) {
-                        comparisonResult = parseFloat(cellA) - parseFloat(cellB);
-                    } else {
-                        comparisonResult = cellA.localeCompare(cellB, 'sv-SE', { sensitivity: 'base' });
-                    }
-
-                    return isAscending ? comparisonResult : -comparisonResult;
-                });
-
-                // Växla sorteringsriktning
-                $("#productTable").data("sort-direction", isAscending ? "desc" : "asc");
-
-                // Uppdatera ikoner för sorteringsordning
-                for (let i = 0; i < 3; i++) {
-                    const icon = document.getElementById(`sortIcon${i}`);
-                    if (i === columnIndex) {
-                        if (isAscending) {
-                            icon.classList.remove('bi-chevron-expand');
-                            icon.classList.add('bi-chevron-down');
-                        } else {
-                            icon.classList.remove('bi-chevron-down');
-                            icon.classList.add('bi-chevron-up');
-                        }
-                    } else {
-                        icon.classList.remove('bi-chevron-down', 'bi-chevron-up');
-                        icon.classList.add('bi-chevron-expand');
-                    }
-                }
-
-                // Återställ raderna i tabellen
-                const tbody = document.querySelector("#productTableBody");
-                productFilteredRows.forEach(row => tbody.appendChild(row));
-
-                productCurrentPage = 1;
-                paginateProductTable();
-            }
-
-            // Sorteringsfunktion för loggtabellen
-            window.sortLogTable = function(columnIndex) {
-                const isAscending = $("#logTable").data("sort-direction") === "asc";
-
-                // Sortera raderna
-                logFilteredRows.sort((a, b) => {
-                    const cellA = a.cells[columnIndex].innerText.trim();
-                    const cellB = b.cells[columnIndex].innerText.trim();
-
-                    const isDate = !isNaN(Date.parse(cellA)) && !isNaN(Date.parse(cellB));
-                    const isNumber = !isNaN(parseFloat(cellA)) && !isNaN(parseFloat(cellB));
-
-                    let comparisonResult;
-                    if (isDate) {
-                        comparisonResult = new Date(cellA) - new Date(cellB);
-                    } else if (isNumber) {
-                        comparisonResult = parseFloat(cellA) - parseFloat(cellB);
-                    } else {
-                        comparisonResult = cellA.localeCompare(cellB, 'sv-SE', { sensitivity: 'base' });
-                    }
-
-                    return isAscending ? comparisonResult : -comparisonResult;
-                });
-
-                // Växla sorteringsriktning
-                $("#logTable").data("sort-direction", isAscending ? "desc" : "asc");
-
-                // Uppdatera ikoner för sorteringsordning
-                for (let i = 0; i < 4; i++) {
-                    const icon = document.getElementById(`logSortIcon${i}`);
-                    if (i === columnIndex) {
-                        if (isAscending) {
-                            icon.classList.remove('bi-chevron-expand');
-                            icon.classList.add('bi-chevron-down');
-                        } else {
-                            icon.classList.remove('bi-chevron-down');
-                            icon.classList.add('bi-chevron-up');
-                        }
-                    } else {
-                        icon.classList.remove('bi-chevron-down', 'bi-chevron-up');
-                        icon.classList.add('bi-chevron-expand');
-                    }
-                }
-
-                // Återställ raderna i tabellen
-                const tbody = document.querySelector("#logTableBody");
-                logFilteredRows.forEach(row => tbody.appendChild(row));
-
-                logCurrentPage = 1;
-                paginateLogTable();
-            }
-
-            // Kod för accordion-funktionalitet
-            var acc = document.getElementsByClassName("accordion");
-            var i;
-
-            for (i = 0; i < acc.length; i++) {
-                acc[i].addEventListener("click", function() {
-                    this.classList.toggle("active");
-
-                    var panel = this.nextElementSibling;
-                    if (panel.style.display === "block") {
-                        panel.style.display = "none";
-                    } else {
-                        panel.style.display = "block";
-                    }
-                });
-            }
-
-        })();
-    </script>
+    <script src="~/js/storagedetails.js" asp-append-version="true"></script>
+      <link rel="stylesheet" href="~/css/detailspages.css" asp-append-version="true" />
 }

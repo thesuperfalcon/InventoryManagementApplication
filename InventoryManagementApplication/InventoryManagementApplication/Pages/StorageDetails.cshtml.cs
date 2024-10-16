@@ -2,9 +2,6 @@ using InventoryManagementApplication.Models;
 using InventoryManagementApplication.DAL;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using System.Linq;
 
 namespace InventoryManagementApplication.Pages
 {
@@ -16,7 +13,7 @@ namespace InventoryManagementApplication.Pages
 
         private readonly TrackerManager _trackerManager;
 
-        public StorageDetailsModel(StorageManager storageManager, LogManager logManager, UserManager userManager,TrackerManager trackerManager)
+        public StorageDetailsModel(StorageManager storageManager, LogManager logManager, UserManager userManager, TrackerManager trackerManager)
         {
             _storageManager = storageManager;
             _logManager = logManager;
@@ -33,8 +30,7 @@ namespace InventoryManagementApplication.Pages
         public async Task<IActionResult> OnGetAsync(int id)
         {
             // Hämta lagret via API:et
-// Om du vill sätta isDeleted till null
-Storage = await _storageManager.GetStorageByIdAsync(id, null);
+            Storage = await _storageManager.GetStorageByIdAsync(id, null);
 
 
             if (Storage == null)
@@ -42,19 +38,15 @@ Storage = await _storageManager.GetStorageByIdAsync(id, null);
                 return NotFound();
             }
 
-              var allTrackers = await _trackerManager.GetAllTrackersAsync();
+            var allTrackers = await _trackerManager.GetAllTrackersAsync();
 
-    // Filtrera InventoryTrackers för det specifika lagret
-    InventoryTrackers = allTrackers.Where(it => it.StorageId == id).ToList();
+            InventoryTrackers = allTrackers.Where(it => it.StorageId == id).ToList();
 
-
-            // Hämta alla loggar och filtrera efter lagret
             var allLogs = await _logManager.GetAllLogsAsync();
             ActivityLogs = allLogs
-                .Where(log => log.EntityType.Contains("Storage") && log.EntityName == Storage.Name)
+                .Where(log => log.EntityType.Contains("Storage") && log.Id == Storage.Id)
                 .ToList();
 
-            // Hämta användarinformation för varje logg
             var users = await _userManager.GetAllUsersAsync(false);
             var userDictionary = users.ToDictionary(
                 u => u.Id,
@@ -76,8 +68,6 @@ Storage = await _storageManager.GetStorageByIdAsync(id, null);
 
             return Page();
         }
-
-        // Uppdaterar lagerinformation
         public async Task<IActionResult> OnPostUpdateStorageAsync(int StorageId, string StorageName)
         {
             // Hämta lagret via API:et
@@ -87,12 +77,24 @@ Storage = await _storageManager.GetStorageByIdAsync(id, null);
                 return NotFound();
             }
 
-            // Uppdatera lagrets egenskaper
+            var oldStorageName = storage.Name;
             storage.Name = StorageName;
             storage.Updated = DateTime.Now;
 
             // Spara ändringarna via API:et
-await _storageManager.EditStorageAsync(storage);
+            await _storageManager.EditStorageAsync(storage);
+
+
+            var allLogs = await _logManager.GetAllLogsAsync();
+            var logsToUpdate = allLogs
+                .Where(log => log.EntityType.Contains("Storage") && log.EntityName == oldStorageName)
+                .ToList();
+
+            foreach (var log in logsToUpdate)
+            {
+                log.EntityName = StorageName; // Uppdatera loggens namn
+                await _logManager.EditLogAsync(log);
+            }
 
             return RedirectToPage(new { id = StorageId });
         }

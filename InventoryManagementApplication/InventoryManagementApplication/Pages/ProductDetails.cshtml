@@ -1,7 +1,7 @@
 @page "{id:int}"
 @model InventoryManagementApplication.Pages.ProductDetailsModel
 
-<div class="container">
+<div class="product-container">
  <div class="row flex-container">
          <div class="col-md-8 first-column">
             <div class="card mb-8">
@@ -64,10 +64,10 @@
       <div class="col-md-8 custom-second-column">
           <div class="card mb-8">
                       <div class="card-header d-flex align-items-center justify-content-between">
-                    <h3>Aktivitetsloggar för denna produkt</h3>
+                    <h3 class="d-flex align-items-center" >Aktivitetsloggar</h3>
                     </div>
                      <div class="card-body">
-                    <input type="text" id="activityLogSearchInput" placeholder="Sök i aktivitetsloggar..." class="form-control mb-2" />
+                    <input type="text" id="activityLogSearchInput" placeholder="Sök..." class="form-control mb-2" />
 
                     <table class="table table-striped" id="activityLogTable" data-sort-direction="asc">
 
@@ -78,7 +78,7 @@
             <i class="bi bi-chevron-expand" id="activityLogSortIcon0"></i>
         </th>
         <th onclick="sortActivityLogTable(1)" style="cursor:pointer;">
-            Anställningsnummer
+            Anställd
             <i class="bi bi-chevron-expand" id="activityLogSortIcon1"></i>
         </th>
         <th onclick="sortActivityLogTable(2)" style="cursor:pointer;">
@@ -154,130 +154,7 @@
                         </div>
                     </div>
 
-                    @section Scripts {
-                        <script>
-                            function validateForm() {
-                                const name = document.getElementById("ProductName").value;
-                                const description = document.getElementById("ProductDescription").value;
-                                if (!name || !description) {
-                                    alert("Alla fält måste fyllas i!");
-                                    return false;
-                                }
-                                return true;
-                            }
-                        </script>
-                        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-                      <script>
-        // Variabler för aktivitetsloggstabellen
-        const activityLogRowsPerPage = 5;
-        let activityLogCurrentPage = 1;
-        let activityLogOriginalRows = [];
-        let activityLogFilteredRows = [];
-
-        $(document).ready(function () {
-            // Initialisera aktivitetsloggrows
-            activityLogOriginalRows = Array.from(document.querySelectorAll("#activityLogTableBody tr"));
-            activityLogFilteredRows = [...activityLogOriginalRows];
-
-            paginateActivityLogTable();
-
-            // Sökfunktion för aktivitetsloggar
-            $("#activityLogSearchInput").on("keyup", function () {
-                var value = $(this).val().toLowerCase();
-
-                activityLogFilteredRows = activityLogOriginalRows.filter(row => {
-                    return row.innerText.toLowerCase().includes(value);
-                });
-
-                activityLogCurrentPage = 1;
-                paginateActivityLogTable();
-            });
-
-            // Paginering för aktivitetsloggstabellen
-            $("#activityLogPrevPage").on("click", function () {
-                if (activityLogCurrentPage > 1) {
-                    activityLogCurrentPage--;
-                    paginateActivityLogTable();
-                }
-            });
-
-            $("#activityLogNextPage").on("click", function () {
-                if (activityLogCurrentPage < Math.ceil(activityLogFilteredRows.length / activityLogRowsPerPage)) {
-                    activityLogCurrentPage++;
-                    paginateActivityLogTable();
-                }
-            });
-        });
-
-        function paginateActivityLogTable() {
-            const start = (activityLogCurrentPage - 1) * activityLogRowsPerPage;
-            const end = start + activityLogRowsPerPage;
-
-            // Dölj alla rader först
-            document.querySelectorAll("#activityLogTableBody tr").forEach(row => {
-                row.style.display = "none";
-            });
-
-            // Visa endast raderna på den aktuella sidan
-            activityLogFilteredRows.slice(start, end).forEach(row => {
-                row.style.display = "";
-            });
-
-            const pageNumberElement = document.getElementById("activityLogPageNumber");
-            pageNumberElement.innerText = `Sida ${activityLogCurrentPage} av ${Math.ceil(activityLogFilteredRows.length / activityLogRowsPerPage)}`;
-        }
-
-        // Sorteringsfunktion för aktivitetsloggstabellen
-        function sortActivityLogTable(columnIndex) {
-            const table = document.querySelector("#activityLogTable");
-            const isAscending = table.getAttribute("data-sort-direction") === "asc";
-
-            // Sortera raderna
-            activityLogFilteredRows.sort((a, b) => {
-                const cellA = a.cells[columnIndex].innerText.trim();
-                const cellB = b.cells[columnIndex].innerText.trim();
-
-                const isDate = !isNaN(Date.parse(cellA)) && !isNaN(Date.parse(cellB));
-                const isNumber = !isNaN(parseFloat(cellA)) && !isNaN(parseFloat(cellB));
-
-                let comparisonResult;
-                if (isDate) {
-                    comparisonResult = new Date(cellA) - new Date(cellB);
-                } else if (isNumber) {
-                    comparisonResult = parseFloat(cellA) - parseFloat(cellB);
-                } else {
-                    comparisonResult = cellA.localeCompare(cellB, 'sv-SE', { sensitivity: 'base' });
-                }
-
-                return isAscending ? comparisonResult : -comparisonResult;
-            });
-
-            // Växla sorteringsriktning
-            table.setAttribute("data-sort-direction", isAscending ? "desc" : "asc");
-
-            // Uppdatera sorteringsikoner
-            for (let i = 0; i < 4; i++) {
-                const icon = document.getElementById(`activityLogSortIcon${i}`);
-                if (i === columnIndex) {
-                    if (isAscending) {
-                        icon.classList.remove('bi-chevron-expand');
-                        icon.classList.add('bi-chevron-down');
-                    } else {
-                        icon.classList.remove('bi-chevron-down');
-                        icon.classList.add('bi-chevron-up');
-                    }
-                } else {
-                    icon.classList.remove('bi-chevron-down', 'bi-chevron-up');
-                    icon.classList.add('bi-chevron-expand');
-                }
-            }
-
-            // Återställ raderna i tabellen
-            const tbody = document.querySelector("#activityLogTableBody");
-            activityLogFilteredRows.forEach(row => tbody.appendChild(row));
-
-            activityLogCurrentPage = 1;
-            paginateActivityLogTable();
-        }
-    </script>
-                    }
+                 @section Scripts {
+<script src="~/js/productdetails.js" asp-append-version="true"></script>
+  <link rel="stylesheet" href="~/css/detailspages.css" asp-append-version="true" />
+}

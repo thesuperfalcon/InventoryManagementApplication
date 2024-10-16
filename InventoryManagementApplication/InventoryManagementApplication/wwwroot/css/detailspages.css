@@ -1,10 +1,7 @@
-/* Bakgrundsfärg för hela sidan */
-body {
-  background-color: #eef1f8 !important;
-}
-
-/* Standardinställningar för knappar, med hover-effekt */
-.btn-generic, .btn-info, .btn-secondary, .btn-primary {
+.btn-generic,
+.btn-info,
+.btn-secondary,
+.btn-primary {
   background-color: rgb(39, 62, 125) !important;
   border: 2px solid rgb(39, 62, 125) !important;
   border-radius: 5px;
@@ -14,7 +11,10 @@ body {
   margin: 10px;
 }
 
-.btn-generic:hover, .btn-info:hover, .btn-secondary:hover, .btn-primary:hover {
+.btn-generic:hover,
+.btn-info:hover,
+.btn-secondary:hover,
+.btn-primary:hover {
   background-color: rgb(49, 78, 156) !important;
   border: 2px solid rgb(49, 78, 156) !important;
   color: #f8f7f7 !important;
@@ -26,83 +26,96 @@ body {
   align-items: flex-end;
 }
 
-/* Stora flexibla container */
-.container {
-  max-width: 1000px; /* Öka max-width för container */
-  margin: 0 auto; /* Centrerar container på sidan */
+.storage-container,
+.product-container {
+  max-width: 1000px;
+  margin: 0 auto;
   display: flex;
   flex-direction: column;
   justify-content: center;
   padding: 24px;
+  margin-top: 20px;
 }
 
-/* Flexibel layout för kolumner */
+.custom-link {
+  text-decoration: none;
+  color: inherit;
+  font-weight: normal;
+  transition: color 0.3s ease, background-color 0.3s ease;
+}
+
+.custom-link:hover {
+  color: rgb(39, 62, 125);
+  text-decoration: underline;
+}
+
+table {
+  table-layout: fixed;
+  width: 100%;
+}
+
+table td,
+table th {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.storage-container {
+  margin-left: 25px;
+}
+
 .flex-container {
   display: flex;
-  flex-wrap: nowrap; /* Hindrar kolumnerna från att brytas i nya rader */
-  justify-content: flex-start; /* Placera kolumnerna mot vänster */
-  align-items: flex-start; /* Ser till att kolumnerna börjar från toppen */
-  gap: 50px; /* Ger mellanrum mellan kolumnerna */
-  width: 100%; /* Använd hela tillgängliga bredden */
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 50px;
+  width: 100%;
 }
 
-/* Större vänsterkolumn för lagerdetaljer */
 .first-column {
-  flex-grow: 2; /* Låter denna kolumn växa dubbelt så mycket som andra */
-  max-width: 70%; /* Ger den 70% av bredden */
-  padding-right: 20px; /* Justerar mellanrum till höger */
-  align-self: flex-start; /* Förhindra att den påverkas av andra kolumnen */
+  flex-grow: 2;
+  max-width: 70%;
+  padding-right: 20px;
+  align-self: flex-start;
   position: sticky;
 }
-/* Flexibel layout för att placera produktdetaljer och aktivitetslogg bredvid varandra */
+
 .flex-container {
-  display: flex; /* Använd flexbox för att placera dem bredvid varandra */
-  justify-content: space-between; /* Ger jämn fördelning mellan kolumnerna */
-  gap: 20px; /* Mellanrum mellan produktdetaljer och aktivitetslogg */
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
   justify-content: center;
 }
 
-
-/* Anpassa för mindre skärmar */
-@media (max-width: 768px) {
-  .flex-container {
-      flex-direction: column; /* Lägger dem under varandra på små skärmar */
-  }
-  .first-column, .second-column {
-      max-width: 100%; /* Se till att de tar upp 100% bredd på små skärmar */
-  }
-}
-
-
-/* Mindre högerkolumn för accordion */
-.second-column,.custom-second-column  {
-  flex-grow: 1; /* Låter denna kolumn växa med mindre utrymme */
+.second-column,
+.custom-second-column {
+  flex-grow: 1;
   padding-left: 20px;
-  margin-top: 20px; /* Justering för att ge andrum */
-  align-self: flex-start; /* Gör så att den placeras oberoende av den första kolumnen */
+  margin-top: 20px;
+  align-self: flex-start;
   position: sticky;
 }
 
 .second-column {
   flex-grow: 1;
-  max-width: 30%; /* Ger den 30% av bredden */
+  max-width: 30%;
 }
-.custom-second-column  {
-  max-width: 55%; /* Ger den 30% av bredden */
-}
-
-
-/* Se till att kortet i första kolumnen fyller ut hela utrymmet */
-.first-column .card {
-  width: 100%;  /* Gör att kortet sträcker sig över hela kolumnens bredd */
-  flex-grow: 1;  /* Se till att kortet expanderar för att fylla tillgängligt utrymme */
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* Lägg till en liten skugga */
-  border-radius: 10px; /* Rundar hörnen på kortet */
-  background-color: white; /* Gör kortet vitt */
+.custom-second-column {
+  max-width: 70%;
 }
 
+.first-column .card,
+.second-column .card,
+.custom-second-column .card {
+  width: 100%;
+  flex-grow: 1;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+  background-color: white;
+  transition: box-shadow 0.3s ease;
+}
 
-/* Separera accordion-element och ge tydlig indikation på att de kan öppnas */
 .accordion {
   margin-bottom: 0px;
   background-color: #fff;
@@ -118,8 +131,8 @@ body {
   align-items: center;
   font-weight: bold;
   min-width: 500px;
-  position: relative; /* Behåll sin position utan att flytta andra element */
-  z-index: 1; 
+  position: relative;
+  z-index: 1;
 }
 
 .accordion:hover {
@@ -127,12 +140,10 @@ body {
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-/* Ikonstorlek för accordion-knappar */
 .accordion i {
   font-size: 18px;
 }
 
-/* Paneler som expanderar med mjuk övergång */
 .panel {
   margin-top: -12px;
   background-color: #fff;
@@ -143,17 +154,15 @@ body {
   min-width: 500px;
   position: relative;
   z-index: 1;
-  max-height: 0; /* Dölj panelens innehåll som standard */
-  overflow: hidden; /* Förhindra att innehåll visas om det är dolt */
-
+  max-height: 0;
+  overflow: hidden;
 }
-/* När accordionen är aktiv och öppen */
+
 .accordion.active + .panel {
-  max-height: 500px; /* Öppnar panelen utan att påverka layouten */
-  overflow: visible; /* Tillräckligt stort värde för att rymma innehållet */
-
+  max-height: 500px;
+  overflow: visible;
 }
-/* Pagination justering för bättre centrering */
+
 .pagination {
   display: flex;
   justify-content: center;
@@ -161,8 +170,8 @@ body {
   margin-top: 20px;
   position: relative;
   z-index: 1;
-     background-color: #fff; /* Säkerställ att bakgrunden förblir vit */
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05); /* Skapa en lätt skugga för separering */
+  background-color: #fff;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
 }
 
 .pagination a {
@@ -185,7 +194,6 @@ body {
   font-size: 16px;
 }
 
-/* Skuggning och hover-effekt för knappar */
 .btn {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
@@ -194,7 +202,6 @@ body {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
-/* Justering för tooltips */
 .tooltip {
   background-color: #333;
   color: #fff;
@@ -202,11 +209,22 @@ body {
   border-radius: 4px;
 }
 .ms-3 {
-  margin-left: 1rem; /* Ger lite mellanrum mellan lagernamnet och knappen */
+  margin-left: 1rem;
 }
-/* Responsiv justering för mindre skärmar */
+
 @media (max-width: 768px) {
-  .first-column, .second-column {
+  .flex-container {
+    flex-direction: column;
+  }
+  .first-column,
+  .second-column {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .first-column,
+  .second-column {
     flex: 0 0 100%;
     max-width: 100%;
     padding: 0;
