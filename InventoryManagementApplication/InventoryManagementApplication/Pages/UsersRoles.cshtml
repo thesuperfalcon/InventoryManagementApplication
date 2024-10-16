@@ -23,6 +23,10 @@
         </button>
     </form>
 
+    <div class="input-group">
+        <input id="userRolesSearchInput" type="text" class="form-control" placeholder="Sök anställningsnummer..." />
+        <button id="clearUserRolesInput" type="button" onclick="clearUserRolesSearch()">Rensa Sök</button>
+    </div>
 
     <table class="table table-striped">
         <thead>
@@ -36,7 +40,7 @@
                 <th>Inställningar</th>
             </tr>
         </thead>
-        <tbody>
+        <tbody id="myTable">
             @foreach (var user in Model.UsersWithRoles)
             {
                 if (user.IsDeleted == false)
@@ -58,15 +62,33 @@
             }
         </tbody>
     </table>
+    <div class="mb-3">
+        <button id="prevPage" class="btn btn-primary">Bak</button>
+        <span id="pageNumber" class="mx-3"></span>
+        <button id="nextPage" class="btn btn-primary">Fram</button>
+        <select id="pageAmount">
+            <option value="10">10</option>
+            <option value="20">20</option>
+            <option value="25">25</option>
+            <option value="50">50</option>
+            <option value="75">75</option>
+            <option value="100">100</option>
+        </select>
+    </div>
 </body>
 
-@section Scripts {
+ @section Scripts{
+    <script src="~/js/userRoles.js"></script>
     <script>
-        function formSubmit() {
-            var form = document.getElementById('toggleForm');
-            console.log('Submitting form...');  // Debugging
-            form.submit();
+             function clearUserRolesSearch() {
+            const userRolesSearchInput = document.getElementById("userRolesSearchInput");
+            userRolesSearchInput.value = "";
+
+            const event = new Event('input', {
+                bubbles: true,
+                cancelable: true,
+            });
+            userRolesSearchInput.dispatchEvent(event);
         }
     </script>
-
 } 
