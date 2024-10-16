@@ -1,26 +1,20 @@
 @page "{id:int}"
 @model InventoryManagementApplication.Pages.StorageDetailsModel
 @using System.Text.Json
-
-
-
-
-
-<div class="container">
-    <div class="row">
-        <div class="col-md-6">
-            <div class="card mb-6">
-                <div class="card-header">
-                    <h2>Lagerdetaljer: @Model.Storage.Name</h2>
-                    @* Bara admin kan göra ändringar *@
-                    @if (User.IsInRole("Admin"))
-                    {
-                        <button class="btn btn-generic" data-bs-toggle="modal" data-bs-target="#editStorageModal">
-                            <i class="bi bi-pencil"></i>
-                        </button>
-                    }
-
-                </div>
+<div class="storage-container">
+     <div class="row flex-container">
+           <div class="col-md-8 first-column">
+            <div class="card mb-8">
+         <div class="card-header d-flex align-items-center justify-content-between">
+    <h2 class="mb-0">Lagerdetaljer: @Model.Storage.Name</h2>
+    @* Bara admin kan göra ändringar *@
+    @if (User.IsInRole("Admin"))
+    {
+        <button class="btn btn-generic ms-3" data-bs-toggle="modal" data-bs-target="#editStorageModal">
+            <i class="bi bi-pencil"></i>
+        </button>
+    }
+</div>
                 <div class="card-body">
                     @if (Model.Storage != null)
                     {
@@ -50,394 +44,191 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-6">
-            <br>
-            <button class="accordion">Produkter i detta lager</button>
+
+
+        
+        <div class="col-md-4 second-column">
+            <!-- Accordion för produkter -->
+            <button class="accordion">
+                <span>Produkter i detta lager</span>
+                <i class="bi bi-chevron-down"></i>
+            </button>
             <div class="panel">
 
+  
+                  
+                            <input type="text" id="productSearchInput" class="form-control mb-3" placeholder="Sök efter produkt i lager..." />
+                            <table class="table" id="productTable" data-sort-direction="asc">
 
-
-                <input type="text" id="productSearchInput" class="form-control mb-3" placeholder="Sök efter produkt i lager..." />
-                <table class="table" id="productTable">
-
-
-                    <thead>
-                        <tr>
-                            <th onclick="sortProductTable(0)" style="cursor:pointer;">
-                                Produktnamn
-                                <i class="bi bi-chevron-expand" id="sortIcon0"></i>
-                            </th>
-                            <th onclick="sortProductTable(1)" style="cursor:pointer;">
-                                Artikelnummer
-                                <i class="bi bi-chevron-expand" id="sortIcon1"></i>
-                            </th>
-                            <th onclick="sortProductTable(2)" style="cursor:pointer;">
-                                Antal i lager
-                                <i class="bi bi-chevron-expand" id="sortIcon2"></i>
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody id="productTableBody">
-                        @if (Model.InventoryTrackers.Any())
-                        {
-                            @foreach (var tracker in Model.InventoryTrackers)
-                            {
-                                if (tracker.Product != null)
-                                {
+                               
+                               
+                                <thead>
                                     <tr>
-                                        <td>
-                                            <a asp-page="/ProductDetails" asp-route-id="@tracker.Product.Id" class="custom-link">
-                                                @tracker.Product.Name
-                                            </a>
-                                            @if (tracker.Quantity <= 30)
-                                            {
-                                                <span class="text-warning ms-2" data-bs-toggle="tooltip" title="Produkten håller på att ta slut!">
-                                                    <i class="bi bi-exclamation-triangle-fill"></i>
-                                                </span>
-                                            }
-                                        </td>
-                                        <td>@tracker.Product.ArticleNumber</td>
-                                        <td>@tracker.Quantity</td>
+                                       <th onclick="sortProductTable(0)" style="cursor:pointer;">
+            Produktnamn 
+            <i class="bi bi-chevron-expand" id="sortIcon0"></i>
+        </th>
+        <th onclick="sortProductTable(1)" style="cursor:pointer;">
+            Artikelnummer 
+            <i class="bi bi-chevron-expand" id="sortIcon1"></i>
+        </th>
+        <th onclick="sortProductTable(2)" style="cursor:pointer;">
+            Antal i lager 
+            <i class="bi bi-chevron-expand" id="sortIcon2"></i>
+        </th>
                                     </tr>
-                                }
-                            }
-                        }
-                        else
-                        {
-                            <tr>
-                                <td colspan="3" class="text-center">Inga produkter i lager</td>
-                            </tr>
-                        }
-
-                    </tbody>
-                </table>
-                <div id="productPageNumber" class="mt-2"></div>
-            </div>
-
-            <button class="accordion">Aktivitetslogg</button>
-            <div class="panel">
-
-                <div id="logsCollapse" class="accordion-collapse collapse show" aria-labelledby="logsHeading" data-bs-parent="#logsAccordion">
-                    <div class="accordion-body">
-                        <input type="text" id="logSearchInput" class="form-control mb-3" placeholder="Sök i aktivitetsloggar..." />
-                        <table class="table table-striped" id="logTable">
-                            <thead>
-                                <tr>
-                                    <th onclick="sortLogTable(0)" style="cursor:pointer;">
-                                        Namn
-                                        <i class="bi bi-chevron-expand" id="logSortIcon0"></i>
-                                    </th>
-                                    <th onclick="sortLogTable(1)" style="cursor:pointer;">
-                                        Anställningsnummer
-                                        <i class="bi bi-chevron-expand" id="logSortIcon1"></i>
-                                    </th>
-                                    <th onclick="sortLogTable(2)" style="cursor:pointer;">
-                                        Händelse
-                                        <i class="bi bi-chevron-expand" id="logSortIcon2"></i>
-                                    </th>
-                                    <th onclick="sortLogTable(3)" style="cursor:pointer;">
-                                        Datum
-                                        <i class="bi bi-chevron-expand" id="logSortIcon3"></i>
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody id="logTableBody">
-                                @if (Model.ActivityLogs.Any())
-                                {
-                                    for (int i = 0; i < Model.ActivityLogs.Count; i++)
+                                </thead>
+                                <tbody id="productTableBody">
+                               @if (Model.InventoryTrackers != null && Model.InventoryTrackers.Any())
+{
+    @foreach (var tracker in Model.InventoryTrackers)
+    {
+        if (tracker.Product != null)
+        {
+                                                <tr>
+                                                    <td>
+                                                        <a asp-page="/ProductDetails" asp-route-id="@tracker.Product.Id" class="custom-link">
+                                                            @tracker.Product.Name
+                                                        </a>
+                                                        @if (tracker.Quantity <= 30)
+                                                        {
+                                                            <span class="text-warning ms-2" data-bs-toggle="tooltip" title="Produkten håller på att ta slut!">
+                                                                <i class="bi bi-exclamation-triangle-fill"></i>
+                                                            </span>
+                                                        }
+                                                    </td>
+                                                    <td>@tracker.Product.ArticleNumber</td>
+                                                    <td>@tracker.Quantity</td>
+                                                </tr>
+                                           }
+        else
+        {
+            <tr>
+                <td colspan="3">Produktinformation saknas för denna inventering.</td>
+            </tr>
+        }
+    }
+}
+else
                                     {
-                                        var log = Model.ActivityLogs[i];
                                         <tr>
-                                            <td>@Model.UserFullName[i]</td>
-                                            <td>@Model.UserEmployeeNumbers[i]</td>
-                                            <td>@log.Action</td>
-                                            <td>@log.TimeStamp</td>
+                                            <td colspan="3" class="text-center">Inga produkter i lager</td>
                                         </tr>
                                     }
-                                }
-                                else
-                                {
-                                    <tr>
-                                        <td colspan="4" class="text-center">Inga aktivitetsloggar tillgängliga för detta lager.</td>
-                                    </tr>
-                                }
+                                 
+                                </tbody>
+                            </table>
+<div class="d-flex justify-content-between align-items-center">
+    <button id="productPrevPage" class="btn btn-secondary">Föregående</button>
+    <span id="productPageNumber"></span>
+    <button id="productNextPage" class="btn btn-secondary">Nästa</button>
+</div>
 
-                            </tbody>
-                        </table>
-                        <a asp-page="/Log" asp-route-id="@Model.Storage.Id" class="btn btn-info mt-3">
-                            Visa fullständig historik
-                        </a>
+
+
+</div>
+
+ <button class="accordion">
+                               
+                <span>Aktivitetslogg</span>
+                <i class="bi bi-chevron-down"></i>
+            </button>
+            <div class="panel">
+
+                    <div id="logsCollapse" class="accordion-collapse collapse show" aria-labelledby="logsHeading" data-bs-parent="#logsAccordion">
+                        <div class="accordion-body">
+
+
+
+                            <input type="text" id="logSearchInput" class="form-control mb-3" placeholder="Sök i aktivitetsloggar..." />
+          <table class="table table-striped" id="logTable" data-sort-direction="asc">
+
+ <thead>
+    <tr>
+        <th onclick="sortLogTable(0)" style="cursor:pointer;">
+            Namn 
+            <i class="bi bi-chevron-expand" id="logSortIcon0"></i>
+        </th>
+        <th onclick="sortLogTable(1)" style="cursor:pointer;">
+            Anställd
+            <i class="bi bi-chevron-expand" id="logSortIcon1"></i>
+        </th>
+        <th onclick="sortLogTable(2)" style="cursor:pointer;">
+            Händelse
+            <i class="bi bi-chevron-expand" id="logSortIcon2"></i>
+        </th>
+        <th onclick="sortLogTable(3)" style="cursor:pointer;">
+            Datum
+            <i class="bi bi-chevron-expand" id="logSortIcon3"></i>
+        </th>
+    </tr>
+</thead>
+                                <tbody id="logTableBody">
+                                    @if (Model.ActivityLogs.Any())
+                                    {
+                                        for (int i = 0; i < Model.ActivityLogs.Count; i++)
+                                        {
+                                            var log = Model.ActivityLogs[i];
+                                            <tr>
+                                                <td>@Model.UserFullName[i]</td>
+                                                <td>@Model.UserEmployeeNumbers[i]</td>
+                                                <td>@log.Action</td>
+                                                <td>@log.TimeStamp</td>
+                                            </tr>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <tr>
+                                            <td colspan="4" class="text-center">Inga aktivitetsloggar tillgängliga för detta lager.</td>
+                                        </tr>
+                                    }
+                               
+                                </tbody>
+                            </table>
+                              <div class="d-flex justify-content-between align-items-center">
+        
+    <button id="logPrevPage" class="btn btn-secondary">Föregående</button>
+    <span id="logPageNumber"></span>
+    <button id="logNextPage" class="btn btn-secondary">Nästa</button>
+</div>
+
+
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
 
 
-        <div class="modal fade" id="editStorageModal" tabindex="-1" aria-labelledby="editStorageModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="editStorageModalLabel">Ändra lagernamn</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            <div class="modal fade" id="editStorageModal" tabindex="-1" aria-labelledby="editStorageModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editStorageModalLabel">Ändra lagernamn</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="post" asp-page-handler="UpdateStorage">
+                    <div class="form-group mb-3">
+                        <label for="StorageName">Nytt lagernamn</label>
+                        <input type="text" class="form-control" id="StorageName" name="StorageName" value="@Model.Storage.Name" required />
                     </div>
-                    <div class="modal-body">
-                        <form method="post" asp-page-handler="UpdateStorage">
-                            <div class="form-group mb-3">
-                                <label for="StorageName">Nytt lagernamn</label>
-                                <input type="text" class="form-control" id="StorageName" name="StorageName" value="@Model.Storage.Name" required />
-                            </div>
-                            <input type="hidden" name="StorageId" value="@Model.Storage.Id" />
-                            <button type="submit" class="btn btn-primary">Spara</button>
-                        </form>
-                    </div>
-                </div>
+                    <input type="hidden" name="StorageId" value="@Model.Storage.Id" />
+                    <button type="submit" class="btn btn-primary">Spara</button>
+                </form>
             </div>
         </div>
-
-        @section Scripts {
-            <script>
-                var activityLogs = @Html.Raw(JsonSerializer.Serialize(Model.ActivityLogs));
-                var userFullNames = @Html.Raw(JsonSerializer.Serialize(Model.UserFullName));
-                var userEmployeeNumbers = @Html.Raw(JsonSerializer.Serialize(Model.UserEmployeeNumbers));
-            </script>
-            <script>
-                (function () {
-                    const productRowsPerPage = 5;
-                    let productCurrentPage = 1;
-                    let productOriginalRows = [];
-                    let productFilteredRows = [];
-                    let productVisibleRows = [];
-
-                    $(document).ready(function () {
-                        productOriginalRows = Array.from(document.querySelectorAll("#productTableBody tr"));
-                        productFilteredRows = [...productOriginalRows];
-
-                        updateProductVisibleRows(productFilteredRows);
-
-                        // Sökfunktion
-                        $("#productSearchInput").on("keyup", function () {
-                            var value = $(this).val().toLowerCase();
-
-                            productFilteredRows = productOriginalRows.filter(row => {
-                                return row.innerText.toLowerCase().includes(value);
-                            });
-
-                            updateProductVisibleRows(productFilteredRows);
-                            productCurrentPage = 1;
-                            paginateProductTable();
-                        });
-
-                        $("#productPrevPage").on("click", function () {
-                            if (productCurrentPage > 1) {
-                                productCurrentPage--;
-                                paginateProductTable();
-                            }
-                        });
-
-                        $("#productNextPage").on("click", function () {
-                            if (productCurrentPage < Math.ceil(productFilteredRows.length / productRowsPerPage)) {
-                                productCurrentPage++;
-                                paginateProductTable();
-                            }
-                        });
-
-                        // Kör paginering initialt
-                        paginateProductTable();
-                    });
-
-                    function updateProductVisibleRows(rows) {
-                        productVisibleRows = rows;
-                    }
-
-                    function paginateProductTable() {
-                        const start = (productCurrentPage - 1) * productRowsPerPage;
-                        const end = start + productRowsPerPage;
-
-                        // Dölj alla rader först
-                        document.querySelectorAll("#productTableBody tr").forEach(row => {
-                            row.style.display = "none";
-                        });
-
-                        // Visa endast raderna på den aktuella sidan
-                        productVisibleRows.forEach((row, index) => {
-                            if (index >= start && index < end) {
-                                $(row).show();
-                            }
-                        });
-                        const pageNumberElement = document.getElementById("productPageNumber");
-                        pageNumberElement.innerText = `Sida ${productCurrentPage} av ${Math.ceil(productFilteredRows.length / productRowsPerPage)}`;
-                    }
-
-                    window.sortLogTable = function (columnIndex) {
-                        const isAscending = $("#logTable").data("sort-direction") === "asc";
-
-                        // Sortera raderna
-                        activityLogs.sort((a, b) => {
-                            let cellA, cellB;
-                            switch (columnIndex) {
-                                case 0:
-                                    cellA = userFullNames[activityLogs.indexOf(a)];
-                                    cellB = userFullNames[activityLogs.indexOf(b)];
-                                    break;
-                                case 1:
-                                    cellA = userEmployeeNumbers[activityLogs.indexOf(a)];
-                                    cellB = userEmployeeNumbers[activityLogs.indexOf(b)];
-                                    break;
-                                case 2:
-                                    cellA = a.Action;
-                                    cellB = b.Action;
-                                    break;
-                                case 3:
-                                    cellA = a.TimeStamp;
-                                    cellB = b.TimeStamp;
-                                    break;
-                            }
-
-                            const isDate = !isNaN(Date.parse(cellA)) && !isNaN(Date.parse(cellB));
-
-                            if (isDate) {
-                                return isAscending
-                                    ? new Date(cellA) - new Date(cellB)
-                                    : new Date(cellB) - new Date(cellA);
-                            } else {
-                                return isAscending
-                                    ? cellA.localeCompare(cellB, 'sv-SE', { sensitivity: 'base' })
-                                    : cellB.localeCompare(cellA, 'sv-SE', { sensitivity: 'base' });
-                            }
-                        });
-
-                        // Växla sorteringsriktning
-                        $("#logTable").data("sort-direction", isAscending ? "desc" : "asc");
-
-                        // Uppdatera ikoner för sorteringsordning
-                        for (let i = 0; i < 4; i++) {
-                            const icon = document.getElementById(`logSortIcon${i}`);
-                            if (i === columnIndex) {
-                                if (isAscending) {
-                                    icon.classList.remove('bi-chevron-expand');
-                                    icon.classList.add('bi-chevron-down');
-                                } else {
-                                    icon.classList.remove('bi-chevron-down');
-                                    icon.classList.add('bi-chevron-up');
-                                }
-                            } else {
-                                icon.classList.remove('bi-chevron-down', 'bi-chevron-up');
-                                icon.classList.add('bi-chevron-expand');
-                            }
-                        }
-
-                        // Uppdatera aktivitetsloggar i tabellen
-                        const tbody = document.querySelector("#logTableBody");
-                        tbody.innerHTML = '';  // Rensa nuvarande rader
-                        activityLogs.forEach((log, index) => {
-                            const row = `
-                            <tr>
-                                <td>${userFullNames[index]}</td>
-                                <td>${userEmployeeNumbers[index]}</td>
-                                <td>${log.Action}</td>
-                                <td>${log.TimeStamp}</td>
-                            </tr>`;
-                            tbody.innerHTML += row;
-                        });
-                    };
+    </div>
+</div>
 
 
-                    window.sortProductTable = function (columnIndex) {
-                        const isAscending = $("#productTable").data("sort-direction") === "asc";
+@section Scripts {
 
-                        // Sortera raderna
-                        productFilteredRows.sort((a, b) => {
-                            const cellA = a.cells[columnIndex].innerText.trim();
-                            const cellB = b.cells[columnIndex].innerText.trim();
-
-                            const isNumber = !isNaN(parseFloat(cellA)) && !isNaN(parseFloat(cellB));
-
-                            if (isNumber) {
-                                return isAscending
-                                    ? parseFloat(cellA) - parseFloat(cellB)
-                                    : parseFloat(cellB) - parseFloat(cellA);
-                            } else {
-                                return isAscending
-                                    ? cellA.localeCompare(cellB, 'sv-SE', { sensitivity: 'base' })
-                                    : cellB.localeCompare(cellA, 'sv-SE', { sensitivity: 'base' });
-                            }
-                        });
-
-                        // Växla sorteringsriktning
-                        $("#productTable").data("sort-direction", isAscending ? "desc" : "asc");
-
-                        // Uppdatera ikoner för sorteringsordning
-                        for (let i = 0; i < 3; i++) {
-                            const icon = document.getElementById(`sortIcon${i}`);
-                            if (i === columnIndex) {
-                                if (isAscending) {
-                                    icon.classList.remove('bi-chevron-expand');
-                                    icon.classList.add('bi-chevron-down');
-                                } else {
-                                    icon.classList.remove('bi-chevron-down');
-                                    icon.classList.add('bi-chevron-up');
-                                }
-                            } else {
-                                icon.classList.remove('bi-chevron-down', 'bi-chevron-up');
-                                icon.classList.add('bi-chevron-expand');
-                            }
-                        }
-
-                        // Återställ raderna i tabellen
-                        const tbody = document.querySelector("#productTableBody");
-                        productFilteredRows.forEach(row => tbody.appendChild(row));
-
-                        productCurrentPage = 1;
-                        paginateProductTable();
-                    }
-
-                })();
-
-                // Separat initialisering av Bootstrap-tooltips
-                $(document).ready(function () {
-                    // Initialisera Bootstrap-tooltips
-                    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-                    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-                        return new bootstrap.Tooltip(tooltipTriggerEl);
-                    });
-                });
-            </script>
-            <script>
-                $(document).ready(function () {
-                    // Hantera ikoner för Produkter-sektionen
-                    $('#productsCollapse').on('show.bs.collapse', function () {
-                        $(this).prev('.accordion-header').find('.toggle-icon').removeClass('bi-chevron-down').addClass('bi-chevron-up');
-                    }).on('hide.bs.collapse', function () {
-                        $(this).prev('.accordion-header').find('.toggle-icon').removeClass('bi-chevron-up').addClass('bi-chevron-down');
-                    });
-
-                    // Hantera ikoner för Aktivitetslogg-sektionen
-                    $('#logsCollapse').on('show.bs.collapse', function () {
-                        $(this).prev('.accordion-header').find('.toggle-icon').removeClass('bi-chevron-down').addClass('bi-chevron-up');
-                    }).on('hide.bs.collapse', function () {
-                        $(this).prev('.accordion-header').find('.toggle-icon').removeClass('bi-chevron-up').addClass('bi-chevron-down');
-                    });
-                });
-            </script>
-
-            <script>
-                var acc = document.getElementsByClassName("accordion");
-                var i;
-
-                for (i = 0; i < acc.length; i++) {
-                    acc[i].addEventListener("click", function () {
-                        /* Toggle between adding and removing the "active" class,
-                        to highlight the button that controls the panel */
-                        this.classList.toggle("active");
-
-                        /* Toggle between hiding and showing the active panel */
-                        var panel = this.nextElementSibling;
-                        if (panel.style.display === "block") {
-                            panel.style.display = "none";
-                        } else {
-                            panel.style.display = "block";
-                        }
-                    });
-                }</script>
-
-        }
+    <script>
+        var activityLogs = @Html.Raw(JsonSerializer.Serialize(Model.ActivityLogs));
+        var userFullNames = @Html.Raw(JsonSerializer.Serialize(Model.UserFullName));
+        var userEmployeeNumbers = @Html.Raw(JsonSerializer.Serialize(Model.UserEmployeeNumbers));
+    </script>
+    <script src="~/js/storagedetails.js" asp-append-version="true"></script>
+      <link rel="stylesheet" href="~/css/detailspages.css" asp-append-version="true" />
+}

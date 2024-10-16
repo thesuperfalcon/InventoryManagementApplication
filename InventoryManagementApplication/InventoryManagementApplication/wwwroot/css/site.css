@@ -6,10 +6,6 @@ html {
     scroll-behavior: smooth;
 }
 
-html, body {
-    height: 100%;
-}
-
 @media (max-width: 768px) {
     html {
         font-size: 16px;
@@ -76,6 +72,7 @@ button#add-object.btn-primary {
     border: none !important;
     text-align: center;
 }
+
 #add-object {
     padding: 5px 10px;
     font-size: 15px;
@@ -199,7 +196,6 @@ p {
 }
 
 
-
 footer {
     background-color: #f8f9fa;
     border-top: 1px solid #1C3144;
@@ -207,6 +203,10 @@ footer {
     color: #6c757d;
     text-align: center;
     font-size: 1rem;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    left: 0;
 }
 
 .footer-container {
@@ -495,6 +495,7 @@ body {
 
     body::after {
         content: "";
+    
         position: absolute;
         top: 0;
         left: 0;
@@ -516,20 +517,20 @@ body {
    
     padding: 20px;  /*Ger lite utrymme inuti ramen*/ 
     margin: 10px;  /*Ger lite utrymme runt containern */
-    display: flex; /* Flexbox för att anpassa boxarna sida vid sida*/ 
-    justify-content: space-between;  /*Sprid ut boxarna jämnt*/ 
+    display: flex; /* Flexbox fï¿½r att anpassa boxarna sida vid sida*/ 
+    justify-content: space-between;  /*Sprid ut boxarna jï¿½mnt*/ 
 }
 
 .box1, .box2 {
     background-color: white;
-    border: 1px solid #ccc; /* En lättare ram för varje box */
+    border: 1px solid #ccc; /* En lï¿½ttare ram fï¿½r varje box */
     padding: 10px; /* Ger lite utrymme inuti varje box */
-    flex: 1; /* Gör boxarna lika stora */
-    margin-right: 20px; /* Lägger till lite mellanrum mellan boxarna */
+    flex: 1; /* Gï¿½r boxarna lika stora */
+    margin-right: 20px; /* Lï¿½gger till lite mellanrum mellan boxarna */
     
 }
 
 .box2 {
-    margin-right: 0; /* Tar bort höger marginal för den sista boxen */
+    margin-right: 0; /* Tar bort hï¿½ger marginal fï¿½r den sista boxen */
 }
 

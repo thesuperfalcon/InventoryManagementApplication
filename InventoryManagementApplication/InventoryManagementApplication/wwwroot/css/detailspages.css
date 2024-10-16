@@ -1,44 +1,166 @@
-body {
-  background-color: #eef1f8 !important;
-}
-
-.btn-generic,.btn-info, .btn-secondary,.btn-primary{
+.btn-generic,
+.btn-info,
+.btn-secondary,
+.btn-primary {
   background-color: rgb(39, 62, 125) !important;
   border: 2px solid rgb(39, 62, 125) !important;
   border-radius: 5px;
   transition: background-color 0.3s ease;
   color: #f8f7f7 !important;
   min-width: 100px;
+  margin: 10px;
 }
 
-.btn-generic,.btn-info,.btn-secondary,.btn-primary:hover{
+.btn-generic:hover,
+.btn-info:hover,
+.btn-secondary:hover,
+.btn-primary:hover {
   background-color: rgb(49, 78, 156) !important;
   border: 2px solid rgb(49, 78, 156) !important;
   color: #f8f7f7 !important;
 }
 
-.btn-container{
+.btn-container {
   display: flex;
   justify-content: center;
   align-items: flex-end;
 }
 
-.container {
-  padding: 24px; 
+.storage-container,
+.product-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 24px;
+  margin-top: 20px;
 }
 
-.card {
-  padding: 24px; 
+.custom-link {
+  text-decoration: none;
+  color: inherit;
+  font-weight: normal;
+  transition: color 0.3s ease, background-color 0.3s ease;
 }
 
-.product-details-list ul {
-  list-style: none;
-  padding: 0;
+.custom-link:hover {
+  color: rgb(39, 62, 125);
+  text-decoration: underline;
 }
 
-.product-details-list li {
-  padding-bottom: 10px;
-  font-size: 1.1rem;
+table {
+  table-layout: fixed;
+  width: 100%;
+}
+
+table td,
+table th {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.storage-container {
+  margin-left: 25px;
+}
+
+.flex-container {
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 50px;
+  width: 100%;
+}
+
+.first-column {
+  flex-grow: 2;
+  max-width: 70%;
+  padding-right: 20px;
+  align-self: flex-start;
+  position: sticky;
+}
+
+.flex-container {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  justify-content: center;
+}
+
+.second-column,
+.custom-second-column {
+  flex-grow: 1;
+  padding-left: 20px;
+  margin-top: 20px;
+  align-self: flex-start;
+  position: sticky;
+}
+
+.second-column {
+  flex-grow: 1;
+  max-width: 30%;
+}
+.custom-second-column {
+  max-width: 70%;
+}
+
+.first-column .card,
+.second-column .card,
+.custom-second-column .card {
+  width: 100%;
+  flex-grow: 1;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+  background-color: white;
+  transition: box-shadow 0.3s ease;
+}
+
+.accordion {
+  margin-bottom: 0px;
+  background-color: #fff;
+  color: #333;
+  cursor: pointer;
+  padding: 15px;
+  margin-bottom: 10px;
+  border: 2px solid #ddd;
+  border-radius: 5px;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: bold;
+  min-width: 500px;
+  position: relative;
+  z-index: 1;
+}
+
+.accordion:hover {
+  background-color: #f0f0f0;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.accordion i {
+  font-size: 18px;
+}
+
+.panel {
+  margin-top: -12px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  min-width: 500px;
+  position: relative;
+  z-index: 1;
+  max-height: 0;
+  overflow: hidden;
+}
+
+.accordion.active + .panel {
+  max-height: 500px;
+  overflow: visible;
 }
 
 .pagination {
@@ -46,6 +168,10 @@ body {
   justify-content: center;
   align-items: center;
   margin-top: 20px;
+  position: relative;
+  z-index: 1;
+  background-color: #fff;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
 }
 
 .pagination a {
@@ -53,8 +179,9 @@ body {
   padding: 10px 15px;
   border: 1px solid rgb(39, 62, 125);
   border-radius: 5px;
-  color:rgb(39, 62, 125);
+  color: rgb(39, 62, 125);
   text-decoration: none;
+  margin: 10px;
 }
 
 .pagination a:hover {
@@ -67,60 +194,39 @@ body {
   font-size: 16px;
 }
 
-.card {
- display: flex;
- justify-content: center;
- align-items: center;
+.btn {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.flex-container {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: center;
+.btn:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
-.first-column {
-  flex: 0 0 50%;
-  max-width: 50%;
-  padding-right: 1%;
+.tooltip {
+  background-color: #333;
+  color: #fff;
+  padding: 5px;
+  border-radius: 4px;
 }
-
-.second-column {
-  flex: 0 0 50%;
-  max-width: 50%;
-  padding-left: 5%;
-}
-
-.accordion {
-  background-color: #eee;
-  color: #444;
-  cursor: pointer;
-  padding: 18px;
-  width: 100%;
-  text-align: left;
-  border: none;
-  outline: none;
-  transition: 0.4s;
-}
-
-/* Add a background color to the button if it is clicked on (add the .active class with JS), and when you move the mouse over it (hover) */
-.active, .accordion:hover {
-  background-color: #ccc;
-}
-
-/* Style the accordion panel. Note: hidden by default */
-.panel {
-  padding: 0 18px;
-  background-color: white;
-  display: none;
-  overflow: hidden;
+.ms-3 {
+  margin-left: 1rem;
 }
 
 @media (max-width: 768px) {
-  .first-column, .second-column {
-      flex: 0 0 100%;
-      max-width: 100%;
-      padding: 0;
+  .flex-container {
+    flex-direction: column;
+  }
+  .first-column,
+  .second-column {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .first-column,
+  .second-column {
+    flex: 0 0 100%;
+    max-width: 100%;
+    padding: 0;
   }
 }
