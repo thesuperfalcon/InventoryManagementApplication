@@ -3,86 +3,36 @@ using InventoryManagementApplication.Areas.Identity.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using static InventoryManagementApplication.Pages.UsersRolesModel;
-using InventoryManagementApplication.DAL;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
-using Microsoft.AspNetCore.Identity;
 using InventoryManagementApplication.Models;
-using Microsoft.CodeAnalysis.Elfie.Diagnostics;
+using InventoryManagementApplication.Helpers;
 
 namespace InventoryManagementApplication.Pages
 {
-    [Authorize]
-    public class IndexModel : PageModel
-    {
-        
-        
-        private readonly UserManager _userManager;
-        private readonly DAL.UserManager _userManagerDal;
-        private readonly StatisticManager _statisticManager;
-        public IndexModel(UserManager userManager, DAL.UserManager userManagerDal, StatisticManager statisticManager)
-        {
-            _userManager = userManager;
-            _userManagerDal = userManagerDal;
-            _statisticManager = statisticManager;
-        }
-        public List<InventoryManagementUser> Users { get; set; }
+	[Authorize]
+	public class IndexModel : PageModel
+	{
+		private readonly UserManager _userManager;
+		private readonly DAL.UserManager _userManagerDal;
+		private readonly StatisticLeaderboardHelpers _statisticLeaderboardHelpers;
 
-        [BindProperty]
-        public List<UserStatisticsViewModel> MovementPerPerson{ get; set; } = new List<UserStatisticsViewModel>();
-        public async Task OnGetAsync()
-        {
-            var statistics = await _statisticManager.GetAllStatisticsAsync();
-           
-                
-            var personList = await _userManager.GetAllUsersAsync(false);
-            foreach (var person in personList)
-            {
-                var movementsByUser = statistics.Where(stat => stat.UserId == person.Id);
+		public IndexModel(
+			UserManager userManager,
+			DAL.UserManager userManagerDal,
+			StatisticLeaderboardHelpers statisticLeaderboardHelpers)
+		{
+			_userManager = userManager;
+			_userManagerDal = userManagerDal;
+			_statisticLeaderboardHelpers = statisticLeaderboardHelpers;
+		}
 
+		public List<InventoryManagementUser> Users { get; set; }
 
-                //var currentWeek = GetCurrentWeekNumber();
-                //movementsByUser = movementsByUser
-                //    .Where(stat => stat.Moved.HasValue &&
-                //                   GetWeekNumber(stat.Moved.Value) == currentWeek &&
-                //                   DateTime.Now.Year == stat.Moved.Value.Year);
+		[BindProperty]
+		public List<UserStatisticsViewModel> MovementPerPerson { get; set; } = new List<UserStatisticsViewModel>();
 
-
-                //movementsByUser = movementsByUser
-                //    .Where(stat => stat.Moved.HasValue &&
-                //                   IsSameDay(stat.Moved.Value));
-
-                if (movementsByUser.Any())
-                {
-                    var totalMovements = movementsByUser.Count();
-                    var totalQuantity = movementsByUser.Sum(stat => stat.Quantity ?? 0);
-
-                   
-
-                    var userStatistics = new UserStatisticsViewModel
-                    {
-                        EmployeeNumber = person.EmployeeNumber,
-                        TotalMovements = totalMovements,
-                        TotalQuantity = totalQuantity,
-                       
-                    };
-                    MovementPerPerson.Add(userStatistics);
-                }
-            }
-
-            Users = await _userManager.GetAllUsersAsync(false);
-
-            var user = new InventoryManagementUser();
-
-            if (user == null)
-            {
-
-                //Users = Users
-                //    .Where(u => u.FirstName != null && u.LastName.Contains()
-                //    .ToList();
-            }
-            
-
-        }
-    }
+		public async Task OnGetAsync()
+		{
+			MovementPerPerson = await _statisticLeaderboardHelpers.CreateLeaderboardList(null);
+		}
+	}
 }

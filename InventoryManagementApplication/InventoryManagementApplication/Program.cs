@@ -67,6 +67,7 @@ namespace InventoryManagementApplication
             builder.Services.AddRazorPages();
 
             builder.Services.AddScoped<SelectListHelpers>();
+            builder.Services.AddScoped<StatisticLeaderboardHelpers>();
             builder.Services.AddScoped<ProductMovementHelpers>();
             builder.Services.AddScoped<ProductManager>();
             builder.Services.AddScoped<StorageManager>();
