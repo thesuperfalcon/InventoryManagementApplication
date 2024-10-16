@@ -84,7 +84,7 @@ html {
     margin: 0 10px 0 0;
     color: white;
     border-radius: 5px;
-    background-color: #007bff;
+    background-color:rgb(39, 62, 125);
     cursor: pointer;
     transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
     display: inline-flex;
@@ -146,8 +146,8 @@ font-weight: bold;
 
 
 .btn-primary {
-    background-color: #0069d9;
-    border-color: #0062cc;
+    background-color: rgb(39, 62, 125);
+    border-color: rgb(39, 62, 125);
     font-size: 16px;
     padding: 12px 24px;
     border-radius: 4px;
@@ -164,8 +164,7 @@ p {
     text-align: center;
     padding-top: 0.5em;
     border-radius: 7px;
-    background-color: #007bff;
-    /*background-color: rgb(39, 62, 125);*/
+    background-color: rgb(39, 62, 125);
 }
 
 .page-title{
@@ -545,3 +544,33 @@ body {
     margin-right: 0;  
 }
 
+.custom-header{
+   background-color:  rgb(39, 62, 125);
+}
+.accordion {
+    color: #333;
+    cursor: pointer;
+    padding: 15px;
+    border-radius: 5px;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: bold;
+    width: 100%;
+    text-align: left;
+}
+ 
+.panel {
+    padding: 0 18px;
+    background-color: white;
+    overflow: hidden;
+    display: none; /* Initialt dolt */
+    max-height: 0; /* Börjar som dold */
+    transition: max-height 0.3s ease-out;
+}
+
+.accordion.active + .panel {
+    display: block; /* Visar panelen när accordion är aktiv */
+    max-height: 1000px; /* Gör panelen synlig genom att expandera */
+}
