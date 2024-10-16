@@ -28,7 +28,7 @@ namespace InventoryManagementApplication.Pages.admin.product
             return Page();
         }
         [TempData]
-        public string StatusMessage { get; set; }
+        public string StatusMessage3 { get; set; }
 
         [BindProperty]
         public Product Product { get; set; } //= default!;
@@ -48,7 +48,7 @@ namespace InventoryManagementApplication.Pages.admin.product
             var existingProductName = await _manager.CheckProductName(Product.Name);
             if(existingProductName == true)
             {
-                StatusMessage = "Produkt finns med samma namn. Skriv in ett nytt namn";
+                StatusMessage3 = "Produkt finns med samma namn. Skriv in ett nytt namn";
                 return Page();
             }
 

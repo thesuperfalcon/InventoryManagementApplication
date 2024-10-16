@@ -21,8 +21,6 @@ namespace InventoryManagementApplication.Pages.admin.storage
 			_activityLogManager = activityLogManager;
 		}
 
-		[TempData]
-		public string StatusMessage { get; set; }
 		[BindProperty]
 		public Storage Storage { get; set; } = default!;
 		public List<InventoryTracker> Trackers { get; set; }
@@ -60,8 +58,6 @@ namespace InventoryManagementApplication.Pages.admin.storage
 			var sum = Trackers.Sum(x => x.Quantity);
 			if (sum > 0)
 			{
-				StatusMessage = "Går ej att ta bort. Flytta produkterna innann du tar bort lagret!";
-
 				return RedirectToPage("./Delete", new { id = storage.Id });
 			}
 			if (storage != null)

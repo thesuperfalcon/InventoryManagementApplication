@@ -16,28 +16,20 @@ namespace InventoryManagementApplication.Pages.admin.tracker
     [Authorize]
     public class moveProductModel : PageModel
     {
-
-        private static Uri BaseAddress = new Uri("https://localhost:44353/");
-        private readonly InventoryManagementApplicationContext _context;
         private readonly UserManager<InventoryManagementUser> _userManager;
         private readonly SelectListHelpers _selectListHelpers;
         private readonly TrackerManager _trackerManager;
-        private readonly StorageManager _storageManager;
-        private readonly ProductManager _productManager;
         private readonly ProductMovementHelpers _productMovementHelpers;
         private readonly StatisticManager _statisticManager;
 
-        public moveProductModel(InventoryManagementApplicationContext context, UserManager<InventoryManagementUser> userManager, 
+        public moveProductModel(UserManager<InventoryManagementUser> userManager,
             SelectListHelpers selectListHelpers, TrackerManager trackerManager,
-            StorageManager storageManager, ProductManager productManager, ProductMovementHelpers productMovementHelpers, 
+            ProductMovementHelpers productMovementHelpers,
             StatisticManager statisticManager)
         {
-            _context = context;
             _userManager = userManager;
             _selectListHelpers = selectListHelpers;
             _trackerManager = trackerManager;
-            _storageManager = storageManager;
-            _productManager = productManager;
             _productMovementHelpers = productMovementHelpers;
             _statisticManager = statisticManager;
         }
@@ -58,7 +50,7 @@ namespace InventoryManagementApplication.Pages.admin.tracker
 
             SelectedInventoryTracker = await _trackerManager.GetOneTrackerAsync(id.Value);
 
-			if (SelectedInventoryTracker == null)
+            if (SelectedInventoryTracker == null)
             {
                 return RedirectToPage("./Index");
             }
@@ -68,7 +60,6 @@ namespace InventoryManagementApplication.Pages.admin.tracker
 
             return Page();
         }
-
 
         public async Task<IActionResult> OnPostAsync()
         {
@@ -123,15 +114,15 @@ namespace InventoryManagementApplication.Pages.admin.tracker
                 else
                 {
                     StatusMessage = tuple.Item2 != string.Empty ? tuple.Item2 : "Förflyttning lyckades!";
-                   
+
                     await _statisticManager.GetValueFromStatisticAsync(MyUser.Id, fromStorageId, toStorageId, productId, quantity, null);
 
                     return RedirectToPage("./moveProduct", new { id = SelectedInventoryTracker.Id });
                 }
             }
             StatusMessage = "Förflyttning lyckades ej";
-               
-            return RedirectToPage("./moveProduct", new { id = SelectedInventoryTracker.Id });          
+
+            return RedirectToPage("./moveProduct", new { id = SelectedInventoryTracker.Id });
         }
     }
 }

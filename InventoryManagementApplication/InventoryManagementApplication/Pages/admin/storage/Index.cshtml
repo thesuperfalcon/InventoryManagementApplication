@@ -12,15 +12,15 @@
     <div class="button-container">
         <form method="post" asp-route-buttonId="1">
             <input type="hidden" name="IsDeletedToggle" value="@Model.IsDeletedToggle.ToString().ToLower()" />
-            <button class="custom-secondary-btn" type="submit"/>
-                @if (Model.IsDeletedToggle)
-                {
-                    <span>Aktiva Lagerplatser</span>
-                }
-                else
-                {
-                    <span>Borttagna Lagerplatser</span>
-                }
+            <button class="custom-secondary-btn" type="submit">
+            @if (Model.IsDeletedToggle)
+            {
+                <span>Aktiva Lagerplatser</span>
+            }
+            else
+            {
+                <span>Borttagna Lagerplatser</span>
+            }
             </button>
         </form>
         @if (User.IsInRole("Admin"))
@@ -61,7 +61,7 @@
                     <td>@(item.Created.HasValue ? item.Created.Value.ToString("yyyy-MM-dd") : "Data finns ej")</td>
                     <td>@(item.Updated.HasValue ? item.Updated.Value.ToString("yyyy-MM-dd") : "Data finns ej")</td>
                     <td>
-                        
+
                         @if (item.IsDeleted == false)
                         {
 
