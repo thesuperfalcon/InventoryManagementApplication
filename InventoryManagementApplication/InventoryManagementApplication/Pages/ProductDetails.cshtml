@@ -9,12 +9,6 @@
 					<h2>Produktdetaljer: @Model.Product.Name</h2>
 				</div>
 				<div class="card-body">
-					@if (User.IsInRole("Admin"))
-					{
-						<button class="btn btn-generic" data-bs-toggle="modal" data-bs-target="#editStorageModal">
-							<i class="bi bi-pencil"></i>
-						</button>
-					}
 					@if (Model.Product != null)
 					{
 						<table class="table">
@@ -47,8 +41,6 @@
 								<td>@Model.Product.Updated</td>
 							</tr>
 						</table>
-
-
 					}
 					else
 					{
@@ -79,8 +71,8 @@
 								{
 									var log = Model.ActivityLogs[i];
 									<tr>
-										<td>@Model.UserFullName[i]</td>
-										<td>@Model.UserEmployeeNumbers[i]</td>
+										<td>@log.UserName</td>
+										<td>@log.EmployeeNumber</td>
 										<td>@log.Action</td>
 										<td>@log.TimeStamp</td>
 									</tr>
@@ -90,8 +82,7 @@
 							{
 								<tr>
 									<td colspan="4" class="text-center">
-										Inga aktivitetsloggar är tillgängliga för denna
-										produkt.
+										Inga aktivitetsloggar är tillgängliga för denna produkt.
 									</td>
 								</tr>
 							}
@@ -155,7 +146,7 @@
 	</script>
 
 	<script>
-		const rowsPerPage = 5;
+		const rowsPerPage = 5; 
 		let currentPage = 1;
 		let originalRows = [];
 		let filteredRows = [];

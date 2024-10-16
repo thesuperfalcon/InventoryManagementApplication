@@ -13,16 +13,13 @@ function toggleHelp() {
     }
 }
 
-
-
-
 $(document).ready(function () {
 
     let select = document.getElementById('pageAmount');
     select.addEventListener('change', function () {
-        rowsPerPage = parseInt(select.value);  
-        currentPage = 1;  
-        paginateTable();  
+        rowsPerPage = parseInt(select.value);
+        currentPage = 1;
+        paginateTable();
     });
     originalRows = Array.from(document.querySelectorAll("#myTable tr"));
     filteredRows = [...originalRows];
@@ -35,8 +32,8 @@ $(document).ready(function () {
         var value = $(this).val().toLowerCase();
         console.log(`Inmatat värde: "${value}"`);
 
-        $("#leaderboardTable tbody tr.search").hide(); 
-        $("#leaderboardTable tbody tr.nested-table-row").hide(); 
+        $("#leaderboardTable tbody tr.search").hide();
+        $("#leaderboardTable tbody tr.nested-table-row").hide();
 
         let hasVisibleRows = false;
 
@@ -45,26 +42,20 @@ $(document).ready(function () {
             var matchFound = employeeNumber.indexOf(value) > -1;
 
             if (matchFound) {
-                $(this).show(); 
+                $(this).show();
                 hasVisibleRows = true;
 
-                $(this).next(".nested-table-row").show(); 
+                $(this).next(".nested-table-row").show();
             }
         });
 
-        
+
         if (hasVisibleRows) {
-            $("#leaderboardTable thead").show(); 
+            $("#leaderboardTable thead").show();
         } else {
-            $("#leaderboardTable thead").hide(); 
+            $("#leaderboardTable thead").hide();
         }
     });
-
-   
-
-
-      
-
 
     $("#searchInput").on("input", function () {
         var value = $(this).val().toLowerCase();
@@ -139,14 +130,6 @@ $(document).ready(function () {
         currentPage = 1;
         paginateTable();
     });
-
-
-
-
-
-
-
-
 
     $("#prevPage").on("click", function () {
         if (currentPage > 1) {
@@ -276,7 +259,7 @@ function setEmployeeNumber(employeeNumber) {
 
 function clearLeaderboardSearch() {
     const leaderboardSearchInput = document.getElementById("leaderboardSearchInput");
-    leaderboardSearchInput.value = ""; 
+    leaderboardSearchInput.value = "";
 
     const event = new Event('input', {
         bubbles: true,
@@ -315,7 +298,7 @@ function setMovementAttributes(employeeNumber, productName, quantity, initialSto
     }
     searchInput.dispatchEvent(event);
 
-    console.log("Söksträng:", searchInput.value); 
+    console.log("Söksträng:", searchInput.value);
 
 }
 
@@ -324,7 +307,7 @@ function resetTableVisibility(tableId) {
     const rows = table.getElementsByTagName("tr");
 
     for (let i = 0; i < rows.length; i++) {
-        rows[i].style.display = ""; 
+        rows[i].style.display = "";
     }
 }
 
@@ -336,7 +319,7 @@ $(document).ready(function () {
     // Check if the employee number is available
     if (employeeNumber) {
         // Set the search input with the appropriate format
-        $('#searchInput').val(`#a:${employeeNumber}., `);
+        $('#searchInput').val(`#a:${employeeNumber}.`);
 
         // Create and dispatch an input event to trigger filtering
         var event = new Event('input', {

@@ -1,5 +1,6 @@
 ﻿using InventoryManagementApplication.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Globalization;
 using System.Security.Claims;
 using System.Text;
 using System.Text.Json;
@@ -10,10 +11,12 @@ namespace InventoryManagementApplication.DAL
     {
         private static readonly Uri BaseAddress = new Uri("https://localhost:44353/");
         private readonly IHttpContextAccessor _httpContextAccessor;
+		private readonly UserManager _userManager;
 
-        public LogManager(IHttpContextAccessor httpContextAccessor)
+        public LogManager(IHttpContextAccessor httpContextAccessor, UserManager userManager)
         {
             _httpContextAccessor = httpContextAccessor;
+			_userManager = userManager;
         }
 
         public async Task CreateLogAsync(Log log)
@@ -43,6 +46,26 @@ namespace InventoryManagementApplication.DAL
                 Console.WriteLine("Error! Log is null.");
             }
         }
+
+		public async Task<List<Log>> GetLogByForEntityAsync(string entityType, int id)
+		{
+			using (var client = new HttpClient())
+			{
+				client.BaseAddress = BaseAddress;
+
+				string uri = $"api/Log/{entityType}/{id}";
+
+				HttpResponseMessage response = await client.GetAsync(uri);
+
+				if (response.IsSuccessStatusCode)
+				{
+					string responseString = await response.Content.ReadAsStringAsync();
+					List<Log> logs = JsonSerializer.Deserialize<List<Log>>(responseString);
+					return logs;
+				}
+				return new List<Log>();
+			}
+		}
 
         public async Task<List<Log>> GetAllLogsAsync()
         {
@@ -97,6 +120,8 @@ namespace InventoryManagementApplication.DAL
 		{
 			var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
+			var user = await _userManager.GetOneUserAsync(userId);
+
 			string action = state switch
 			{
 				EntityState.Added => "Skapad",
@@ -113,7 +138,10 @@ namespace InventoryManagementApplication.DAL
 			var log = new Log
 			{
 				UserId = userId,
+				UserName = user.UserName,
+				EmployeeNumber = user.EmployeeNumber,
 				Action = action,
+				EntityId = GetEntityId(entity), 
 				EntityType = entity.GetType().Name,
 				EntityName = entityName,
 				EntityDetails = details,
@@ -162,6 +190,31 @@ namespace InventoryManagementApplication.DAL
 				.Where(change => change != null);
 
 			return differences.Any() ? string.Join(", ", differences) : "Inga skillnader funna.";
+		}
+		private int GetEntityId(object entity)
+		{
+			var idProperty = entity.GetType().GetProperty("Id");
+			if (idProperty == null)
+				throw new ArgumentException("Entity does not have an Id property.");
+
+			var idValue = idProperty.GetValue(entity);
+
+			if (idValue is int id)
+			{
+				return id;
+			}
+			else if (idValue is null)
+			{
+				throw new ArgumentException("ID value is null.");
+			}
+			else if (idValue is IConvertible convertible)
+			{
+				return convertible.ToInt32(CultureInfo.InvariantCulture);
+			}
+			else
+			{
+				throw new ArgumentException("ID is not of type int.");
+			}
 		}
 	}
 }
