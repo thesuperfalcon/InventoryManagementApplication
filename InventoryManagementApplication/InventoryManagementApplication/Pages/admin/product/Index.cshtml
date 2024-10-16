@@ -104,10 +104,17 @@
                     {
                         @if (User.IsInRole("Admin"))
                         {
-                            <a asp-page="./Edit" asp-route-id="@item.Id">Återskapa</a>
-                            <a asp-page="/ProductDetails" asp-route-id="@item.Id">Info</a>
-                            <span> | </span>
-                            <a asp-page="./Delete" asp-route-id="@item.Id">Ta bort</a>
+                            <div class="d-flex">
+                                <a asp-page="./Edit" asp-route-id="@item.Id" class="btn btn-warning btn-sm me-2" title="Återskapa">
+                                    <i class="bi bi-arrow-clockwise"></i>
+                                </a>
+                                <a asp-page="./Details" asp-route-id="@item.Id" class="btn btn-info btn-sm me-2" title="Se mer information">
+                                    <i class="bi bi-info-circle"></i>
+                                </a>
+                                <a asp-page="./Delete" asp-route-id="@item.Id" class="btn btn-danger btn-sm me-2" title="Ta bort">
+                                    <i class="bi bi-trash"></i>
+                                </a>
+                            </div>
                         }
                         else
                         {
