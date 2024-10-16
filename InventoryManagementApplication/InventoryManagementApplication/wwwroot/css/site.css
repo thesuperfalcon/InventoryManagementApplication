@@ -158,6 +158,10 @@ p {
     border-radius: 7px;
     background-color: rgb(39, 62, 125);
 }
+
+.page-title{
+    text-align:center;
+}
 .card-profile {
     width: 100%;
     max-width: 300px;
