@@ -84,7 +84,7 @@ html {
     margin: 0 10px 0 0;
     color: white;
     border-radius: 5px;
-    background-color: rgb(39, 62, 125);
+    background-color: #007bff;
     cursor: pointer;
     transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
     display: inline-flex;
@@ -96,6 +96,9 @@ html {
     }
 .delete-button{
     background-color: rgb(204, 0 ,0);
+}
+.sell-button {
+    background-color: #198754;
 }
 .custom-secondary-btn {
     padding: 5px 10px;
@@ -156,7 +159,8 @@ p {
     text-align: center;
     padding-top: 0.5em;
     border-radius: 7px;
-    background-color: rgb(39, 62, 125);
+    background-color: #007bff;
+    /*background-color: rgb(39, 62, 125);*/
 }
 
 .page-title{

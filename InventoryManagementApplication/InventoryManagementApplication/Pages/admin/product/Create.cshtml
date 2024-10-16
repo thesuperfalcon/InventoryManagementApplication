@@ -27,7 +27,7 @@
                             <div class="mb-3">
                                 <label asp-for="ArticleNumber" class="form-label">Artikelnummer</label>
                                 <input asp-for="ArticleNumber" class="form-control" required readonly />
-                                <button type="button" id="generateArticleNumberBtn" class="btn btn-primary mt-2">Generera</button>
+                                <button type="button" id="generateArticleNumberBtn" class="add-object">Generera</button>
                                 <span asp-validation-for="ArticleNumber" class="text-danger"></span>
                             </div>
 
@@ -53,8 +53,8 @@
                             <input type="hidden" asp-for="Product.Created" value="@DateTime.Now" />
 
                             <div class="d-flex">
-                                <input type="submit" value="Lägg till" class="btn btn-primary me-2" />
-                                <a asp-page="Index" class="btn btn-secondary">Tillbaka till lista</a>
+                                <input type="submit" value="Lägg till" class="add-object" />
+                                <a asp-page="Index" class="custom-secondary-btn">Tillbaka till lista</a>
                             </div>
 
                             <div class="alert-info mt-3">

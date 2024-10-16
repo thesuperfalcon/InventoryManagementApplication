@@ -8,7 +8,7 @@
 }
 
 <div class="container mt-5">
-    <h1 class="mb-4">Ta bort produkt</h1>
+    <h1 class="page-title">Ta bort produkt</h1>
 
     <div class="card shadow-sm mb-4">
         <div class="card-header bg-primary text-white">
@@ -45,8 +45,8 @@
 
     <form id="deleteForm" method="post" class="d-flex justify-content-start align-items-center">
         <input type="hidden" asp-for="Product.Id" />
-        <button type="button" id="deleteButton" class="btn btn-danger me-2">Ta bort</button>
-        <a asp-page="./Index" class="btn btn-secondary">Tillbaka till lista</a>
+        <button type="button" id="deleteButton" class="add-object delete-button">Ta bort</button>
+        <a asp-page="./Index" class="custom-secondary-btn">Tillbaka till lista</a>
     </form>
 </div>
 

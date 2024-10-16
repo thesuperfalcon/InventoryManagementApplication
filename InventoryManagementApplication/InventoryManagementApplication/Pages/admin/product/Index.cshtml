@@ -7,13 +7,13 @@
 
 }
 
-<h1>Produktkatalog</h1>
-<h3>Antal (@IsDeletedMessage)produkter: @Model.ProductCount</h3>
+<h1 class="page-title">Produktkatalog</h1>
+
 
 <div class="button-container">
     <form method="post" asp-route-buttonId="1">
         <input type="hidden" name="IsDeletedToggle" value="@Model.IsDeletedToggle.ToString().ToLower()" />
-        <button class="btn btn-primary" type="submit">
+        <button class="custom-secondary-btn" type="submit">
             @if (Model.IsDeletedToggle)
             {
                 <span>Aktiva Produkter</span>
@@ -26,10 +26,10 @@
     </form>
     @if (User.IsInRole("Admin"))
     {
-        <a asp-page="./Create" class="btn btn-primary me-2">Lägg till</a>
+        <a asp-page="./Create" class="add-object">Lägg till</a>
     }
 </div>
-
+<h3>Antal (@IsDeletedMessage)produkter: @Model.ProductCount</h3>
 <div class="row mb-3">
     <div class="col-md-6">
         <div class="input-group shadow-sm">
