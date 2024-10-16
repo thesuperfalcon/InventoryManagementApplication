@@ -93,104 +93,75 @@ namespace InventoryManagementApplication.DAL
             }
         }
 
-        public async Task LogActivityAsync(object entity, EntityState state, object entityNoChanges = null)
-        {
-            var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier);
+		public async Task LogActivityAsync(object entity, EntityState state, object entityNoChanges = null)
+		{
+			var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            string action = state switch
-            {
-                EntityState.Added => "Skapad",
-                EntityState.Modified => "Uppdaterad",
-                EntityState.Deleted => "Borttagen",
-                _ => throw new ArgumentException($"Unexpected entity state: {state}"),
-            };
+			string action = state switch
+			{
+				EntityState.Added => "Skapad",
+				EntityState.Modified => "Uppdaterad",
+				EntityState.Deleted => "Borttagen",
+				_ => throw new ArgumentException($"Unexpected entity state: {state}"),
+			};
 
-            string entityName = GetEntityName(entity);
-            string details;
+			string entityName = GetEntityName(entity);
+			string details = state == EntityState.Modified
+				? GetModifiedDetails(entity, entityNoChanges, action, entityName)
+				: $"{action}: {entityName}";
 
-            if (state == EntityState.Modified)
-            {
-                if (entityNoChanges == null)
-                {
-                    throw new ArgumentNullException(nameof(entityNoChanges), "Previous state of the entity cannot be null when modified.");
-                }
+			var log = new Log
+			{
+				UserId = userId,
+				Action = action,
+				EntityType = entity.GetType().Name,
+				EntityName = entityName,
+				EntityDetails = details,
+				TimeStamp = DateTime.UtcNow
+			};
 
-                string changes = CheckChanges(entity, entityNoChanges);
-                details = $"{action}: {entityName}. Ändringar: {changes}";
-            }
-            else
-            {
-                details = $"{action}: {entityName}";
-            }
+			await CreateLogAsync(log);
+		}
 
-            var log = new Log
-            {
-                UserId = userId,
-                Action = action,
-                EntityType = $"{entity.GetType().Name}",
-                EntityName = entityName,
-                EntityDetails = details,
-                TimeStamp = DateTime.UtcNow
-            };
+		private string GetModifiedDetails(object entity, object entityNoChanges, string action, string entityName)
+		{
+			if (entityNoChanges == null)
+				throw new ArgumentNullException(nameof(entityNoChanges), "Previous state of the entity cannot be null when modified.");
 
-            await CreateLogAsync(log);
-        }
+			string changes = CheckChanges(entity, entityNoChanges);
+			return $"{action}: {entityName}. Ändringar: {changes}";
+		}
 
+		private string GetEntityName(object entity) => entity switch
+		{
+			Product product => product.Name,
+			Storage storage => storage.Name,
+			_ => "Unknown entity"
+		};
 
-        private string GetEntityName(object entity)
-        {
-            return entity switch
-            {
-                Product product => product.Name,
-                Storage storage => storage.Name,
-                _ => "Unknown entity"
-            };
-        }
-        private string CheckChanges(object entity, object noChangesEntity)
-        {
-            if (entity == null || noChangesEntity == null)
-            {
-                throw new ArgumentNullException("Entity and noChangesEntity cannot be null");
-            }
+		private string CheckChanges(object entity, object noChangesEntity)
+		{
+			if (entity == null || noChangesEntity == null)
+				throw new ArgumentNullException("Entity and noChangesEntity cannot be null");
 
-            if (entity.GetType() != noChangesEntity.GetType())
-            {
-                throw new ArgumentException("Both entities must be of the same type.");
-            }
+			if (entity.GetType() != noChangesEntity.GetType())
+				throw new ArgumentException("Both entities must be of the same type.");
 
-            var differences = new List<string>();
-            var properties = entity.GetType().GetProperties();
+			var differences = entity.GetType()
+				.GetProperties()
+				.Where(property => !new HashSet<string> { "Created", "Updated", "Id" }.Contains(property.Name) &&
+								  !typeof(IEnumerable<InventoryTracker>).IsAssignableFrom(property.PropertyType))
+				.Select(property =>
+				{
+					var currentValue = property.GetValue(entity);
+					var originalValue = property.GetValue(noChangesEntity);
+					return !Equals(currentValue, originalValue)
+						? $"{property.Name} ändrad: {originalValue} -> {currentValue}"
+						: null;
+				})
+				.Where(change => change != null);
 
-            var excludedProperties = new HashSet<string>
-            {
-                "Created",
-                "Updated", 
-                "Id" 
-            };
-
-            foreach (var property in properties)
-            {
-                if (excludedProperties.Contains(property.Name))
-                {
-                    continue;
-                }
-
-                if (typeof(IEnumerable<InventoryTracker>).IsAssignableFrom(property.PropertyType)) 
-                {
-                    continue;
-                }
-
-                var currentValue = property.GetValue(entity);
-                var originalValue = property.GetValue(noChangesEntity);
-
-                if (!Equals(currentValue, originalValue))
-                {
-                    differences.Add($"{property.Name} ändrad: {originalValue} -> {currentValue}");
-                }
-            }
-
-            return differences.Any() ? string.Join(", ", differences) : "Inga skillnader funna.";
-        }
-
-    }
+			return differences.Any() ? string.Join(", ", differences) : "Inga skillnader funna.";
+		}
+	}
 }

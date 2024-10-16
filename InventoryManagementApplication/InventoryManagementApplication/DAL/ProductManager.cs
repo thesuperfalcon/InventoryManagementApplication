@@ -1,19 +1,14 @@
 ﻿using InventoryManagementApplication.Models;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using System.ComponentModel;
-using System.Linq;
 using System.Text;
 using System.Text.Json;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace InventoryManagementApplication.DAL
 {
 	public class ProductManager
 	{
 		private static Uri BaseAddress = new Uri("https://localhost:44353/");
-		public Product Product { get; set; }
-		public List<Product> Products { get; set; }
+		public Product Product { get; set; } = new Product();
+		public List<Product> Products { get; set; } = new List<Product>();
 
         public async Task CreateProductAsync(Product product)
 		{
@@ -25,7 +20,7 @@ namespace InventoryManagementApplication.DAL
 					client.BaseAddress = BaseAddress;
 					var json = JsonSerializer.Serialize(Product);
 
-					StringContent httpContent = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
+					StringContent httpContent = new StringContent(json, Encoding.UTF8, "application/json");
 					HttpResponseMessage response = await client.PostAsync("api/Products/", httpContent);
 				}
 			}
@@ -50,8 +45,11 @@ namespace InventoryManagementApplication.DAL
 				if (responseProducts.IsSuccessStatusCode)
 				{
 					string responseString = await responseProducts.Content.ReadAsStringAsync();
-					List<Models.Product> products = JsonSerializer.Deserialize<List<Models.Product>>(responseString);
-					Products = products.ToList();
+					List<Product> products = JsonSerializer.Deserialize<List<Product>>(responseString);
+					if (products.Count > 0)
+					{
+						Products = products;
+					}
 				}
 
 				return Products;
@@ -93,7 +91,7 @@ namespace InventoryManagementApplication.DAL
 				if (responseProducts.IsSuccessStatusCode)
 				{
 					string responseString = await responseProducts.Content.ReadAsStringAsync();
-					var product = JsonSerializer.Deserialize<Models.Product>(responseString);
+					var product = JsonSerializer.Deserialize<Product>(responseString);
 					Product = product;
 				}
 
@@ -111,50 +109,6 @@ namespace InventoryManagementApplication.DAL
 			}
 		}
 
-		public async Task<Product> GetProductByArticleNumberAsync(string articleNumber)
-		{
-			Product = new Product();
-			using (var client = new HttpClient())
-			{
-				client.BaseAddress = BaseAddress;
-				string uri = $"api/Products/ByArticleNumber/{articleNumber}";
-				if (articleNumber != null || articleNumber != string.Empty)
-				{
-					HttpResponseMessage response = await client.GetAsync(uri);
-					if (response.IsSuccessStatusCode)
-					{
-						string responseString = await response.Content.ReadAsStringAsync();
-						var product = JsonSerializer.Deserialize<Models.Product>(responseString);
-						Product = product;
-					}
-				}
-				return Product;
-			}
-
-        }
-
-        //public async Task<List<Product>> SearchProductAsync(bool? isDeleted)
-        //{
-        //    using (var client = new HttpClient())
-        //    {
-        //        client.BaseAddress = BaseAddress;
-        //        string uri = "/api/Products";
-        //        if (isDeleted != null)
-        //        {
-        //            uri += isDeleted == false ? "ExistingProducts" : "DeletedProducts";
-        //        }
-        //        HttpResponseMessage responseProducts = await client.GetAsync(uri);
-
-        //        if (responseProducts.IsSuccessStatusCode)
-        //        {
-        //            string responseString = await responseProducts.Content.ReadAsStringAsync();
-        //            List<Models.Product> products = JsonSerializer.Deserialize<List<Models.Product>>(responseString);
-        //            Products = products.ToList();
-        //        }
-
-        //        return Products;
-        //    }
-        //}
         public async Task<List<Product>> SearchProductsAsync(string? inputValue)
         {
             using (var client = new HttpClient())

@@ -12,9 +12,6 @@ namespace InventoryManagementApplication.DAL
 
         public List<Areas.Identity.Data.InventoryManagementRole>? Roles { get; set; }
 
-
-
-
         public async Task<List<InventoryManagementRole>> GetAllRolesAsync()
         {
             using (var client = new HttpClient())

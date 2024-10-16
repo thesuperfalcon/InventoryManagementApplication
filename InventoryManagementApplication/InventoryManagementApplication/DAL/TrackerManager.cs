@@ -57,7 +57,6 @@ namespace InventoryManagementApplication.DAL
 				{
 					string responseString = await responseMessage.Content.ReadAsStringAsync();
 
-					// blir fel här
 					 inventoryTracker = JsonSerializer.Deserialize<InventoryTracker>(responseString);
 					
 				}			

@@ -9,8 +9,8 @@ namespace InventoryManagementApplication.DAL
 	public class StorageManager
 	{
         private static Uri BaseAddress = new Uri("https://localhost:44353/");
-        public Storage Storage { get; set; }
-        public List<Storage> Storages { get; set; }
+        public Storage Storage { get; set; } = new Storage();
+        public List<Storage> Storages { get; set; } = new List<Storage>();
 
 
         public async Task CreateStorageAsync(Storage storage)
