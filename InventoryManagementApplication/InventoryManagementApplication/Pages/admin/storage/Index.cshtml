@@ -25,7 +25,7 @@
         </form>
         @if (User.IsInRole("Admin"))
         {
-            <a asp-page="Create" class="btn btn-primary mb-3" id="add-object">Lägg till</a>
+            <a asp-page="Create"  class="add-object">Lägg till</a>
         }
     </div>
     <h3>Antal (@isDeletedMessage) lagerplatser: @Model.StorageCount</h3>

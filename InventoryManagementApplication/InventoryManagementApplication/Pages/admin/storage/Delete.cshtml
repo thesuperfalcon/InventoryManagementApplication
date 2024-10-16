@@ -10,10 +10,10 @@
 }
 
 <div class="container mt-5">
-    <h1 class="mb-4">Ta bort</h1>
+    <h2 class="mb-4">Ta bort</h2>
 
     <div class="card shadow-sm mb-4">
-        <div class="card-header bg-primary text-white">
+        <div class="card-create-title">
             <h4 class="mb-0">Lagerplatsinformation</h4>
         </div>
         <div class="card-body">
@@ -38,8 +38,8 @@
 
     <form id="deleteForm" method="post" class="d-flex justify-content-start align-items-center">
         <input type="hidden" asp-for="Storage.Id" />
-        <button type="button" class="btn btn-danger me-2" id="deleteButton">Ta bort</button>
-        <a asp-page="./Index" class="btn btn-secondary">Tillbaka till lista</a>
+        <button type="button" class="add-object delete-button" id="deleteButton">Ta bort</button>
+        <a asp-page="./Index" class="custom-secondary-btn">Tillbaka till lista</a>
     </form>
 </div>
 

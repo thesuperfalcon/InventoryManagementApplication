@@ -35,7 +35,7 @@
                         <input type="hidden" asp-for="Storage.Created" value="@DateTime.Now" />
 
                         <div class="d-flex">
-                            <input type="submit" value="Lägg till" id="add-object" class="btn btn-primary me-2" />
+                            <input type="submit" value="Lägg till" class="add-object" />
                             <a asp-page="Index" class="custom-secondary-btn">Tillbaka till lista</a>
                         </div>
                         <div class="mt-3 alert-danger">@Model.StatusMessage</div>
