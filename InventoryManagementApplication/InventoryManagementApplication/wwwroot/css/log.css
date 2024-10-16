@@ -5,6 +5,9 @@ h2.small-title
     margin-top: 10px; 
     text-align: left;
 }
+a{
+color:white;
+}
 
 /* Table styling with fixed size and header customization */
 .table {
@@ -103,7 +106,6 @@ h2.small-title
 
 /* Ikon i sökfält */
 .input-group-text {
-    color: white;
     border: none;
     border-radius: 0 0.375rem 0.375rem 0;
 }

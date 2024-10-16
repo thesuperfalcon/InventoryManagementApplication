@@ -15,7 +15,7 @@ namespace InventoryManagementApplication.Pages
         private readonly LogManager _activityLogManager;
         private readonly UserManager _userManager;
 
-        // Se till att denna egenskap ‰r korrekt definierad
+        // Se till att denna egenskap ÔøΩr korrekt definierad
         public List<Log> Logs { get; set; } = new List<Log>();
         public List<string> UserFullName { get; set; } = new List<string>();
         public List<string> UserEmployeeNumbers { get; set; } = new List<string>();
@@ -28,12 +28,15 @@ namespace InventoryManagementApplication.Pages
 
         public async Task OnGetAsync()
         {
-            // H‰mta loggar frÂn ActivityLogManager
+            // HÔøΩmta loggar frÔøΩn ActivityLogManager
             Logs = (await _activityLogManager.GetAllLogsAsync())
                 .OrderByDescending(x => x.TimeStamp) // Sortera loggarna i fallande ordning
                 .ToList(); // Konvertera till lista och tilldela till Logs
 
-            // H‰mtar users och s‰tter ihop firstName + lastName till UserFullName
+            // HÔøΩmtar users och sÔøΩtter ihop firstName + lastName till UserFullName
+=======
+            // HÔøΩmtar users och sÔøΩtter ihop firstName + lastName till UserFullName
+>>>>>>> d415b61 (More statistic and log design)
             var users = await _userManager.GetAllUsersAsync(null);
             var userDictionary = users.ToDictionary(
                 u => u.Id,
@@ -51,6 +54,40 @@ namespace InventoryManagementApplication.Pages
                     UserFullName.Add("Unknown User");
                     UserEmployeeNumbers.Add("N/A");
                 }
+            }
+        }
+
+
+        public string TranslateEntityType(string entityType)
+        {
+            switch (entityType)
+            {
+                case "Product":
+                    return "Produkt";
+                case "Storage":
+                    return "Lager";
+            case "Product: ":
+                    return "Produkt:";
+                case "Storage: ":
+                    return "Lager:";
+                default:
+                    return entityType; // Returnera originalet om ingen √∂vers√§ttning finns
+            }
+        }
+
+        public string TranslateAction(string action)
+        {
+            switch (action)
+            {
+                case "Created":
+                    return "Skapad";
+                case "Updated":
+                    return "Uppdaterad";
+                case "Deleted":
+                    return "Borttagen";
+                // L√§gg till fler √∂vers√§ttningar h√§r
+                default:
+                    return action; // Returnera originalet om ingen √∂vers√§ttning finns
             }
         }
     }

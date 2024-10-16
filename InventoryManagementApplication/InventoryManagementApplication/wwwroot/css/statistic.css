@@ -317,7 +317,7 @@ h2.text-center {
     position: fixed;
     right: 20px;
     top: 100px;
-    width: 300px;
+    width: 270px;
     height: 400px; /* Begränsar höjden på cheatsheetet */
     background-color: #f1f1f1;
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
@@ -331,4 +331,52 @@ h2.text-center {
 /* Style för cheatsheet-innehållet */
 .sidebar-content {
     padding: 20px;
+}
+
+
+/* Nested table container */
+.nested-table-container {
+    max-width: 100%; /* Ser till att den inte överstiger förälderbredden */
+    overflow-x: auto; /* Gör tabellen scrollbar om den är för bred */
+    padding: 10px;
+    background-color: #f8f9fa;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Nested table style */
+.nested-table {
+    width: 100%;
+    margin-bottom: 0; /* Förhindra överdriven marginal */
+    border-collapse: collapse;
+}
+
+.nested-table th, .nested-table td {
+    padding: 8px 12px;
+    border: 1px solid #ebeff2;
+    text-align: center;
+}
+
+.nested-table th {
+    background-color: #343a40;
+    color: white;
+    font-weight: bold;
+}
+
+.nested-table td {
+    background-color: white;
+    color: #343a40;
+}
+
+.nested-table tbody tr:nth-of-type(odd) {
+    background-color: #f9f9f9;
+}
+
+.nested-table tbody tr:hover {
+    background-color: #e9ecef;
+}
+
+/* Gör så att den nested tabellen är strukturerad och inte påverkar resten av tabellen */
+.nested-table-row {
+    background-color: #fff;
 }
