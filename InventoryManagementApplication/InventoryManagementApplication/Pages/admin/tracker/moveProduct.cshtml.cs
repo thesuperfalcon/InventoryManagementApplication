@@ -12,36 +12,26 @@ using System.Threading.Tasks;
 
 namespace InventoryManagementApplication.Pages.admin.tracker
 {
-	public class MoveProductModel : PageModel
-	{
-		private readonly InventoryManagementApplicationContext _context;
-		private readonly UserManager<InventoryManagementUser> _userManager;
-		private readonly SelectListHelpers _selectListHelpers;
-		private readonly TrackerManager _trackerManager;
-		private readonly StorageManager _storageManager;
-		private readonly ProductManager _productManager;
-		private readonly ProductMovementHelpers _productMovementHelpers;
-		private readonly StatisticManager _statisticManager;
+    [Authorize]
+    public class moveProductModel : PageModel
+    {
+        private readonly UserManager<InventoryManagementUser> _userManager;
+        private readonly SelectListHelpers _selectListHelpers;
+        private readonly TrackerManager _trackerManager;
+        private readonly ProductMovementHelpers _productMovementHelpers;
+        private readonly StatisticManager _statisticManager;
 
-		public MoveProductModel(
-			InventoryManagementApplicationContext context,
-			UserManager<InventoryManagementUser> userManager,
-			SelectListHelpers selectListHelpers,
-			TrackerManager trackerManager,
-			StorageManager storageManager,
-			ProductManager productManager,
-			ProductMovementHelpers productMovementHelpers,
-			StatisticManager statisticManager)
-		{
-			_context = context;
-			_userManager = userManager;
-			_selectListHelpers = selectListHelpers;
-			_trackerManager = trackerManager;
-			_storageManager = storageManager;
-			_productManager = productManager;
-			_productMovementHelpers = productMovementHelpers;
-			_statisticManager = statisticManager;
-		}
+        public moveProductModel(UserManager<InventoryManagementUser> userManager,
+            SelectListHelpers selectListHelpers, TrackerManager trackerManager,
+            ProductMovementHelpers productMovementHelpers,
+            StatisticManager statisticManager)
+        {
+            _userManager = userManager;
+            _selectListHelpers = selectListHelpers;
+            _trackerManager = trackerManager;
+            _productMovementHelpers = productMovementHelpers;
+            _statisticManager = statisticManager;
+        }
 
 		[TempData]
 		public string StatusMessage { get; set; }
