@@ -38,8 +38,19 @@
                             <input type="submit" value="Lägg till" class="btn btn-primary me-2" />
                             <a asp-page="Index" class="btn btn-secondary">Tillbaka till lista</a>
                         </div>
-                        <div class="mt-3 alert-danger">@Model.StatusMessage</div>
-                        <div class="mt-3 alert-success">@Model.StatusMessage1</div>
+                        @if (TempData["StatusMessageError"] != null)
+                        {
+                            <div class="mt-3 alert alert-danger">
+                                @TempData["StatusMessageError"]
+                            </div>
+                        }
+
+                        @if (TempData["StatusMessageSuccess"] != null)
+                        {
+                            <div class="mt-3 alert alert-success">
+                                @TempData["StatusMessageSuccess"]
+                            </div>
+                        }
                     </form>
                 </div>
             </div>

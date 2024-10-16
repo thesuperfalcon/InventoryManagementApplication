@@ -10,7 +10,6 @@ namespace InventoryManagementApplication.Pages.admin.storage
 	[Authorize(Roles = "Admin")]
 	public class CreateModel : PageModel
 	{
-        
         private readonly StorageManager _storageManager;
 		private readonly LogManager _logManager;
 
@@ -22,8 +21,7 @@ namespace InventoryManagementApplication.Pages.admin.storage
 
 		[BindProperty]
 		public Storage Storage { get; set; } = default!;
-		public string StatusMessage { get; set; }
-        public string StatusMessage1 { get; set; }
+
         public int StorageCount { get; set; }
 
 		public async Task<IActionResult> OnGetAsync()
@@ -31,11 +29,6 @@ namespace InventoryManagementApplication.Pages.admin.storage
 			var storages = await _storageManager.GetStoragesAsync(false);
 			StorageCount = storages.Count();
 
-			//Ifall vi vill ha varningstext för X antal lagerplatser vid antalsbegränsning
-   //         if (StorageCount >= 7)
-   //         {
-   //             StatusMessage = $"Det finns redan 6 stycken lagerplatser vilket är max! Är du säker på att du vill lägga till fler?";
-   //         }
             return Page();
 		}
 
@@ -49,12 +42,12 @@ namespace InventoryManagementApplication.Pages.admin.storage
 			var result = await _storageManager.CheckStorageName(Storage.Name);
 			if(result == true)
 			{
-				StatusMessage = "Lagerplats med samma namn existerar. Skriv in nytt namn";
+                TempData["StatusMessageError"] = "Lagerplats med samma namn existerar. Skriv in nytt namn";
 				return Page();
 			}
 			
 			await _storageManager.CreateStorageAsync(Storage);
-			StatusMessage1 = $"Du har skapat {Storage.Name} med {Storage.MaxCapacity} platser!";
+				TempData["StatusMessageSuccess"] = $"Du har skapat {Storage.Name} med {Storage.MaxCapacity} platser!";
 
 			await _logManager.LogActivityAsync(Storage, EntityState.Added);
 
