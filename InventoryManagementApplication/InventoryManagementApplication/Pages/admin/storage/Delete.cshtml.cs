@@ -32,7 +32,7 @@ namespace InventoryManagementApplication.Pages.admin.storage
 				return NotFound();
 			}
 
-			var storage = await _storageManager.GetStorageByIdAsync(id, false);
+			var storage = await _storageManager.GetStorageByIdAsync(id, null);
 
 			if (storage == null)
 			{
