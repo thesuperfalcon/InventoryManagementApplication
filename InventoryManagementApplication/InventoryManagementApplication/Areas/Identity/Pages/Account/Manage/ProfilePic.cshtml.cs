@@ -38,7 +38,7 @@ namespace InventoryManagementApplication.Areas.Identity.Pages.Account.Manage
 			SelectedUser = await _userManager.GetOneUserAsync(userId);
 
             SelectedUser.ProfilePic = SelectedProfilePic;
-            await _userManager.EditUserAsync(SelectedUser, null);
+            await _userManager.EditUserAsync(SelectedUser, null, null, false);
 
             StatusMessage = "Profilbilden har ändrats!";
             return RedirectToPage("./ProfilePic");
