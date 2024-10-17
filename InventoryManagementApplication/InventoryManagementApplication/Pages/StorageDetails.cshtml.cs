@@ -7,13 +7,12 @@ namespace InventoryManagementApplication.Pages
 {
     public class StorageDetailsModel : PageModel
     {
-        private readonly InventoryManagementApplicationContext _context;
         private readonly StorageManager _storageManager;
         private readonly LogManager _logManager;
         private readonly UserManager _userManager;
         private readonly TrackerManager _trackerManager; 
 
-        public StorageDetailsModel(InventoryManagementApplicationContext context, LogManager logManager, UserManager userManager, StorageManager storageManager, TrackerManager trackerManager)
+        public StorageDetailsModel(LogManager logManager, UserManager userManager, StorageManager storageManager, TrackerManager trackerManager)
         {
             _storageManager = storageManager;
             _logManager = logManager;
