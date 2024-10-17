@@ -115,26 +115,21 @@ namespace InventoryManagementApplication.DAL
         }
 
 
-        public async Task<bool> ResetPassword(InventoryManagementUser? user, List<string?>? currentRoles)
+        public async Task<bool> ResetPassword(InventoryManagementUser? user, List<string?>? currentRoles, string? addRoles, bool resetPassword)
         {
             using (var client = new HttpClient())
             {
 
                 client.BaseAddress = BaseAddress;
-                var resetPasswordRequest = new DTO.RolesDTO
-                {
-                    User = user,
-                    CurrentRoles = currentRoles,
-                    AddRole = null,
-                    ResetPassword = true
-                };
+
+                var resetPasswordRequest = Helpers.DTOHelpers.SetDTO(user, currentRoles, addRoles, resetPassword);              
                 var content = new StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(resetPasswordRequest), Encoding.UTF8, "application/json");
                 HttpResponseMessage response = await client.PutAsync($"api/Users/{user.Id}", content);
 
                 return response.IsSuccessStatusCode;
             }
         }
-        public async Task<bool> EditUserAsync(InventoryManagementUser? user, List<string?>? currentRoles)
+        public async Task<bool> EditUserAsync(InventoryManagementUser? user, List<string?>? currentRoles, string? addRole, bool resetPassword)
         {
 
 
@@ -142,14 +137,7 @@ namespace InventoryManagementApplication.DAL
             {
 
                 client.BaseAddress = BaseAddress;
-                var editUserRequest = new DTO.RolesDTO
-                {
-                    User = user,
-                    CurrentRoles = null,
-                    AddRole = null,
-                    ResetPassword = false,
-                    IsDeleted = user.IsDeleted != null ? user.IsDeleted.Value : false
-                };
+                var editUserRequest = Helpers.DTOHelpers.SetDTO(user, currentRoles, addRole, resetPassword);
                 var content = new StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(editUserRequest), Encoding.UTF8, "application/json");
                 HttpResponseMessage response = await client.PutAsync($"api/Users/{user.Id}", content);
 

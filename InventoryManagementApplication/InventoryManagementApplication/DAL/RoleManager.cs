@@ -41,44 +41,47 @@ namespace InventoryManagementApplication.DAL
             }
         }
 
-        public async Task RemoveFromRoleAsync(InventoryManagementUser? user, List<string?>? currentRoles)
-        {
-            using (var client = new HttpClient())
-            {
-
-                client.BaseAddress = BaseAddress;
-                var removeRoleRequest = new DTO.RolesDTO
-                {
-                    User = user,
-                    CurrentRoles = currentRoles,
-                    AddRole = null,
-                    ResetPassword = false
-                };
-                var content = new StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(removeRoleRequest), Encoding.UTF8, "application/json");
-                HttpResponseMessage response = await client.PutAsync($"api/Users/{user.Id}", content);
+        //public async Task RemoveFromRoleAsync(InventoryManagementUser? user, List<string?>? currentRoles)
+        //{
+        //    using (var client = new HttpClient())
+        //    {
 
 
-            }
-        }
+        //        client.BaseAddress = BaseAddress;
+        //        var removeRoleRequest = new DTO.RolesDTO
+        //        {
+        //            User = user,
+        //            CurrentRoles = currentRoles,
+        //            AddRole = null,
+        //            ResetPassword = false
+        //        };
+        //        var content = new StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(removeRoleRequest), Encoding.UTF8, "application/json");
+        //        HttpResponseMessage response = await client.PutAsync($"api/Users/{user.Id}", content);
 
-        public async Task<bool> AddToRoleAsync(InventoryManagementUser? user, string? currentRoles)
-        {
-            using (var client = new HttpClient())
-            {
 
-                client.BaseAddress = BaseAddress;
-                var addRoleRequest = new DTO.RolesDTO
-                {
-                    User = user,
-                    CurrentRoles = null,
-                    AddRole = currentRoles,
-                    ResetPassword = false
-                };
-                var content = new StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(addRoleRequest), Encoding.UTF8, "application/json");
-                HttpResponseMessage response = await client.PutAsync($"api/Users/{user.Id}", content);
+        //    }
+        //}
 
-                return response.IsSuccessStatusCode;
-            }
-        }
+        //public async Task<bool> AddToRoleAsync(InventoryManagementUser? user, string? currentRoles)
+        //{
+        //    using (var client = new HttpClient())
+        //    {
+
+        //        client.BaseAddress = BaseAddress;
+        //        var addRoleRequest = new DTO.RolesDTO
+        //        {
+        //            User = user,
+        //            CurrentRoles = null,
+        //            AddRole = currentRoles,
+        //            ResetPassword = false
+        //        };
+        //        var content = new StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(addRoleRequest), Encoding.UTF8, "application/json");
+        //        HttpResponseMessage response = await client.PutAsync($"api/Users/{user.Id}", content);
+
+        //        return response.IsSuccessStatusCode;
+        //    }
+        //}
+
+        
     }
 }

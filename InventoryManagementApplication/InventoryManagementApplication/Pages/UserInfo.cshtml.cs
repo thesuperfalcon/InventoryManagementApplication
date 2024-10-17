@@ -252,9 +252,9 @@ namespace InventoryManagementApplication.Pages
 				return NotFound("Användaren kunde inte hittas.");
 			}
 			user.IsDeleted = false;
-			await _userManagerDal.EditUserAsync(user, null);
+			await _userManagerDal.EditUserAsync(user, null, null, false);
 			var recreatedUser = await _userManagerDal.GetOneUserAsync(userId);
-			await _userManagerDal.ResetPassword(recreatedUser, null);
+			await _userManagerDal.ResetPassword(recreatedUser, null, null, true);
 			return RedirectToPage("/UsersRoles");
 
 		}
@@ -276,7 +276,7 @@ namespace InventoryManagementApplication.Pages
 			//var newPassword = "Admin123!";
 			//var resetToken = await _userManager.GeneratePasswordResetTokenAsync(user);
 			//var resetResult = await _userManager.ResetPasswordAsync(user, resetToken, newPassword);
-			var resetResult = await _userManagerDal.ResetPassword(user, null);
+			var resetResult = await _userManagerDal.ResetPassword(user, null, null, true);
 			if (!resetResult)
 			{
 				ModelState.AddModelError(string.Empty, "Gick ej att återställa lösenord");
@@ -296,8 +296,9 @@ namespace InventoryManagementApplication.Pages
 		public async Task<IActionResult> OnPostSaveAsync(string userId)
 		{
 			Console.WriteLine($"OnPostSaveAsync called with userId: {userId}");
+            ModelState.Remove("SelectedUser.UserName");
 
-			if (!ModelState.IsValid)
+            if (!ModelState.IsValid)
 			{
 				foreach (var modelError in ModelState.Values.SelectMany(v => v.Errors))
 				{
@@ -337,7 +338,7 @@ namespace InventoryManagementApplication.Pages
 				user.Updated = DateTime.Now;
 			}
 
-			var result = await _userManagerDal.EditUserAsync(user, null);
+			var result = await _userManagerDal.EditUserAsync(user, null, null, false);
 			// var result = await _userManager.UpdateAsync(user);
 
 			if (!result)
