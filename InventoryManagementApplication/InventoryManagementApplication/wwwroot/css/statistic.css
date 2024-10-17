@@ -53,45 +53,6 @@ h1 {
     justify-content: space-around; /* Placera innehållet längst till vänster */
 }
 
-  
-.table {
-    width: 100%;
-    border-collapse: collapse; /* Tar bort extra mellanrum mellan celler */
-    margin-top: 20px;
-    background-color: #fff; /* Vit bakgrund för bättre kontrast */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
-}
-
-.table-striped tbody tr:nth-of-type(odd) {
-    background-color: #f9f9f9; /* Mjukare bakgrundsfärg för rader */
-}
-
-.table-hover tbody tr:hover {
-    background-color: #e9ecef; /* Bättre hover-effekt */
-}
-
-.table-bordered th, .table-bordered td {
-    border: 1px solid #dee2e6; /* Ljusare kantlinjer för celler */
-    padding: 12px 15px; /* Mer padding för bättre läsbarhet */
-}
-
-.table th {
-    background-color: #343a40; /* Mörkare rubrikbakgrund */
-    color: white; /* Vit text på rubrikerna */
-    font-weight: bold;
-    text-align: center; /* Centrerar rubriker */
-}
-
-.table td {
-    color: #343a40; /* Mörkare text för bättre kontrast */
-    text-align: center; /* Centrerar texten i cellerna */
-    vertical-align: middle; /* Ser till att innehållet är vertikalt centrerat */
-    padding: 12px 15px; /* Samma padding som rubrikerna */
-}
-
-    .table td:hover {
-        color: #bcbdbd; 
-    }
 
 .input-group {
     margin-bottom: 15px;
@@ -124,16 +85,6 @@ label.toggle-option{
 margin-bottom: .1rem;
         }
 
-
-.table a {
-    color: #acaeb0;
-    text-decoration: none;
-}
-
-    .table a:hover {
-        text-decoration: none;
-        color: #acaeb0;
-    }
 
 .sidebar {
     background-color: #f1f1f1;
@@ -295,7 +246,6 @@ h2.text-center {
     vertical-align: middle;   /* Centrerar innehållet vertikalt */
 }
 
-/* Header-styling */
 .table-header th {
     border: none; /* Tar bort kantlinjerna */
     background-color: #343a40; /* Mörk bakgrundsfärg för bättre kontrast */

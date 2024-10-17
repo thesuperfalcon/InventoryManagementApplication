@@ -1,53 +1,21 @@
-
-    a.custom-link {
+ a.custom-link {
         text-decoration: none; 
         color: inherit; 
         font-weight: bold; 
+        display: inline-block;
+        padding: 2px 5px;
+        transition: background-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
     }
 
     a.custom-link:hover {
-        background-color: #f0f0f0; 
+        background-color: #9b9999; 
         border-radius: 5px;
         padding: 2px 5px; 
         text-decoration: none; 
         cursor: pointer; 
         transition: background-color 0.2s ease-in-out; 
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
     }
-
-.table-bordered th, .table-bordered td {
-    border: 2px solid #dee2e6; 
-    padding: 12px;
-    background-color: #f9f9f9;
-  }
-
-  .table th {
-    background-color: #343a40; /* Mörkare rubrikbakgrund */
-    color: white; /* Vit text på rubrikerna */
-    font-weight: bold;
-    text-align: center; /* Centrerar rubriker */
-}
-
-  
-
-  a.custom-link {
-    text-decoration: none;
-    color: inherit;
-    font-weight: bold;
-    display: inline-block;
-    padding: 2px 5px;
-    transition: background-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-  }
-  
-  a.custom-link:hover {
-    background-color: #8f8d8d;
-    border-radius: 5px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
-  }
-
-  .input-group {
-    max-width: 700px;
-  }
-  
 
   button#toggleAll, button[data-bs-target="#cheatsheetModal"] {
     background-color: #6c757d;
@@ -69,7 +37,7 @@
   button#clearSearch {
 
     border: 1px solid #ced4da;
-margin-top:10px;
+    margin-bottom:8px;
     background-color: #f44336;
     color: white;
    
@@ -81,11 +49,7 @@ margin-top:10px;
     background-color: #d32f2f;
   }
 
-.input-group-text
-{
-margin-top:10px;
 
-}
   .pagination {
     display: flex;
     justify-content: center;
@@ -130,9 +94,7 @@ margin-top:10px;
   min-width: 0;
   background-color:#6c757d;
   border:none;
-
   margin-left:10px ;
-  margin-top:12px;
 }
 
 
@@ -149,7 +111,6 @@ margin-top:10px;
   color:white;
 }
 
-/* Hover-effekt för hjälpknappen */
 #helpButton:hover {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }

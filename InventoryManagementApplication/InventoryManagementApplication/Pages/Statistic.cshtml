@@ -25,7 +25,7 @@
                 <div class="input-group">
                     <input id="leaderboardSearchInput" type="text" class="form-control" placeholder="Sök anställningsnummer..." />
                     <button id="clearLeaderboardButton" onclick="clearLeaderboardSearch()">Rensa</button>
-                    <span class="input-group-text">
+                      <span class="input-group-text custom-color text-white">
                         <i class="bi bi-search"></i>
                     </span>
                 </div>
@@ -134,7 +134,7 @@
                     <input id="searchInput" type="text" class="form-control" placeholder="Sök..." />
                     <button id="clearButton" onclick="clearSearch()">Rensa Sök</button> 
                    @*   <a asp-page="Statistic" id="clearButton" >Rensa Sök</a> *@
-                    <span class="input-group-text">
+                      <span class="input-group-text custom-color text-white">
                         <i class="bi bi-search"></i>
                     </span>
                 </div>
@@ -269,4 +269,9 @@ document.querySelectorAll('input[name="view"]').forEach((elem) => {
 });
 </script>
 }
+
+@section Styles {
+     <link rel="stylesheet" href="~/css/statistic.css" asp-append-version="true">
+}
+
 

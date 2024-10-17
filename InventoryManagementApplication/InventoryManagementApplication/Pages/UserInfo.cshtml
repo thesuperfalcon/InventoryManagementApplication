@@ -78,7 +78,7 @@
                             </div>
                         }
 
-                        <button type="button" class="btn btn-secondary"
+                        <button type="button" class="btn custom-secondary-btn"
                                 onclick="window.location='@Url.Page("/UsersRoles")'">
                             Avbryt
                         </button>
@@ -221,10 +221,10 @@
 </body>
 
 @section Scripts {
-	<link rel="stylesheet" href="~/css/admin.css" asp-append-version="true" />
-
 	<script src="~/js/usermanagement.js" asp-append-version="true"></script>
 	<partial name="_ValidationScriptsPartial" />
+}
 
-
+@section Styles {
+	<link rel="stylesheet" href="~/css/admin.css" asp-append-version="true" />
 }

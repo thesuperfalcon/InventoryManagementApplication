@@ -33,7 +33,6 @@
     line-height: 1.5;
 }
 
-
 .btn-confirmation {
     display: inline-block;
     padding: 12px 24px;
@@ -48,7 +47,7 @@
 }
 
 .btn-confirmation:hover {
-    background-color:  rgb(49, 78, 156); 
+    background-color:rgb(27, 43, 86) ; 
     transform: translateY(-3px); 
     text-decoration: none; 
 }

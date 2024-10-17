@@ -1,3 +1,4 @@
+/*Generell */
 html {
     font-size: 14px;
     margin: 0;
@@ -11,9 +12,36 @@ html {
         font-size: 16px;
     }
 
-    .hero-section {
-        background-image: none !important;
-        background-color: #f8f9fa;
+/*    body {
+        background-color: #eef1f8 !important;
+        display: flex;
+        flex-direction: column;
+        margin: 0;
+        margin-bottom: 60px;
+    }*/
+
+body {
+    background-image: url('/images/logos/ssabLogo2.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    z-index: 0;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    background-color: rgba(255, 255, 255, 0.8) !important;
+}
+
+    body::after {
+        content: "";
+    
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(255, 255, 255, 0.9);
+        z-index: -1;
     }
 
     footer-container {
@@ -64,71 +92,13 @@ html {
         }
 }
 
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+
+
+.hero-section {
+    background-image: none !important;
+    background-color: #f8f9fa;
 }
 
-/*button#add-object.btn-primary {
-    border: none !important;
-    text-align: center;
-}
-*/
-.add-object {
-    padding: 5px 10px;
-    font-size: 15px;
-    text-decoration: none;
-    height: 40px;
-    width: auto;
-    text-align: center;
-    line-height: normal;
-    margin: 0 10px 0 0;
-    color: white;
-    border-radius: 5px;
-    background-color:rgb(39, 62, 125);
-    cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
-    display: inline-flex;
-    align-items: center;
-}
-    .add-object:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
-    }
-.delete-button{
-    background-color: rgb(204, 0 ,0);
-}
-.sell-button {
-    background-color: #198754;
-}
-.custom-secondary-btn {
-    padding: 5px 10px;
-    font-size: 15px;
-    height: 40px;
-    width: auto;
-    margin-right: 10px;
-    text-decoration: none;
-    background-color: #6c757d;
-    text-align: unset;
-    line-height: 30px;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
-    vertical-align: middle;
-
-}
-    .custom-secondary-btn:hover {
-        background-color: #495057 !important;
-        transform: translateY(-2px);
-        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
-    }
-    body {
-        background-color: #eef1f8 !important;
-        display: flex;
-        flex-direction: column;
-        margin: 0;
-    }
 .small-profile-pic {
     width: 40px;
     height: 40px;
@@ -137,26 +107,22 @@ html {
 h1, h2, h3 {
 color: rgb(39, 62, 125) !important;
 font-weight: bold;
+margin-bottom: 20px;
+margin-top: 10px;
 }
+
+   
 
 .container {
     flex: 1;
     padding: 1rem 0 2rem;
 }
 
-
-.btn-primary {
-    background-color: rgb(39, 62, 125);
-    border-color: rgb(39, 62, 125);
-    font-size: 16px;
-    padding: 12px 24px;
-    border-radius: 4px;
-}
-
 p {
     font-size: 16px;
     color: #555555;
 }
+
 .card-create-title {
     width: 100%;
     height: 3em;
@@ -167,9 +133,6 @@ p {
     background-color: rgb(39, 62, 125);
 }
 
-.page-title{
-    text-align:center;
-}
 .card-profile {
     width: 100%;
     max-width: 300px;
@@ -217,6 +180,9 @@ p {
     text-align: center;
 }
 
+a{
+   color:white;
+}
 
 footer {
     background-color: #f8f9fa;
@@ -230,6 +196,7 @@ footer {
     right: 0;
     left: 0;
 }
+
 
 .footer-container {
     display: flex;
@@ -263,7 +230,7 @@ footer {
     font-size: 1rem;
 }
 
-    .footer-container .nav-link:hover {
+.footer-container .nav-link:hover {
         color: #0056b3;
     }
 
@@ -279,12 +246,6 @@ footer {
     text-shadow: 2px 2px 4px rgba(0,0,0,0.4);
 }
 
-
-    .hero-section .btn-primary {
-        font-size: 1.2rem;
-    }
-
-/* Custom styling for the container */
 .rounded-container {
     background-color: #f8f9fa;
     border-radius: 15px;
@@ -334,20 +295,18 @@ footer {
     margin: 2px;
 }
 
-.hero-section .btn-primary {
-    font-size: 1.2rem;
-}
+
 .button-container {
     margin: 0px 0px 15px;
     padding: 0px;
-    width: 400px;
+  float:right;
     display: flex;
     flex-direction: row;
     justify-content: flex-start;
     align-items: center;
     gap: 20px;
 }
-/* Custom Styles for the Header */
+
 .navbar {
     padding: 1rem 2rem;
     background-color: #f8f9fa;
@@ -374,7 +333,6 @@ footer {
         color: #0056b3;
     }
 
-/* Footer Custom Styles */
 .footer-container {
     display: flex;
     justify-content: space-between;
@@ -382,8 +340,6 @@ footer {
     background-color: #f8f9fa;
 }
 
-
-/* Search function */
 .search-form {
     display: flex;
     align-items: center;
@@ -533,10 +489,10 @@ body {
 
 .box1, .box2 {
     background-color: white;
-    border: 1px solid #ccc; /* En lättare ram för varje box */
-    padding: 10px; /* Ger lite utrymme inuti varje box */
-    flex: 1; /* Gör boxarna lika stora */
-    margin-right: 20px; /* Lägger till lite mellanrum mellan boxarna */
+    border: 1px solid #ccc;
+    padding: 10px; 
+    flex: 1; 
+    margin-right: 20px; 
     
 }
 
@@ -544,33 +500,100 @@ body {
     margin-right: 0;  
 }
 
-.custom-header{
+.custom-color{
    background-color:  rgb(39, 62, 125);
 }
-.accordion {
-    color: #333;
-    cursor: pointer;
-    padding: 15px;
-    border-radius: 5px;
 
-    display: flex;
-    justify-content: space-between;
+/*Knappar */
+
+.btn-info,
+.btn-generic,
+.btn-passwordchange,
+.btn-secondary,
+.btn-primary {
+  background-color: rgb(39, 62, 125) !important;
+  border: 2px solid rgb(39, 62, 125) !important;
+  transition: background-color 0.3s ease;
+  color: #f8f7f7 !important;
+  min-width: 100px;
+  transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.btn-primary {
+    font-size: 16px;
+    padding: 12px 24px;
+    border-radius: 4px;
+}
+
+.btn-generic:hover,
+.btn-info:hover,
+.btn-secondary:hover,
+.btn-primary:hover {
+  background-color: rgb(49, 78, 156) !important;
+  border: 2px solid rgb(49, 78, 156) !important;
+  color: #f8f7f7 !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+}
+
+.hero-section .btn-primary {
+    font-size: 1.2rem;
+}
+
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #7a90a7;
+}
+
+.add-object {
+    padding: 5px 10px;
+    font-size: 15px;
+    text-decoration: none;
+    height: 40px;
+    width: auto;
+    text-align: center;
+    line-height: normal;
+    margin: 0 10px 0 0;
+    color: white;
+    border-radius: 5px;
+    background-color:rgb(39, 62, 125);
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
+    display: inline-flex;
     align-items: center;
-    font-weight: bold;
-    width: 100%;
-    text-align: left;
+}
+    .add-object:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+    }
+.delete-button{
+    background-color: rgb(204, 0 ,0);
+}
+.sell-button {
+    background-color: #198754;
+    border:none;
 }
  
-.panel {
-    padding: 0 18px;
-    background-color: white;
-    overflow: hidden;
-    display: none; /* Initialt dolt */
-    max-height: 0; /* Börjar som dold */
-    transition: max-height 0.3s ease-out;
-}
+.custom-secondary-btn {
+    padding: 5px 10px;
+    font-size: 15px;
+    height: 40px;
+    width: auto;
+    margin-right: 10px;
+    text-decoration: none;
+    background-color: #6c757d;
+    text-align: unset;
+    line-height: 30px;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
+    vertical-align: middle;
 
-.accordion.active + .panel {
-    display: block; /* Visar panelen när accordion är aktiv */
-    max-height: 1000px; /* Gör panelen synlig genom att expandera */
 }
+    .custom-secondary-btn:hover {
+        background-color: #495057 !important;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+    }

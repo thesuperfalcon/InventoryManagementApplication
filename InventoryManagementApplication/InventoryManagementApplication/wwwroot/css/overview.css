@@ -4,6 +4,15 @@
     font-weight: 600;
     text-align: center;
 }
+a {
+    color: inherit; /* Behåller samma textfärg som omgivande text */
+    text-decoration: none; /* Tar bort understrykningen för länkar */
+}
+
+a:hover {
+    color: #0056b3; /* En mörkblå färg för att indikera hover-tillstånd */
+    text-decoration: underline; /* Understryk länken vid hover för bättre synlighet */
+}
 
 .bg-primary {
     background-color: #007bff !important;
@@ -22,6 +31,7 @@
 }
 
 .card {
+    min-height: 450px;
     border-radius: 10px;
     border: none;
 }
@@ -30,6 +40,7 @@
     box-shadow: none;
     border-radius: 5px;
     border: 1px solid #e7e7e7;
+
 }
 
 .shadow-lg {

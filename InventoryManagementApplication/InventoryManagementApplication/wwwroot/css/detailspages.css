@@ -1,24 +1,4 @@
-.btn-generic,
-.btn-info,
-.btn-secondary,
-.btn-primary {
-  background-color: rgb(39, 62, 125) !important;
-  border: 2px solid rgb(39, 62, 125) !important;
-  border-radius: 5px;
-  transition: background-color 0.3s ease;
-  color: #f8f7f7 !important;
-  min-width: 100px;
-  margin: 10px;
-}
 
-.btn-generic:hover,
-.btn-info:hover,
-.btn-secondary:hover,
-.btn-primary:hover {
-  background-color: rgb(49, 78, 156) !important;
-  border: 2px solid rgb(49, 78, 156) !important;
-  color: #f8f7f7 !important;
-}
 
 .btn-container {
   display: flex;
