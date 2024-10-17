@@ -26,63 +26,10 @@ namespace InventoryManagementApplication.Pages
             _userManagerDal = userManagerDal;
             _statisticManager = statisticManager;
         }
-        public List<InventoryManagementUser> Users { get; set; }
-
-        [BindProperty]
-        public List<UserStatisticsViewModel> MovementPerPerson{ get; set; } = new List<UserStatisticsViewModel>();
+       
         public async Task OnGetAsync()
         {
-            var statistics = await _statisticManager.GetAllStatisticsAsync();
-           
-                
-            var personList = await _userManager.GetAllUsersAsync(false);
-            foreach (var person in personList)
-            {
-                var movementsByUser = statistics.Where(stat => stat.UserId == person.Id);
-
-
-                //var currentWeek = GetCurrentWeekNumber();
-                //movementsByUser = movementsByUser
-                //    .Where(stat => stat.Moved.HasValue &&
-                //                   GetWeekNumber(stat.Moved.Value) == currentWeek &&
-                //                   DateTime.Now.Year == stat.Moved.Value.Year);
-
-
-                //movementsByUser = movementsByUser
-                //    .Where(stat => stat.Moved.HasValue &&
-                //                   IsSameDay(stat.Moved.Value));
-
-                if (movementsByUser.Any())
-                {
-                    var totalMovements = movementsByUser.Count();
-                    var totalQuantity = movementsByUser.Sum(stat => stat.Quantity ?? 0);
-
-                   
-
-                    var userStatistics = new UserStatisticsViewModel
-                    {
-                        EmployeeNumber = person.EmployeeNumber,
-                        TotalMovements = totalMovements,
-                        TotalQuantity = totalQuantity,
-                       
-                    };
-                    MovementPerPerson.Add(userStatistics);
-                }
-            }
-
-            Users = await _userManager.GetAllUsersAsync(false);
-
-            var user = new InventoryManagementUser();
-
-            if (user == null)
-            {
-
-                //Users = Users
-                //    .Where(u => u.FirstName != null && u.LastName.Contains()
-                //    .ToList();
-            }
-            
-
+          
         }
     }
 }

@@ -1,9 +1,8 @@
 ﻿@page
 @using InventoryManagementApplication.Areas.Identity.Data
-@using InventoryManagementApplication.Areas.Identity.Pages.Account
+@using Helpers
 @using Microsoft.AspNetCore.Identity
-@model LoginModel
-@* @model InventoryManagementApplication.Pages.IndexModel *@
+@model ManageAccountHelpers
 @inject UserManager<InventoryManagementUser> UserManager
 @inject SignInManager<InventoryManagementUser> SignInManager
 @{
@@ -16,45 +15,7 @@
     @if (User.Identity.IsAuthenticated)
     {
         <div class="container-boxes">
-
-
-            <div class="box1">
-
-                @*  <table id="userTable" border="1" cellpadding="10" cellspacing="0" style="border-collapse: collapse; width: 100%;">
-            <thead>
-            <tr>
-            <th>Du är inloggad som:</th>
-            <th>Registrerad sedan: </th>
-
-            @if (User.IsInRole("Admin"))
-            {
-            <th>Din roll: </th>
-
-            }
-            else
-            {
-            <th>Din roll: </th>
-            }
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-            <td>@user.FirstName  @user.LastName</td>
-            <td>@user.Created.ToString("yyyy-MM-dd")</td>
-            @if (User.IsInRole("Admin"))
-            {
-            @*Kolle igenom om rollen hämtas från API eller databas!*@
-                @*  <td>@User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value</td>
-
-            }
-            else
-            {
-            <td>Användare</td>
-            }
-            </tr>
-            </tbody>
-            </table> *@
-
+            <div class="box1">            
                 <table id="userTable" border="1" cellpadding="10" cellspacing="0" style="border-collapse: collapse; width: 100%; height: 100%;">
                     <tbody>
                         <tr>
@@ -80,10 +41,6 @@
                         </tr>
                     </tbody>
                 </table>
-
-
-
-
             </div>
 
             <div class="box2">
@@ -107,10 +64,7 @@
                         }
                     </tbody>
                 </table>
-
             </div>
-
-
         </div>
     }
     else
@@ -135,20 +89,7 @@
                                 <label asp-for="Input.Password" class="form-label">Lösenord</label>
                                 <span asp-validation-for="Input.Password" class="text-danger"></span>
                             </div>
-
-                            @*                 <div class="form-floating mb-3">
-                        <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
-                        <label asp-for="Input.Email" class="form-label">Email</label>
-                        <span asp-validation-for="Input.Email" class="text-danger"></span>
-                        </div> *@
-
-                            @*                     <div class="checkbox mb-3">
-                        <label asp-for="Input.RememberMe" class="form-label">
-                        <input class="form-check-input" asp-for="Input.RememberMe" />
-                        @Html.DisplayNameFor(m => m.Input.RememberMe)
-                        </label>
-                        </div> *@
-
+                            
                             <div>
                                 <button id="login-submit" type="submit" class="w-100 btn btn-lg btn-primary">Logga in</button>
                             </div>

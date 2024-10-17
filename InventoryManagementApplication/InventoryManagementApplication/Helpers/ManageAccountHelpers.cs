@@ -1,34 +1,30 @@
-﻿// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
-#nullable disable
-
+﻿using InventoryManagementApplication.Areas.Identity.Data;
+using InventoryManagementApplication.DAL;
+using InventoryManagementApplication.Models;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.ComponentModel.DataAnnotations;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
-using InventoryManagementApplication.Areas.Identity.Data;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
-using InventoryManagementApplication.DAL;
-using InventoryManagementApplication.Models;
 
-namespace InventoryManagementApplication.Areas.Identity.Pages.Account
+namespace InventoryManagementApplication.Helpers
 {
-    public class LoginModel : PageModel
+    public class ManageAccountHelpers : PageModel
     {
         private readonly SignInManager<InventoryManagementUser> _signInManager;
-        private readonly ILogger<LoginModel> _logger;
+        private readonly ILogger<ManageAccountHelpers> _logger;
         private readonly UserManager _userManager;
         private readonly StatisticManager _statisticManager;
 
-        public LoginModel(SignInManager<InventoryManagementUser> signInManager, ILogger<LoginModel> logger, UserManager userManager, StatisticManager statisticManager)
+        public ManageAccountHelpers(SignInManager<InventoryManagementUser> signInManager, ILogger<ManageAccountHelpers> logger, UserManager userManager, StatisticManager statisticManager)
         {
             _signInManager = signInManager;
             _logger = logger;
@@ -38,23 +34,16 @@ namespace InventoryManagementApplication.Areas.Identity.Pages.Account
         [BindProperty]
         public InputModel Input { get; set; }
 
- 
         public IList<AuthenticationScheme> ExternalLogins { get; set; }
 
         public string ReturnUrl { get; set; }
 
-
         [TempData]
         public string ErrorMessage { get; set; }
-
+        public List<UserStatisticsViewModel> MovementPerPerson { get; set; } = new List<UserStatisticsViewModel>();
 
         public class InputModel
         {
-
-            //[Required]
-            //[EmailAddress]
-            //public string Email { get; set; }
-
 
             [Required]
             [DataType(DataType.Password)]
@@ -70,8 +59,6 @@ namespace InventoryManagementApplication.Areas.Identity.Pages.Account
 
         }
 
-        public List<UserStatisticsViewModel> MovementPerPerson { get; set; } = new List<UserStatisticsViewModel>(); 
-        
         public async Task OnGetAsync(string returnUrl = null)
         {
             if (!string.IsNullOrEmpty(ErrorMessage))
@@ -89,18 +76,6 @@ namespace InventoryManagementApplication.Areas.Identity.Pages.Account
             foreach (var person in personList)
             {
                 var movementsByUser = statistics.Where(stat => stat.UserId == person.Id);
-
-
-                //var currentWeek = GetCurrentWeekNumber();
-                //movementsByUser = movementsByUser
-                //    .Where(stat => stat.Moved.HasValue &&
-                //                   GetWeekNumber(stat.Moved.Value) == currentWeek &&
-                //                   DateTime.Now.Year == stat.Moved.Value.Year);
-
-
-                //movementsByUser = movementsByUser
-                //    .Where(stat => stat.Moved.HasValue &&
-                //                   IsSameDay(stat.Moved.Value));
 
                 if (movementsByUser.Any())
                 {
@@ -121,7 +96,6 @@ namespace InventoryManagementApplication.Areas.Identity.Pages.Account
                 }
             }
 
-            // Clear the existing external cookie to ensure a clean login process
             await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
 
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
@@ -144,14 +118,14 @@ namespace InventoryManagementApplication.Areas.Identity.Pages.Account
                     ModelState.AddModelError(string.Empty, "Användarnamnet finns ej!");
                     return Page();
                 }
-                if(user.IsDeleted == true)
+                if (user.IsDeleted == true)
                 {
-					ModelState.AddModelError(string.Empty, "Användaren existerar inte!");
-					return Page();
-				}
+                    ModelState.AddModelError(string.Empty, "Användaren existerar inte!");
+                    return Page();
+                }
 
 
-				var result = await _signInManager.PasswordSignInAsync(user.UserName, Input.Password, Input.RememberMe, lockoutOnFailure: false);
+                var result = await _signInManager.PasswordSignInAsync(user.UserName, Input.Password, Input.RememberMe, lockoutOnFailure: false);
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User logged in.");
@@ -173,7 +147,6 @@ namespace InventoryManagementApplication.Areas.Identity.Pages.Account
                 }
             }
 
-            // If we got this far, something failed, redisplay form
             return Page();
         }
     }
