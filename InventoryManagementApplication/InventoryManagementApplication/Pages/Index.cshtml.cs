@@ -15,8 +15,7 @@ namespace InventoryManagementApplication.Pages
     [Authorize]
     public class IndexModel : PageModel
     {
-        
-        
+            
         private readonly UserManager _userManager;
         private readonly DAL.UserManager _userManagerDal;
         private readonly StatisticManager _statisticManager;

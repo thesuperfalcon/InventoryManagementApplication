@@ -28,8 +28,6 @@ namespace InventoryManagementApplication.Areas.Identity.Pages.Account.Manage
 			SelectedUser = await _userManager.GetOneUserAsync(userId);
 
 			ProfilePics = await _userManager.GetPicUrlAsync();
-
-
         }
 
         public async Task<IActionResult> OnPostAsync()

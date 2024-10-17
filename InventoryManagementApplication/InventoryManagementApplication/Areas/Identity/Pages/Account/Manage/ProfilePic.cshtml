@@ -4,8 +4,6 @@
 }
 <h3>Byt profilbild</h3>
 
-
-
 <form  method="post">
 	<div class ="avatar-container">
 	<input type="hidden" asp-for="SelectedProfilePic" />
@@ -39,15 +37,13 @@
 
 		avatars.forEach(item => {
 			item.addEventListener('click', function (e) {
-				e.preventDefault(); // Prevent page reload
+				e.preventDefault(); //Prevents the default setting of going to onPost in the code behind
 
 				avatars.forEach(i => i.classList.remove('clicked-avatar'));
 				this.classList.add('clicked-avatar');
 
-				// Get the data-url attribute (which contains the profile pic URL)
 				const selectedUrl = this.querySelector('img').getAttribute('data-url');
 
-				// Set the hidden input's value to the selected profile picture URL
 				hiddenInput.value = selectedUrl;
 
 				console.log('Selected profile pic URL:', selectedUrl);

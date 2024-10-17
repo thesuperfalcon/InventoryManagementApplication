@@ -49,7 +49,6 @@ namespace InventoryManagementApplication.Helpers
             [DataType(DataType.Password)]
             public string Password { get; set; }
 
-
             [Display(Name = "Remember me?")]
             public bool RememberMe { get; set; }
 
@@ -57,6 +56,25 @@ namespace InventoryManagementApplication.Helpers
             [DataType(DataType.Text)]
             public string UserName { get; set; }
 
+        }
+
+        public async Task<string> GenerateUniqueEmployeeNumber()
+        {
+            Random random = new Random();
+            string employeeNumber;
+            bool exists;
+
+            do
+            {
+                employeeNumber = random.Next(0, 10000).ToString("D4");
+
+                var users = await _userManager.GetAllUsersAsync(null);
+                exists = users.Any(x => x.EmployeeNumber == employeeNumber);
+
+            }
+            while (exists);
+
+            return employeeNumber;
         }
 
         public async Task OnGetAsync(string returnUrl = null)
@@ -71,7 +89,6 @@ namespace InventoryManagementApplication.Helpers
 
             var statistics = await _statisticManager.GetAllStatisticsAsync();
 
-
             var personList = await _userManager.GetAllUsersAsync(false);
             foreach (var person in personList)
             {
@@ -82,15 +99,12 @@ namespace InventoryManagementApplication.Helpers
                     var totalMovements = movementsByUser.Count();
                     var totalQuantity = movementsByUser.Sum(stat => stat.Quantity ?? 0);
 
-
-
                     var userStatistics = new UserStatisticsViewModel
                     {
                         EmployeeNumber = person.EmployeeNumber,
                         TotalMovements = totalMovements,
                         TotalQuantity = totalQuantity,
                         RecentMovements = null
-
                     };
                     MovementPerPerson.Add(userStatistics);
                 }
@@ -123,7 +137,6 @@ namespace InventoryManagementApplication.Helpers
                     ModelState.AddModelError(string.Empty, "Användaren existerar inte!");
                     return Page();
                 }
-
 
                 var result = await _signInManager.PasswordSignInAsync(user.UserName, Input.Password, Input.RememberMe, lockoutOnFailure: false);
                 if (result.Succeeded)

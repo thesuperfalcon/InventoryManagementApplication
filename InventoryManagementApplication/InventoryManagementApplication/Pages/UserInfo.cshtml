@@ -48,7 +48,6 @@
                     <form method="post" asp-page-handler="Save">
                         <input type="hidden" name="userId" value="@Model.SelectedUser.Id" />
                         <input type="hidden" name="userName" value="@Model.SelectedUser.UserName" />
-                        <h2>@Model.SelectedUser.UserName</h2>
                         <input type="hidden" asp-for="SelectedRole" />
                         <div class="form-group">
                             <label for="FirstName">Förnamn</label>
