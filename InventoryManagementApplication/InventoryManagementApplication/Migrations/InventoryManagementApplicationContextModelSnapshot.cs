@@ -144,6 +144,7 @@ namespace InventoryManagementApplication.Migrations
                         .HasAnnotation("Relational:JsonPropertyName", "updated");
 
                     b.Property<string>("UserName")
+                        .IsRequired()
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)")
                         .HasAnnotation("Relational:JsonPropertyName", "userName");

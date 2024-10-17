@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace InventoryManagementApplication.Migrations
 {
     [DbContext(typeof(InventoryManagementApplicationContext))]
-    [Migration("20240911092139_product_price_decimal")]
-    partial class product_price_decimal
+    [Migration("20241017082958_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,10 +25,48 @@ namespace InventoryManagementApplication.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("InventoryManagementApplication.Areas.Identity.Data.InventoryManagementRole", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)")
+                        .HasAnnotation("Relational:JsonPropertyName", "id");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("FullAccess")
+                        .HasColumnType("bit")
+                        .HasAnnotation("Relational:JsonPropertyName", "fullAccess");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("NormalizedName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("RoleName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasAnnotation("Relational:JsonPropertyName", "roleName");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NormalizedName")
+                        .IsUnique()
+                        .HasDatabaseName("RoleNameIndex")
+                        .HasFilter("[NormalizedName] IS NOT NULL");
+
+                    b.ToTable("AspNetRoles", (string)null);
+                });
+
             modelBuilder.Entity("InventoryManagementApplication.Areas.Identity.Data.InventoryManagementUser", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(450)")
+                        .HasAnnotation("Relational:JsonPropertyName", "id");
 
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
@@ -38,7 +76,8 @@ namespace InventoryManagementApplication.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("Created")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime2")
+                        .HasAnnotation("Relational:JsonPropertyName", "created");
 
                     b.Property<string>("Email")
                         .HasMaxLength(256)
@@ -49,15 +88,22 @@ namespace InventoryManagementApplication.Migrations
 
                     b.Property<string>("EmployeeNumber")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasAnnotation("Relational:JsonPropertyName", "employeeNumber");
 
                     b.Property<string>("FirstName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasAnnotation("Relational:JsonPropertyName", "firstName");
+
+                    b.Property<bool?>("IsDeleted")
+                        .HasColumnType("bit")
+                        .HasAnnotation("Relational:JsonPropertyName", "isDeleted");
 
                     b.Property<string>("LastName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasAnnotation("Relational:JsonPropertyName", "lastName");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
@@ -82,8 +128,13 @@ namespace InventoryManagementApplication.Migrations
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
 
+                    b.Property<string>("ProfilePic")
+                        .HasColumnType("nvarchar(max)")
+                        .HasAnnotation("Relational:JsonPropertyName", "profilePic");
+
                     b.Property<string>("RoleId")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasAnnotation("Relational:JsonPropertyName", "roleId");
 
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
@@ -92,11 +143,14 @@ namespace InventoryManagementApplication.Migrations
                         .HasColumnType("bit");
 
                     b.Property<DateTime>("Updated")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime2")
+                        .HasAnnotation("Relational:JsonPropertyName", "updated");
 
                     b.Property<string>("UserName")
+                        .IsRequired()
                         .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
+                        .HasColumnType("nvarchar(256)")
+                        .HasAnnotation("Relational:JsonPropertyName", "userName");
 
                     b.HasKey("Id");
 
@@ -111,57 +165,30 @@ namespace InventoryManagementApplication.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("InventoryManagementApplication.Models.ActivityLog", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int?>("Action")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("ItemType")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Notes")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("TimeStamp")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int?>("TypeId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("TypeId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("ActivityLog");
-                });
-
             modelBuilder.Entity("InventoryManagementApplication.Models.InventoryTracker", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasAnnotation("Relational:JsonPropertyName", "id");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<DateTime?>("Modified")
+                        .HasColumnType("datetime2")
+                        .HasAnnotation("Relational:JsonPropertyName", "modified");
+
                     b.Property<int?>("ProductId")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasAnnotation("Relational:JsonPropertyName", "productId");
 
                     b.Property<int?>("Quantity")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasAnnotation("Relational:JsonPropertyName", "quantity");
 
                     b.Property<int?>("StorageId")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasAnnotation("Relational:JsonPropertyName", "storageId");
 
                     b.HasKey("Id");
 
@@ -170,91 +197,158 @@ namespace InventoryManagementApplication.Migrations
                     b.HasIndex("StorageId");
 
                     b.ToTable("InventoryTracker");
+
+                    b.HasAnnotation("Relational:JsonPropertyName", "inventoryTrackers");
+                });
+
+            modelBuilder.Entity("InventoryManagementApplication.Models.Log", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("Relational:JsonPropertyName", "id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Action")
+                        .HasColumnType("nvarchar(max)")
+                        .HasAnnotation("Relational:JsonPropertyName", "action");
+
+                    b.Property<string>("EntityDetails")
+                        .HasColumnType("nvarchar(max)")
+                        .HasAnnotation("Relational:JsonPropertyName", "entityDetails");
+
+                    b.Property<string>("EntityName")
+                        .HasColumnType("nvarchar(max)")
+                        .HasAnnotation("Relational:JsonPropertyName", "entityName");
+
+                    b.Property<string>("EntityType")
+                        .HasColumnType("nvarchar(max)")
+                        .HasAnnotation("Relational:JsonPropertyName", "entityType");
+
+                    b.Property<DateTime?>("TimeStamp")
+                        .HasColumnType("datetime2")
+                        .HasAnnotation("Relational:JsonPropertyName", "timeStamp");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(max)")
+                        .HasAnnotation("Relational:JsonPropertyName", "userId");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Logs");
                 });
 
             modelBuilder.Entity("InventoryManagementApplication.Models.Product", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasAnnotation("Relational:JsonPropertyName", "id");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("ArticleNumber")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasAnnotation("Relational:JsonPropertyName", "articleNumber");
 
                     b.Property<DateTime?>("Created")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime2")
+                        .HasAnnotation("Relational:JsonPropertyName", "created");
+
+                    b.Property<int?>("CurrentStock")
+                        .HasColumnType("int")
+                        .HasAnnotation("Relational:JsonPropertyName", "currentStock");
 
                     b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasAnnotation("Relational:JsonPropertyName", "description");
+
+                    b.Property<bool?>("IsDeleted")
+                        .HasColumnType("bit")
+                        .HasAnnotation("Relational:JsonPropertyName", "isDeleted");
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasAnnotation("Relational:JsonPropertyName", "name");
 
                     b.Property<decimal?>("Price")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(18,2)")
+                        .HasAnnotation("Relational:JsonPropertyName", "price");
 
-                    b.Property<int?>("Stock")
-                        .HasColumnType("int");
+                    b.Property<int?>("TotalStock")
+                        .HasColumnType("int")
+                        .HasAnnotation("Relational:JsonPropertyName", "totalStock");
 
                     b.Property<DateTime?>("Updated")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime2")
+                        .HasAnnotation("Relational:JsonPropertyName", "updated");
 
                     b.HasKey("Id");
 
                     b.ToTable("Products");
+
+                    b.HasAnnotation("Relational:JsonPropertyName", "product");
                 });
 
             modelBuilder.Entity("InventoryManagementApplication.Models.Statistic", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasAnnotation("Relational:JsonPropertyName", "id");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<bool?>("Completed")
-                        .HasColumnType("bit");
-
                     b.Property<int?>("DestinationStorageId")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasAnnotation("Relational:JsonPropertyName", "destination_storage_id");
 
-                    b.Property<string>("ExecuterId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<string>("DestinationStorageName")
+                        .HasColumnType("nvarchar(max)")
+                        .HasAnnotation("Relational:JsonPropertyName", "destination_storage_name");
 
-                    b.Property<DateTime?>("FinishedTime")
-                        .HasColumnType("datetime2");
+                    b.Property<string>("EmployeeNumber")
+                        .HasColumnType("nvarchar(max)")
+                        .HasAnnotation("Relational:JsonPropertyName", "employee_number");
 
                     b.Property<int?>("InitialStorageId")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasAnnotation("Relational:JsonPropertyName", "initial_storage_id");
+
+                    b.Property<string>("IntitialStorageName")
+                        .HasColumnType("nvarchar(max)")
+                        .HasAnnotation("Relational:JsonPropertyName", "initial_storage_name");
+
+                    b.Property<DateTime?>("Moved")
+                        .HasColumnType("datetime2")
+                        .HasAnnotation("Relational:JsonPropertyName", "moved");
 
                     b.Property<string>("Notes")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("OrderTime")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("nvarchar(max)")
+                        .HasAnnotation("Relational:JsonPropertyName", "notes");
 
                     b.Property<int?>("ProductId")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasAnnotation("Relational:JsonPropertyName", "product_id");
 
-                    b.Property<int>("ProductQuantity")
-                        .HasColumnType("int");
+                    b.Property<string>("ProductName")
+                        .HasColumnType("nvarchar(max)")
+                        .HasAnnotation("Relational:JsonPropertyName", "product_name");
 
-                    b.Property<string>("ReporterId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int?>("Quantity")
+                        .HasColumnType("int")
+                        .HasAnnotation("Relational:JsonPropertyName", "quantity");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(max)")
+                        .HasAnnotation("Relational:JsonPropertyName", "user_id");
+
+                    b.Property<string>("UserName")
+                        .HasColumnType("nvarchar(max)")
+                        .HasAnnotation("Relational:JsonPropertyName", "user_name");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("DestinationStorageId");
-
-                    b.HasIndex("ExecuterId");
-
-                    b.HasIndex("InitialStorageId");
-
-                    b.HasIndex("ProductId");
-
-                    b.HasIndex("ReporterId");
 
                     b.ToTable("Statistics");
                 });
@@ -263,55 +357,40 @@ namespace InventoryManagementApplication.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasAnnotation("Relational:JsonPropertyName", "id");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime?>("Created")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime2")
+                        .HasAnnotation("Relational:JsonPropertyName", "created");
 
                     b.Property<int?>("CurrentStock")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasAnnotation("Relational:JsonPropertyName", "currentStock");
+
+                    b.Property<bool?>("IsDeleted")
+                        .HasColumnType("bit")
+                        .HasAnnotation("Relational:JsonPropertyName", "isDeleted");
 
                     b.Property<int?>("MaxCapacity")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasAnnotation("Relational:JsonPropertyName", "maxCapacity");
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasAnnotation("Relational:JsonPropertyName", "name");
 
                     b.Property<DateTime?>("Updated")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime2")
+                        .HasAnnotation("Relational:JsonPropertyName", "updated");
 
                     b.HasKey("Id");
 
                     b.ToTable("Storages");
-                });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("ConcurrencyStamp")
-                        .IsConcurrencyToken()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<string>("NormalizedName")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("NormalizedName")
-                        .IsUnique()
-                        .HasDatabaseName("RoleNameIndex")
-                        .HasFilter("[NormalizedName] IS NOT NULL");
-
-                    b.ToTable("AspNetRoles", (string)null);
+                    b.HasAnnotation("Relational:JsonPropertyName", "storage");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -424,33 +503,12 @@ namespace InventoryManagementApplication.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("InventoryManagementApplication.Models.ActivityLog", b =>
-                {
-                    b.HasOne("InventoryManagementApplication.Models.Product", "Product")
-                        .WithMany("ActivityLogs")
-                        .HasForeignKey("TypeId");
-
-                    b.HasOne("InventoryManagementApplication.Models.Storage", "Storage")
-                        .WithMany("ActivityLogs")
-                        .HasForeignKey("TypeId");
-
-                    b.HasOne("InventoryManagementApplication.Areas.Identity.Data.InventoryManagementUser", "User")
-                        .WithMany("ActivityLogs")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.SetNull);
-
-                    b.Navigation("Product");
-
-                    b.Navigation("Storage");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("InventoryManagementApplication.Models.InventoryTracker", b =>
                 {
                     b.HasOne("InventoryManagementApplication.Models.Product", "Product")
                         .WithMany("InventoryTrackers")
-                        .HasForeignKey("ProductId");
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("InventoryManagementApplication.Models.Storage", "Storage")
                         .WithMany("InventoryTrackers")
@@ -462,46 +520,9 @@ namespace InventoryManagementApplication.Migrations
                     b.Navigation("Storage");
                 });
 
-            modelBuilder.Entity("InventoryManagementApplication.Models.Statistic", b =>
-                {
-                    b.HasOne("InventoryManagementApplication.Models.Storage", "DestinationStorage")
-                        .WithMany("StatisticDestinationStorages")
-                        .HasForeignKey("DestinationStorageId")
-                        .OnDelete(DeleteBehavior.NoAction);
-
-                    b.HasOne("InventoryManagementApplication.Areas.Identity.Data.InventoryManagementUser", "Executer")
-                        .WithMany("StatisticExecuters")
-                        .HasForeignKey("ExecuterId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("InventoryManagementApplication.Models.Storage", "InitialStorage")
-                        .WithMany("StatisticInitialStorages")
-                        .HasForeignKey("InitialStorageId")
-                        .OnDelete(DeleteBehavior.NoAction);
-
-                    b.HasOne("InventoryManagementApplication.Models.Product", "Product")
-                        .WithMany("Statistics")
-                        .HasForeignKey("ProductId");
-
-                    b.HasOne("InventoryManagementApplication.Areas.Identity.Data.InventoryManagementUser", "Reporter")
-                        .WithMany("StatisticReporters")
-                        .HasForeignKey("ReporterId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.Navigation("DestinationStorage");
-
-                    b.Navigation("Executer");
-
-                    b.Navigation("InitialStorage");
-
-                    b.Navigation("Product");
-
-                    b.Navigation("Reporter");
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
+                    b.HasOne("InventoryManagementApplication.Areas.Identity.Data.InventoryManagementRole", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -528,7 +549,7 @@ namespace InventoryManagementApplication.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
+                    b.HasOne("InventoryManagementApplication.Areas.Identity.Data.InventoryManagementRole", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -550,33 +571,14 @@ namespace InventoryManagementApplication.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("InventoryManagementApplication.Areas.Identity.Data.InventoryManagementUser", b =>
-                {
-                    b.Navigation("ActivityLogs");
-
-                    b.Navigation("StatisticExecuters");
-
-                    b.Navigation("StatisticReporters");
-                });
-
             modelBuilder.Entity("InventoryManagementApplication.Models.Product", b =>
                 {
-                    b.Navigation("ActivityLogs");
-
                     b.Navigation("InventoryTrackers");
-
-                    b.Navigation("Statistics");
                 });
 
             modelBuilder.Entity("InventoryManagementApplication.Models.Storage", b =>
                 {
-                    b.Navigation("ActivityLogs");
-
                     b.Navigation("InventoryTrackers");
-
-                    b.Navigation("StatisticDestinationStorages");
-
-                    b.Navigation("StatisticInitialStorages");
                 });
 #pragma warning restore 612, 618
         }
