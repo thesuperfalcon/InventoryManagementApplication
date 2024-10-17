@@ -56,8 +56,6 @@ namespace InventoryManagementApplication.Pages.admin.storage
 			await _storageManager.CreateStorageAsync(Storage);
 			StatusMessage1 = $"Du har skapat {Storage.Name} med {Storage.MaxCapacity} platser!";
 
-			await _logManager.LogActivityAsync(Storage, EntityState.Added);
-
 			return Page();
 		}
 	}

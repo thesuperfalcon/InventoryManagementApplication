@@ -80,7 +80,7 @@ namespace InventoryManagementApplication.Pages.admin.tracker
 
 				InventoryTracker = inventoryTracker;
 				await _trackerManager.DeleteTrackerAsync(InventoryTracker.Id);
-				await _productManager.EditProductAsync(product);
+				//await _productManager.EditProductAsync(product);
 				await _storageManager.EditStorageAsync(storage);
 
 				//_context.InventoryTracker.Remove(InventoryTracker);

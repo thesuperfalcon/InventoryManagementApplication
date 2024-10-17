@@ -7,6 +7,12 @@
 			<div class="card mb-4">
 				<div class="card-header">
 					<h2>Produktdetaljer: @Model.Product.Name</h2>
+					@if (User.IsInRole("Admin"))
+					{
+						<button class="btn btn-generic" data-bs-toggle="modal" data-bs-target="#editProductModal">
+							<i class="bi bi-pencil"></i>
+						</button>
+					}
 				</div>
 				<div class="card-body">
 					@if (Model.Product != null)
@@ -108,6 +114,7 @@
 								<div class="modal-body">
 									<form method="post" asp-page-handler="UpdateProductInfo"
 										  onsubmit="return validateForm();">
+										<input type="hidden" asp-for="@Model.Product" />
 										<input type="hidden" name="ProductId" value="@Model.Product.Id" />
 										<div class="form-group mb-3">
 											<label for="ProductName">Nytt namn</label>

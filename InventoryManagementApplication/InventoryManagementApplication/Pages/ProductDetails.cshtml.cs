@@ -11,7 +11,7 @@ namespace InventoryManagementApplication.Pages
         private readonly UserManager _userManager;
         private readonly ProductManager _productManager;
 
-        public ProductDetailsModel(InventoryManagementApplicationContext context, LogManager logManager, UserManager userManager, ProductManager productManager)
+        public ProductDetailsModel(LogManager logManager, UserManager userManager, ProductManager productManager)
         {
             _productManager = productManager;
 
@@ -20,6 +20,7 @@ namespace InventoryManagementApplication.Pages
             _productManager = productManager;
         }
 
+        [BindProperty]
         public Product Product { get; set; }
         public List<Log> ActivityLogs { get; set; } = new List<Log>();
         public List<string> UserFullName { get; set; } = new List<string>();
@@ -38,5 +39,25 @@ namespace InventoryManagementApplication.Pages
 
             return Page();
         }
-    }
+		public async Task<IActionResult> OnPostUpdateProductInfoAsync(int productId, string productName, string productDescription)
+		{
+			if (!ModelState.IsValid)
+			{
+				return Page(); // Return the page with validation errors
+			}
+
+			var productToUpdate = await  _productManager.GetProductByIdAsync(productId, null);
+			if (productToUpdate == null)
+			{
+				return NotFound();
+			}
+
+			productToUpdate.Name = productName;
+			productToUpdate.Description = productDescription;
+
+            await _productManager.EditProductAsync(productToUpdate);
+
+			return RedirectToPage(new { id = Product.Id });
+		}
+	}
 }

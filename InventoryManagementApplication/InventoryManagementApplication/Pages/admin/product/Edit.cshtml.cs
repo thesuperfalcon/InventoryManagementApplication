@@ -108,7 +108,7 @@ namespace InventoryManagementApplication.Pages.admin.product
 
                 await _trackerManager.EditTrackerAsync(tracker);
             }
-            await _activityLogManager.LogActivityAsync(Product, EntityState.Modified, PreviousProduct);
+            //await _activityLogManager.LogActivityAsync(Product, EntityState.Modified, PreviousProduct);
 
             if (PreviousProduct.Name == Product.Name && PreviousProduct.Price == Product.Price && PreviousProduct.ArticleNumber == Product.ArticleNumber
                 && PreviousProduct.Description == Product.Description && PreviousProduct.CurrentStock == Product.CurrentStock)

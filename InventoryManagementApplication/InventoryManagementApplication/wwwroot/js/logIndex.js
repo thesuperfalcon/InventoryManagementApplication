@@ -1,12 +1,10 @@
-﻿
-const rowsPerPage = 10;
+﻿const rowsPerPage = 10;
 let currentPage = 1;
 let originalRows = [];
 let filteredRows = [];
 let visibleRows = [];
 
 $(document).ready(function () {
-
     originalRows = Array.from(document.querySelectorAll("#myLogTable tr:not(:first-child)"));
     filteredRows = [...originalRows];
 
@@ -15,14 +13,14 @@ $(document).ready(function () {
 
     // Search functionality
     $("#searchInput").on("keyup", function () {
-        var value = $(this).val().toLowerCase();
+        const value = $(this).val().toLowerCase();
 
         filteredRows = originalRows.filter(row => {
             return row.innerText.toLowerCase().includes(value);
         });
 
+        currentPage = 1; // Reset to first page
         updateVisibleRows(filteredRows);
-        currentPage = 1;
         paginateTable();
     });
 
@@ -42,12 +40,11 @@ $(document).ready(function () {
     });
 });
 
-// Update the visibleRows array based on the provided rows
+// Update the visible rows based on the provided rows
 function updateVisibleRows(rows) {
-    visibleRows = rows; 
-    paginateTable(); 
+    visibleRows = rows;
+    paginateTable();
 }
-
 
 // Pagination Function
 function paginateTable() {
@@ -55,7 +52,7 @@ function paginateTable() {
     const end = start + rowsPerPage;
 
     // Hide all rows first
-    $("#myLogTable tr").hide(); 
+    $("#myLogTable tr").hide();
     // Show only the rows that fall within the current page
     visibleRows.forEach((row, index) => {
         if (index >= start && index < end) {
@@ -68,31 +65,26 @@ function paginateTable() {
     pageNumberElement.innerText = `Page ${currentPage} of ${Math.ceil(filteredRows.length / rowsPerPage)}`;
 }
 
-
 // Sort function for both alphabetical (A-Ö) and numerical (highest to lowest), case-insensitive
 function sortTable(columnIndex) {
-    const table = document.getElementById("logsTable"); 
+    const table = document.getElementById("logsTable");
     const isAscending = table.getAttribute("data-sort-direction") === "asc";
 
-    // Sort filtered rows based on the specified column
+    // Sort based on the specified column
     filteredRows.sort((a, b) => {
         const cellA = a.cells[columnIndex].innerText.trim();
         const cellB = b.cells[columnIndex].innerText.trim();
 
-        // Check if the column is a date (in the format dd/mm/yyyy hh:mm:ss)
-        const isDate = columnIndex === 7; // Assuming 'När' is the 8th column (index 7)
+        // Check if the column is a date
+        const isDate = columnIndex === 5; // Assuming 'Tidpunkt' is the 6th column (index 5)
+
+        console.log('cellA:', cellA);
+        console.log('cellB:', cellB);
 
         if (isDate) {
-            const [dateA, timeA] = cellA.split(' ');
-            const [dateB, timeB] = cellB.split(' ');
-
-            const [dayA, monthA, yearA] = dateA.split('/').map(Number);
-            const [dayB, monthB, yearB] = dateB.split('/').map(Number);
-
-            const dateObjA = new Date(yearA, monthA - 1, dayA, ...timeA.split(':').map(Number));
-            const dateObjB = new Date(yearB, monthB - 1, dayB, ...timeB.split(':').map(Number));
-
-            return isAscending ? dateObjA - dateObjB : dateObjB - dateObjA;
+            const dateA = parseCustomDate(cellA);
+            const dateB = parseCustomDate(cellB);
+            return isAscending ? dateA - dateB : dateB - dateA;
         }
 
         // Check if the column is numerical
@@ -109,14 +101,25 @@ function sortTable(columnIndex) {
         }
     });
 
-    // Toggle sorting direction for next click
-    table.setAttribute("data-sort-direction", isAscending ? "desc" : "asc");
-
-    // Re-append sorted rows to the table
+    // Clear the current rows and re-append sorted rows
     const tbody = document.getElementById("myLogTable");
-    filteredRows.forEach(row => tbody.appendChild(row)); // Reorder based on sorting
+    tbody.innerHTML = ""; // Clear current rows
+    filteredRows.forEach(row => tbody.appendChild(row)); // Append sorted rows
+
+    // Toggle sort direction
+    table.setAttribute("data-sort-direction", isAscending ? "desc" : "asc");
 
     // Reset to page 1 and update pagination
     currentPage = 1;
     paginateTable();
+}
+
+// Function to parse the custom date format 'dd/mm/yyyy hh:mm:ss'
+function parseCustomDate(dateString) {
+    const [datePart, timePart] = dateString.split(' ');
+    const [day, month, year] = datePart.split('/').map(Number);
+    const [hours, minutes, seconds] = timePart.split(':').map(Number);
+
+    // Create a new Date object
+    return new Date(year, month - 1, day, hours, minutes, seconds);
 }

@@ -96,7 +96,6 @@ namespace InventoryManagementApplication.Pages.admin.storage
                 }
 				
 				await _storageManager.EditStorageAsync(Storage);
-				await _activityLogManager.LogActivityAsync(Storage, EntityState.Modified, storageNoChanges);
 
                 return RedirectToPage("./Edit", new { id = Storage.Id });
 

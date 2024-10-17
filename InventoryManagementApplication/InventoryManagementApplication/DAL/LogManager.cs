@@ -139,6 +139,7 @@ namespace InventoryManagementApplication.DAL
 			{
 				UserId = userId,
 				UserName = user.UserName,
+				UserFullName = $"{user.FirstName} {user.LastName}",
 				EmployeeNumber = user.EmployeeNumber,
 				Action = action,
 				EntityId = GetEntityId(entity), 

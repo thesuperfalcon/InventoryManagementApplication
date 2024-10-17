@@ -66,8 +66,8 @@ namespace InventoryManagementApplication.Pages.admin.storage
 			}
 			if (storage != null)
 			{
-				await _activityLogManager.LogActivityAsync(Storage, EntityState.Deleted);
-				await _storageManager.DeleteStorageAsync(id);
+				//await _activityLogManager.LogActivityAsync(Storage, EntityState.Deleted);
+				await _storageManager.DeleteStorageAsync(storage);
 			}
 
 			return RedirectToPage("./Index");

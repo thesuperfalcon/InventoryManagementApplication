@@ -9,7 +9,9 @@ namespace InventoryManagementApplication.Models
         [JsonPropertyName("userId")]
         public string? UserId { get; set; }
 		[JsonPropertyName("userName")]
-		public string? UserName { get; set; } 
+		public string? UserName { get; set; }
+        [JsonPropertyName("userFullName")]
+        public string? UserFullName { get; set; }
 		[JsonPropertyName("employeeNumber")]
 		public string? EmployeeNumber { get; set; }
 		[JsonPropertyName("action")]
