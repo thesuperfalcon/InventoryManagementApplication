@@ -1,20 +1,22 @@
 @page "{id:int}"
 @model InventoryManagementApplication.Pages.StorageDetailsModel
 @using System.Text.Json
-<div class="storage-container">
-     <div class="row flex-container">
-           <div class="col-md-8 first-column">
-            <div class="card mb-8">
-         <div class="card-header d-flex align-items-center justify-content-between">
-    <h2 class="mb-0">Lagerdetaljer: @Model.Storage.Name</h2>
-    @* Bara admin kan göra ändringar *@
-    @if (User.IsInRole("Admin"))
-    {
-        <button class="btn btn-generic ms-3" data-bs-toggle="modal" data-bs-target="#editStorageModal">
-            <i class="bi bi-pencil"></i>
-        </button>
-    }
-</div>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card mb-6">
+                <div class="card-header">
+                    <h2>Lagerdetaljer: @Model.Storage.Name</h2>
+                    @* Bara admin kan göra ändringar *@
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <button class="btn btn-generic" data-bs-toggle="modal" data-bs-target="#editStorageModal">
+                            <i class="bi bi-pencil"></i>
+                        </button>
+                    }
+
+                </div>
                 <div class="card-body">
                     @if (Model.Storage != null)
                     {
@@ -135,69 +137,59 @@ else
             </button>
             <div class="panel">
 
-                    <div id="logsCollapse" class="accordion-collapse collapse show" aria-labelledby="logsHeading" data-bs-parent="#logsAccordion">
-                        <div class="accordion-body">
-
-
-
-                            <input type="text" id="logSearchInput" class="form-control mb-3" placeholder="Sök i aktivitetsloggar..." />
-          <table class="table table-striped" id="logTable" data-sort-direction="asc">
-
- <thead>
-    <tr>
-        <th onclick="sortLogTable(0)" style="cursor:pointer;">
-            Namn 
-            <i class="bi bi-chevron-expand" id="logSortIcon0"></i>
-        </th>
-        <th onclick="sortLogTable(1)" style="cursor:pointer;">
-            Anställd
-            <i class="bi bi-chevron-expand" id="logSortIcon1"></i>
-        </th>
-        <th onclick="sortLogTable(2)" style="cursor:pointer;">
-            Händelse
-            <i class="bi bi-chevron-expand" id="logSortIcon2"></i>
-        </th>
-        <th onclick="sortLogTable(3)" style="cursor:pointer;">
-            Datum
-            <i class="bi bi-chevron-expand" id="logSortIcon3"></i>
-        </th>
-    </tr>
-</thead>
-                                <tbody id="logTableBody">
-                                    @if (Model.ActivityLogs.Any())
-                                    {
-                                        for (int i = 0; i < Model.ActivityLogs.Count; i++)
-                                        {
-                                            var log = Model.ActivityLogs[i];
-                                            <tr>
-                                                <td>@Model.UserFullName[i]</td>
-                                                <td>@Model.UserEmployeeNumbers[i]</td>
-                                                <td>@log.Action</td>
-                                                <td>@log.TimeStamp</td>
-                                            </tr>
-                                        }
-                                    }
-                                    else
+                <div id="logsCollapse" class="accordion-collapse collapse show" aria-labelledby="logsHeading" data-bs-parent="#logsAccordion">
+                    <div class="accordion-body">
+                        <input type="text" id="logSearchInput" class="form-control mb-3" placeholder="Sök i aktivitetsloggar..." />
+                        <table class="table table-striped" id="logTable">
+                            <thead>
+                                <tr>
+                                    <th onclick="sortLogTable(0)" style="cursor:pointer;">
+                                        Namn
+                                        <i class="bi bi-chevron-expand" id="logSortIcon0"></i>
+                                    </th>
+                                    <th onclick="sortLogTable(1)" style="cursor:pointer;">
+                                        Anställningsnummer
+                                        <i class="bi bi-chevron-expand" id="logSortIcon1"></i>
+                                    </th>
+                                    <th onclick="sortLogTable(2)" style="cursor:pointer;">
+                                        Händelse
+                                        <i class="bi bi-chevron-expand" id="logSortIcon2"></i>
+                                    </th>
+                                    <th onclick="sortLogTable(3)" style="cursor:pointer;">
+                                        Datum
+                                        <i class="bi bi-chevron-expand" id="logSortIcon3"></i>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody id="logTableBody">
+                                @if (Model.ActivityLogs.Any())
+                                {
+                                    foreach(var log in Model.ActivityLogs)
                                     {
                                         <tr>
-                                            <td colspan="4" class="text-center">Inga aktivitetsloggar tillgängliga för detta lager.</td>
+                                            <td>@log.UserFullName</td>
+                                            <td>@log.EmployeeNumber</td>
+                                            <td>@log.Action</td>
+                                            <td>@log.TimeStamp</td>
                                         </tr>
                                     }
-                               
-                                </tbody>
-                            </table>
-                              <div class="d-flex justify-content-between align-items-center">
-        
-    <button id="logPrevPage" class="btn btn-secondary">Föregående</button>
-    <span id="logPageNumber"></span>
-    <button id="logNextPage" class="btn btn-secondary">Nästa</button>
-</div>
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td colspan="4" class="text-center">Inga aktivitetsloggar tillgängliga för detta lager.</td>
+                                    </tr>
+                                }
 
-
-                        </div>
+                            </tbody>
+                        </table>
+                        <a asp-page="/Log" asp-route-id="@Model.Storage.Id" class="btn btn-info mt-3">
+                            Visa fullständig historik
+                        </a>
                     </div>
                 </div>
             </div>
+        </div>
 
 
             <div class="modal fade" id="editStorageModal" tabindex="-1" aria-labelledby="editStorageModalLabel" aria-hidden="true">

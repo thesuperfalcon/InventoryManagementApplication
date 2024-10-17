@@ -8,121 +8,120 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using System.Text.Json;
+using System.Threading.Tasks;
 
 namespace InventoryManagementApplication.Pages.admin.tracker
 {
-    [Authorize]
-    public class moveProductModel : PageModel
-    {
-        private readonly UserManager<InventoryManagementUser> _userManager;
-        private readonly SelectListHelpers _selectListHelpers;
-        private readonly TrackerManager _trackerManager;
-        private readonly ProductMovementHelpers _productMovementHelpers;
-        private readonly StatisticManager _statisticManager;
+	public class MoveProductModel : PageModel
+	{
+		private readonly InventoryManagementApplicationContext _context;
+		private readonly UserManager<InventoryManagementUser> _userManager;
+		private readonly SelectListHelpers _selectListHelpers;
+		private readonly TrackerManager _trackerManager;
+		private readonly StorageManager _storageManager;
+		private readonly ProductManager _productManager;
+		private readonly ProductMovementHelpers _productMovementHelpers;
+		private readonly StatisticManager _statisticManager;
 
-        public moveProductModel(UserManager<InventoryManagementUser> userManager,
-            SelectListHelpers selectListHelpers, TrackerManager trackerManager,
-            ProductMovementHelpers productMovementHelpers,
-            StatisticManager statisticManager)
-        {
-            _userManager = userManager;
-            _selectListHelpers = selectListHelpers;
-            _trackerManager = trackerManager;
-            _productMovementHelpers = productMovementHelpers;
-            _statisticManager = statisticManager;
-        }
+		public MoveProductModel(
+			InventoryManagementApplicationContext context,
+			UserManager<InventoryManagementUser> userManager,
+			SelectListHelpers selectListHelpers,
+			TrackerManager trackerManager,
+			StorageManager storageManager,
+			ProductManager productManager,
+			ProductMovementHelpers productMovementHelpers,
+			StatisticManager statisticManager)
+		{
+			_context = context;
+			_userManager = userManager;
+			_selectListHelpers = selectListHelpers;
+			_trackerManager = trackerManager;
+			_storageManager = storageManager;
+			_productManager = productManager;
+			_productMovementHelpers = productMovementHelpers;
+			_statisticManager = statisticManager;
+		}
 
-        [TempData]
-        public string StatusMessage { get; set; }
-        [BindProperty]
-        public InventoryTracker InventoryTracker { get; set; } = default!;
-        [BindProperty]
-        public InventoryTracker SelectedInventoryTracker { get; set; }
-        public SelectList StorageSelectList { get; set; }
-        public SelectList ProductSelectList { get; set; }
-        public InventoryManagementUser MyUser { get; set; }
+		[TempData]
+		public string StatusMessage { get; set; }
 
-        public async Task<IActionResult> OnGetAsync(int? id)
-        {
-            MyUser = await _userManager.GetUserAsync(User);
+		[BindProperty]
+		public InventoryTracker InventoryTracker { get; set; } = default!;
 
-            SelectedInventoryTracker = await _trackerManager.GetOneTrackerAsync(id.Value);
+		[BindProperty]
+		public InventoryTracker SelectedInventoryTracker { get; set; }
 
-            if (SelectedInventoryTracker == null)
-            {
-                return RedirectToPage("./Index");
-            }
+		public SelectList StorageSelectList { get; set; }
+		public SelectList ProductSelectList { get; set; }
+		public InventoryManagementUser MyUser { get; set; }
 
-            StorageSelectList = await _selectListHelpers.GenerateStorageSelectListAsync(SelectedInventoryTracker.StorageId);
-            ProductSelectList = await _selectListHelpers.GenerateProductSelectListAsync();
+		public async Task<IActionResult> OnGetAsync(int? id)
+		{
+			MyUser = await _userManager.GetUserAsync(User);
 
-            return Page();
-        }
+			if (!id.HasValue)
+			{
+				return RedirectToPage("./Index");
+			}
 
-        public async Task<IActionResult> OnPostAsync()
-        {
-            MyUser = await _userManager.GetUserAsync(User);
+			SelectedInventoryTracker = await _trackerManager.GetOneTrackerAsync(id.Value);
+			if (SelectedInventoryTracker == null)
+			{
+				return RedirectToPage("./Index");
+			}
 
-            if (!ModelState.IsValid)
-            {
-                return Page();
-            }
+			StorageSelectList = await _selectListHelpers.GenerateStorageSelectListAsync(SelectedInventoryTracker.StorageId);
+			ProductSelectList = await _selectListHelpers.GenerateProductSelectListAsync();
 
-            int productId = (int)SelectedInventoryTracker.ProductId;
-            int fromStorageId = (int)SelectedInventoryTracker.StorageId;
-            int toStorageId = (int)InventoryTracker.StorageId;
-            int quantity = (int)InventoryTracker.Quantity;
+			return Page();
+		}
 
-            string errorMessage = null;
+		public async Task<IActionResult> OnPostAsync()
+		{
+			MyUser = await _userManager.GetUserAsync(User);
 
-            switch (true)
-            {
-                case bool when productId < 0:
-                    errorMessage = "Ogiltigt produkt-ID. Vänligen ange ett giltigt produkt-ID.";
-                    break;
-                case bool when fromStorageId < 0:
-                    errorMessage = "Ogiltigt från-lager-ID. Vänligen ange ett giltigt från-lager.";
-                    break;
-                case bool when toStorageId < 0:
-                    errorMessage = "Ogiltigt till-lager-ID. Vänligen ange ett giltigt till-lager.";
-                    break;
-                case bool when quantity < 0:
-                    errorMessage = "Ogiltig kvantitet. Vänligen ange en positiv kvantitet.";
-                    break;
-            }
+			if (!ModelState.IsValid)
+			{
+				return Page();
+			}
 
-            if (errorMessage != null)
-            {
-                StatusMessage = errorMessage;
-                return RedirectToPage("./moveProduct", new { id = SelectedInventoryTracker.Id });
-            }
+			int productId = (int)SelectedInventoryTracker.ProductId;
+			int fromStorageId = (int)SelectedInventoryTracker.StorageId;
+			int toStorageId = (int)InventoryTracker.StorageId;
+			int quantity = (int)InventoryTracker.Quantity;
 
+			string errorMessage = ValidateInputs(productId, fromStorageId, toStorageId, quantity);
+			if (errorMessage != null)
+			{
+				StatusMessage = errorMessage;
+				return RedirectToPage("./moveProduct", new { id = SelectedInventoryTracker.Id });
+			}
 
-            bool status = false;
+			var moveResult = await _productMovementHelpers.MoveProductAsync(productId, fromStorageId, toStorageId, quantity);
+			if (!moveResult.Success)
+			{
+				StatusMessage = !string.IsNullOrEmpty(moveResult.Message) ? moveResult.Message : "Förflyttning lyckades ej!";
+				return RedirectToPage("./moveProduct", new { id = SelectedInventoryTracker.Id });
+			}
 
-            var tuple = await _productMovementHelpers.MoveProductAsync(productId, fromStorageId, toStorageId, quantity);
-            if (tuple != null)
-            {
-                status = tuple.Item1;
-                if (status == false)
-                {
-                    StatusMessage = tuple.Item2 != string.Empty ? tuple.Item2 : "Förflyttning lyckades ej!";
-                    return RedirectToPage("./moveProduct", new { id = SelectedInventoryTracker.Id });
-                }
-                else
-                {
-                    StatusMessage = tuple.Item2 != string.Empty ? tuple.Item2 : "Förflyttning lyckades!";
+			StatusMessage = !string.IsNullOrEmpty(moveResult.Message) ? moveResult.Message : "Förflyttning lyckades!";
+			await _statisticManager.GetValueFromStatisticAsync(MyUser.Id, fromStorageId, toStorageId, productId, quantity, null);
+			return RedirectToPage("./moveProduct", new { id = SelectedInventoryTracker.Id });
+		}
 
-                    await _statisticManager.GetValueFromStatisticAsync(MyUser.Id, fromStorageId, toStorageId, productId, quantity, null);
+		private string ValidateInputs(int productId, int fromStorageId, int toStorageId, int quantity)
+		{
+			if (productId <= 0)
+				return "Ogiltigt produkt-ID. Vänligen ange ett giltigt produkt-ID.";
+			if (fromStorageId <= 0)
+				return "Ogiltigt från-lager-ID. Vänligen ange ett giltigt från-lager.";
+			if (toStorageId <= 0)
+				return "Ogiltigt till-lager-ID. Vänligen ange ett giltigt till-lager.";
+			if (quantity <= 0)
+				return "Ogiltig kvantitet. Vänligen ange en positiv kvantitet.";
 
-                    return RedirectToPage("./moveProduct", new { id = SelectedInventoryTracker.Id });
-                }
-            }
-            StatusMessage = "Förflyttning lyckades ej";
-
-            return RedirectToPage("./moveProduct", new { id = SelectedInventoryTracker.Id });
-        }
-    }
+			return null;
+		}
+	}
 }

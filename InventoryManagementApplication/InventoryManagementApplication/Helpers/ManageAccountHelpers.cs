@@ -84,7 +84,6 @@ namespace InventoryManagementApplication.Helpers
                 ModelState.AddModelError(string.Empty, ErrorMessage);
             }
 
-            var users = await _userManager.GetAllUsersAsync(false);
             returnUrl ??= Url.Content("~/");
 
             var statistics = await _statisticManager.GetAllStatisticsAsync();

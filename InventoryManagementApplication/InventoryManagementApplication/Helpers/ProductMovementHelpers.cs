@@ -1,106 +1,107 @@
 ﻿using InventoryManagementApplication.DAL;
 using InventoryManagementApplication.Data;
+using InventoryManagementApplication.Models;
+using System.Threading.Tasks;
 
 namespace InventoryManagementApplication.Helpers
 {
-    public class ProductMovementHelpers
-    {
-        private readonly ProductManager _productManager;
-        private readonly StorageManager _storageManager;
-        private readonly TrackerManager _trackerManager;
-        private readonly InventoryManagementApplicationContext _context;
+	public class ProductMovementHelpers
+	{
+		private readonly ProductManager _productManager;
+		private readonly StorageManager _storageManager;
+		private readonly TrackerManager _trackerManager;
+		private readonly InventoryManagementApplicationContext _context;
 
-        public ProductMovementHelpers(ProductManager productManager, StorageManager storageManager, TrackerManager trackerManager, InventoryManagementApplicationContext context)
-        {
-            _productManager = productManager;
-            _storageManager = storageManager;
-            _trackerManager = trackerManager;
-            _context = context;
-        }
-        public async Task<Tuple<bool, string>> MoveProductAsync(int productId, int fromStorageId, int toStorageId, int quantity)
-        {
-            string message = string.Empty;
+		public ProductMovementHelpers(ProductManager productManager, StorageManager storageManager, TrackerManager trackerManager, InventoryManagementApplicationContext context)
+		{
+			_productManager = productManager;
+			_storageManager = storageManager;
+			_trackerManager = trackerManager;
+			_context = context;
+		}
 
-            var product = await _productManager.GetProductByIdAsync(productId, false);
-            var fromStorage = await _storageManager.GetStorageByIdAsync(fromStorageId, false);
-            var toStorage = await _storageManager.GetStorageByIdAsync(toStorageId, false);
-            var defaultStorage = await _storageManager.GetDefaultStorageAsync();
+		public async Task<OperationResult> MoveProductAsync(int productId, int fromStorageId, int toStorageId, int quantity)
+		{
+			var product = await _productManager.GetProductByIdAsync(productId, false);
+			var fromStorage = await _storageManager.GetStorageByIdAsync(fromStorageId, false);
+			var toStorage = await _storageManager.GetStorageByIdAsync(toStorageId, false);
+			var defaultStorage = await _storageManager.GetDefaultStorageAsync();
 
-            var fromStorageTracker = await _trackerManager.GetTrackerByProductAndStorageAsync(productId, fromStorageId);
+			var fromStorageTracker = await _trackerManager.GetTrackerByProductAndStorageAsync(productId, fromStorageId);
+			if (!await ValidateMoveAsync(productId, fromStorage, toStorage, fromStorageTracker, quantity))
+			{
+				return new OperationResult(false, "Validation failed.");
+			}
 
-            bool success = false;
-            if (!success)
-            {
-                switch ((bool)success)
-                {
-                    case false when fromStorage == null || toStorage == null:
-                        message = "Kan ej finna lagrerna";
-                        return new Tuple<bool, string>(false, message);
-                    case false when quantity > toStorage.MaxCapacity - toStorage.CurrentStock:
-                        message = "Finns ej plats för denna mängd i lagret. Försök med en mindre mängd.";
-                        return new Tuple<bool, string>(false, message);
-                    case false when fromStorageTracker == null:
-                        message = "Kan ej finna lagersaldo från lager";
-                        return new Tuple<bool, string>(false, message);
-                    case false when fromStorageTracker.Quantity < quantity:
-                        message = "Finns ej den mängden produkter i lagret.";
-                        return new Tuple<bool, string>(false, message);
-                    default:
-                        success = true;
-                        break;
-                }
-            }
+			var toStorageTracker = await _trackerManager.GetTrackerByProductAndStorageAsync(productId, toStorageId) ??
+				await CreateToStorageTrackerAsync(productId, toStorageId, quantity);
 
-            var toStorageTracker = await _trackerManager.GetTrackerByProductAndStorageAsync(productId, toStorageId);
+			UpdateTrackers(fromStorageTracker, toStorageTracker, quantity);
+			await UpdateStoragesAsync(fromStorage, toStorage, quantity);
+			await UpdateProductStockAsync(defaultStorage, fromStorageId, toStorageId, product, quantity);
 
-            if (toStorageTracker == null)
-            {
-                toStorageTracker = new Models.InventoryTracker
-                {
-                    ProductId = productId,
-                    StorageId = toStorageId,
-                    Quantity = quantity
-                };
-                await _trackerManager.CreateTrackerAsync(toStorageTracker);
+			return new OperationResult(true, string.Empty);
+		}
 
-                toStorageTracker = await _trackerManager.GetTrackerByProductAndStorageAsync(productId, toStorageId);
-            }
-            else
-            {
-                toStorageTracker.Quantity += quantity;
-            }
+		private async Task<bool> ValidateMoveAsync(int productId, Storage fromStorage, Storage toStorage, InventoryTracker fromStorageTracker, int quantity)
+		{
+			if (fromStorage == null || toStorage == null) return false;
+			if (quantity > toStorage.MaxCapacity - toStorage.CurrentStock) return false;
+			if (fromStorageTracker == null || fromStorageTracker.Quantity < quantity) return false;
 
-            fromStorageTracker.Quantity -= quantity;
+			return true;
+		}
 
-            await _trackerManager.EditTrackerAsync(fromStorageTracker);
-            await _trackerManager.EditTrackerAsync(toStorageTracker);
+		private async Task<InventoryTracker> CreateToStorageTrackerAsync(int productId, int toStorageId, int quantity)
+		{
+			var newTracker = new InventoryTracker
+			{
+				ProductId = productId,
+				StorageId = toStorageId,
+				Quantity = quantity
+			};
+			await _trackerManager.CreateTrackerAsync(newTracker);
+			return newTracker;
+		}
 
-            fromStorage.CurrentStock -= quantity;
-            toStorage.CurrentStock += quantity;
+		private void UpdateTrackers(InventoryTracker fromTracker, InventoryTracker toTracker, int quantity)
+		{
+			fromTracker.Quantity -= quantity;
+			toTracker.Quantity += quantity;
+		}
 
-            await _storageManager.EditStorageAsync(fromStorage);
-            await _storageManager.EditStorageAsync(toStorage);
+		private async Task UpdateStoragesAsync(Storage fromStorage, Storage toStorage, int quantity)
+		{
+			fromStorage.CurrentStock -= quantity;
+			toStorage.CurrentStock += quantity;
 
-            if (defaultStorage.Id == fromStorageId || defaultStorage.Id == toStorageId)
-            {
-                switch (defaultStorage.Id)
-                {
-                    case var id when id == fromStorageId:
-                        product.CurrentStock -= quantity;
-                        break;
+			await _storageManager.EditStorageAsync(fromStorage);
+			await _storageManager.EditStorageAsync(toStorage);
+		}
 
-                    case var id when id == toStorageId:
-                        product.CurrentStock += quantity;
-                        break;
+		private async Task UpdateProductStockAsync(Storage defaultStorage, int fromStorageId, int toStorageId, Product product, int quantity)
+		{
+			if (defaultStorage.Id == fromStorageId)
+			{
+				product.CurrentStock -= quantity;
+			}
+			else if (defaultStorage.Id == toStorageId)
+			{
+				product.CurrentStock += quantity;
+			}
+			await _productManager.EditProductAsync(product);
+		}
+	}
 
-                    default:
-                        break;
-                }
-                await _productManager.EditProductAsync(product);
-            }
+	public class OperationResult
+	{
+		public bool Success { get; }
+		public string Message { get; }
 
-            //message = "Förflyttning lyckades";
-            return new Tuple<bool, string>(true, message);
-        }
-    }
+		public OperationResult(bool success, string message)
+		{
+			Success = success;
+			Message = message;
+		}
+	}
 }

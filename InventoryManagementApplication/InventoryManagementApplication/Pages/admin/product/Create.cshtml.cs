@@ -60,8 +60,6 @@ namespace InventoryManagementApplication.Pages.admin.product
             ArticleNumbers = getProduct.Select(p => p.ArticleNumber).ToList();
            
             await _manager.CreateProductAsync(Product);
-            await _logManager.LogActivityAsync(Product, EntityState.Added);
-
 
             return RedirectToPage("./Index");
         }

@@ -10,14 +10,14 @@ namespace InventoryManagementApplication.Pages
         private readonly StorageManager _storageManager;
         private readonly LogManager _logManager;
         private readonly UserManager _userManager;
+        private readonly TrackerManager _trackerManager; 
 
-        private readonly TrackerManager _trackerManager;
-
-        public StorageDetailsModel(StorageManager storageManager, LogManager logManager, UserManager userManager, TrackerManager trackerManager)
+        public StorageDetailsModel(LogManager logManager, UserManager userManager, StorageManager storageManager, TrackerManager trackerManager)
         {
             _storageManager = storageManager;
             _logManager = logManager;
             _userManager = userManager;
+            _storageManager = storageManager;
             _trackerManager = trackerManager;
         }
 
@@ -25,52 +25,28 @@ namespace InventoryManagementApplication.Pages
         public List<Log> ActivityLogs { get; set; } = new List<Log>();
         public List<string> UserFullName { get; set; } = new List<string>();
         public List<string> UserEmployeeNumbers { get; set; } = new List<string>();
-        public ICollection<InventoryTracker> InventoryTrackers { get; set; } = new List<InventoryTracker>();
+        public List<InventoryTracker> InventoryTrackers { get; set; } = new List<InventoryTracker> { };
 
         public async Task<IActionResult> OnGetAsync(int id)
         {
-            // HÃ¤mta lagret via API:et
             Storage = await _storageManager.GetStorageByIdAsync(id, null);
 
 
-            if (Storage == null)
-            {
-                return NotFound();
-            }
+			if (Storage == null)
+			{
+				return NotFound();
+			}
 
-            var allTrackers = await _trackerManager.GetAllTrackersAsync();
+			InventoryTrackers = await _trackerManager.GetTrackerByProductOrStorageAsync(0, id);
 
-            InventoryTrackers = allTrackers.Where(it => it.StorageId == id).ToList();
-
-            var allLogs = await _logManager.GetAllLogsAsync();
-            ActivityLogs = allLogs
-                .Where(log => log.EntityType.Contains("Storage") && log.Id == Storage.Id)
-                .ToList();
-
-            var users = await _userManager.GetAllUsersAsync(false);
-            var userDictionary = users.ToDictionary(
-                u => u.Id,
-                u => new { FullName = $"{u.LastName} {u.FirstName}", EmployeeNumber = u.EmployeeNumber });
-
-            foreach (var log in ActivityLogs)
-            {
-                if (userDictionary.TryGetValue(log.UserId, out var userInfo))
-                {
-                    UserFullName.Add(userInfo.FullName);
-                    UserEmployeeNumbers.Add(userInfo.EmployeeNumber);
-                }
-                else
-                {
-                    UserFullName.Add("Unknown User");
-                    UserEmployeeNumbers.Add("N/A");
-                }
-            }
-
+            ActivityLogs = await _logManager.GetLogByForEntityAsync("Storage", id);
+           
             return Page();
         }
+
         public async Task<IActionResult> OnPostUpdateStorageAsync(int StorageId, string StorageName)
         {
-            // HÃ¤mta lagret via API:et
+            // Hämta lagret via API:et
             var storage = await _storageManager.GetStorageByIdAsync(StorageId, null);
             if (storage == null)
             {
@@ -81,7 +57,7 @@ namespace InventoryManagementApplication.Pages
             storage.Name = StorageName;
             storage.Updated = DateTime.Now;
 
-            // Spara Ã¤ndringarna via API:et
+            // Spara ändringarna via API:et
             await _storageManager.EditStorageAsync(storage);
 
 

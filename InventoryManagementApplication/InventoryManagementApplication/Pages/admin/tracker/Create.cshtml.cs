@@ -75,25 +75,20 @@ namespace InventoryManagementApplication.Pages.admin.tracker
                 return RedirectToPage("./Create", new { id = InventoryTracker.Id });
             }
 
-            bool status = false;
+			var moveResult = await _productMovementHelpers.MoveProductAsync(productId, fromStorageId, toStorageId, quantity);
 
-            var tuple = await _productMovementHelpers.MoveProductAsync(productId, fromStorageId, toStorageId, quantity);
-            if (tuple != null)
-            {
-                status = tuple.Item1;
-                if (status == false)
-                {
-                    StatusMessage = tuple.Item2 != string.Empty ? tuple.Item2 : "Förflyttning lyckades ej!";
-                    return RedirectToPage("./Create", new { id = InventoryTracker.Id });
-                }
-                else
-                {
-                    StatusMessage1 = tuple.Item2 != string.Empty ? tuple.Item2 : "Förflyttning lyckades!";
-                    await _statisticManager.GetValueFromStatisticAsync(MyUser.Id, fromStorageId, toStorageId, productId, quantity, null);
-                    return RedirectToPage("./Create");
-                }
-            }
-            return RedirectToPage("./Create", new { id = InventoryTracker.Id });
-        }
-    }
+			if (!moveResult.Success)
+			{
+				StatusMessage = !string.IsNullOrEmpty(moveResult.Message) ? moveResult.Message : "Förflyttning lyckades ej!";
+				return RedirectToPage("./Create", new { id = InventoryTracker.Id });
+			}
+
+			StatusMessage1 = !string.IsNullOrEmpty(moveResult.Message) ? moveResult.Message : "Förflyttning lyckades!";
+			await _statisticManager.GetValueFromStatisticAsync(MyUser.Id, fromStorageId, toStorageId, productId, quantity, null);
+			return RedirectToPage("./Create");
+
+		}
+	}
 }
+
+

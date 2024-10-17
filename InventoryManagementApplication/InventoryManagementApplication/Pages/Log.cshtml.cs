@@ -31,6 +31,8 @@ namespace InventoryManagementApplication.Pages
             // Hämta loggar från ActivityLogManager
             Logs = await _activityLogManager.GetAllLogsAsync();
 
+            Logs.OrderBy(x => x.TimeStamp);
+
             // Hämtar users och sätter ihop firstName + lastName till UserFullName
             var users = await _userManager.GetAllUsersAsync(null);
             var userDictinary = users.ToDictionary(

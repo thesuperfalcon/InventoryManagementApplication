@@ -1,5 +1,7 @@
 ﻿using Azure;
+using InventoryManagementApplication.Migrations;
 using InventoryManagementApplication.Models;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualBasic;
 using System.Text;
 using System.Text.Json;
@@ -8,10 +10,14 @@ namespace InventoryManagementApplication.DAL
 {
 	public class StorageManager
 	{
+        private readonly LogManager _logManager;
+        public StorageManager(LogManager logManager)
+        {
+            _logManager = logManager;
+        }
         private static Uri BaseAddress = new Uri("https://localhost:44353/");
-        public Storage Storage { get; set; }
-        public List<Storage> Storages { get; set; }
-
+        public Storage Storage { get; set; } = new Storage();
+        public List<Storage> Storages { get; set; } = new List<Storage>();
 
         public async Task CreateStorageAsync(Storage storage)
         {
@@ -23,8 +29,15 @@ namespace InventoryManagementApplication.DAL
                     client.BaseAddress = BaseAddress;
                     var json = JsonSerializer.Serialize(Storage);
 
-                    StringContent httpContent = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
+                    StringContent httpContent = new StringContent(json, Encoding.UTF8, "application/json");
                     HttpResponseMessage response = await client.PostAsync("api/Storages/", httpContent);
+
+                    if(response.IsSuccessStatusCode)
+                    {
+                        var createdStorage = await response.Content.ReadFromJsonAsync<Storage>();
+
+                        await _logManager.LogActivityAsync(createdStorage, EntityState.Added);
+                    }
                 }
             }
             else
@@ -150,36 +163,40 @@ namespace InventoryManagementApplication.DAL
             }
         }
 
-        public async Task DeleteStorageAsync(int? id)
+        public async Task DeleteStorageAsync(Storage storage)
         {
             using (var client = new HttpClient())
             {
                 client.BaseAddress = BaseAddress;
 
-                var response = await client.DeleteAsync($"api/Storages/{id}");
+                var response = await client.DeleteAsync($"api/Storages/{storage.Id}");
+
+                if (response.IsSuccessStatusCode)
+                {
+                    await _logManager.LogActivityAsync(storage, EntityState.Deleted);
+                }
             }
         }
 
-        public async Task EditStorageAsync(Storage storage)
+        public async Task EditStorageAsync(Storage updatedStorage)
         {
+            var originalStorage = await GetStorageByIdAsync(updatedStorage.Id, null);
             using (var client = new HttpClient())
             {
                 client.BaseAddress = BaseAddress;
-
-                var json = JsonSerializer.Serialize(storage);
-				Console.WriteLine($"Serialized JSON: {json}");
-
-				var content = new StringContent(json, Encoding.UTF8, "application/json");
-                HttpResponseMessage response = await client.PutAsync($"api/Storages/{storage.Id}", content);
-
-                if (!response.IsSuccessStatusCode)
+                if (updatedStorage != null)
                 {
-                    var errorResponse = await response.Content.ReadAsStringAsync();
-                    Console.WriteLine($"Error updating storage: {errorResponse}");
-					Console.WriteLine($"Status Code: {response.StatusCode}");
-					Console.WriteLine($"Reason Phrase: {response.ReasonPhrase}");
-					Console.WriteLine($"Response Headers: {response.Headers}");
-				}
+                    var content = new StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(updatedStorage), Encoding.UTF8, "application/json");
+                    HttpResponseMessage response = await client.PutAsync($"api/Storages/{updatedStorage.Id}", content);
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        if (originalStorage != null)
+                        {
+                            await _logManager.LogActivityAsync(updatedStorage, EntityState.Modified, originalStorage);
+                        }
+                    }
+                }
             }
         }
     }

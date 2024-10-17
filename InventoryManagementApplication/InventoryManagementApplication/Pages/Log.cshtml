@@ -32,24 +32,23 @@
             <tbody id="myLogTable">
                 @if (Model.Logs.Any())
                 {
-                    for (int i = 0; i < Model.Logs.Count; i++)
+                    foreach (var log in Model.Logs)
                     {
-                        var log = Model.Logs[i];
                         <tr>
-                            <td>@(Model.UserFullName[i] != null && !string.IsNullOrWhiteSpace(Model.UserFullName[i]) ? Model.UserFullName[i] : "Data finns ej")</td>
-                            <td>@(Model.UserEmployeeNumbers[i] != null && !string.IsNullOrWhiteSpace(Model.UserEmployeeNumbers[i]) ? Model.UserEmployeeNumbers[i] : "Data finns ej")</td>
-                            <td>@(log.EntityType != null ? log.EntityType : "Data finns ej")</td>
-                            <td>@(log.EntityDetails != null && !string.IsNullOrWhiteSpace(log.EntityDetails) ? log.EntityDetails : "Data finns ej")</td>
-                            <td>@(log.Id != null ? log.Id.ToString() : "Data finns ej")</td>
-                            <td>@(log.TimeStamp != null ? log.TimeStamp.ToString() : "Data finns ej")</td>
-                            <td>@(log.Action != null ? log.Action : "Data finns ej")</td>
+                            <td>@(!string.IsNullOrWhiteSpace(log.UserFullName) ? log.UserFullName : "Data finns ej")</td>
+                            <td>@(!string.IsNullOrWhiteSpace(log.EmployeeNumber) ? log.EmployeeNumber : "Data finns ej")</td>
+                            <td>@(log.EntityType ?? "Data finns ej")</td>
+                            <td>@(!string.IsNullOrWhiteSpace(log.EntityDetails) ? log.EntityDetails : "Data finns ej")</td>
+                            <td>@(log.EntityId != null && log.EntityId > 0 ? log.Id : "Data finns ej")</td>
+                            <td>@(log.TimeStamp?.ToString("dd/MM/yyyy HH:mm:ss") ?? "Data finns ej")</td> 
+                            <td>@(log.Action ?? "Data finns ej")</td>
                         </tr>
                     }
                 }
                 else
                 {
                     <tr>
-                        <td colspan="6" class="text-center">Ingen data..</td>
+                        <td colspan="7" class="text-center">Ingen data..</td>
                     </tr>
                 }
             </tbody>

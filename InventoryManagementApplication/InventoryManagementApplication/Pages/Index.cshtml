@@ -6,8 +6,8 @@
 @inject UserManager<InventoryManagementUser> UserManager
 @inject SignInManager<InventoryManagementUser> SignInManager
 @{
-    ViewData["Title"] = "Startsida";
-    var user = await UserManager.GetUserAsync(User);
+	ViewData["Title"] = "Startsida";
+	var user = await UserManager.GetUserAsync(User);
 }
 
 <body class="logedin-page-background">
@@ -102,5 +102,5 @@
 
 </body>
 @section Scripts {
-    <partial name="_ValidationScriptsPartial" />
+	<partial name="_ValidationScriptsPartial" />
 }

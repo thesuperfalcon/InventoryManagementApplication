@@ -1,5 +1,7 @@
 ﻿using InventoryManagementApplication.Areas.Identity.Data;
 using InventoryManagementApplication.Models;
+using Microsoft.AspNetCore.Identity;
+using System.Security.Claims;
 using System.Text;
 using System.Text.Json;
 
@@ -7,12 +9,12 @@ namespace InventoryManagementApplication.DAL
 {
     public class UserManager
     {
-        private static Uri BaseAddress = new Uri("https://localhost:44353/");
-        public Areas.Identity.Data.InventoryManagementUser? User { get; set; }
-        public List<Areas.Identity.Data.InventoryManagementUser>? Users { get; set; }
+        public InventoryManagementUser? User { get; set; }
+        public List<InventoryManagementUser>? Users { get; set; }
 
+		private static readonly Uri BaseAddress = new Uri("https://localhost:44353/");
 
-        public async Task<HttpResponseMessage> RegisterUserAsync(InventoryManagementUser user)
+		public async Task<HttpResponseMessage> RegisterUserAsync(InventoryManagementUser user)
         {
             HttpResponseMessage response = null;
             if (user != null)
