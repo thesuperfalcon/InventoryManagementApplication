@@ -44,14 +44,14 @@
 <table id="productTable" class="table" data-sort-direction="asc">
     <thead class="table-dark">
         <tr>
-            <th><a href="javascript:void(0);" onclick="sortTable('trackerTable', 0)" class="text-white">Namn<i class="bi bi-sort-down"></i></a></th>
-            <th><a href="javascript:void(0);" onclick="sortTable('trackerTable', 1)" class="text-white">Artikelnummer<i class="bi bi-sort-down"></i></a></th>
-            <th><a href="javascript:void(0);" onclick="sortTable('trackerTable', 2)" class="text-white">Beskrivning<i class="bi bi-sort-down"></i></a></th>
-            <th><a href="javascript:void(0);" onclick="sortTable('trackerTable', 3)" class="text-white">Pris<i class="bi bi-sort-down"></i></a></th>
-            <th><a href="javascript:void(0);" onclick="sortTable('trackerTable', 4)" class="text-white">Totalt<i class="bi bi-sort-down"></i></a></th>
-            <th><a href="javascript:void(0);" onclick="sortTable('trackerTable', 5)" class="text-white">Antal utan lager<i class="bi bi-sort-down"></i></a></th>
-            <th><a href="javascript:void(0);" onclick="sortTable('trackerTable', 6)" class="text-white">Skapad<i class="bi bi-sort-down"></i></a></th>
-            <th><a href="javascript:void(0);" onclick="sortTable('trackerTable', 7)" class="text-white">Ändrad<i class="bi bi-sort-down"></i></a></th>
+            <th><a href="javascript:void(0);" onclick="sortTable('productTable', 0)" class="text-white">Namn<i class="bi bi-sort-down"></i></a></th>
+            <th><a href="javascript:void(0);" onclick="sortTable('productTable', 1)" class="text-white">Artikelnummer<i class="bi bi-sort-down"></i></a></th>
+            <th><a href="javascript:void(0);" onclick="sortTable('productTable', 2)" class="text-white">Beskrivning<i class="bi bi-sort-down"></i></a></th>
+            <th><a href="javascript:void(0);" onclick="sortTable('productTable', 3)" class="text-white">Pris<i class="bi bi-sort-down"></i></a></th>
+            <th><a href="javascript:void(0);" onclick="sortTable('productTable', 4)" class="text-white">Totalt<i class="bi bi-sort-down"></i></a></th>
+            <th><a href="javascript:void(0);" onclick="sortTable('productTable', 5)" class="text-white">Antal utan lager<i class="bi bi-sort-down"></i></a></th>
+            <th><a href="javascript:void(0);" onclick="sortTable('productTable', 6)" class="text-white">Skapad<i class="bi bi-sort-down"></i></a></th>
+            <th><a href="javascript:void(0);" onclick="sortTable('productTable', 7)" class="text-white">Ändrad<i class="bi bi-sort-down"></i></a></th>
             <th></th>
         </tr>
     </thead>
@@ -89,7 +89,7 @@
                                 <a asp-page="./Delete" asp-route-id="@item.Id" class="btn btn-danger btn-sm me-2" title="Ta bort">
                                     <i class="bi bi-trash"></i>
                                 </a>
-                                <a asp-page="./SellProduct" asp-route-storageId="0" asp-route-id="@item.Id" class="btn btn-success btn-sm" title="Sälj produkt">
+                                <a asp-page="./SellProduct" asp-route-id="@item.Id" class="btn btn-success btn-sm" title="Sälj produkt">
                                     <i class="bi bi-currency-dollar"></i>
                                 </a>
                             </div>
@@ -128,5 +128,5 @@
 </table>
 
 @section Scripts {
-    <script src="~/js/productIndex.js"></script>
+    <script src="~/js/searchSortFilter.js"></script>
 }
