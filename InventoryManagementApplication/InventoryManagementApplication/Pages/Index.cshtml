@@ -15,7 +15,7 @@
     @if (User.Identity.IsAuthenticated)
     {
         <div class="container-boxes">
-            <div class="box1">            
+ @*            <div class="box1">            
                 <table id="userTable" border="1" cellpadding="10" cellspacing="0" style="border-collapse: collapse; width: 100%; height: 100%;">
                     <tbody>
                         <tr>
@@ -28,6 +28,35 @@
                         </tr>
                         <tr>
                             <td style="color: #0056b3"><strong>Din roll:</strong></td>
+                            <td>
+                                @if (User.IsInRole("Admin"))
+                                {
+                                    @User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value
+                                }
+                                else
+                                {
+                                    <p>Användare</p>
+                                }
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div> *@
+
+
+            <div class="box1">
+                <table id="userTable">
+                    <tbody>
+                        <tr>
+                            <td class="label-text"><strong>Du är inloggad som:</strong></td>
+                            <td>@user.FirstName @user.LastName</td>
+                        </tr>
+                        <tr>
+                            <td class="label-text"><strong>Registrerad sedan:</strong></td>
+                            <td>@user.Created.ToString("yyyy-MM-dd")</td>
+                        </tr>
+                        <tr>
+                            <td class="label-text"><strong>Din roll:</strong></td>
                             <td>
                                 @if (User.IsInRole("Admin"))
                                 {

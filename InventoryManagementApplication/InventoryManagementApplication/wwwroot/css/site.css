@@ -466,35 +466,6 @@ body {
 
 
 
-
-
-
-/*.logedin-page-background {
-    background-image: url('/images/logos/ssabLogo2.png');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    z-index: 0;
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: contain;
-    
-    background-color: rgba(238, 241, 248, 0.3) !important;*//* 50% genomskinlig */
-   
-/*}
-
-    .logedin-page-background::after {
-        content: "";
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(255, 255, 255, 0.8);
-        z-index: -1;
-    }*/
-
-
 body {
     background-image: url('/images/logos/ssabLogo2.png');
     background-size: cover;
@@ -519,11 +490,28 @@ body {
         z-index: -1;
     }
 
-   #userTable
-   {
-       border: 1px solid lightgray;
-   }
 
+/* Style för tabellen */
+#userTable {
+    border: 1px solid lightgray;
+    border-collapse: collapse;
+    width: 100%;
+    height: 100%;
+}
+
+    #userTable td {
+        padding: 10px; /* Ändra cellmarginaler */
+    }
+
+/* Styling för cellerna med etiketter */
+.label-text {
+    color: #0056b3; /* Blå text för etiketterna */
+}
+
+    /* Du kan också lägga till padding eller andra stilar här för enhetliga etiketter */
+    .label-text strong {
+        font-weight: bold;
+    }
 
 
 .container-boxes {
@@ -532,19 +520,19 @@ body {
     padding: 20px;  /*Ger lite utrymme inuti ramen*/ 
     margin: 10px;  /*Ger lite utrymme runt containern */
     display: flex; /* Flexbox f�r att anpassa boxarna sida vid sida*/ 
-    justify-content: space-between;  /*Sprid ut boxarna j�mnt*/ 
+    justify-content: space-between;  /*Sprid ut boxarna jämnt*/ 
 }
 
 .box1, .box2 {
     background-color: white;
-    border: 1px solid #ccc; /* En l�ttare ram f�r varje box */
+    border: 1px solid #ccc; /* En lättare ram för varje box */
     padding: 10px; /* Ger lite utrymme inuti varje box */
-    flex: 1; /* G�r boxarna lika stora */
-    margin-right: 20px; /* L�gger till lite mellanrum mellan boxarna */
+    flex: 1; /* Gör boxarna lika stora */
+    margin-right: 20px; /* Lägger till lite mellanrum mellan boxarna */
     
 }
 
 .box2 {
-    margin-right: 0; /* Tar bort h�ger marginal f�r den sista boxen */
+    margin-right: 0;  Tar bort höger marginal för den sista boxen 
 }
 
