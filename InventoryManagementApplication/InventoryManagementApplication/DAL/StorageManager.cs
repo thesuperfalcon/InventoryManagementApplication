@@ -1,5 +1,5 @@
 ﻿using Azure;
-using InventoryManagementApplication.Migrations;
+//using InventoryManagementApplication.Migrations;
 using InventoryManagementApplication.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualBasic;

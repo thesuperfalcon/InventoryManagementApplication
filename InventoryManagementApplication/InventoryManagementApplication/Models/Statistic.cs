@@ -1,4 +1,5 @@
 ﻿using System.Text.Json.Serialization;
+#nullable enable
 
 namespace InventoryManagementApplication.Models
 {
@@ -7,38 +8,38 @@ namespace InventoryManagementApplication.Models
         [JsonPropertyName("id")]
         public int Id { get; set; }
 
-        [JsonPropertyName("user_id")]
+        [JsonPropertyName("userId")]
         public string? UserId { get; set; }
 
-        [JsonPropertyName("user_name")]
+        [JsonPropertyName("userName")]
         public string? UserName { get; set; }
 
-        [JsonPropertyName("employee_number")]
+        [JsonPropertyName("employeeNumber")]
         public string? EmployeeNumber { get; set; }
 
-        [JsonPropertyName("product_id")]
+        [JsonPropertyName("productId")]
         public int? ProductId { get; set; }
 
-        [JsonPropertyName("product_name")]
+        [JsonPropertyName("productName")]
         public string? ProductName { get; set; }
 
         [JsonPropertyName("quantity")]
         public int? Quantity { get; set; }
 
-        [JsonPropertyName("initial_storage_id")]
+        [JsonPropertyName("initialStorageId")]
         public int? InitialStorageId { get; set; }
 
-        [JsonPropertyName("initial_storage_name")]
+        [JsonPropertyName("initialStorageName")]
         public string? IntitialStorageName { get; set; }
 
-        [JsonPropertyName("destination_storage_id")]
+        [JsonPropertyName("destinationStorageId")]
         public int? DestinationStorageId { get; set; }
 
-        [JsonPropertyName("destination_storage_name")]
+        [JsonPropertyName("destinationStorageName")]
         public string? DestinationStorageName { get; set; }
 
         [JsonPropertyName("moved")]
-        public DateTime? Moved { get; set; }
+        public DateTime? Moved { get; set; } = DateTime.Now;
 
         [JsonPropertyName("notes")]
         public string? Notes { get; set; }
