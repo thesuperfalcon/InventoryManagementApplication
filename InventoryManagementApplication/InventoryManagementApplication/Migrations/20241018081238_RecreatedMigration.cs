@@ -5,12 +5,8 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace InventoryManagementApplication.Migrations
 {
-    /// <inheritdoc />
-<<<<<<<< HEAD:InventoryManagementApplication/InventoryManagementApplication/Migrations/20241018081925_InitialCommit.cs
+
     public partial class InitialCommit : Migration
-========
-    public partial class RecreatedMigration : Migration
->>>>>>>> ModelsCC:InventoryManagementApplication/InventoryManagementApplication/Migrations/20241018081238_RecreatedMigration.cs
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
