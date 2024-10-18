@@ -12,13 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace InventoryManagementApplication.Migrations
 {
     [DbContext(typeof(InventoryManagementApplicationContext))]
-<<<<<<<< HEAD:InventoryManagementApplication/InventoryManagementApplication/Migrations/20241018081925_InitialCommit.Designer.cs
     [Migration("20241018081925_InitialCommit")]
     partial class InitialCommit
-========
-    [Migration("20241018081238_RecreatedMigration")]
-    partial class RecreatedMigration
->>>>>>>> ModelsCC:InventoryManagementApplication/InventoryManagementApplication/Migrations/20241018081238_RecreatedMigration.Designer.cs
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
