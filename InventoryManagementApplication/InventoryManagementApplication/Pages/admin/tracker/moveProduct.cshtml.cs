@@ -96,7 +96,7 @@ namespace InventoryManagementApplication.Pages.admin.tracker
 			}
 
 			StatusMessage = !string.IsNullOrEmpty(moveResult.Message) ? moveResult.Message : "Förflyttning lyckades!";
-			await _statisticManager.GetValueFromStatisticAsync(MyUser.Id, fromStorageId, toStorageId, productId, quantity, null);
+			await _statisticManager.GetValueFromStatisticAsync(fromStorageId, toStorageId, productId, quantity, null);
 			return RedirectToPage("./moveProduct", new { id = SelectedInventoryTracker.Id });
 		}
 

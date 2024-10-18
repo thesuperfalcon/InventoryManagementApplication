@@ -1,5 +1,6 @@
 ﻿using InventoryManagementApplication.Models;
 using Microsoft.AspNetCore.Identity;
+using System.Security.Claims;
 using System.Text;
 using System.Text.Json;
 
@@ -7,14 +8,16 @@ namespace InventoryManagementApplication.DAL
 {
 	public class StatisticManager
 	{
+		private readonly IHttpContextAccessor _httpContextAccessor;
 		private readonly StorageManager _storageManager;
 		private readonly ProductManager _productManager;
 		private readonly UserManager _userManager;
-        public StatisticManager(StorageManager storageManager, ProductManager productManager, UserManager userManager)
+        public StatisticManager(StorageManager storageManager, ProductManager productManager, UserManager userManager, IHttpContextAccessor httpContextAccessor)
         {
 			_storageManager = storageManager;
             _productManager = productManager;
 			_userManager = userManager;
+			_httpContextAccessor = httpContextAccessor;
         }
         private static Uri BaseAddress = new Uri("https://localhost:44353/");
 		public async Task CreateStatisticAsync(Statistic statistic)
@@ -79,31 +82,33 @@ namespace InventoryManagementApplication.DAL
 
 			}
 		}
-        public async Task GetValueFromStatisticAsync(string userId, int fromStorageId, int toStorageId, int productId, int quantity, string? notes)
+        public async Task GetValueFromStatisticAsync(int fromStorageId, int toStorageId, int productId, int quantity, string? notes)
         {
+
+            var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier);
+
             var user = await _userManager.GetOneUserAsync(userId);
             var product = await _productManager.GetProductByIdAsync(productId, false);
             var initialStorage = await _storageManager.GetStorageByIdAsync(fromStorageId, false);
             var destinationStorage = await _storageManager.GetStorageByIdAsync(toStorageId, false);
 
-            var newStatistic = new Statistic
-            {
-                UserId = userId,
-                UserName = user?.UserName,
-                EmployeeNumber = user?.EmployeeNumber,
-                ProductId = productId,
-                ProductName = product?.Name,
-                Quantity = quantity,
-                InitialStorageId = fromStorageId,
-                IntitialStorageName = initialStorage?.Name,
-                DestinationStorageId = toStorageId,
-                DestinationStorageName = destinationStorage?.Name,
-                Moved = DateTime.Now,
-				Notes = notes
-            };
+			var newStatistic = new Statistic
+			{
+				UserId = userId,
+				UserName = user?.UserName,
+				EmployeeNumber = user?.EmployeeNumber,
+				ProductId = productId,
+				ProductName = product?.Name,
+				Quantity = quantity,
+				InitialStorageId = fromStorageId,
+				IntitialStorageName = initialStorage?.Name,
+				DestinationStorageId = toStorageId,
+				DestinationStorageName = destinationStorage?.Name,
+				Moved = DateTime.Now,
+				Notes = notes != null ? notes : "Moved"
+			};
 
             await CreateStatisticAsync(newStatistic);
         }
-
     }
 }
