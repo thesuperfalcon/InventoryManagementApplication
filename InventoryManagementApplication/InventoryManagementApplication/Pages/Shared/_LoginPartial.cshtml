@@ -4,14 +4,16 @@
 @inject SignInManager<InventoryManagementUser> SignInManager
 @inject UserManager<InventoryManagementUser> UserManager
 
+@{
+    var user = await UserManager.GetUserAsync(User);
+}
 
 @if (SignInManager.IsSignedIn(User))
 {
-    var currentUser = await UserManager.GetUserAsync(User);
     <ul class="navbar-nav"> 
     <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            <img src="@currentUser.ProfilePic" alt="Profile Picture" class="rounded-circle" style="width: 40px; height: 40px; margin-right: 5px;" />@UserManager.GetUserName(User)!
+            <img src="@user.ProfilePic" alt="Profile Picture" class="rounded-circle small-profile-pic" />@user.UserName
         </a>
         <ul class="dropdown-menu dropdown-menu-end">
             <li>
