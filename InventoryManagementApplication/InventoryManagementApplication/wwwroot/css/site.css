@@ -475,7 +475,7 @@ body {
     background-repeat: no-repeat;
     background-position: center;
     background-size: contain;
-    background-color: rgba(255, 255, 255, 0.8) !important; /* 50% genomskinlig */
+    background-color: rgba(255, 255, 255, 0.8) !important;
 }
 
     body::after {
@@ -533,6 +533,6 @@ body {
 }
 
 .box2 {
-    margin-right: 0;  Tar bort höger marginal för den sista boxen 
+    margin-right: 0;  
 }
 
