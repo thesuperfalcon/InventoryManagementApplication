@@ -5,7 +5,8 @@ let filteredRows = [];
 let visibleRows = [];
 
 $(document).ready(function () {
-    originalRows = Array.from(document.querySelectorAll("#myLogTable tr:not(:first-child)"));
+
+    originalRows = Array.from(document.querySelectorAll("#myLogTable tr"));
     filteredRows = [...originalRows];
 
     updateVisibleRows(filteredRows);
@@ -66,28 +67,31 @@ function paginateTable() {
 }
 
 // Sort function for both alphabetical (A-Ö) and numerical (highest to lowest), case-insensitive
+// Sort function for both alphabetical (A-Ö) and numerical (highest to lowest), case-insensitive
+// Sort function for alphabetical, numerical, and date (Tidpunkt) sorting
 function sortTable(columnIndex) {
     const table = document.getElementById("logsTable");
     const isAscending = table.getAttribute("data-sort-direction") === "asc";
 
-    // Sort based on the specified column
     filteredRows.sort((a, b) => {
         const cellA = a.cells[columnIndex].innerText.trim();
         const cellB = b.cells[columnIndex].innerText.trim();
 
-        // Check if the column is a date
-        const isDate = columnIndex === 5; // Assuming 'Tidpunkt' is the 6th column (index 5)
+        console.log("cellA:", cellA);
+        console.log("cellB:", cellB);
 
-        console.log('cellA:', cellA);
-        console.log('cellB:', cellB);
-
-        if (isDate) {
+        // Kontrollera om vi sorterar efter 'Tidpunkt' kolumn (index 5)
+        if (columnIndex === 5) {
             const dateA = parseCustomDate(cellA);
             const dateB = parseCustomDate(cellB);
+
+            console.log("dateA:", dateA);
+            console.log("dateB:", dateB);
+
             return isAscending ? dateA - dateB : dateB - dateA;
         }
 
-        // Check if the column is numerical
+        // Kontrollera om kolumnen är numerisk
         const isNumber = !isNaN(parseFloat(cellA)) && !isNaN(parseFloat(cellB));
 
         if (isNumber) {
@@ -101,25 +105,23 @@ function sortTable(columnIndex) {
         }
     });
 
-    // Clear the current rows and re-append sorted rows
+    // Rensa aktuella rader och lägg till sorterade rader
     const tbody = document.getElementById("myLogTable");
-    tbody.innerHTML = ""; // Clear current rows
-    filteredRows.forEach(row => tbody.appendChild(row)); // Append sorted rows
+    tbody.innerHTML = "";
+    filteredRows.forEach(row => tbody.appendChild(row));
 
-    // Toggle sort direction
+    // Växla sorteringsriktning
     table.setAttribute("data-sort-direction", isAscending ? "desc" : "asc");
 
-    // Reset to page 1 and update pagination
+    // Återställ till sida 1 och uppdatera paginering
     currentPage = 1;
     paginateTable();
 }
 
-// Function to parse the custom date format 'dd/mm/yyyy hh:mm:ss'
 function parseCustomDate(dateString) {
     const [datePart, timePart] = dateString.split(' ');
-    const [day, month, year] = datePart.split('/').map(Number);
+    const [day, month, year] = datePart.split('-').map(Number); 
     const [hours, minutes, seconds] = timePart.split(':').map(Number);
 
-    // Create a new Date object
     return new Date(year, month - 1, day, hours, minutes, seconds);
 }
