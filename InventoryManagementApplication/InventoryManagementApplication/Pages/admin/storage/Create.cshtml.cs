@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace InventoryManagementApplication.Pages.admin.storage
 {
-	[Authorize(Roles = "Admin")]
+	[Authorize]
 	public class CreateModel : PageModel
 	{
         private readonly StorageManager _storageManager;

@@ -4,21 +4,24 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace InventoryManagementApplication.Pages.admin.storage
 {
-    [Authorize(Roles = "Admin")]
+    [Authorize]
     public class DeleteModel : PageModel
 	{
 		private readonly StorageManager _storageManager;
 		private readonly TrackerManager _trackerManager;
-		private readonly LogManager _activityLogManager;
+		private readonly UserManager _userManager;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-		public DeleteModel(StorageManager storageManager, TrackerManager trackerManager, LogManager activityLogManager)
+        public DeleteModel(StorageManager storageManager, TrackerManager trackerManager, UserManager userManager, IHttpContextAccessor httpContextAccessor)
 		{
 			_storageManager = storageManager;
 			_trackerManager = trackerManager;
-			_activityLogManager = activityLogManager;
+			_userManager = userManager;
+			_httpContextAccessor = httpContextAccessor;
 		}
 
 		[BindProperty]
@@ -32,19 +35,25 @@ namespace InventoryManagementApplication.Pages.admin.storage
 				return NotFound();
 			}
 
+			
 			var storage = await _storageManager.GetStorageByIdAsync(id, null);
 
 			if (storage == null)
 			{
 				return NotFound();
-			}
-			else
-			{
-				Storage = storage;
-			}
-			return Page();
+			}		
 
-		}
+			bool isAuthorized = await CheckStorageDeletedAndUserAuthorize(storage.IsDeleted == true);
+
+			if (!isAuthorized)
+			{
+				return Forbid();
+			}
+
+            Storage = storage;
+
+            return Page();
+        }
 		public async Task<IActionResult> OnPostAsync(int? id)
 		{
 			if (id == null)
@@ -62,12 +71,32 @@ namespace InventoryManagementApplication.Pages.admin.storage
 			}
 			if (storage != null)
 			{
-				//await _activityLogManager.LogActivityAsync(Storage, EntityState.Deleted);
 				await _storageManager.DeleteStorageAsync(storage);
 			}
 
 			return RedirectToPage("./Index");
-
 		}
-	}
+
+        private async Task<bool> CheckStorageDeletedAndUserAuthorize(bool isDeleted)
+        {
+            var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+			if (string.IsNullOrEmpty(userId))
+			{
+				return false;
+			}
+
+            var user = await _userManager.GetOneUserAsync(userId);
+
+			if(user == null)
+			{
+				return false;
+			}
+
+			var roles = await _userManager.GetUserRoleAsync(userId);
+			bool isAdmin = roles.Contains("Admin");
+
+            return isAdmin || !isDeleted;
+        }
+    }
 }

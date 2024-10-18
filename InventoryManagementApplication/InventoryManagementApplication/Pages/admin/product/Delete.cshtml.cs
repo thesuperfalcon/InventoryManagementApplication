@@ -10,7 +10,7 @@ using System.Security.Claims;
 
 namespace InventoryManagementApplication.Pages.admin.product
 {
-	[Authorize(Roles = "Admin")]
+	[Authorize]
 	public class DeleteModel : PageModel
 	{
 		private readonly ProductManager _productManager;
@@ -18,16 +18,18 @@ namespace InventoryManagementApplication.Pages.admin.product
 		private readonly TrackerManager _trackerManager;
 		private readonly LogManager _activityLogManager;
 		private readonly UserManager _userManager; // Inject UserManager
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-		public DeleteModel(ProductManager productManager,
+        public DeleteModel(ProductManager productManager,
 			StorageManager storageManager, TrackerManager trackerManager, LogManager activityLogManager,
-			UserManager userManager) // Include UserManager in the constructor
+			UserManager userManager, IHttpContextAccessor httpContextAccessor) // Include UserManager in the constructor
 		{
 			_productManager = productManager;
 			_storageManager = storageManager;
 			_trackerManager = trackerManager;
 			_activityLogManager = activityLogManager;
 			_userManager = userManager; // Assign to private field
+			_httpContextAccessor = httpContextAccessor;
 		}
 
 		[BindProperty]
@@ -49,23 +51,30 @@ namespace InventoryManagementApplication.Pages.admin.product
 				return NotFound();
 			}
 
-			return Page();
+            bool isAuthorized = await CheckStorageDeletedAndUserAuthorize(Product.IsDeleted == true);
+
+            if (!isAuthorized)
+            {
+                return Forbid();
+            }
+
+            return Page();
 		}
 
 		public async Task<IActionResult> OnPostAsync(int? id)
 		{
-			if (id == null)
+            var product = await _productManager.GetProductByIdAsync(id.Value, null);
+            if (id == null)
 			{
 				return NotFound();
 			}
-
-			var product = await _productManager.GetProductByIdAsync(id.Value, null);
+            
 			if (product == null)
 			{
 				return NotFound();
 			}
 
-			var trackers = await _trackerManager.GetAllTrackersAsync();
+            var trackers = await _trackerManager.GetAllTrackersAsync();
 			InventoryTrackers = trackers.Where(x => x.ProductId == id).ToList();
 
 			var storages = await _storageManager.GetStoragesAsync(false);
@@ -90,5 +99,27 @@ namespace InventoryManagementApplication.Pages.admin.product
 
 			return RedirectToPage("./Index");
 		}
-	}
+
+        private async Task<bool> CheckStorageDeletedAndUserAuthorize(bool isDeleted)
+        {
+            var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (string.IsNullOrEmpty(userId))
+            {
+                return false;
+            }
+
+            var user = await _userManager.GetOneUserAsync(userId);
+
+            if (user == null)
+            {
+                return false;
+            }
+
+            var roles = await _userManager.GetUserRoleAsync(userId);
+            bool isAdmin = roles.Contains("Admin");
+
+            return isAdmin || !isDeleted;
+        }
+    }
 }

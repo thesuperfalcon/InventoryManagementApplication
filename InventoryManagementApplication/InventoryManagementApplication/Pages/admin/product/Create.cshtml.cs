@@ -10,33 +10,31 @@ using System.ComponentModel.DataAnnotations;
 
 namespace InventoryManagementApplication.Pages.admin.product
 {
-    [Authorize(Roles = "Admin")]
+    [Authorize]
     public class CreateModel : PageModel
     {
         private readonly ProductManager _manager;
-        private readonly LogManager _logManager;
-        private readonly bool exists;
 
-        public CreateModel(ProductManager manager, LogManager logManager)
+        public CreateModel(ProductManager manager)
         {
             _manager = manager;
-            _logManager = logManager;
         }
 
         public IActionResult OnGet()
         {
             return Page();
         }
-        [TempData]
-        public string StatusMessage3 { get; set; }
 
         [BindProperty]
-        public Product Product { get; set; } //= default!;
+        public Product Product { get; set; }
         public List<string> ArticleNumbers { get; set; }
 
         [BindProperty]
         [Required]
         public string ArticleNumber { get; set; }
+
+        [TempData]
+        public string StatusMessage { get; set; }
 
         public async Task<IActionResult> OnPostAsync()
         {
@@ -48,7 +46,7 @@ namespace InventoryManagementApplication.Pages.admin.product
             var existingProductName = await _manager.CheckProductName(Product.Name);
             if(existingProductName == true)
             {
-                StatusMessage3 = "Produkt finns med samma namn. Skriv in ett nytt namn";
+                TempData["StatusMessageError"] = "Produkt finns med samma namn. Skriv in ett nytt namn";
                 return Page();
             }
 
@@ -61,7 +59,14 @@ namespace InventoryManagementApplication.Pages.admin.product
            
             await _manager.CreateProductAsync(Product);
 
-            return RedirectToPage("./Index");
+            StatusMessage = "Produkten har lagts till!<br>" +
+                                    $"Namn: {Product.Name}<br>" +
+                                    $"Artikelnummer: {Product.ArticleNumber}<br>" +
+                                    $"Beskrivning: {Product.Description}<br>" +
+                                    $"Pris: {Product.Price}<br>" +
+                                    $"Antal: {Product.CurrentStock}";
+
+            return RedirectToPage("./Create");
         }
         public async Task<IActionResult> OnPostGenerateArticleNumberAsync()
         {

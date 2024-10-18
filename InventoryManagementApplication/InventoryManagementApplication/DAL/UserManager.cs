@@ -176,5 +176,22 @@ namespace InventoryManagementApplication.DAL
                 return picUrls;
             }
         }
+
+        public async Task<List<string>> GetUserRoleAsync(string userId)
+        {
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = BaseAddress;
+
+                HttpResponseMessage response = await client.GetAsync($"api/Users/UserRole/{userId}");
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var roles = await response.Content.ReadFromJsonAsync<List<string>>();
+                    return roles ?? new List<string>();
+                }
+                return new List<string>();
+            }
+        }
     }
 }

@@ -13,17 +13,14 @@ namespace InventoryManagementApplication.Pages.admin.product
         private readonly ProductManager _productManager;
         private readonly TrackerManager _trackerManager;
         private readonly StorageManager _storageManager;
-        private readonly LogManager _activityLogManager;
-        public EditModel(ProductManager productManager, TrackerManager trackerManager, StorageManager storageManager, LogManager activityLogManager)
+
+        public EditModel(ProductManager productManager, TrackerManager trackerManager, StorageManager storageManager)
         {
             _productManager = productManager;
             _trackerManager = trackerManager;
             _storageManager = storageManager;
-            _activityLogManager = activityLogManager;
         }
 
-        [TempData]
-        public string StatusMessage { get; set; }
         [BindProperty]
         public Product Product { get; set; } = default!;
         public Product PreviousProduct { get; set; } = default!;
@@ -52,23 +49,38 @@ namespace InventoryManagementApplication.Pages.admin.product
 
         public async Task<IActionResult> OnPostAsync()
         {
+            int id = Product.Id;
+            var productNoChanges = await _productManager.GetProductByIdAsync(id, null);
+            bool recreatedProduct = false;
+
             if (!ModelState.IsValid)
             {
                 return Page();
             }
 
-            var existingProductName = await _productManager.CheckProductName(Product.Name);
-            if (existingProductName == true)
+            if (productNoChanges.Name != Product.Name)
             {
-                StatusMessage = "Produkt finns med samma namn. Skriv in ett nytt namn";
-                return Page();
+                var existingProductName = await _productManager.CheckProductName(Product.Name);
+                if (existingProductName == true)
+                {
+                    TempData["StatusMessageError"] = "Produkt finns med samma namn. Skriv in ett nytt namn";
+                    return Page();
+                }
             }
 
             if (Product.IsDeleted == true)
             {
-                Product.IsDeleted = false;
+                recreatedProduct = true;
 
+                var existingProductName = await _productManager.CheckProductName(Product.Name);
+                if (existingProductName == true)
+                {
+                    TempData["StatusMessageError"] = "Produkt finns med samma namn. Skriv in ett nytt namn";
+                    return Page();
+                }
+                Product.IsDeleted = false;
             }
+
             PreviousProduct = await _productManager.GetProductByIdAsync(Product.Id, null);
             var defaultStorage = await _storageManager.GetDefaultStorageAsync();
             var tracker = await _trackerManager.GetTrackerByProductAndStorageAsync(Product.Id, defaultStorage.Id);
@@ -80,11 +92,9 @@ namespace InventoryManagementApplication.Pages.admin.product
             {
                 var productQuantity = InventoryTrackers.Sum(x => x.Quantity);
 
-
                 if (Product.TotalStock < productQuantity)
                 {
-                    //Hjälp! Grammatik!
-                    StatusMessage = $"Det går ej att fylla med färre antal.";
+                    TempData["StatusMessageError"] = $"Det går ej att fylla med färre antal.";
                     return RedirectToPage("./Edit", new { id = Product.Id });
                 }
                 else
@@ -101,24 +111,23 @@ namespace InventoryManagementApplication.Pages.admin.product
                 Product.CurrentStock = Product.TotalStock;
             }
 
+            if (PreviousProduct.Name == Product.Name && PreviousProduct.Price == Product.Price && PreviousProduct.ArticleNumber == Product.ArticleNumber
+                  && PreviousProduct.Description == Product.Description && PreviousProduct.CurrentStock == Product.CurrentStock && recreatedProduct == false)
+            {
+                TempData["StatusMessageError"] = "Inga ändringar har gjorts, ange nya värden";
+                return Page();
+            }
+
             await _productManager.EditProductAsync(Product);
             await _storageManager.EditStorageAsync(defaultStorage);
             if (tracker != null)
             {
-
                 await _trackerManager.EditTrackerAsync(tracker);
             }
-            //await _activityLogManager.LogActivityAsync(Product, EntityState.Modified, PreviousProduct);
 
-            if (PreviousProduct.Name == Product.Name && PreviousProduct.Price == Product.Price && PreviousProduct.ArticleNumber == Product.ArticleNumber
-                && PreviousProduct.Description == Product.Description && PreviousProduct.CurrentStock == Product.CurrentStock)
-            {
-                StatusMessage = "Inga ändringar har gjorts, ange nya värden";
-            }
-            else
-            {
-                StatusMessage = "Produkten har ändrats!";
-            }
+            string statusMessage = recreatedProduct == true ? "Produkten har återskapats!" : "Produkt har ändrats!";
+
+            TempData["StatusMessageSuccess"] = statusMessage;
 
             return RedirectToPage("./Edit", new { id = Product.Id });
 
