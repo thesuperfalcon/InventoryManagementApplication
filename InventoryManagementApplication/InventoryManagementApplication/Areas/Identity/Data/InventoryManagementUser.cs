@@ -5,10 +5,9 @@ using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using InventoryManagementApplication.Models;
 using Microsoft.AspNetCore.Identity;
-
 namespace InventoryManagementApplication.Areas.Identity.Data;
+#nullable enable
 
-// Add profile data for application users by adding properties to the InventoryManagementUser class
 public class InventoryManagementUser : IdentityUser
 {
 	[JsonPropertyName("id")]
@@ -32,9 +31,9 @@ public class InventoryManagementUser : IdentityUser
 
 	[JsonPropertyName("created")]
 	[PersonalData]
-    public DateTime Created {  get; set; }
+    public DateTime Created {  get; set; } = DateTime.Now;
 
-	[JsonPropertyName("updated")]
+    [JsonPropertyName("updated")]
 	[PersonalData]
     public DateTime Updated { get; set; }
 

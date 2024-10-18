@@ -89,25 +89,29 @@ namespace InventoryManagementApplication.Helpers
             var statistics = await _statisticManager.GetAllStatisticsAsync();
 
             var personList = await _userManager.GetAllUsersAsync(false);
-            foreach (var person in personList)
+            if(personList != null)
             {
-                var movementsByUser = statistics.Where(stat => stat.UserId == person.Id);
-
-                if (movementsByUser.Any())
+                foreach (var person in personList)
                 {
-                    var totalMovements = movementsByUser.Count();
-                    var totalQuantity = movementsByUser.Sum(stat => stat.Quantity ?? 0);
+                    var movementsByUser = statistics.Where(stat => stat.UserId == person.Id);
 
-                    var userStatistics = new UserStatisticsViewModel
+                    if (movementsByUser.Any())
                     {
-                        EmployeeNumber = person.EmployeeNumber,
-                        TotalMovements = totalMovements,
-                        TotalQuantity = totalQuantity,
-                        RecentMovements = null
-                    };
-                    MovementPerPerson.Add(userStatistics);
+                        var totalMovements = movementsByUser.Count();
+                        var totalQuantity = movementsByUser.Sum(stat => stat.Quantity ?? 0);
+
+                        var userStatistics = new UserStatisticsViewModel
+                        {
+                            EmployeeNumber = person.EmployeeNumber,
+                            TotalMovements = totalMovements,
+                            TotalQuantity = totalQuantity,
+                            RecentMovements = null
+                        };
+                        MovementPerPerson.Add(userStatistics);
+                    }
                 }
             }
+            
 
             await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
 

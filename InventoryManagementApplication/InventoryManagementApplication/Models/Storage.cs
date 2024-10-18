@@ -1,4 +1,5 @@
 ﻿using System.Text.Json.Serialization;
+#nullable enable
 
 namespace InventoryManagementApplication.Models
 {
@@ -17,10 +18,11 @@ namespace InventoryManagementApplication.Models
 		public int? CurrentStock { get; set; }
 
 		[JsonPropertyName("created")]
-		public DateTime? Created { get; set; }
+		public DateTime? Created { get; set; } = DateTime.Now;
 
-		[JsonPropertyName("updated")]
+        [JsonPropertyName("updated")]
 		public DateTime? Updated { get; set; }
+
 		[JsonPropertyName("isDeleted")]
 		public bool? IsDeleted { get; set; } = false;
 

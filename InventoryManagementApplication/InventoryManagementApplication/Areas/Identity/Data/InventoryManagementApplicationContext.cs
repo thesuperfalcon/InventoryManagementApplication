@@ -23,6 +23,9 @@ namespace InventoryManagementApplication.Data;
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
+       
+       builder.Entity<Log>()
+            .HasKey(e => e.Id);
 
         builder.Entity<InventoryTracker>()
             .HasOne(s => s.Product)
