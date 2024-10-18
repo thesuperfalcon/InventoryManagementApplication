@@ -4,6 +4,7 @@ using InventoryManagementApplication.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace InventoryManagementApplication.Migrations
 {
     [DbContext(typeof(InventoryManagementApplicationContext))]
-    partial class InventoryManagementApplicationContextModelSnapshot : ModelSnapshot
+    [Migration("20241001114525_removeActivityLogDbContext")]
+    partial class removeActivityLogDbContext
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -93,10 +96,6 @@ namespace InventoryManagementApplication.Migrations
                         .HasColumnType("nvarchar(max)")
                         .HasAnnotation("Relational:JsonPropertyName", "firstName");
 
-                    b.Property<bool?>("IsDeleted")
-                        .HasColumnType("bit")
-                        .HasAnnotation("Relational:JsonPropertyName", "isDeleted");
-
                     b.Property<string>("LastName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)")
@@ -125,10 +124,6 @@ namespace InventoryManagementApplication.Migrations
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
 
-                    b.Property<string>("ProfilePic")
-                        .HasColumnType("nvarchar(max)")
-                        .HasAnnotation("Relational:JsonPropertyName", "profilePic");
-
                     b.Property<string>("RoleId")
                         .HasColumnType("nvarchar(max)")
                         .HasAnnotation("Relational:JsonPropertyName", "roleId");
@@ -145,8 +140,7 @@ namespace InventoryManagementApplication.Migrations
 
                     b.Property<string>("UserName")
                         .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)")
-                        .HasAnnotation("Relational:JsonPropertyName", "userName");
+                        .HasColumnType("nvarchar(256)");
 
                     b.HasKey("Id");
 
@@ -159,6 +153,8 @@ namespace InventoryManagementApplication.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
+
+                    b.HasAnnotation("Relational:JsonPropertyName", "User");
                 });
 
             modelBuilder.Entity("InventoryManagementApplication.Models.InventoryTracker", b =>
@@ -296,57 +292,55 @@ namespace InventoryManagementApplication.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<bool?>("Completed")
+                        .HasColumnType("bit")
+                        .HasAnnotation("Relational:JsonPropertyName", "completed");
+
                     b.Property<int?>("DestinationStorageId")
                         .HasColumnType("int")
-                        .HasAnnotation("Relational:JsonPropertyName", "destination_storage_id");
+                        .HasAnnotation("Relational:JsonPropertyName", "destinationStorageId");
 
-                    b.Property<string>("DestinationStorageName")
-                        .HasColumnType("nvarchar(max)")
-                        .HasAnnotation("Relational:JsonPropertyName", "destination_storage_name");
-
-                    b.Property<string>("EmployeeNumber")
-                        .HasColumnType("nvarchar(max)")
-                        .HasAnnotation("Relational:JsonPropertyName", "employee_number");
+                    b.Property<DateTime?>("FinishedTime")
+                        .HasColumnType("datetime2")
+                        .HasAnnotation("Relational:JsonPropertyName", "finishedTime");
 
                     b.Property<int?>("InitialStorageId")
                         .HasColumnType("int")
-                        .HasAnnotation("Relational:JsonPropertyName", "initial_storage_id");
-
-                    b.Property<string>("IntitialStorageName")
-                        .HasColumnType("nvarchar(max)")
-                        .HasAnnotation("Relational:JsonPropertyName", "initial_storage_name");
-
-                    b.Property<DateTime?>("Moved")
-                        .HasColumnType("datetime2")
-                        .HasAnnotation("Relational:JsonPropertyName", "moved");
+                        .HasAnnotation("Relational:JsonPropertyName", "intitialStorageId");
 
                     b.Property<string>("Notes")
                         .HasColumnType("nvarchar(max)")
                         .HasAnnotation("Relational:JsonPropertyName", "notes");
 
+                    b.Property<DateTime?>("OrderTime")
+                        .HasColumnType("datetime2")
+                        .HasAnnotation("Relational:JsonPropertyName", "orderTime");
+
                     b.Property<int?>("ProductId")
                         .HasColumnType("int")
-                        .HasAnnotation("Relational:JsonPropertyName", "product_id");
+                        .HasAnnotation("Relational:JsonPropertyName", "productId");
 
-                    b.Property<string>("ProductName")
-                        .HasColumnType("nvarchar(max)")
-                        .HasAnnotation("Relational:JsonPropertyName", "product_name");
-
-                    b.Property<int?>("Quantity")
+                    b.Property<int>("ProductQuantity")
                         .HasColumnType("int")
-                        .HasAnnotation("Relational:JsonPropertyName", "quantity");
+                        .HasAnnotation("Relational:JsonPropertyName", "productQuantity");
 
                     b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(max)")
-                        .HasAnnotation("Relational:JsonPropertyName", "user_id");
-
-                    b.Property<string>("UserName")
-                        .HasColumnType("nvarchar(max)")
-                        .HasAnnotation("Relational:JsonPropertyName", "user_name");
+                        .HasColumnType("nvarchar(450)")
+                        .HasAnnotation("Relational:JsonPropertyName", "userId");
 
                     b.HasKey("Id");
 
+                    b.HasIndex("DestinationStorageId");
+
+                    b.HasIndex("InitialStorageId");
+
+                    b.HasIndex("ProductId");
+
+                    b.HasIndex("UserId");
+
                     b.ToTable("Statistics");
+
+                    b.HasAnnotation("Relational:JsonPropertyName", "statisticDestinationStorages");
                 });
 
             modelBuilder.Entity("InventoryManagementApplication.Models.Storage", b =>
@@ -386,7 +380,7 @@ namespace InventoryManagementApplication.Migrations
 
                     b.ToTable("Storages");
 
-                    b.HasAnnotation("Relational:JsonPropertyName", "storage");
+                    b.HasAnnotation("Relational:JsonPropertyName", "destinationStorage");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -516,6 +510,36 @@ namespace InventoryManagementApplication.Migrations
                     b.Navigation("Storage");
                 });
 
+            modelBuilder.Entity("InventoryManagementApplication.Models.Statistic", b =>
+                {
+                    b.HasOne("InventoryManagementApplication.Models.Storage", "DestinationStorage")
+                        .WithMany("StatisticDestinationStorages")
+                        .HasForeignKey("DestinationStorageId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.HasOne("InventoryManagementApplication.Models.Storage", "InitialStorage")
+                        .WithMany("StatisticInitialStorages")
+                        .HasForeignKey("InitialStorageId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.HasOne("InventoryManagementApplication.Models.Product", "Product")
+                        .WithMany("Statistics")
+                        .HasForeignKey("ProductId");
+
+                    b.HasOne("InventoryManagementApplication.Areas.Identity.Data.InventoryManagementUser", "User")
+                        .WithMany("StatisticUsers")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("DestinationStorage");
+
+                    b.Navigation("InitialStorage");
+
+                    b.Navigation("Product");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("InventoryManagementApplication.Areas.Identity.Data.InventoryManagementRole", null)
@@ -567,14 +591,25 @@ namespace InventoryManagementApplication.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("InventoryManagementApplication.Areas.Identity.Data.InventoryManagementUser", b =>
+                {
+                    b.Navigation("StatisticUsers");
+                });
+
             modelBuilder.Entity("InventoryManagementApplication.Models.Product", b =>
                 {
                     b.Navigation("InventoryTrackers");
+
+                    b.Navigation("Statistics");
                 });
 
             modelBuilder.Entity("InventoryManagementApplication.Models.Storage", b =>
                 {
                     b.Navigation("InventoryTrackers");
+
+                    b.Navigation("StatisticDestinationStorages");
+
+                    b.Navigation("StatisticInitialStorages");
                 });
 #pragma warning restore 612, 618
         }

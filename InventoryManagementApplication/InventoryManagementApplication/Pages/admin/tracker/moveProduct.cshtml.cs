@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 namespace InventoryManagementApplication.Pages.admin.tracker
 {
     [Authorize]
-    public class moveProductModel : PageModel
+    public class MoveProductModel : PageModel
     {
         private readonly UserManager<InventoryManagementUser> _userManager;
         private readonly SelectListHelpers _selectListHelpers;
@@ -21,7 +21,7 @@ namespace InventoryManagementApplication.Pages.admin.tracker
         private readonly ProductMovementHelpers _productMovementHelpers;
         private readonly StatisticManager _statisticManager;
 
-        public moveProductModel(UserManager<InventoryManagementUser> userManager,
+        public MoveProductModel(UserManager<InventoryManagementUser> userManager,
             SelectListHelpers selectListHelpers, TrackerManager trackerManager,
             ProductMovementHelpers productMovementHelpers,
             StatisticManager statisticManager)

@@ -11,45 +11,43 @@ namespace InventoryManagementApplication.Pages.admin.product
 {
     [Authorize]
     public class IndexModel : PageModel
-	{
-		private readonly ProductManager _manager;
+    {
+        private readonly ProductManager _productManager;
 
-		public IndexModel(ProductManager manager)
-		{
-			_manager = manager;
-		}
-		public IList<Product> Products { get; set; } = default!;
-		[BindProperty]
-		public bool IsDeletedToggle { get; set; }
-		public int ProductCount { get; set; }
+        public IndexModel(ProductManager productManager)
+        {
+            _productManager = productManager;
+        }
+        public IList<Product> Products { get; set; } = default!;
+        [BindProperty]
+        public bool IsDeletedToggle { get; set; }
+        public int ProductCount { get; set; }
 
-		public async Task OnGet(bool isDeletedToggle = false)
-		{
-
+        public async Task OnGet(bool isDeletedToggle = false)
+        {
             IsDeletedToggle = isDeletedToggle;
             Products = await LoadProducts(IsDeletedToggle);
-			ProductCount = Products.Count();         
-		}
+            ProductCount = Products.Count();
+        }
 
-		public async Task<IActionResult> OnPostAsync(int buttonId)
-		{
-			if(buttonId == 1)
-			{
-				IsDeletedToggle = !IsDeletedToggle;				
+        public async Task<IActionResult> OnPostAsync(int buttonId)
+        {
+            if (buttonId == 1)
+            {
+                IsDeletedToggle = !IsDeletedToggle;
                 return RedirectToPage("./Index", new { isDeletedToggle = IsDeletedToggle });
-			}
-			else
-			{
+            }
+            else
+            {
                 return RedirectToPage("./Create");
             }
-			
-		}
+        }
+
         private async Task<IList<Product>> LoadProducts(bool isDeleted)
         {
-            var products = await _manager.GetProductsAsync(isDeleted);
-                      
+            var products = await _productManager.GetProductsAsync(isDeleted);
+
             return products;
         }
     }
-
 }

@@ -13,13 +13,11 @@ namespace InventoryManagementApplication.Pages.admin.product
         private readonly ProductManager _productManager;
         private readonly TrackerManager _trackerManager;
         private readonly StorageManager _storageManager;
-        private readonly LogManager _activityLogManager;
-        public EditModel(ProductManager productManager, TrackerManager trackerManager, StorageManager storageManager, LogManager activityLogManager)
+        public EditModel(ProductManager productManager, TrackerManager trackerManager, StorageManager storageManager)
         {
             _productManager = productManager;
             _trackerManager = trackerManager;
             _storageManager = storageManager;
-            _activityLogManager = activityLogManager;
         }
 
         [TempData]
@@ -47,34 +45,46 @@ namespace InventoryManagementApplication.Pages.admin.product
             Product = product;
             SellAmount = 0;
             return Page();
-
         }
 
         public async Task<IActionResult> OnPostAsync()
         {
+            int id = Product.Id;
+            var productNoChanges = await _productManager.GetProductByIdAsync(id, null);
+            
+
             if (!ModelState.IsValid)
             {
                 return Page();
             }
 
-            var existingProductName = await _productManager.CheckProductName(Product.Name);
-            if (existingProductName == true)
+            if (productNoChanges.Name != Product.Name)
             {
-                StatusMessage = "Produkt finns med samma namn. Skriv in ett nytt namn";
-                return Page();
+                var existingProductName = await _productManager.CheckProductName(Product.Name);
+                if(existingProductName == true)
+                {
+                    TempData["StatusMessageError"] = "Produkt finns med samma namn. Skriv in ett nytt namn";
+                    return Page();
+                }
             }
 
             if (Product.IsDeleted == true)
             {
+                var existingProductName = await _productManager.CheckProductName(Product.Name);
+                if(existingProductName == true)
+                {
+                    TempData["StatusMessageError"] = "Produkt finns med samma namn. Skriv in ett nytt namn";
+                    return Page();
+                }
                 Product.IsDeleted = false;
-
+                TempData["StatusMessageSuccess"] = "Produkten har återskapats!";
             }
+
             PreviousProduct = await _productManager.GetProductByIdAsync(Product.Id, null);
             var defaultStorage = await _storageManager.GetDefaultStorageAsync();
             var tracker = await _trackerManager.GetTrackerByProductAndStorageAsync(Product.Id, defaultStorage.Id);
 
             InventoryTrackers = await _trackerManager.GetTrackerByProductOrStorageAsync(Product.Id, 0);
-
 
             if (InventoryTrackers != null && InventoryTrackers.Count > 0)
             {
@@ -93,7 +103,6 @@ namespace InventoryManagementApplication.Pages.admin.product
                     Product.CurrentStock += input;
                     defaultStorage.CurrentStock += input;
                     tracker.Quantity += input;
-
                 }
             }
             else
@@ -108,7 +117,6 @@ namespace InventoryManagementApplication.Pages.admin.product
 
                 await _trackerManager.EditTrackerAsync(tracker);
             }
-            //await _activityLogManager.LogActivityAsync(Product, EntityState.Modified, PreviousProduct);
 
             if (PreviousProduct.Name == Product.Name && PreviousProduct.Price == Product.Price && PreviousProduct.ArticleNumber == Product.ArticleNumber
                 && PreviousProduct.Description == Product.Description && PreviousProduct.CurrentStock == Product.CurrentStock)
