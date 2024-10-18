@@ -34,9 +34,6 @@ namespace InventoryManagementApplication.Pages
                 .ToList(); // Konvertera till lista och tilldela till Logs
 
             // H�mtar users och s�tter ihop firstName + lastName till UserFullName
-=======
-            // H�mtar users och s�tter ihop firstName + lastName till UserFullName
->>>>>>> d415b61 (More statistic and log design)
             var users = await _userManager.GetAllUsersAsync(null);
             var userDictionary = users.ToDictionary(
                 u => u.Id,
