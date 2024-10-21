@@ -71,9 +71,10 @@ namespace InventoryManagementApplication.Pages
         private async Task<List<UserWithRoleViewModel>> LoadUsers(bool? isDeleted)
         {
             var users = await _userManagerDAL.GetAllUsersAsync(isDeleted);
+            var orderUsers = users.OrderBy(x => x.LastName).ToList();
             UsersWithRoles = new List<UserWithRoleViewModel>();
             
-            foreach (var user in users)
+            foreach (var user in orderUsers)
             {
                 UsersWithRoles.Add(await CreateUserWithRoleViewModel(user));
             }

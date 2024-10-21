@@ -8,7 +8,7 @@ $(document).ready(function () {
     let select = document.getElementById('pageAmount');
     select.addEventListener('change', function () {
         rowsPerPage = parseInt(select.value);
-        currentPage = 1;
+        currentPage = select;
         paginateTable();
     });
 
