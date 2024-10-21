@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using InventoryManagementApplication.Models;
 using InventoryManagementApplication.Helpers;
+using Microsoft.AspNetCore.Identity;
 
 namespace InventoryManagementApplication.Pages
 {
@@ -32,7 +33,8 @@ namespace InventoryManagementApplication.Pages
 
 		public async Task OnGetAsync()
 		{
-			MovementPerPerson = await _statisticLeaderboardHelpers.CreateLeaderboardList(null);
+
+            MovementPerPerson = await _statisticLeaderboardHelpers.CreateLeaderboardList(null);
 		}
 	}
 }

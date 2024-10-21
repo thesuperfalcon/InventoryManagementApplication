@@ -34,9 +34,9 @@ namespace InventoryManagementApplication.Helpers
             }
 
             var toStorageTracker = await _trackerManager.GetTrackerByProductAndStorageAsync(productId, toStorageId) ??
-                await CreateToStorageTrackerAsync(productId, toStorageId, quantity);
+            await CreateToStorageTrackerAsync(productId, toStorageId, quantity);
 
-            UpdateTrackers(fromStorageTracker, toStorageTracker, quantity);
+            await UpdateTrackers(fromStorageTracker, toStorageTracker, quantity);
             await UpdateStoragesAsync(fromStorage, toStorage, quantity);
             await UpdateProductStockAsync(defaultStorage, fromStorageId, toStorageId, product, quantity);
             await CreateMovementStatisticAsync(productId, fromStorageId, toStorageId, quantity);
@@ -64,10 +64,12 @@ namespace InventoryManagementApplication.Helpers
             return newTracker;
         }
 
-        private void UpdateTrackers(InventoryTracker fromTracker, InventoryTracker toTracker, int quantity)
+        private async Task UpdateTrackers(InventoryTracker fromTracker, InventoryTracker toTracker, int quantity)
         {
             fromTracker.Quantity -= quantity;
             toTracker.Quantity += quantity;
+            await _trackerManager.EditTrackerAsync(fromTracker);
+
         }
 
         private async Task UpdateStoragesAsync(Storage fromStorage, Storage toStorage, int quantity)
