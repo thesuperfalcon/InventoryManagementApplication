@@ -1,267 +1,242 @@
-﻿
-
-h1 {
-    font-size: 2.5rem;
-    text-align: center;
-    margin-top: 20px;
+﻿h1 {
+  font-size: 2.5rem;
+  text-align: center;
+  margin-top: 20px;
 }
 
-/* Container för toggle */
 .toggle-switch {
-    display: flex;
-    background-color: #f0f0f0;
-    border-radius: 30px;
-    padding: 5px;
-    position: relative;
-    width: 250px; /* Anpassa bredden */
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  }
-  
-  /* Radio-knappar (osynliga) */
-  .toggle-switch input[type="radio"] {
-    display: none;
-  }
-  
-  /* Stil för alternativen (Statistik / Leaderboard) */
-  .toggle-option {
-    flex: 1;
-    text-align: center;
-    padding: 10px 20px;
-    border-radius: 30px;
-    cursor: pointer;
-    font-family: Arial, sans-serif;
-    font-size: 1rem;
-    transition: background-color 0.3s ease, color 0.3s ease;
-  }
-  
-  /* Standardfärg */
-  .toggle-option {
-    color: #333;
-    background-color: #f0f0f0;
-  }
-  
-  /* Aktiv stil när en radio är markerad */
-  input[type="radio"]:checked + label {
-    background-color: #333;
-    color: white;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  }
-
-  .toggle-container {
-    display: flex; /* Se till att använda flexbox */
-    margin-bottom: 20px;
-    justify-content: space-around; /* Placera innehållet längst till vänster */
+  display: flex;
+  background-color: #f0f0f0;
+  border-radius: 30px;
+  padding: 5px;
+  position: relative;
+  width: 250px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
+.toggle-switch input[type="radio"] {
+  display: none;
+}
+
+.toggle-option {
+  flex: 1;
+  text-align: center;
+  padding: 10px 20px;
+  border-radius: 30px;
+  cursor: pointer;
+  font-family: Arial, sans-serif;
+  font-size: 1rem;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.toggle-option {
+  color: #333;
+  background-color: #f0f0f0;
+}
+
+input[type="radio"]:checked + label {
+  background-color: #333;
+  color: white;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.toggle-container {
+  display: flex;
+  margin-bottom: 20px;
+  justify-content: space-around;
+}
 
 .input-group {
-    margin-bottom: 15px;
-    width: 100%;
+  margin-bottom: 15px;
+  width: 100%;
 }
 
-    .input-group input {
-        border-radius: 0.375rem;
-        border: 1px solid #ced4da;
-    }
+.input-group input {
+  border-radius: 0.375rem;
+  border: 1px solid #ced4da;
+}
 
-        #leaderboardContent {
-            min-height: 200px;  /* Sätt en minimumhöjd på leaderboard-content för att hålla en stadig layout även om tabellen är tom */
-        }
-        
-        .table-responsive {
-            min-height: 200px;  /* Gör så att tabellen alltid har en minsta höjd även när det inte finns data */
-        }
-        
+#leaderboardContent {
+  min-height: 200px;
+}
 
-        #leaderboardSearchInput {
-            display: flex;
-            align-items: center; 
-            width: 100%;  /* Gör att sökfältet tar hela bredden av sin container */
-            max-width: 694.08px;  /* Fixerad maxbredd för att undvika att den växer för stort */
-            min-width: 694.08px;/* Sätter en minimum bredd så att den inte krymper under denna */
-            flex-grow: 1;  /* Sökfältet växer tillsammans med sin container, men håller sig inom max och min bredd */
-        }
-        
+.table-responsive {
+  min-height: 200px;
+}
 
-label.toggle-option{
-           
-margin-bottom: .1rem;
-        }
+#leaderboardSearchInput {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  max-width: 694.08px;
+  min-width: 694.08px;
+  flex-grow: 1;
+}
 
+label.toggle-option {
+  margin-bottom: 0.1rem;
+}
 
 .sidebar {
-    background-color: #f1f1f1;
-    border-radius: 5px;
-    padding: 20px;
-    margin-top: 20px;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  background-color: #f1f1f1;
+  border-radius: 5px;
+  padding: 20px;
+  margin-top: 20px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-    .sidebar h4 {
-        color: #17a2b8;
-        margin-bottom: 10px;
-    }
+.sidebar h4 {
+  color: #17a2b8;
+  margin-bottom: 10px;
+}
 
-    .sidebar ul {
-        list-style-type: none;
-        padding: 0;
-    }
+.sidebar ul {
+  list-style-type: none;
+  padding: 0;
+}
 
-        .sidebar ul li {
-            padding-bottom: 10px;
-        }
+.sidebar ul li {
+  padding-bottom: 10px;
+}
 
-            .sidebar ul li code {
-                background-color: #007bff;
-                color: white;
-                padding: 2px 5px;
-                border-radius: 5px;
-            }
+.sidebar ul li code {
+  background-color: #007bff;
+  color: white;
+  padding: 2px 5px;
+  border-radius: 5px;
+}
 
-            .sidebar ul li ul {
-                padding-left: 20px;
-            }
+.sidebar ul li ul {
+  padding-left: 20px;
+}
 
 #tooltip {
-    cursor: pointer;
+  cursor: pointer;
 }
 
-    #tooltip:hover {
-        color: black;
-        text-decoration: none;
-    }
-
-
-
+#tooltip:hover {
+  color: black;
+  text-decoration: none;
+}
 
 h2.text-center {
-    font-size: 2.1rem;
-    color: #6c757d; /* Lätt grå färg */
-    margin-bottom: 20px; /* Skapar utrymme under datumet */
+  font-size: 2.1rem;
+  color: #6c757d;
+  margin-bottom: 20px;
 }
+
 .input-group input {
-    width: 100%; /* Se till att input tar hela bredden inom container */
+  width: 100%;
 }
-   
-    
-    .pagination-container .btn {
-        margin: 0 5px;
-        padding: 5px 10px;  /* Minska padding */
-        font-size: 1rem; /* Minska fontstorleken */
-    }
 
-    .search-bar-container {
-        display: flex;
-        align-items: center;     /* Se till att allt är vertikalt centrerat */
-        justify-content: flex-center; /* Håller sökfältet och frågetecknet nära varandra */
-        gap: 10px;               /* Skapar mellanrum mellan sökfältet och frågetecknet */
-        margin-bottom: 15px;     /* Ger lite utrymme under sökbaren */
-    }
+.pagination-container .btn {
+  margin: 0 5px;
+  padding: 5px 10px;
+  font-size: 1rem;
+}
 
-    .centered-container {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        max-width: 1200px; /* Sätter en maxbredd */
-        width: 100%;
-        margin: 0 auto; /* Detta hjälper till att centrera elementen horisontellt */
-    }
-    
+.search-bar-container {
+  display: flex;
+  align-items: center;
+  justify-content: flex-center;
+  gap: 10px;
+  margin-bottom: 15px;
+}
 
-    
-    #statisticsTable th,
+.centered-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+#statisticsTable th,
 #statisticsTable td {
-    text-align: center;       /* Centrerar texten horisontellt */
-    vertical-align: middle;   /* Centrerar innehållet vertikalt */
-    min-width: 150px;
+  text-align: center;
+  vertical-align: middle;
+  min-width: 150px;
 }
 
 .table-header th {
-    border: none; /* Tar bort kantlinjerna */
-    background-color: #343a40; /* Mörk bakgrundsfärg för bättre kontrast */
-    color: white; /* Vit textfärg för headern */
-    padding: 15px; /* Mer padding för bättre läsbarhet */
-    font-weight: bold;
-    text-align: center;
-    font-size: 1rem; /* Öka storleken något för tydlighet */
+  border: none;
+  background-color: #343a40;
+  color: white;
+  padding: 15px;
+  font-weight: bold;
+  text-align: center;
+  font-size: 1rem;
 }
 
 #leaderboardTable th,
 #leaderboardTable td {
-
-    text-align: center;       /* Centrerar texten horisontellt */
-    vertical-align: middle;   /* Centrerar innehållet vertikalt */
-    min-width: 400px;
+  text-align: center;
+  vertical-align: middle;
+  min-width: 400px;
 }
-/* Style för cheatsheet popup */
+
 .sidebar {
-    position: fixed;
-    right: 20px;
-    top: 100px;
-    width: 270px;
-    height: 400px; /* Begränsar höjden på cheatsheetet */
-    background-color: #f1f1f1;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-    z-index: 1000;
-    padding: 20px;
-    border-radius: 10px;
-    overflow-y: auto; /* Gör innehållet scrollbart */
-    overflow-x: hidden; /* Dölj horisontell rullning */
+  position: fixed;
+  right: 20px;
+  top: 100px;
+  width: 270px;
+  height: 400px;
+  background-color: #f1f1f1;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  padding: 20px;
+  border-radius: 10px;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
-/* Style för cheatsheet-innehållet */
 .sidebar-content {
-    padding: 20px;
+  padding: 20px;
 }
 
-/* Stil för den nestlade tabellen */
 .nested-table {
-    background-color: #5a5c5d; /* Ljusgrå bakgrund för den nestlade tabellen */
-    padding: 10px;
-    border-radius: 8px;
-    margin-top: 10px;
-    max-width: 95%; /* Begränsar bredden till 95% av container */
-    overflow-x: auto; /* Ger horisontell rullning om tabellen blir för bred */
-    margin-left: auto;
-    margin-right: auto; /* Centrerar tabellen */
-  }
-  
-  .nested-table:hover {
-    cursor: pointer; 
-    background-color: #616262; /* Ljusgrå bakgrund för den nestlade tabellen */
-    transition: background-color 0.5s ease, box-shadow 0.3s ease;
-  }
-  
-  .table-nested {
-    width: 100%; /* Gör den nestlade tabellen flexibel men inom max-bredd */
-    table-layout: fixed;
-    margin-left: 0px; /* Ingen extra marginal för att hålla storleken konsekvent */
-  
-  }
-  
-  .toggle-row {
-    cursor: pointer;
-  }
-  
-  .toggle-icon {
-    transition: transform 0.3s ease;
-    margin-right: 10px;
-    font-size: 1.5rem; /* Större ikon för tydligare interaktion */
-    color: #131414; /* Blå färg för ikonen */
-  }
+  background-color: #5a5c5d;
+  padding: 10px;
+  border-radius: 8px;
+  margin-top: 10px;
+  max-width: 95%;
+  overflow-x: auto;
+  margin-left: auto;
+  margin-right: auto;
+}
 
-    
-  .toggle-icon:hover {
-    transform: translateY(-2px);
-  }
+.nested-table:hover {
+  cursor: pointer;
+  background-color: #616262;
+  transition: background-color 0.5s ease, box-shadow 0.3s ease;
+}
 
+.table-nested {
+  width: 100%;
+  table-layout: fixed;
+  margin-left: 0px;
+}
 
-  
-  .toggle-icon.open {
-    transform: rotate(90deg); /* Roterad ikon vid öppning */
-  }
-  
-  .nested-table-row {
-    display: none;
-  
-  }
+.toggle-row {
+  cursor: pointer;
+}
+
+.toggle-icon {
+  transition: transform 0.3s ease;
+  margin-right: 10px;
+  font-size: 1.5rem;
+  color: #131414;
+}
+
+.toggle-icon:hover {
+  transform: translateY(-2px);
+}
+
+.toggle-icon.open {
+  transform: rotate(90deg);
+}
+
+.nested-table-row {
+  display: none;
+}

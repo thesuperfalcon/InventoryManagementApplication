@@ -96,11 +96,10 @@ h5 {
 }
 
 .text-danger {
-  display: block; /* Gör felmeddelandet till block-element så det hamnar under fältet */
+  display: block;
   margin-top: 5px;
 }
 
-/*Registering*/
 .registration-title {
   justify-content: center;
   text-align: center;

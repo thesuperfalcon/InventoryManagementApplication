@@ -4,40 +4,41 @@
     string isDeletedMessage = Model.IsDeletedToggle == false ? "Aktiva" : "Borttagna";
 }
 
-     <h1>Användaröversikt</h1>
-      <div class="container mt-4">
-     <h3>Antal (@isDeletedMessage) användare: @Model.UserCount</h3>
+<h1>Användaröversikt</h1>
+<div class="container mt-4">
+    <h3>Antal (@isDeletedMessage) användare: @Model.UserCount</h3>
 
-  <div class="row mb-0">
-    <div class="col-md-6 mb-0">
-        <div class="input-group shadow-sm">
-             <input id="userRolesSearchInput" type="text" class="form-control" placeholder="Sök anställningsnummer..." aria-label="Sök"/>
-         <button id="clearUserRolesInput" class="clearButton" type="button" onclick="clearUserRolesSearch()">Rensa</button>
-             <span class="input-group-text custom-color text-white">
-                <i class="bi bi-search"></i>
-            </span>
+    <div class="row mb-0">
+        <div class="col-md-6 mb-0">
+            <div class="input-group shadow-sm">
+                <input type="text" id="userRolesSearchInput" class="form-control" placeholder="Sök anställningsnummer.."
+                    aria-label="Sök" />
+                <button id="clearUserRolesInput" class="clearButton" type="button"
+                    onclick="clearUserRolesSearch()">Rensa</button>
+                <span class="input-group-text custom-color text-white">
+                    <i class="bi bi-search"></i>
+                </span>
+            </div>
         </div>
     </div>
-   </div>
-
 
 
     <div class="button-container">
 
-    <form method="post" asp-route-buttonId="1">
-        <input type="hidden" name="IsDeletedToggle" value="@Model.IsDeletedToggle.ToString().ToLower()" />
-       <button class="btn custom-secondary-btn" type="submit">
-            @if (Model.IsDeletedToggle)
-            {
-                <span>Aktiva Användare</span>
-            }
-            else
-            {
-                <span>Borttagna Användare</span>
-            }
-        </button>
-    </form>
-</div>
+        <form method="post" asp-route-buttonId="1">
+            <input type="hidden" name="IsDeletedToggle" value="@Model.IsDeletedToggle.ToString().ToLower()" />
+            <button class="btn custom-secondary-btn" type="submit">
+                @if (Model.IsDeletedToggle)
+                {
+                    <span>Aktiva Användare</span>
+                }
+                else
+                {
+                    <span>Borttagna Användare</span>
+                }
+            </button>
+        </form>
+    </div>
 
 
 
@@ -90,10 +91,10 @@
 </div>
     </div>
 
- @section Scripts{
+@section Scripts {
     <script src="~/js/userRoles.js" asp-append-version="true"></script>
     <script>
-             function clearUserRolesSearch() {
+        function clearUserRolesSearch() {
             const userRolesSearchInput = document.getElementById("userRolesSearchInput");
             userRolesSearchInput.value = "";
 
@@ -104,8 +105,8 @@
             userRolesSearchInput.dispatchEvent(event);
         }
     </script>
-} 
+}
 
 @section Styles {
-	<link rel="stylesheet" href="~/css/admin.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/admin.css" asp-append-version="true" />
 }

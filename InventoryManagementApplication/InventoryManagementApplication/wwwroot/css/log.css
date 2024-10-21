@@ -1,43 +1,41 @@
-
-a{
-color:white;
+a {
+  color: white;
 }
 
 table tbody tr {
-    height: 40px; /* Sätt höjden till det som passar din design */
+  height: 40px;
 }
 
 .table {
-    table-layout: fixed; /* Förhindrar att tabellen ändrar storlek baserat på innehållet */
-    width: 100%; /* Säkerställer att tabellen tar upp hela bredden av sin behållare */
+  table-layout: fixed;
+  width: 100%;
 }
 
-.table th, .table td {
-    white-space: nowrap; /* Hindrar text från att bryta på flera rader */
-    overflow: hidden; /* Klipper bort överflödigt innehåll */
-    text-overflow: ellipsis; /* Lägger till "..." om texten är för lång */
+.table th,
+.table td {
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
-
 
 .pagination-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
 }
 
 .pagination-container .btn {
-    margin: 0 5px;
-    padding: 5px 10px;
-    font-size: 1rem;
+  margin: 0 5px;
+  padding: 5px 10px;
+  font-size: 1rem;
 }
 
-.clear-logs{
-    padding: 5px 10px;
-    padding-left:10px;
+.clear-logs {
+  padding: 5px 10px;
+  padding-left: 10px;
 }
 
 .input-group-text {
-    border: none;
-    border-radius: 0 0.375rem 0.375rem 0;
+  border: none;
+  border-radius: 0 0.375rem 0.375rem 0;
 }
