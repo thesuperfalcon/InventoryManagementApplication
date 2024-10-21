@@ -15,14 +15,14 @@
             @foreach (var product in Model.Products)
             {
                 <li>
-                    <a href="javascript:void(0);" class="product-link" data-id="@product.Id">(ID: @product.Id) | @product.Name | @product.ArticleNumber </a>
+                    <a href="/ProductDetails/@product.Id">@product.Name | @product.ArticleNumber </a>
                 </li>
             }
         </ul>
     }
     else
     {
-        <p>Inga produkter hittades.</p>
+        <p class="text-muted">Inga produkter hittades.</p>
     }
 
     @if (Model.Storages.Any())
@@ -32,14 +32,14 @@
             @foreach (var storage in Model.Storages)
             {
                 <li>
-                    <a href="javascript:void(0);" class="storage-link" data-id="@storage.Id">@storage.Name</a>
+                    <a href="/StorageDetails/@storage.Id">@storage.Name</a>
                 </li>
             }
         </ul>
     }
     else
     {
-        <p>Inga lager hittades.</p>
+        <p class="text-muted">Inga lager hittades.</p>
     }
 
     @if (Model.Users.Any())
@@ -48,15 +48,27 @@
         <ul>
             @foreach (var user in Model.Users)
             {
-                <li>
-                    <a href="javascript:void(0);" class="user-link" data-id="@user.Id">@user.FirstName @user.LastName | @user.EmployeeNumber</a>
-                </li>
+                @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+                {
+                    <li>
+                        <a asp-page="/Statistic" asp-route-employeeNumber="@user.EmployeeNumber">
+                            @user.FirstName @user.LastName | @user.EmployeeNumber - Statistik
+                        </a> |
+                        <a href="UserInfo/@user.Id"> Användarprofil</a>
+                    </li>
+                }
+                else
+                {
+                    <a asp-page="/Statistic" asp-route-employeeNumber="@user.EmployeeNumber">
+                        @user.FirstName @user.LastName | @user.EmployeeNumber - Statistik
+                    </a>
+                }
             }
         </ul>
     }
     else
     {
-        <p>Inga användare hittades.</p>
+        <p class="text-muted">Inga användare hittades.</p>
     }
 }
 else
