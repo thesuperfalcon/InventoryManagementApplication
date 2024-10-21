@@ -1,4 +1,4 @@
-﻿let rowsPerPage = 10;
+﻿let rowsPerPage = 12;
 let currentPage = 1;
 let originalRows = [];
 let filteredRows = [];
@@ -14,18 +14,17 @@ function toggleHelp() {
 }
 
 $(document).ready(function () {
-
-    let select = document.getElementById('pageAmount');
-    select.addEventListener('change', function () {
-        rowsPerPage = parseInt(select.value);
-        currentPage = 1;
-        paginateTable();
-    });
     originalRows = Array.from(document.querySelectorAll("#myTable tr"));
     filteredRows = [...originalRows];
 
     updateVisibleRows(filteredRows);
     paginateTable();
+
+    let pageSelector = document.getElementById('pageSelector');
+    pageSelector.addEventListener('change', function () {
+        currentPage = parseInt(pageSelector.value);
+        paginateTable();
+    });
 
 
     $("#leaderboardSearchInput").on("input", function () {
@@ -88,6 +87,8 @@ $(document).ready(function () {
         }
         updateVisibleRows(filterRows);
         paginateTable();
+        updatePageSelector(); // Lägg till detta anrop
+
 
         console.log(`Söktermer: ${searchTerms.join(", ")}`);
     });
@@ -163,8 +164,9 @@ function paginateTable() {
     const start = (currentPage - 1) * rowsPerPage;
     const end = start + rowsPerPage;
 
-    $("#myTable tr").hide();
+    $("#myTable tr").hide(); // Göm alla rader
 
+    // Visa de filtrerade raderna för den aktuella sidan
     visibleRows.forEach((row, index) => {
         if (index >= start && index < end) {
             $(row).show();
@@ -173,6 +175,28 @@ function paginateTable() {
 
     const pageNumberElement = document.getElementById("pageNumber");
     pageNumberElement.innerText = `Page ${currentPage} of ${Math.ceil(filteredRows.length / rowsPerPage)}`;
+
+    updatePageSelector(); // Anropa denna funktion här om antalet sidor ändras
+}
+
+
+function updatePageSelector() {
+    const pageSelector = document.getElementById('pageSelector');
+    const totalPages = Math.ceil(filteredRows.length / rowsPerPage);
+
+    // Clear existing options
+    pageSelector.innerHTML = '';
+
+    // Add options for each page
+    for (let i = 1; i <= totalPages; i++) {
+        const option = document.createElement('option');
+        option.value = i;
+        option.textContent = `Page ${i}`;
+        pageSelector.appendChild(option);
+    }
+
+    // Set current page in selector
+    pageSelector.value = currentPage;
 }
 
 
