@@ -1,5 +1,4 @@
 document.addEventListener("DOMContentLoaded", function () {
-    // Kontrollera om accordion1 och panel1 existerar innan vi försöker lägga till event listeners
     var acc1 = document.getElementById("accordion1");
     var panel1 = document.getElementById("panel1");
 
@@ -14,7 +13,6 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    // Kontrollera om accordion2 och panel2 existerar innan vi försöker lägga till event listeners
     var acc2 = document.getElementById("accordion2");
     var panel2 = document.getElementById("panel2");
 
@@ -29,5 +27,17 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
+    var acc3 = document.getElementById("accordion3");
+    var panel3 = document.getElementById("panel3");
 
+    if (acc3 && panel3) {
+        acc3.addEventListener("click", function () {
+            this.classList.toggle("active");
+            if (panel3.style.display === "block") {
+                panel3.style.display = "none";
+            } else {
+                panel3.style.display = "block";
+            }
+        }); 
+    }
 });

@@ -119,23 +119,6 @@
 </div>
 
 @section Scripts {
-    <script>
-document.addEventListener("DOMContentLoaded", function () {
-    var acc3 = document.getElementById("accordion3");
-    var panel3 = document.getElementById("panel3");
-
-    if (acc3 && panel3) {
-        acc3.addEventListener("click", function () {
-            this.classList.toggle("active");
-            if (panel3.style.display === "block") {
-                panel3.style.display = "none";
-            } else {
-                panel3.style.display = "block";
-            }
-        });
-    }
-});
-</script>
+ <script src="~/js/accordions.js"></script>
     <script src="~/js/searchSortFilter.js"></script>
- 
 }
