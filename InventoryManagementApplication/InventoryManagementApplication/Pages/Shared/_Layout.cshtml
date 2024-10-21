@@ -1,147 +1,142 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - InventoryManagementApplication</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">   
-    <link rel="stylesheet" href="~/InventoryManagementApplication.styles.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/css/reportpage.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/css/admin.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-@*     <link href="https://fonts.googleapis.com/css?family=Montserrat&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css"> *@
-    <link href="~/css/overview.css" rel="stylesheet" />
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>@ViewData["Title"] - InventoryManagementApplication</title>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+	<link rel="stylesheet" href="~/InventoryManagementApplication.styles.css" asp-append-version="true" />
+	<link rel="stylesheet" href="~/css/reportpage.css" asp-append-version="true" />
+	<link rel="stylesheet" href="~/css/admin.css" asp-append-version="true" />
+	<link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+	<link href="~/css/overview.css" rel="stylesheet" />
 
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-lg">
-            <div class="container-fluid">
-                <!-- Logo -->
-                <a class="navbar-brand" href="/">
-                    <img src="/images/logos/ssabLogo.png" alt="ssabLogo" class="d-inline-block align-text-top custom-logo ms-3">
-                </a>
-                <!-- Toggler for mobile screens -->
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
+	<header>
+		<nav class="navbar navbar-expand-lg">
+			<div class="container-fluid">
 
-                <!-- Navbar links -->
-                <div class="navbar-collapse collapse" id="navbarSupportedContent">
-                    <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
+				<!-- Logo -->
+				<a class="navbar-brand" href="/">
+					<img src="/images/logos/ssabLogo.png" alt="ssabLogo" class="d-inline-block align-text-top custom-logo ms-3">
+				</a>
 
-                        @if (User.Identity.IsAuthenticated)
-                        {
-                            @* Om användaren är Admin *@
-                            @if (User.IsInRole("Admin"))
-                            {
-                                <li class="nav-item dropdown">
-                                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Admin</a>
-                                    <ul class="dropdown-menu">
-                                        <li><a class="dropdown-item" id="register" asp-area="Identity" asp-page="/Account/Register">Registrera användare</a></li>
-                                        <li><a class="dropdown-item" asp-area="" asp-page="/UsersRoles">Användare och roller</a></li>
-                                    </ul>
-                                </li>
-                            }
+				<!-- Toggler for mobile screens -->
+				<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent">
+					<span class="navbar-toggler-icon"></span>
+				</button>
 
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Produkthantering</a>
-                                <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item" asp-area="" asp-page="/admin/product/index">Produktkatalog</a></li>
-                                    <li><a class="dropdown-item" asp-area="" asp-page="/admin/tracker/index">Flytta produkt</a></li>
-                                </ul>
-                            </li>
+				<!-- Navbar links -->
+				<div class="navbar-collapse collapse" id="navbarSupportedContent">
+					<ul class="navbar-nav mx-auto mb-2 mb-lg-0">
 
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Lager</a>
-                                <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item" asp-page="/admin/storage/index">Lagerplatser</a></li>
-                                    <li><a class="dropdown-item" asp-page="/reportPage">Lagersaldo</a></li>
-                                </ul>
-                            </li>
+						@if (User.Identity.IsAuthenticated)
+						{
+							@* Om användaren är Admin *@
+							@if (User.IsInRole("Admin"))
+							{
+								<li class="nav-item dropdown">
+									<a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Admin</a>
+									<ul class="dropdown-menu">
+										<li><a class="dropdown-item" id="register" asp-area="Identity" asp-page="/Account/Register">Registrera användare</a></li>
+										<li><a class="dropdown-item" asp-area="" asp-page="/UsersRoles">Användare och roller</a></li>
+									</ul>
+								</li>
+							}
 
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Data</a>
-                                <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item" asp-area="" asp-page="/log">Loggning</a></li>
-                                    <li><a class="dropdown-item" asp-area="" asp-page="/statistic">Statistik</a></li>
-                                    <li><a class="dropdown-item" asp-area="" asp-page="/overview">Översikt</a></li>
-                                </ul>
-                            </li>
-                        }
-                    </ul>
+							<li class="nav-item dropdown">
+								<a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Produkthantering</a>
+								<ul class="dropdown-menu">
+									<li><a class="dropdown-item" asp-area="" asp-page="/admin/product/index">Produktkatalog</a></li>
+									<li><a class="dropdown-item" asp-area="" asp-page="/admin/tracker/index">Flytta produkt</a></li>
+								</ul>
+							</li>
 
-                    <!-- SearchBar -->
-                    @if (User.Identity.IsAuthenticated)
-                    {
-                        <div class="d-flex ms-auto">
-                            <form method="get" action="/SearchBar" class="search-form" id="searchForm">
-                                <input type="search" id="searchInputNav" name="query" placeholder="Sök..." aria-label="Search" class="form-control search-input me-2" 
-                                onkeyup="fetchSuggestions()" autocomplete="off" />
-                                <button type="submit" class="btn search-button">
-                                    <i class="bi bi-search"></i>
-                                </button>
-                                <ul id="suggestionsList" class="list-group position-absolute"></ul>
-                            </form>
-                        </div>
-                    }
-                    <partial name="_LoginPartial" />
-                </div>
-            </div>
-        </nav>
-    </header>
-    <div class="container">
-        <partial name="_CookieConsentPartial" />
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
+							<li class="nav-item dropdown">
+								<a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Lager</a>
+								<ul class="dropdown-menu">
+									<li><a class="dropdown-item" asp-page="/admin/storage/index">Lagerplatser</a></li>
+									<li><a class="dropdown-item" asp-page="/reportPage">Lagersaldo</a></li>
+								</ul>
+							</li>
 
-    <!-- Footer -->
-    <footer class="bg-light">
-        <div class="container py-4 footer-container">
-            <div class="row">
-                <div class="col-md-6 text-center text-md-start">
-                    &copy; 2024 - Lagerhanteringsapplikation
-                </div>
-                <div class="col-md-6 text-center text-md-end">
-                    <a class="nav-link" asp-area="" asp-page="/AboutUs">Om oss</a>
-                    <a class="nav-link" href="/AboutUs#team-section">Kontakta oss</a>
-                    <a class="nav-link" asp-area="" asp-page="/Privacy">Integritetspolicy</a>
-                    <a href="https://github.com/thesuperfalcon/InventoryManagementAPI.git" class="nav-link">API <i class="bi bi-github"></i></a>
-                    <a href="https://github.com/thesuperfalcon/InventoryManagementApplication.git" class="nav-link">WebApp <i class="bi bi-github"></i></a>
-                </div>
-            </div>
-        </div>
-    </footer>
-    <!-- jQuery 3.6.0 -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+							<li class="nav-item dropdown">
+								<a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Data</a>
+								<ul class="dropdown-menu">
+									<li><a class="dropdown-item" asp-area="" asp-page="/log">Loggning</a></li>
+									<li><a class="dropdown-item" asp-area="" asp-page="/statistic">Statistik</a></li>
+									<li><a class="dropdown-item" asp-area="" asp-page="/overview">Översikt</a></li>
+								</ul>
+							</li>
+						}
+					</ul>
 
-    <!-- Bootstrap 5.3.3 JS (only one version) -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+					<!-- SearchBar -->
+					@if (User.Identity.IsAuthenticated)
+					{
+						<div class="d-flex ms-auto">
+							<form method="get" action="/SearchBar" class="search-form" id="searchForm">
+								<input type="search" id="searchInputNav" name="query" placeholder="Sök..." aria-label="Search" class="form-control search-input me-2"
+									   onkeyup="fetchSuggestions()" autocomplete="off" />
+								<button type="submit" class="btn search-button">
+									<i class="bi bi-search"></i>
+								</button>
+								<ul id="suggestionsList" class="list-group position-absolute"></ul>
+							</form>
+						</div>
+					}
+					<partial name="_LoginPartial" />
+				</div>
+			</div>
+		</nav>
+	</header>
+	<div class="container">
+		<partial name="_CookieConsentPartial" />
+		<main role="main" class="pb-3">
+			@RenderBody()
+		</main>
+	</div>
 
-    <!-- jQuery validation scripts -->
-    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
-    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/localization/messages_sv.js"></script>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+	<!-- Footer -->
+	<footer class="bg-light">
+		<div class="container py-4 footer-container">
+			<div class="row">
+				<div class="col-md-6 text-center text-md-start">
+					&copy; 2024 - Lagerhanteringsapplikation
+				</div>
+				<div class="col-md-6 text-center text-md-end">
+					<a class="nav-link" asp-area="" asp-page="/AboutUs">Om oss</a>
+					<a class="nav-link" href="/AboutUs#team-section">Kontakta oss</a>
+					<a class="nav-link" asp-area="" asp-page="/Privacy">Integritetspolicy</a>
+					<a href="https://github.com/thesuperfalcon/InventoryManagementAPI.git" class="nav-link">API <i class="bi bi-github"></i></a>
+					<a href="https://github.com/thesuperfalcon/InventoryManagementApplication.git" class="nav-link">WebApp <i class="bi bi-github"></i></a>
+				</div>
+			</div>
+		</div>
+	</footer>
+
+	<!-- jQuery 3.6.0 -->
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+	<!-- Bootstrap 5.3.3 JS (only one version) -->
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+
+	<!-- jQuery validation scripts -->
+	<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+	<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/localization/messages_sv.js"></script>
+	<script src="~/lib/jquery/dist/jquery.min.js"></script>
 
 
-    <!-- Custom Scripts -->
-    <script src="~/js/site.js" asp-append-version="true"></script>
-    <script src="~/js/searchBarNav.js" asp-append-version="true"></script>
+	<!-- Custom Scripts -->
+	<script src="~/js/site.js" asp-append-version="true"></script>
+	<script src="~/js/searchBarNav.js" asp-append-version="true"></script>
 
-    <!-- ??? Scripts se över vad som behövs och inte. -->
-    @* <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.min.js"></script> *@
-    @* <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.11/jquery.validate.unobtrusive.min.js"></script> *@
-    @* <script src="https://ajax.aspnetcdn.com/ajax/jquery/3.5.1/jquery.min.js"></script> *@
-    @* <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> *@
 
-    @* <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script> *@
 
-    @await RenderSectionAsync("Scripts", required: false)
+	@await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
