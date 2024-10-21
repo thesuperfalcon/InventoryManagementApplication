@@ -213,6 +213,10 @@ p {
     font-size: 0.9rem;
 }
 
+.center-text {
+    text-align: center;
+}
+
 
 footer {
     background-color: #f8f9fa;
