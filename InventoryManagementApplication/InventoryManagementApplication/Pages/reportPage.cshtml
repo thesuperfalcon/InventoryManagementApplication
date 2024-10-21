@@ -85,45 +85,45 @@
                             <tbody>
                                 @if (storage.InventoryTrackers.Any())
                                 {
-                                    @foreach (var product in storage.InventoryTrackers)
+                                    @foreach (var tracker in storage.InventoryTrackers)
                                     {
                                         <tr>
                                             <td>
-                                                @if (product.Product == null || string.IsNullOrEmpty(product.Product.Name))
+                                                @if (tracker.Product == null || string.IsNullOrEmpty(tracker.Product.Name))
                                                 {
                                                     <span>Data finns ej</span>
                                                 }
                                                 else
                                                 {
-                                                    <a asp-page="/ProductDetails" asp-route-id="@product.Product.Id" class="custom-link">
-                                                        @product.Product.Name
+                                                    <a asp-page="/ProductDetails" asp-route-id="@tracker.Product.Id" class="custom-link">
+                                                        @tracker.Product.Name
                                                     </a>
                                                 }
                                             </td>
                                             <td>
-                                                @if (product.Product?.ArticleNumber == null)
+                                                @if (tracker.Product?.ArticleNumber == null)
                                                 {
                                                     <span>Data finns ej</span>
                                                 }
                                                 else
                                                 {
-                                                    <span>@product.Product.ArticleNumber</span>
+                                                    <span>@tracker.Product.ArticleNumber</span>
                                                 }
                                             </td>
                                             <td>
-                                                @if (product.Quantity == null || product.Quantity == 0)
+                                                @if (tracker.Quantity == null || tracker.Quantity == 0)
                                                 {
                                                     <span>Data finns ej</span>
                                                 }
                                                 else
                                                 {
-                                                    <span>@product.Quantity</span>
+                                                    <span>@tracker.Quantity</span>
                                                 }
                                             </td>
                                             <td>
-                                                @if (product.Modified.HasValue)
+                                                @if (tracker.Modified.HasValue)
                                                 {
-                                                    <span>@product.Modified</span>
+                                                    <span>@tracker.Modified</span>
                                                 }
                                                 else
                                                 {

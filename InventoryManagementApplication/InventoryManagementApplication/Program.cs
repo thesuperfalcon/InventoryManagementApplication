@@ -57,7 +57,6 @@ namespace InventoryManagementApplication
             })
             .AddRoles<InventoryManagementRole>()  //L�gger till roller
             .AddEntityFrameworkStores<InventoryManagementApplicationContext>();
-
             // L�gger till Admin-policy
             builder.Services.AddAuthorization(options =>
             {
