@@ -19,6 +19,7 @@ namespace InventoryManagementApplication.Data;
     public DbSet<InventoryTracker> InventoryTracker { get; set; }
     public DbSet<Statistic> Statistics { get; set; }
     public DbSet<Log> Logs { get; set; }
+    public DbSet<Developer> Developers { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
