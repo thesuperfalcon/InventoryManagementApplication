@@ -56,80 +56,42 @@ $(document).ready(function () {
             $("#leaderboardTable thead").hide();
         }
     });
-
     $("#searchInput").on("input", function () {
-        var value = $(this).val().toLowerCase();
+        var searchTerms = $(this).val().toLowerCase().split(',').map(term => term.trim());
+        var filterRows = [];
 
-        var cleanedValue = value.replace(/[.,]+$/, '');
-        console.log(`Inmatat värde (rensat): ${cleanedValue}`);
+        for (var i = 0; i < originalRows.length; i++) {
+            var row = originalRows[i];
+            var rowText = Array.from(row.cells).map(cell => cell.innerText.toLowerCase()).join(" ");
+            $(row).css('display', 'table-row');
 
-        var filters = cleanedValue.split(',').map(item => item.trim()).filter(item => item);
-        console.log(`Filter: ${JSON.stringify(filters)}`);
-
-        if (filters.length === 0) {
-            filteredRows = originalRows;
-            console.log("Inga filter, visar alla rader");
-        } else {
-            filteredRows = originalRows.filter(row => {
-                if (filters.length === 1 && !filters[0].includes(':')) {
-                    return (
-                        row.cells[1].innerText.toLowerCase().includes(filters[0]) ||
-                        row.cells[2].innerText.toLowerCase().includes(filters[0]) ||
-                        row.cells[3].innerText.includes(filters[0]) ||
-                        row.cells[4].innerText.toLowerCase().includes(filters[0]) ||
-                        row.cells[5].innerText.toLowerCase().includes(filters[0]) ||
-                        row.cells[6].innerText.includes(filters[0])
-                    );
+            var rowMatches = searchTerms.every(term => {
+                if (term.startsWith('från:')) {
+                    var storageTerm = term.replace('från:', '').trim();
+                    return row.cells[4].innerText.toLowerCase().startsWith(storageTerm); 
+                } else if (term.startsWith('till:')) {
+                    var storageTerm = term.replace('till:', '').trim();
+                    return row.cells[5].innerText.toLowerCase().startsWith(storageTerm); 
+                } else if (!isNaN(term) && term.length > 0) {
+                    return rowText.split(' ').some(cellText => cellText.startsWith(term));
+                } else {
+                    return rowText.indexOf(term) >= 0;
                 }
-
-                return filters.every(filter => {
-                    let [key, searchTerm] = filter.split(':').map(item => item.trim());
-                    searchTerm = searchTerm.toLowerCase();
-
-                    const exactMatch = searchTerm.endsWith('.');
-                    if (exactMatch) {
-                        searchTerm = searchTerm.slice(0, -1).trim();
-                    }
-
-                    console.log(`Nyckel: ${key}, Sökterm: ${searchTerm}, Exakt matchning: ${exactMatch}`);
-
-                    switch (key) {
-                        case "#a":
-                            return exactMatch
-                                ? row.cells[1].innerText.toLowerCase() === searchTerm
-                                : row.cells[1].innerText.toLowerCase().includes(searchTerm);
-                        case "#p":
-                            return exactMatch
-                                ? row.cells[2].innerText.toLowerCase() === searchTerm
-                                : row.cells[2].innerText.toLowerCase().includes(searchTerm);
-                        case "#pf":
-                            return exactMatch
-                                ? row.cells[3].innerText === searchTerm
-                                : row.cells[3].innerText.includes(searchTerm);
-                        case "#ff":
-                            return exactMatch
-                                ? row.cells[4].innerText.toLowerCase() === searchTerm
-                                : row.cells[4].innerText.toLowerCase().includes(searchTerm);
-                        case "#ft":
-                            return exactMatch
-                                ? row.cells[5].innerText.toLowerCase() === searchTerm
-                                : row.cells[5].innerText.toLowerCase().includes(searchTerm);
-                        case "#n":
-                            return exactMatch
-                                ? row.cells[6].innerText === searchTerm
-                                : row.cells[6].innerText.includes(searchTerm);
-                        default:
-                            return true;
-                    }
-                });
             });
-        }
 
-        console.log(`Filtrerade rader: ${filteredRows.length}`);
-        updateVisibleRows(filteredRows);
-        currentPage = 1;
+            if (!rowMatches) {
+                $(row).css('display', 'none');
+            }
+            else {
+                filterRows.push(row);
+            }
+        }
+        updateVisibleRows(filterRows);
         paginateTable();
+
+        console.log(`Söktermer: ${searchTerms.join(", ")}`);
     });
+
 
     $("#prevPage").on("click", function () {
         if (currentPage > 1) {
@@ -268,39 +230,50 @@ function clearLeaderboardSearch() {
     leaderboardSearchInput.dispatchEvent(event);
 }
 
-function setMovementAttributes(employeeNumber, productName, quantity, initialStorageName, destinationStorageName, moved) {
+function setMovementAttributes(employeeNumber, value, isInitialStorage = false, isDestinationStorage = false) {
     const searchInput = document.getElementById("searchInput");
-
-    const leaderboardSearchInput = document.getElementById("leaderboardSearchInput");
-    const statisticsSearchInput = document.getElementById("searchInput");
 
     resetTableVisibility("leaderboardTable");
     resetTableVisibility("statisticsTable");
 
     const filters = [];
-    if (employeeNumber) filters.push(`#a: ${employeeNumber}.,`);
-    if (productName) filters.push(`#p: ${productName}.,`);
-    if (quantity) filters.push(`#pf: ${quantity}.,`);
-    if (initialStorageName) filters.push(`#ff: ${initialStorageName}.,`);
-    if (destinationStorageName) filters.push(`#ft: ${destinationStorageName}.,`);
-    if (moved) filters.push(`#n: ${moved},`);
 
-    searchInput.value = filters.join(' ');
+    if (employeeNumber) filters.push(employeeNumber + ', ');
+
+    if (isInitialStorage) {
+        filters.push('från: ' + value + ', '); 
+    } else if (isDestinationStorage) {
+        filters.push('till: ' + value + ', '); 
+    } else if (value) {
+        const datePattern = /^\d{4}-\d{2}-\d{2}$/;
+        if (datePattern.test(value)) {
+            filters.push(value + ", ");
+        } else {
+            filters.push(value + ', ');
+        }
+    }
+
+    searchInput.value = filters.join('');
 
     const event = new Event('input', {
         bubbles: true,
         cancelable: true,
     });
+
     const isStatisticsVisible = document.getElementById("content1").style.display !== "none";
 
     if (isStatisticsVisible) {
         toggleContent();
     }
+
     searchInput.dispatchEvent(event);
 
     console.log("Söksträng:", searchInput.value);
-
 }
+
+
+
+
 
 function resetTableVisibility(tableId) {
     const table = document.getElementById(tableId);
@@ -313,15 +286,11 @@ function resetTableVisibility(tableId) {
 
 
 $(document).ready(function () {
-    // Retrieve the employee number from the model
     var employeeNumber = document.getElementById('emplyeeNumber').value;
 
-    // Check if the employee number is available
     if (employeeNumber) {
-        // Set the search input with the appropriate format
         $('#searchInput').val(`#a:${employeeNumber}.`);
 
-        // Create and dispatch an input event to trigger filtering
         var event = new Event('input', {
             bubbles: true,
             cancelable: true,
