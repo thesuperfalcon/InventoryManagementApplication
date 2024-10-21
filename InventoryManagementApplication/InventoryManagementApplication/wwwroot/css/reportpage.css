@@ -1,21 +1,19 @@
- a.custom-link {
-        text-decoration: none; 
-        color: inherit; 
-        font-weight: bold; 
-        display: inline-block;
-        padding: 2px 5px;
-        transition: background-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-    }
+a.custom-link {
+  text-decoration: none; 
+  color: inherit; 
+  font-weight: bold; 
+  display: inline-block;
+  cursor: pointer; 
 
-    a.custom-link:hover {
-        background-color: #9b9999; 
-        border-radius: 5px;
-        padding: 2px 5px; 
-        text-decoration: none; 
-        cursor: pointer; 
-        transition: background-color 0.2s ease-in-out; 
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
-    }
+  padding: 2px 5px;
+}
+
+a.custom-link:hover {
+  color: #676767; /* Ändrar textfärgen vid hover */
+  cursor: pointer; 
+  text-decoration: none;
+   transform: translateY(-2px);
+}
 
   button#toggleAll, button[data-bs-target="#cheatsheetModal"] {
     background-color: #6c757d;
@@ -30,6 +28,7 @@
   
   button#toggleAll:hover, button[data-bs-target="#cheatsheetModal"]:hover {
     background-color: #5a6268;
+    cursor: pointer; 
     transform: translateY(-2px);
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
   }
@@ -40,12 +39,12 @@
     margin-bottom:8px;
     background-color: #f44336;
     color: white;
-   
     cursor: pointer;
     transition: background-color 0.3s ease;
   }
   
   button#clearSearch:hover {
+    cursor: pointer; 
     background-color: #d32f2f;
   }
 
@@ -67,6 +66,7 @@
   }
   
   .pagination a:hover {
+    cursor: pointer; 
     background-color: #555d64;
     color: white;
     transition: background-color 0.3s ease;
@@ -78,39 +78,48 @@
   }
   
   button:hover {
+    cursor: pointer; 
     background-color: #555d64;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   }
-  
-#helpButton {
-  text-align: center;
-  padding: 0;
-  border-radius: 50%;
-  width: 30px;
-  height: 30px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-width: 0;
-  background-color:#6c757d;
-  border:none;
-  margin-left:10px ;
+ 
+
+/* Stil för den nestlade tabellen */
+.nested-table {
+  background-color: #5a5c5d; /* Ljusgrå bakgrund för den nestlade tabellen */
+  padding: 10px;
+  border-radius: 8px;
+  margin-top: 10px;
 }
 
-
-
-#helpButton i {
-  margin: 0;
-  font-size: 1rem; /* Ändra ikonens storlek */
-  min-width: 20px;
-  min-height: 20px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color:   #6c757d;
-  color:white;
+.nested-table:hover {
+  cursor: pointer; 
+  background-color: #616262; /* Ljusgrå bakgrund för den nestlade tabellen */
+  transition: background-color 0.5s ease, box-shadow 0.3s ease;
 }
 
-#helpButton:hover {
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+.table-nested {
+  margin-left: 0px; /* Ingen extra marginal för att hålla storleken konsekvent */
+  width: 100%; /* Tabellens bredd anpassas till container */
+
+}
+
+.toggle-row {
+  cursor: pointer;
+}
+
+.toggle-icon {
+  transition: transform 0.3s ease;
+  margin-right: 10px;
+  font-size: 1.5rem; /* Större ikon för tydligare interaktion */
+  color: #131414; /* Blå färg för ikonen */
+}
+
+.toggle-icon.open {
+  transform: rotate(90deg); /* Roterad ikon vid öppning */
+}
+
+.nested-table-row {
+  display: none;
+
 }

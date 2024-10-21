@@ -4,14 +4,19 @@
     font-weight: 600;
     text-align: center;
 }
-a {
-    color: inherit; /* Behåller samma textfärg som omgivande text */
-    text-decoration: none; /* Tar bort understrykningen för länkar */
+
+h5.show-data {
+    color: rgb(54, 54, 54); /* Ännu tydligare och mörkare textfärg */
+    font-size: 1.2rem; /* Öka textstorleken något mer för tydlighet */
+    font-weight: 600; /* Gör texten fetare för bättre läsbarhet */
+    text-align: center; /* Håller texten centrerad */
+    text-decoration: none;
+    line-height: 1.5; /* Förbättra avståndet mellan textraderna */
 }
 
-a:hover {
-    color: #0056b3; /* En mörkblå färg för att indikera hover-tillstånd */
-    text-decoration: underline; /* Understryk länken vid hover för bättre synlighet */
+h5.show-data:hover {
+    color: rgb(151, 150, 150); /* Färgen ändras vid hover, men utan understrykning */
+    text-decoration: none; /* Se till att understrykning är borttagen vid hover */
 }
 
 .bg-primary {
@@ -26,21 +31,38 @@ a:hover {
     background-color: #ffc107 !important;
 }
 
+.row {
+    display: flex;
+    flex-wrap: wrap;
+}
+
 .card-body {
     padding: 15px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center; 
+    flex: 1;
+
 }
 
 .card {
     min-height: 450px;
     border-radius: 10px;
     border: none;
+    flex: 1; 
+    min-height: 180px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 
 .card-body .card {
     box-shadow: none;
     border-radius: 5px;
     border: 1px solid #e7e7e7;
-
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .shadow-lg {
@@ -49,5 +71,9 @@ a:hover {
 
 .card-body a{
     text-decoration: none;
+    color: inherit; 
 }
 
+.card-body a:hover {
+    text-decoration: none; /* Se till att länken inte får en understrykning vid hover */
+}

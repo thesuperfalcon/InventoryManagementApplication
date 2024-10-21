@@ -4,12 +4,12 @@
 }
 
 <h1>Lagersaldo</h1>
-<div class="container mt-5">
-  <div class="row mb-0">
+<div class="container mt-4">
+  <div class="row mb-3">
     <div class="col-md-6">
         <div class="input-group">
-   <input id="searchInput" type="text" class="form-control" placeholder="Sök..."  aria-label="Sök"/>
-                    <button id="clearSearch" onclick="clearSearch()">Rensa Sök</button>
+   <input id="searchInput" type="text" class="form-control" placeholder="Sök..."  aria-label="Sök" style="max-height:33.1px;"/>
+                    <button id="clearSearch" onclick="clearSearch()">Rensa</button>
               <span class="input-group-text custom-color text-white" style="margin-bottom:8px; border-radius: 0px 5px 5px 0px;">
                 <i class="bi bi-search"></i>
             </span>
@@ -80,7 +80,7 @@
 
                 <tr id="@uniqueId" class="nested-table-row" style="display: none;">
                     <td colspan="3"  class="nested-table">
-                        <table class="table mb-0">
+                         <table class="table mb-0 table-nested">
                             <thead>
                                 <tr>
                                     <th>Produktnamn</th>

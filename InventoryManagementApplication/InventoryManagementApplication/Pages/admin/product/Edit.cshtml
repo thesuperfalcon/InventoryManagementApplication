@@ -59,8 +59,8 @@
                         <input type="hidden" asp-for="Product.Created" />
                         <input type="hidden" asp-for="Product.Updated" value="@DateTime.Now" />
                         <div class="d-flex">
+                                <a asp-page="./Index" class="custom-secondary-btn">Tillbaka till lista</a>
                             <input type="submit" value="Spara" class="add-object" />
-                            <a asp-page="./Index" class="custom-secondary-btn">Tillbaka till lista</a>
                         </div>
 
                         @if (TempData["StatusMessageError"] != null)

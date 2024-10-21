@@ -12,8 +12,9 @@
 <h3>Antal (@IsDeletedMessage)produkter: @Model.ProductCount</h3>
   <div class="row mb-3">
     <div class="col-md-6">
-        <div class="input-group shadow-sm">
-            <input type="text" id="searchInput" class="form-control" placeholder="Filtrera lagerplatser.." aria-label="Sök"/>
+        <div class="input-group">
+            <input type="text" id="searchInput" class="form-control" placeholder="Sök..." aria-label="Sök"/>
+             <button id="clearSearch" class="clear-logs" onclick="clearSearch()">Rensa</button>
               <span class="input-group-text custom-color text-white">
                 <i class="bi bi-search"></i>
             </span>

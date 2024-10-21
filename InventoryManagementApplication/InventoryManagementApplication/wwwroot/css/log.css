@@ -3,10 +3,22 @@ a{
 color:white;
 }
 
+table tbody tr {
+    height: 40px; /* Sätt höjden till det som passar din design */
+}
+
+.table {
+    table-layout: fixed; /* Förhindrar att tabellen ändrar storlek baserat på innehållet */
+    width: 100%; /* Säkerställer att tabellen tar upp hela bredden av sin behållare */
+}
+
+.table th, .table td {
+    white-space: nowrap; /* Hindrar text från att bryta på flera rader */
+    overflow: hidden; /* Klipper bort överflödigt innehåll */
+    text-overflow: ellipsis; /* Lägger till "..." om texten är för lång */
+}
 
 
-
-/* Pagination styling */
 .pagination-container {
     display: flex;
     justify-content: center;
@@ -20,21 +32,9 @@ color:white;
     font-size: 1rem;
 }
 
-
-
-/* Knapp för att rensa sökning */
-#clearSearch {
-    background-color: #f44336;
-    color: white;
-    border: none;
+.clear-logs{
     padding: 5px 10px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
     padding-left:10px;
-}
-
-#clearSearch:hover {
-    background-color: #d32f2f;
 }
 
 .input-group-text {

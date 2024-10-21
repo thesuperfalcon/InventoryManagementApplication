@@ -299,10 +299,10 @@ footer {
 .button-container {
     margin: 0px 0px 15px;
     padding: 0px;
-  float:right;
+    margin-right: 10px;
     display: flex;
     flex-direction: row;
-    justify-content: flex-start;
+    justify-content: flex-end;
     align-items: center;
     gap: 20px;
 }
@@ -553,6 +553,7 @@ body {
     width: auto;
     text-align: center;
     line-height: normal;
+    border:none;
     margin: 0 10px 0 0;
     color: white;
     border-radius: 5px;
@@ -563,6 +564,7 @@ body {
     align-items: center;
 }
     .add-object:hover {
+        text-decoration: none;
         transform: translateY(-2px);
         box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
     }
@@ -579,8 +581,9 @@ body {
     font-size: 15px;
     height: 40px;
     width: auto;
-    margin-right: 10px;
     text-decoration: none;
+    margin-right: 10px;
+
     background-color: #6c757d;
     text-align: unset;
     line-height: 30px;
@@ -595,5 +598,184 @@ body {
     .custom-secondary-btn:hover {
         background-color: #495057 !important;
         transform: translateY(-2px);
+        text-decoration: none;
+        color:white;
         box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
     }
+
+
+    
+.numeric-container {
+    display: flex;
+    align-items: center;
+    margin-left: auto; 
+}
+
+.numeric-container label {
+    margin-right: 10px;
+    font-size: 0.875rem;
+    margin-top: 10px
+}
+
+.pagination-container .btn {
+    margin: 0 5px;
+    padding: 5px 10px;
+    font-size: 1rem;
+}
+
+
+
+.numerics-select {
+    -moz-appearance: textfield;
+    padding: 5px 10px;
+    font-size: 1rem;
+    border: 1px solid #ced4da;
+    border-radius: 0.375rem;
+    width: 100%;
+    max-width: 150px;
+    background-color: #fff;
+    margin-top: 10px;
+    max-width: 70px;
+}
+    .pagination-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-top: 20px;
+ 
+    }
+
+
+    .clearButton,.clear-logs{
+
+        border: 1px solid #ced4da;
+
+        background-color: #f44336;
+        color: white;
+       
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    .clearButton:hover,.clear-logs:hover {
+            background-color: #a72828;
+        }
+
+#helpButton {
+    text-align: center;
+    padding: 0;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-width: 0;
+    background-color:#6c757d;
+    border:none;
+    margin-left:10px ;
+    font-size: 1rem;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  }
+
+
+  
+  #helpButton i {
+    margin: 0;
+    font-size: 1rem; /* Ändra ikonens storlek */
+    min-width: 20px;
+    min-height: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color:white;
+  }
+  
+  #helpButton:hover {
+    cursor: pointer; 
+    background-color: #5a6268;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+
+  a[href="javascript:void(0);"] {
+    color: white;
+    text-decoration: none;
+}
+
+    a[href="javascript:void(0);"]:hover {
+        text-decoration: none; 
+    }
+    
+
+    .sell-product-accordion, .details-accordion {
+        margin-bottom: 0px;
+        background-color: #fff;
+        color: #333;
+        cursor: pointer;
+        padding: 15px;
+        margin-bottom: 10px;
+        border: 2px solid #ddd;
+        border-radius: 5px;
+        transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-weight: bold;
+        min-width: 500px;
+        position: relative;
+        z-index: 1;
+      }
+
+      .sell-product-accordion{
+        flex-direction: column;
+        align-items: center;
+        margin-top: 20px;
+      }
+      
+      .sell-product-accordion:hover, .details-accordion:hover {
+        background-color: #f0f0f0;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+      
+      .sell-product-accordion i, .details-accordion i {
+        font-size: 18px;
+      }
+      
+      .sell-product-panel, .details-panel {
+        margin-top: -12px;
+        background-color: #fff;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        margin-bottom: 20px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        min-width: 500px;
+        position: relative;
+        z-index: 1;
+        max-height: 0;
+        overflow: hidden;
+      }
+      .sell-product-accordion.active + .sell-product-panel {
+        max-height: 500px;
+        max-width: 300px;
+        overflow: visible;
+        transition: max-height 0.5s ease-in;
+    }
+    
+    .details-accordion.active + .details-panel {
+        max-height: 500px;
+        overflow: visible;
+        transition: max-height 0.5s ease-in;
+    }
+    
+    .sell-product-accordion.active + .sell-product-panel {
+        max-height: 500px;
+        overflow: visible;
+        transition: max-height 0.5s ease-in;
+    }
+    
+
+
+.sell-product-accordion-button, .details-accordion-button {
+    width: 100%; /* Gör knappen lika bred som sin container */
+}

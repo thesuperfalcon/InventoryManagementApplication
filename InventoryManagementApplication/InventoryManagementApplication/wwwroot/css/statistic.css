@@ -64,21 +64,24 @@ h1 {
         border: 1px solid #ced4da;
     }
 
-   #clearButton,#clearLeaderboardButton{
-
-        border: 1px solid #ced4da;
-
-        background-color: #f44336;
-        color: white;
-       
-        cursor: pointer;
-        transition: background-color 0.3s ease;
-    }
-
-    #clearButton,#clearLeaderboardButton:hover {
-            background-color: #d32f2f;
+        #leaderboardContent {
+            min-height: 200px;  /* Sätt en minimumhöjd på leaderboard-content för att hålla en stadig layout även om tabellen är tom */
         }
+        
+        .table-responsive {
+            min-height: 200px;  /* Gör så att tabellen alltid har en minsta höjd även när det inte finns data */
+        }
+        
 
+        #leaderboardSearchInput {
+            display: flex;
+            align-items: center; 
+            width: 100%;  /* Gör att sökfältet tar hela bredden av sin container */
+            max-width: 694.08px;  /* Fixerad maxbredd för att undvika att den växer för stort */
+            min-width: 694.08px;/* Sätter en minimum bredd så att den inte krymper under denna */
+            flex-grow: 1;  /* Sökfältet växer tillsammans med sin container, men håller sig inom max och min bredd */
+        }
+        
 
 label.toggle-option{
            
@@ -124,56 +127,12 @@ margin-bottom: .1rem;
 }
 
     #tooltip:hover {
-        color: #0056b3;
-        text-decoration: underline;
-    }
-
-a[href="javascript:void(0);"] {
-    color: white;
-    text-decoration: none;
-}
-
-    a[href="javascript:void(0);"]:hover {
-        color: #4b4c4e; 
-        text-decoration: none; 
+        color: black;
+        text-decoration: none;
     }
 
 
 
-
-#helpButton {
-    text-align: center;
-    padding: 0;
-    border-radius: 50%;
-    width: 30px;
-    height: 30px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-width: 0;
-    background-color:#6c757d;
-    border:none;
-    margin-bottom: 15px
-  }
-
-
-
-  #helpButton i {
-    margin: 0;
-    font-size: 1rem; /* Ändra ikonens storlek */
-    min-width: 20px;
-    min-height: 20px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color:   #6c757d;
-    color:white;
-}
-
-/* Hover-effekt för hjälpknappen */
-#helpButton:hover {
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
 
 h2.text-center {
     font-size: 2.1rem;
@@ -183,47 +142,7 @@ h2.text-center {
 .input-group input {
     width: 100%; /* Se till att input tar hela bredden inom container */
 }
-.numeric-container {
-    display: flex;
-    align-items: center;
-    margin-left: auto; 
-}
-
-.numeric-container label {
-    margin-right: 10px;
-    font-size: 0.875rem;
-    margin-top: 10px
-}
-
-
-#pageAmount {
-    -moz-appearance: textfield; /* Ta bort pilen i Firefox */
-    padding: 5px 10px;
-    font-size: 1rem;
-    border: 1px solid #ced4da;
-    border-radius: 0.375rem;
-    width: 100%;
-    max-width: 150px;
-    background-color: #fff;
-    margin-top: 10px;
-    max-width: 70px;
-}
-    .pagination-container {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        margin-top: 20px;
- 
-    }
-    .centered-container {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        max-width: 1200px; /* Sätter en maxbredd */
-        width: 100%;
-        margin: 0 auto; /* Detta hjälper till att centrera elementen horisontellt */
-    }
-    
+   
     
     .pagination-container .btn {
         margin: 0 5px;
@@ -239,11 +158,22 @@ h2.text-center {
         margin-bottom: 15px;     /* Ger lite utrymme under sökbaren */
     }
 
+    .centered-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        max-width: 1200px; /* Sätter en maxbredd */
+        width: 100%;
+        margin: 0 auto; /* Detta hjälper till att centrera elementen horisontellt */
+    }
+    
+
     
     #statisticsTable th,
 #statisticsTable td {
     text-align: center;       /* Centrerar texten horisontellt */
     vertical-align: middle;   /* Centrerar innehållet vertikalt */
+    min-width: 150px;
 }
 
 .table-header th {
@@ -258,9 +188,10 @@ h2.text-center {
 
 #leaderboardTable th,
 #leaderboardTable td {
+
     text-align: center;       /* Centrerar texten horisontellt */
     vertical-align: middle;   /* Centrerar innehållet vertikalt */
-    min-width: 300px;
+    min-width: 400px;
 }
 /* Style för cheatsheet popup */
 .sidebar {
@@ -283,50 +214,54 @@ h2.text-center {
     padding: 20px;
 }
 
-
-/* Nested table container */
-.nested-table-container {
-    max-width: 100%; /* Ser till att den inte överstiger förälderbredden */
-    overflow-x: auto; /* Gör tabellen scrollbar om den är för bred */
-    padding: 10px;
-    background-color: #f8f9fa;
-    border-radius: 5px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-/* Nested table style */
+/* Stil för den nestlade tabellen */
 .nested-table {
-    width: 100%;
-    margin-bottom: 0; /* Förhindra överdriven marginal */
-    border-collapse: collapse;
-}
+    background-color: #5a5c5d; /* Ljusgrå bakgrund för den nestlade tabellen */
+    padding: 10px;
+    border-radius: 8px;
+    margin-top: 10px;
+    max-width: 95%; /* Begränsar bredden till 95% av container */
+    overflow-x: auto; /* Ger horisontell rullning om tabellen blir för bred */
+    margin-left: auto;
+    margin-right: auto; /* Centrerar tabellen */
+  }
+  
+  .nested-table:hover {
+    cursor: pointer; 
+    background-color: #616262; /* Ljusgrå bakgrund för den nestlade tabellen */
+    transition: background-color 0.5s ease, box-shadow 0.3s ease;
+  }
+  
+  .table-nested {
+    width: 100%; /* Gör den nestlade tabellen flexibel men inom max-bredd */
+    table-layout: fixed;
+    margin-left: 0px; /* Ingen extra marginal för att hålla storleken konsekvent */
+  
+  }
+  
+  .toggle-row {
+    cursor: pointer;
+  }
+  
+  .toggle-icon {
+    transition: transform 0.3s ease;
+    margin-right: 10px;
+    font-size: 1.5rem; /* Större ikon för tydligare interaktion */
+    color: #131414; /* Blå färg för ikonen */
+  }
 
-.nested-table th, .nested-table td {
-    padding: 8px 12px;
-    border: 1px solid #ebeff2;
-    text-align: center;
-}
+    
+  .toggle-icon:hover {
+    transform: translateY(-2px);
+  }
 
-.nested-table th {
-    background-color: #343a40;
-    color: white;
-    font-weight: bold;
-}
 
-.nested-table td {
-    background-color: white;
-    color: #343a40;
-}
-
-.nested-table tbody tr:nth-of-type(odd) {
-    background-color: #f9f9f9;
-}
-
-.nested-table tbody tr:hover {
-    background-color: #e9ecef;
-}
-
-/* Gör så att den nested tabellen är strukturerad och inte påverkar resten av tabellen */
-.nested-table-row {
-    background-color: #fff;
-}
+  
+  .toggle-icon.open {
+    transform: rotate(90deg); /* Roterad ikon vid öppning */
+  }
+  
+  .nested-table-row {
+    display: none;
+  
+  }

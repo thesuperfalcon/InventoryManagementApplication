@@ -21,26 +21,26 @@
                     <div class="card-body bg-white">
                         <div class="card mb-3">
                             <div class="card-body">
-                                <a asp-page="/admin/product/index" style="text-decoration: none;">
-                                <h5>@(Model.ProductQuantity != null ? Model.ProductQuantity.ToString() : "Data finns ej")</h5>
-                                </a>
                                 <p>Antal Produkter</p>
+                                <a asp-page="/admin/product/index">
+                                    <h5 class="show-data">@(Model.ProductQuantity != null ? Model.ProductQuantity.ToString() : "Data finns ej")</h5>
+                                </a>
                             </div>
                         </div>
                         <div class="card mb-3">
                             <div class="card-body">
-                                <a asp-page="productDetails" asp-route-id="@Model.ProductHighestQuantity.Id">
-                                <h5>@(Model.ProductHighestQuantity != null ? Model.ProductHighestQuantity.Name : "Data finns ej") - @(Model.ProductHighestQuantity?.CurrentStock != null ? Model.ProductHighestQuantity.CurrentStock.ToString() : "Data finns ej")</h5>
-                                </a>
                                 <p>Produkt med högst antal</p>
+                                <a asp-page="productDetails" asp-route-id="@Model.ProductHighestQuantity.Id">
+                                    <h5 class="show-data">@(Model.ProductHighestQuantity != null ? Model.ProductHighestQuantity.Name : "Data finns ej") - @(Model.ProductHighestQuantity?.CurrentStock != null ? Model.ProductHighestQuantity.CurrentStock.ToString() : "Data finns ej")</h5>
+                                </a>
                             </div>
                         </div>
                         <div class="card mb-3">
                             <div class="card-body">
-                                <a asp-page="productDetails" asp-route-id="@Model.NewestProduct.Id">
-                                <h5>@(Model.NewestProduct != null ? Model.NewestProduct.Name : "Data finns ej")</h5>
-                                </a>
                                 <p>Nyaste produkt</p>
+                                <a asp-page="productDetails" asp-route-id="@Model.NewestProduct.Id">
+                                    <h5 class="show-data">@(Model.NewestProduct != null ? Model.NewestProduct.Name : "Data finns ej")</h5>
+                                </a>
                             </div>
                         </div>
                     </div>
@@ -55,26 +55,26 @@
                     <div class="card-body bg-white">
                         <div class="card mb-3">
                             <div class="card-body">
-                                <a asp-page="/admin/storage/index" style="text-decoration: none;">
-                                <h5>@(Model.StorageQuantity != null ? Model.StorageQuantity.ToString() : "Data finns ej")</h5>
-                                </a>
                                 <p>Antal Lagerplatser</p>
+                                <a asp-page="/admin/storage/index">
+                                    <h5 class="show-data">@(Model.StorageQuantity != null ? Model.StorageQuantity.ToString() : "Data finns ej")</h5>
+                                </a>
                             </div>
                         </div>
                         <div class="card mb-3">
                             <div class="card-body">
-                                <a asp-page="storageDetails" asp-route-id="@Model.StorageHighestQuantity.Id">
-                                <h5>@(Model.StorageHighestQuantity != null ? Model.StorageHighestQuantity.Name : "Data finns ej") - @(Model.StorageHighestQuantity?.CurrentStock != null ? Model.StorageHighestQuantity.CurrentStock.ToString() : "Data finns ej")</h5>
-                                </a>
                                 <p>Lagerplats med mest produkter</p>
+                                <a asp-page="storageDetails" asp-route-id="@Model.StorageHighestQuantity.Id">
+                                    <h5 class="show-data">@(Model.StorageHighestQuantity != null ? Model.StorageHighestQuantity.Name : "Data finns ej") - @(Model.StorageHighestQuantity?.CurrentStock != null ? Model.StorageHighestQuantity.CurrentStock.ToString() : "Data finns ej")</h5>
+                                </a>
                             </div>
                         </div>
                         <div class="card mb-3">
                             <div class="card-body">
-                                <a asp-page="storageDetails" asp-route-id="@Model.NewestStorage.Id">
-                                <h5>@(Model.NewestStorage != null ? Model.NewestStorage.Name : "Data finns ej")</h5>
-                                </a>
                                 <p>Nyaste lagerplatsen</p>
+                                <a asp-page="storageDetails" asp-route-id="@Model.NewestStorage.Id">
+                                    <h5 class="show-data">@(Model.NewestStorage != null ? Model.NewestStorage.Name : "Data finns ej")</h5>
+                                </a>
                             </div>
                         </div>
                     </div>
@@ -89,24 +89,24 @@
                     <div class="card-body bg-white">
                         <div class="card mb-3">
                             <div class="card-body">
-                                <a asp-page="/Statistic" asp-route-employeeNumber="@Model.UserStatistic?.EmployeeNumber" style="text-decoration: none;">
-                                <h5>@(Model.UserStatistic != null ? Model.UserStatistic.EmployeeNumber : "Data finns ej") - @(Model.UserStatistic?.TotalQuantity != null ? Model.UserStatistic.TotalQuantity.ToString() : "Data finns ej")</h5>
-                                </a>
                                 <p>Anställd med mest förflyttade produkter</p>
-                            </div>
-                        </div>
-                        <div class="card mb-3">
-                            <div class="card-body">
-                                <h5>@(Model.User != null ? Model.User.FirstName : "Data finns ej") @Model.User?.LastName - @(Model.User?.EmployeeNumber ?? "Data finns ej")</h5>
-                                <p>Senast anställd (@(Model.User?.Created != null ? Model.User.Created.ToString() : "Data finns ej"))</p>
-                            </div>
-                        </div>
-                        <div class="card mb-3">
-                            <div class="card-body">
-                                <a asp-page="/Statistic" style="text-decoration: none;">
-                                <h5>@(Model.NewestStatistic != null ? Model.NewestStatistic.UserName : "Data finns ej") - @(Model.NewestStatistic?.ProductName ?? "Data finns ej")</h5>
+                                <a asp-page="/Statistic" asp-route-employeeNumber="@Model.UserStatistic?.EmployeeNumber">
+                                    <h5 class="show-data">@(Model.UserStatistic != null ? Model.UserStatistic.EmployeeNumber : "Data finns ej") - @(Model.UserStatistic?.TotalQuantity != null ? Model.UserStatistic.TotalQuantity.ToString() : "Data finns ej")</h5>
                                 </a>
+                            </div>
+                        </div>
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <p>Senast anställd (@(Model.User?.Created != null ? Model.User.Created.ToString() : "Data finns ej"))</p>
+                                <h5 class="show-data">@(Model.User != null ? Model.User.FirstName : "Data finns ej") @Model.User?.LastName - @(Model.User?.EmployeeNumber ?? "Data finns ej")</h5>
+                            </div>
+                        </div>
+                        <div class="card mb-3">
+                            <div class="card-body">
                                 <p>Senast förflyttning</p>
+                                <a asp-page="/Statistic">
+                                    <h5 class="show-data">@(Model.NewestStatistic != null ? Model.NewestStatistic.UserName : "Data finns ej") - @(Model.NewestStatistic?.ProductName ?? "Data finns ej")</h5>
+                                </a>
                             </div>
                         </div>
                     </div>
@@ -115,3 +115,7 @@
         </div>
     </section>
 </div>
+
+@section Styles {
+	<link rel="stylesheet" href="~/css/overview.css" asp-append-version="true" />
+}

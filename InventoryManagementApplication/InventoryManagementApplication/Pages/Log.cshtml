@@ -13,7 +13,7 @@
     <div class="col-md-6 mb-4">
         <div class="input-group shadow-sm">
             <input type="text" id="searchInput" class="form-control" placeholder="Filtrera loggar.." aria-label="Sök"/>
-             <button id="clearSearch" onclick="clearSearch()">Rensa</button>
+             <button id="clearSearch" class="clear-logs" onclick="clearSearch()">Rensa</button>
              <span class="input-group-text custom-color text-white">
                 <i class="bi bi-search"></i>
             </span>
@@ -72,5 +72,6 @@
 
 @section Scripts {
     <script src="~/js/logIndex.js"></script>
+      <script src="~/js/reportpage.js"></script>
              <link rel="stylesheet" href="~/css/log.css" asp-append-version="true">
 }
