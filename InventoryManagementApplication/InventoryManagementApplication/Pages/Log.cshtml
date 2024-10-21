@@ -39,7 +39,7 @@
                             <td>@(!string.IsNullOrWhiteSpace(log.EmployeeNumber) ? log.EmployeeNumber : "Data finns ej")</td>
                             <td>@(log.EntityType ?? "Data finns ej")</td>
                             <td>@(!string.IsNullOrWhiteSpace(log.EntityDetails) ? log.EntityDetails : "Data finns ej")</td>
-                            <td>@(log.EntityId != null && log.EntityId > 0 ? log.Id : "Data finns ej")</td>
+                            <td>@(log.EntityId != null && log.EntityId > 0 ? log.EntityId : "Data finns ej")</td>
                             <td>@(log.TimeStamp?.ToString("dd/MM/yyyy HH:mm:ss") ?? "Data finns ej")</td> 
                             <td>@(log.Action ?? "Data finns ej")</td>
                         </tr>

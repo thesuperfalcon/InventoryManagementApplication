@@ -29,20 +29,19 @@ namespace InventoryManagementApplication.Pages
         public async Task OnGetAsync()
         {
             // Hämta loggar från ActivityLogManager
-            Logs = await _activityLogManager.GetAllLogsAsync();
-
-            Logs.OrderBy(x => x.TimeStamp);
+            Logs = (await _activityLogManager.GetAllLogsAsync())
+                .OrderByDescending(x => x.TimeStamp) // Sortera loggarna i fallande ordning
+                .ToList(); // Konvertera till lista och tilldela till Logs
 
             // Hämtar users och sätter ihop firstName + lastName till UserFullName
             var users = await _userManager.GetAllUsersAsync(null);
-            var userDictinary = users.ToDictionary(
+            var userDictionary = users.ToDictionary(
                 u => u.Id,
                 u => new { FullName = $"{u.LastName} {u.FirstName}", EmployeeNumber = u.EmployeeNumber });
 
-
             foreach (var log in Logs)
             {
-                if(userDictinary.TryGetValue(log.UserId, out var userInfo))
+                if (userDictionary.TryGetValue(log.UserId, out var userInfo))
                 {
                     UserFullName.Add(userInfo.FullName);
                     UserEmployeeNumbers.Add(userInfo.EmployeeNumber);
@@ -53,8 +52,6 @@ namespace InventoryManagementApplication.Pages
                     UserEmployeeNumbers.Add("N/A");
                 }
             }
-
-
         }
     }
 }
