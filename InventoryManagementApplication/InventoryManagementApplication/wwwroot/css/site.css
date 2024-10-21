@@ -584,36 +584,17 @@ body {
 
 
     
-.numeric-container {
+.page-container {
     display: flex;
     align-items: center;
     margin-left: auto; 
 }
 
-.numeric-container label {
-    margin-right: 10px;
-    font-size: 0.875rem;
-    margin-top: 10px
-}
 
 .pagination-container .btn {
     margin: 0 5px;
     padding: 5px 10px;
     font-size: 1rem;
-}
-
-
-.numerics-select {
-    -moz-appearance: textfield;
-    padding: 5px 10px;
-    font-size: 1rem;
-    border: 1px solid #ced4da;
-    border-radius: 0.375rem;
-    width: 100%;
-    max-width: 150px;
-    background-color: #fff;
-    margin-top: 10px;
-    max-width: 70px;
 }
     .pagination-container {
         display: flex;
