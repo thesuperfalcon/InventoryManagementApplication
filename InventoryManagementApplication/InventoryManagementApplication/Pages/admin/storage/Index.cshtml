@@ -14,14 +14,13 @@
     <div class="col-md-6">
         <div class="input-group shadow-sm">
             <input type="text" id="searchInput" class="form-control" placeholder="Filtrera lagerplatser.." aria-label="Sök"/>
-             <button id="clearSearch" class="clear-logs" onclick="clearSearch()">Rensa</button>
+                      <a id="clearSearch" class="clearButton" href="/admin/storage/Index" style="text-decoration:none; display: flex;align-items: center;  padding:5px;">Rensa </a>
               <span class="input-group-text custom-color text-white">
                 <i class="bi bi-search"></i>
             </span>
         </div>
     </div>
 </div>
-
         <div class="button-container">
         <form method="post" asp-route-buttonId="1">
             <input type="hidden" name="IsDeletedToggle" value="@Model.IsDeletedToggle.ToString().ToLower()" />

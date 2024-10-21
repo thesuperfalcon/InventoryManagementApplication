@@ -131,9 +131,8 @@
             <div class="mb-3">
                 <div class="search-bar-container">
                 <div class="input-group">
-                    <input id="searchInput" type="text" class="form-control" placeholder="Sök..." />
-                    <button id="clearButton" class="clearButton" onclick="clearSearch()">Rensa</button> 
-                   @*   <a asp-page="Statistic" id="clearButton" >Rensa Sök</a> *@
+                    <input id="searchInput" type="text" class="form-control" aria-label="Sök" placeholder="Sök..." />
+                    <a id="clearSearch" class="clearButton" href="/Statistic" style="text-decoration:none; display: flex;align-items: center; padding:5px;">Rensa </a>
                       <span class="input-group-text custom-color text-white">
                         <i class="bi bi-search"></i>
                     </span>
@@ -251,7 +250,6 @@
 
 @section Scripts {
     <script src="~/js/statistic.js"></script>
-     <link rel="stylesheet" href="~/css/statistic.css" asp-append-version="true">
     <script>// JavaScript för att växla mellan innehållet
 document.querySelectorAll('input[name="view"]').forEach((elem) => {
   elem.addEventListener("change", function(event) {
