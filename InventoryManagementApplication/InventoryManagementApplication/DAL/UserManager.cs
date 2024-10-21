@@ -193,5 +193,24 @@ namespace InventoryManagementApplication.DAL
                 return new List<string>();
             }
         }
+
+        public async Task<List<Developer>> GetAllDevelopersAsync()
+        {
+            var developers = new List<Developer>();
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = BaseAddress;
+
+                var response = await client.GetAsync($"api/Developers/");
+
+                if (response.IsSuccessStatusCode)
+                {
+                    string responseString = await response.Content.ReadAsStringAsync();
+                    developers = JsonSerializer.Deserialize<List<Developer>>(responseString);
+                }
+                return developers;
+            }
+
+        }
     }
 }
