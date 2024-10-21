@@ -18,52 +18,14 @@ $(document).ready(function () {
     paginateTable();
 
     $("#userRolesSearchInput").on("input", function () {
-        var value = $(this).val().toLowerCase().replace(/[.,]+$/, '');
-        var filters = value.split(',').map(item => item.trim()).filter(item => item);
-
-        filteredRows = filters.length === 0
-            ? originalRows
-            : originalRows.filter(row => {
-                return filters.every(filter => {
-                    let [key, searchTerm] = filter.split(':').map(item => item.trim());
-                    searchTerm = searchTerm.toLowerCase();
-                    const exactMatch = searchTerm.endsWith('.');
-                    if (exactMatch) searchTerm = searchTerm.slice(0, -1).trim();
-
-                    switch (key) {
-                        case "#a": return exactMatch ? row.cells[0].innerText.toLowerCase() === searchTerm : row.cells[0].innerText.toLowerCase().includes(searchTerm);
-                        case "#f": return exactMatch ? row.cells[1].innerText.toLowerCase() === searchTerm : row.cells[1].innerText.toLowerCase().includes(searchTerm);
-                        case "#e": return exactMatch ? row.cells[2].innerText.toLowerCase() === searchTerm : row.cells[2].innerText.toLowerCase().includes(searchTerm);
-                        case "#r": return exactMatch ? row.cells[3].innerText === searchTerm : row.cells[3].innerText.includes(searchTerm);
-                        case "#s": return exactMatch ? row.cells[4].innerText.toLowerCase() === searchTerm : row.cells[4].innerText.toLowerCase().includes(searchTerm);
-                        case "#u": return exactMatch ? row.cells[5].innerText.toLowerCase() === searchTerm : row.cells[5].innerText.toLowerCase().includes(searchTerm);
-                        default: return true;
-                    }
-                });
-            });
-
-        updateVisibleRows(filteredRows);
-    });
-
-    function updateVisibleRows(rows) {
-        visibleRows = rows;
-        paginateTable();
-    }
-
-    function paginateTable() {
-        const start = (currentPage - 1) * rowsPerPage;
-        const end = start + rowsPerPage;
-
-        $("#myTable tr").hide();
-        visibleRows.forEach((row, index) => {
-            if (index >= start && index < end) {
-                $(row).show();
-            }
+        var searchTerms = $(this).val().toLowerCase().split(',').map(term => term.trim());
+        filteredRows = originalRows.filter(row => {
+            const rowText = Array.from(row.cells).map(cell => cell.innerText.toLowerCase()).join(" ");
+            return searchTerms.every(term => rowText.includes(term));
         });
-
-        const pageNumberElement = document.getElementById("pageNumber");
-        pageNumberElement.innerText = `Page ${currentPage} of ${Math.ceil(filteredRows.length / rowsPerPage)}`;
-    }
+        updateVisibleRows(filteredRows);
+        paginateTable();
+    });
 
     $("#prevPage").on("click", function () {
         if (currentPage > 1) {
@@ -80,13 +42,63 @@ $(document).ready(function () {
     });
 });
 
+function sortTable(columnIndex) {
+    const table = document.getElementById("userRolesTable");
+    const tbody = document.getElementById("myTable");
+    const rows = Array.from(tbody.rows); 
+    const isAscending = table.getAttribute("data-sort-direction") === "asc";
+
+    // Sortera raderna
+    rows.sort((a, b) => {
+        const cellA = a.cells[columnIndex].innerText.trim();
+        const cellB = b.cells[columnIndex].innerText.trim();
+
+        const isNumber = columnIndex === 4 || columnIndex === 5; 
+
+        if (isNumber) {
+            return isAscending
+                ? new Date(cellA) - new Date(cellB)
+                : new Date(cellB) - new Date(cellA);
+        } else {
+            return isAscending
+                ? cellA.localeCompare(cellB, 'sv-SE', { sensitivity: 'base' })
+                : cellB.localeCompare(cellA, 'sv-SE', { sensitivity: 'base' });
+        }
+    });
+
+    table.setAttribute("data-sort-direction", isAscending ? "desc" : "asc");
+
+    rows.forEach(row => tbody.appendChild(row)); 
+
+    currentPage = 1; 
+    paginateTable();  
+}
+
+
 function clearUserRolesSearch() {
     const userRolesSearchInput = document.getElementById("userRolesSearchInput");
     userRolesSearchInput.value = "";
+    filteredRows = originalRows;
+    updateVisibleRows(filteredRows);
+    paginateTable();
+}
 
-    const event = new Event('input', {
-        bubbles: true,
-        cancelable: true,
+function updateVisibleRows(rows) {
+    visibleRows = rows;
+    paginateTable();
+}
+
+function paginateTable() {
+    const start = (currentPage - 1) * rowsPerPage;
+    const end = start + rowsPerPage;
+
+    $("#myTable tr").hide();
+    visibleRows.forEach((row, index) => {
+        if (index >= start && index < end) {
+            $(row).show();
+        }
     });
-    userRolesSearchInput.dispatchEvent(event);
+
+    const pageNumberElement = document.getElementById("pageNumber");
+    pageNumberElement.innerText = `Page ${currentPage} of ${Math.ceil(filteredRows.length / rowsPerPage)}`;
 }
