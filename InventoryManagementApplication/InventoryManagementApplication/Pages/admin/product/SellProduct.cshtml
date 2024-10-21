@@ -54,71 +54,52 @@
         </div>
     </div>
 
-    <!-- Accordion section -->
-    <div class="row justify-content-center mt-3">
-              <div class="col-md-5"> 
-            <div class="accordion-item">
- <button id="accordion3" class="sell-product-accordion">
-  
-                               
-                <span>Produkter i detta lager</span>
-                <i class="bi bi-chevron-down"></i>
-            </button>
-        <div id="panel3" class="sell-product-panel" style="display:none;">
-                <!-- Sökfält -->
-                <div class="row mb-3">
-                    <div class="col-md-6">
-                        <div class="input-group shadow-sm">
-                            <input type="text" id="productSearchInput" class="form-control" placeholder="Filtrera produkter..." />
-                            <span class="input-group-text custom-color text-white mt-4">
-                                <i class="bi bi-search"></i>
-                            </span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Produkttabell -->
-                <table id="productTable" class="table" data-sort-direction="asc">
-                    <thead class="table-dark">
-                        <tr>
-                            <th><a href="javascript:void(0);" onclick="sortTable('productTable', 0)" class="text-white">Lagernamn<i class="bi bi-sort-down"></i></a></th>
-                            <th><a href="javascript:void(0);" onclick="sortTable('productTable', 1)" class="text-white">Produktnamn<i class="bi bi-sort-down"></i></a></th>
-                            <th><a href="javascript:void(0);" onclick="sortTable('productTable', 2)" class="text-white">Antal i lager<i class="bi bi-sort-down"></i></a></th>
-                            <th><a href="javascript:void(0);" onclick="sortTable('productTable', 3)" class="text-white">Pris<i class="bi bi-sort-down"></i></a></th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @if (Model.InventoryTrackers != null)
-                        {
-                            for (int x = 0; x < Model.InventoryTrackers.Count; x++)
-                            {
-                                var item = Model.InventoryTrackers[x];
-                                var currentAmount = Model.CurrentProductAmountList[x];
-
-                                if (currentAmount.HasValue && currentAmount.Value > 0)
-                                {
-                                    <tr>
-                                        <td>@Html.DisplayFor(modelItem => item.Storage.Name)</td>
-                                        <td>@Html.DisplayFor(modelItem => item.Product.Name)</td>
-                                        <td>@Html.DisplayFor(modelItem => Model.CurrentProductAmountList[x]) / @Html.DisplayFor(modelItem => item.Storage.MaxCapacity)</td>
-                                        <td>@String.Format(new System.Globalization.CultureInfo("sv-SE"), "{0:C}", item.Product.Price)</td>
-                                        <td>
-                                            <a asp-page="./SellProduct" asp-route-index="@x" asp-route-storageId="@item.StorageId" class="btn btn-success" asp-route-id="@item.ProductId"> <i class="bi bi-currency-dollar"></i></a>
-                                        </td>
-                                    </tr>
-                                }
-                            }
-                        }
-                    </tbody>
-                </table>
-            </div>
+<div class="row mb-3 mt-5" style="background-color: #f8f9fa; padding: 20px; border-radius: 8px;">
+    <div class="col-md-6">
+        <div class="input-group shadow-sm mb-4">
+            <input type="text" id="searchInput" class="form-control" placeholder="Filtrera produkter..." />
+            <span class="input-group-text custom-color text-white">
+                <i class="bi bi-search"></i>
+            </span>
         </div>
     </div>
-</div>
-</div>
 
+
+<table id="productTable" class="table" data-sort-direction="asc">
+    <thead class="table-dark">
+        <tr>
+            <th><a href="javascript:void(0);" onclick="sortTable('productTable', 0)" class="text-white">Lagernamn<i class="bi bi-sort-down"></i></a></th>
+            <th><a href="javascript:void(0);" onclick="sortTable('productTable', 1)" class="text-white">Produktnamn<i class="bi bi-sort-down"></i></a></th>
+            <th><a href="javascript:void(0);" onclick="sortTable('productTable', 2)" class="text-white">Antal i lager<i class="bi bi-sort-down"></i></a></th>
+            <th><a href="javascript:void(0);" onclick="sortTable('productTable', 3)" class="text-white">Pris<i class="bi bi-sort-down"></i></a></th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.InventoryTrackers != null)
+        {
+            for (int x = 0; x < Model.InventoryTrackers.Count; x++)
+            {
+                var item = Model.InventoryTrackers[x];
+                var currentAmount = Model.CurrentProductAmountList[x];
+
+                if (currentAmount.HasValue && currentAmount.Value > 0)
+                {
+                    <tr>
+                        <td>@Html.DisplayFor(modelItem => item.Storage.Name)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Product.Name)</td>
+                        <td>@Html.DisplayFor(modelItem => Model.CurrentProductAmountList[x]) / @Html.DisplayFor(modelItem => item.Storage.MaxCapacity)</td>
+                        <td>@String.Format(new System.Globalization.CultureInfo("sv-SE"), "{0:C}", item.Product.Price)</td>
+                        <td>
+                            <a asp-page="./SellProduct" asp-route-index="@x" asp-route-storageId="@item.StorageId" class="btn btn-success" asp-route-id="@item.ProductId"> <i class="bi bi-currency-dollar"></i></a>
+                        </td>
+                    </tr>
+                }
+            }
+        }
+    </tbody>
+</table>
+</div>
 @section Scripts {
- <script src="~/js/accordions.js"></script>
     <script src="~/js/searchSortFilter.js"></script>
 }

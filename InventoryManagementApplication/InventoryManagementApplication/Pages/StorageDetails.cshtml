@@ -6,7 +6,7 @@
     <div class="row">
         <div class="col-md-6">
             <div class="card mb-6">
-                <div class="card-header">
+                	<div class="card-header d-flex justify-content-between align-items-center">
                     <h2>Lagerdetaljer: @Model.Storage.Name</h2>
                     @* Bara admin kan göra ändringar *@
                     @if (User.IsInRole("Admin"))
@@ -183,9 +183,13 @@ else
 
                             </tbody>
                         </table>
-                        <a asp-page="/Log" asp-route-id="@Model.Storage.Id" class="btn btn-info mt-3">
-                            Visa fullständig historik
+ <a asp-page="/Log" asp-route-id="@Model.Storage.Id" class="btn custom-secondary-btn mt-3" style="
+    display: flex;
+    justify-content: center;
+    min-width: 50px;
+">     Visa fullständig historik
                         </a>
+
                     </div>
                 </div>
             </div>
