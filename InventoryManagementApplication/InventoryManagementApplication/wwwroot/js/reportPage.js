@@ -43,7 +43,7 @@
             var storageMatchFound = false;
             var productMatchFound = false;
             var nestedRow = row.next(".nested-table-row");  
-            var productsInStorage = nestedRow.find("tr");  
+            var productsInStorage = nestedRow.find("tr.product");
 
             if (row.hasClass("toggle-row")) {
                 var storageName = row.find("td:nth-child(1)").text().toLowerCase().trim();
@@ -66,6 +66,7 @@
                             productMatchFound = true;
                             $(this).show(); 
                         } else {
+    
                             $(this).hide();
                         }
                     });

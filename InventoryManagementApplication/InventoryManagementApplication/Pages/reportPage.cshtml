@@ -82,7 +82,7 @@
                     <td colspan="3"  class="nested-table">
                          <table class="table mb-0 table-nested">
                             <thead>
-                                <tr>
+                            <tr style="display: table-row !important;">
                                     <th>Produktnamn</th>
                                     <th>Artikelnummer</th>
                                     <th>Antal i lager</th>
@@ -94,7 +94,8 @@
                                 {
                                     @foreach (var tracker in storage.InventoryTrackers)
                                     {
-                                        <tr>
+                                        <tr class="product" style="display: table-row;">
+
                                             <td>
                                                 @if (tracker.Product == null || string.IsNullOrEmpty(tracker.Product.Name))
                                                 {
