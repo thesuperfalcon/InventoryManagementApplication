@@ -45,12 +45,12 @@
        <table id="userRolesTable"  class="table table-striped table-hover align-middle" data-sort-direction="asc">
             <thead class="table-dark">
         <tr>
-            <th scope="col"><a href="javascript:void(0);" onclick="sortTable(0)">Anställningsnummer</a></th>
-            <th scope="col"><a href="javascript:void(0);" onclick="sortTable(1)">Förnamn</a></th>
-            <th scope="col"><a href="javascript:void(0);" onclick="sortTable(2)">Efternamn</a></th>
-            <th scope="col"><a href="javascript:void(0);" onclick="sortTable(3)">Roll</a></th>
-            <th scope="col"><a href="javascript:void(0);" onclick="sortTable(4)">Skapad</a></th>
-            <th scope="col"><a href="javascript:void(0);" onclick="sortTable(5)">Uppdaterad</a></th>
+            <th scope="col"><a href="javascript:void(0);" onclick="sortTable(0)">Anställningsnummer<i class="bi bi-sort-down"></i></a></th>
+            <th scope="col"><a href="javascript:void(0);" onclick="sortTable(1)">Förnamn<i class="bi bi-sort-down"></i></a></th>
+            <th scope="col"><a href="javascript:void(0);" onclick="sortTable(2)">Efternamn<i class="bi bi-sort-down"></i></a></th>
+            <th scope="col"><a href="javascript:void(0);" onclick="sortTable(3)">Roll<i class="bi bi-sort-down"></i></a></th>
+            <th scope="col"><a href="javascript:void(0);" onclick="sortTable(4)">Skapad<i class="bi bi-sort-down"></i></a></th>
+            <th scope="col"><a href="javascript:void(0);" onclick="sortTable(5)">Uppdaterad<i class="bi bi-sort-down"></i></a></th>
             <th scope="col">Inställningar</th>
         </tr>
     </thead>
@@ -88,10 +88,10 @@
     <select id="pageSelector" class="form-select" aria-label="Page selector" style="max-width: 100px;"></select>
 </div>
 </div>
-</div>
-    
-@section Scripts {
-    <script src="~/js/userRoles.js"></script>
+    </div>
+
+ @section Scripts{
+    <script src="~/js/userRoles.js" asp-append-version="true"></script>
     <script>
              function clearUserRolesSearch() {
             const userRolesSearchInput = document.getElementById("userRolesSearchInput");
