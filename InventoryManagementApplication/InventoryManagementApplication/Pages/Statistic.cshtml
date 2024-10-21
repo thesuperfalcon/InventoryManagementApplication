@@ -130,9 +130,10 @@
 
             <div class="mb-3">
                 <div class="search-bar-container">
-                                             <button id="helpButton" style="margin-bottom: 10px;" onclick="toggleHelp()">
+                                             <button id="helpButton" data-bs-toggle="modal" data-bs-target="#cheatsheetModal" style="margin-bottom: 10px;" onclick="toggleHelp()">
                        <i class="bi bi-question-circle"></i>
                 </button>
+
                 <div class="input-group">
                     <input id="searchInput" type="text" class="form-control" aria-label="Sök" placeholder="Sök..." />
                     <a id="clearSearch" class="clearButton" href="/Statistic" style="text-decoration:none; display: flex;align-items: center; padding:5px;">Rensa </a>
