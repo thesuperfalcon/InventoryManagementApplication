@@ -1,8 +1,103 @@
-﻿function sortTable(tableId, columnIndex) {
-    const table = document.getElementById(tableId);
-    const rows = Array.from(table.rows).slice(1); // Get all rows except the header
+﻿let rowsPerPage = 1;
+let currentPage = 1;
+let originalRows = [];
+let filteredRows = [];
+let visibleRows = [];
 
-    // Initialize sort direction if not set
+function debounce(func, delay) {
+    let timeout;
+    return function (...args) {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => func.apply(this, args), delay);
+    };
+}
+
+$(document).ready(function () {
+    const pageSelector = document.getElementById('pageSelector');
+
+    originalRows = Array.from(document.querySelectorAll("#storageTable tbody tr"));
+    filteredRows = [...originalRows];
+    updateVisibleRows(filteredRows);
+    paginateTable();
+
+    $("#searchInput").on("input", debounce(function () {
+        var searchTerms = $(this).val().toLowerCase().split(',').map(term => term.trim());
+        filteredRows = originalRows.filter(row => {
+            const rowText = Array.from(row.cells).map(cell => cell.innerText.toLowerCase()).join(" ");
+            return searchTerms.every(term => rowText.includes(term));
+        });
+        updateVisibleRows(filteredRows);
+        paginateTable();
+    }, 300));
+
+    $("#prevPage").on("click", function () {
+        if (currentPage > 1) {
+            currentPage--;
+            updatePageSelector();
+            paginateTable();
+        }
+    });
+
+    $("#nextPage").on("click", function () {
+        if (currentPage < Math.ceil(filteredRows.length / rowsPerPage)) {
+            currentPage++;
+            updatePageSelector();
+            paginateTable();
+        }
+    });
+
+    pageSelector.addEventListener('change', function () {
+        currentPage = parseInt(this.value);
+        paginateTable();
+    });
+
+    function updatePageSelector() {
+        pageSelector.value = currentPage;
+    }
+});
+
+function clearProductSearch() {
+    const searchInput = document.getElementById("searchInput");
+    searchInput.value = "";
+    filteredRows = originalRows;
+    updateVisibleRows(filteredRows);
+    paginateTable();
+}
+
+function updateVisibleRows(rows) {
+    visibleRows = rows;
+    paginateTable();
+}
+
+function paginateTable() {
+    const start = (currentPage - 1) * rowsPerPage;
+    const end = start + rowsPerPage;
+
+    $("#storageTable tbody tr").hide();
+    visibleRows.forEach((row, index) => {
+        if (index >= start && index < end) {
+            $(row).show();
+        }
+    });
+
+    const pageNumberElement = document.getElementById("pageNumber");
+    pageNumberElement.innerText = `Sida ${currentPage} av ${Math.ceil(filteredRows.length / rowsPerPage)}`;
+
+    const pageSelector = document.getElementById('pageSelector');
+    pageSelector.innerHTML = '';
+    for (let i = 1; i <= Math.ceil(filteredRows.length / rowsPerPage); i++) {
+        const option = document.createElement('option');
+        option.value = i;
+        option.text = `Sida ${i}`;
+        pageSelector.appendChild(option);
+    }
+    pageSelector.value = currentPage;
+}
+
+function sortTable(tableId, columnIndex) {
+    const table = document.getElementById(tableId);
+    const rows = Array.from(table.rows).slice(1);
+
     if (!table.hasAttribute("data-sort-direction")) {
         table.setAttribute("data-sort-direction", "asc");
     }
@@ -13,7 +108,6 @@
         const cellA = a.cells[columnIndex].innerText.trim();
         const cellB = b.cells[columnIndex].innerText.trim();
 
-        // Handle sorting for different data types
         if (columnIndex === 1 || columnIndex === 2 || columnIndex === 3) {
             return isAscending
                 ? parseFloat(cellA) - parseFloat(cellB)
@@ -25,37 +119,30 @@
         }
     });
 
-    // Clear the table body and append sorted rows
     const tbody = table.querySelector('tbody');
     tbody.innerHTML = "";
     rows.forEach(row => tbody.appendChild(row));
 
-    // Toggle sort direction
     table.setAttribute("data-sort-direction", isAscending ? "desc" : "asc");
 }
 
-// Search functionality
-document.getElementById('searchInput').addEventListener('keyup', function () {
-    const searchValue = this.value.toLowerCase(); // Get the value from the input
+document.getElementById('searchInput').addEventListener('keyup', debounce(function () {
+    const searchValue = this.value.toLowerCase();
     const table = document.getElementById('storageTable');
-    const rows = table.getElementsByTagName('tbody')[0].getElementsByTagName('tr'); // Get the rows of the table body
+    const rows = table.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
 
-
-    // Loop through the rows and hide those that don't match the search
     Array.from(rows).forEach(row => {
         const cells = row.getElementsByTagName('td');
-        let rowMatches = false; // Flag to track if the row matches the search
+        let rowMatches = false;
 
-        // Check each cell in the row
         for (let i = 0; i < cells.length; i++) {
-            const cell = cells[i].innerText.toLowerCase(); // Get the text content of the cell
-            if (cell.includes(searchValue)) { // Check if it includes the search value
-                rowMatches = true; // Set the flag to true if a match is found
-                break; // No need to check further cells
+            const cell = cells[i].innerText.toLowerCase();
+            if (cell.includes(searchValue)) {
+                rowMatches = true;
+                break;
             }
         }
 
-        // Show or hide the row based on whether it matches
         row.style.display = rowMatches ? '' : 'none';
     });
-});
+}, 300));
