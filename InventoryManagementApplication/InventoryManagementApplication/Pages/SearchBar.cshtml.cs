@@ -42,7 +42,6 @@ namespace InventoryManagementApplication.Pages
 
         public async Task<IActionResult> OnGetSearchSuggestionsAsync(string query)
         {
-            //List<string> suggestions = new List<string>();
 
             if (string.IsNullOrWhiteSpace(query))
             {
