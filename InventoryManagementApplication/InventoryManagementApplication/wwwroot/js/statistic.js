@@ -313,7 +313,7 @@ $(document).ready(function () {
     var employeeNumber = document.getElementById('emplyeeNumber').value;
 
     if (employeeNumber) {
-        $('#searchInput').val(`#a:${employeeNumber}.`);
+        $('#searchInput').val(`${employeeNumber}, `);
 
         var event = new Event('input', {
             bubbles: true,
