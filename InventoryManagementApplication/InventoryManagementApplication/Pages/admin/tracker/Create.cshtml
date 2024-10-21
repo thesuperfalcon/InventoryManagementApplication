@@ -11,7 +11,7 @@
         <div class="col-md-6 col-lg-5">
 
             <div class="card shadow-sm">
-                <div class="card-header bg-primary text-white">
+                <div class="card-header custom-color text-white">
                     <h4 class="mb-0">Flytta produkt</h4>
                 </div>
 
@@ -37,8 +37,8 @@
                         </div>
 
                         <div class="d-flex">
+                        <a asp-page="Index" class="btn btn-secondary">Tillbaka till lista</a>
                             <input type="submit" value="Flytta" class="btn btn-primary me-2" />
-                            <a asp-page="Index" class="btn btn-secondary">Tillbaka till lista</a>
                         </div>
 
                         @if (!string.IsNullOrEmpty(Model.StatusMessage))

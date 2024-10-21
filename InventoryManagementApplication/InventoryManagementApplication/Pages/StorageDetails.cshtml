@@ -6,7 +6,7 @@
     <div class="row">
         <div class="col-md-6">
             <div class="card mb-6">
-                <div class="card-header">
+                	<div class="card-header d-flex justify-content-between align-items-center">
                     <h2>Lagerdetaljer: @Model.Storage.Name</h2>
                     @* Bara admin kan göra ändringar *@
                     @if (User.IsInRole("Admin"))
@@ -51,11 +51,11 @@
         
         <div class="col-md-4 second-column">
             <!-- Accordion för produkter -->
-            <button class="accordion">
+            <button class="details-accordion" id="accordion1">
                 <span>Produkter i detta lager</span>
                 <i class="bi bi-chevron-down"></i>
             </button>
-            <div class="panel">
+            <div class="details-panel" id="panel1">
 
   
                   
@@ -130,12 +130,12 @@ else
 
 </div>
 
- <button class="accordion">
+ <button id="accordion2" class="details-accordion">
                                
                 <span>Aktivitetslogg</span>
                 <i class="bi bi-chevron-down"></i>
             </button>
-            <div class="panel">
+            <div class="details-panel" id="panel2">
 
                 <div id="logsCollapse" class="accordion-collapse collapse show" aria-labelledby="logsHeading" data-bs-parent="#logsAccordion">
                     <div class="accordion-body">
@@ -183,9 +183,13 @@ else
 
                             </tbody>
                         </table>
-                        <a asp-page="/Log" asp-route-id="@Model.Storage.Id" class="btn btn-info mt-3">
-                            Visa fullständig historik
+ <a asp-page="/Log" asp-route-id="@Model.Storage.Id" class="btn custom-secondary-btn mt-3" style="
+    display: flex;
+    justify-content: center;
+    min-width: 50px;
+">     Visa fullständig historik
                         </a>
+
                     </div>
                 </div>
             </div>
@@ -222,5 +226,6 @@ else
         var userEmployeeNumbers = @Html.Raw(JsonSerializer.Serialize(Model.UserEmployeeNumbers));
     </script>
     <script src="~/js/storagedetails.js" asp-append-version="true"></script>
+      <script src="~/js/accordions.js"></script>
       <link rel="stylesheet" href="~/css/detailspages.css" asp-append-version="true" />
 }

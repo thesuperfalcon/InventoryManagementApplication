@@ -11,7 +11,7 @@
             <div class="col-md-6 col-lg-5">
 
                 <div class="card shadow-sm">
-                    <div class="card-header bg-primary text-white">
+                    <div class="card-header custom-color text-white">
                         <h4 class="mb-0">Lägg till ny produkt</h4>
                     </div>
                     <div class="card-body">
@@ -24,10 +24,10 @@
                                 <span asp-validation-for="Product.Name" class="text-danger"></span>
                             </div>
 
-                            <div class="mb-3">
+                                 <div class="form-floating mb-3 d-flex align-items-center">
                                 <label asp-for="ArticleNumber" class="form-label">Artikelnummer</label>
                                 <input asp-for="ArticleNumber" class="form-control" required readonly />
-                                <button type="button" id="generateArticleNumberBtn" class="add-object">Generera</button>
+                                <button type="button" id="generateArticleNumberBtn" class="btn btn-generic mt-2" style="margin-left:10px;">Generera</button>
                                 <span asp-validation-for="ArticleNumber" class="text-danger"></span>
                             </div>
 
@@ -53,8 +53,8 @@
                             <input type="hidden" asp-for="Product.Created" value="@DateTime.Now" />
 
                             <div class="d-flex">
+                                      <a asp-page="Index" class="custom-secondary-btn">Tillbaka till lista</a>
                                 <input type="submit" value="Lägg till" class="add-object" />
-                                <a asp-page="Index" class="custom-secondary-btn">Tillbaka till lista</a>
                             </div>
 
                             @if (TempData["StatusMessageError"] != null)

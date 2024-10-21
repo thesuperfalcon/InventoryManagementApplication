@@ -7,9 +7,11 @@
 <head>
     <link rel="stylesheet" href="~/css/admin.css" asp-append-version="true" />
 </head>
-<h1 class="row justify-content-center">@ViewData["Title"]</h1>
+<div class="d-flex justify-content-center align-items-center">
+    <h1 class="registration-title">@ViewData["Title"]</h1>
+</div>
 
-<div id="registerContainer" data-check-url="@Url.Page("/Account/Register", "CheckEmployeeNumberExists")">
+<div id="registerContainer"data-check-url="@Url.Page("/Account/Register", "CheckEmployeeNumberExists")">
     <div class="row">
         <div class="row justify-content-center">
             <div class="col-md-4">

@@ -52,7 +52,7 @@ namespace InventoryManagementApplication.Pages.admin.product
 
             if (StorageId == 0)
             {
-                ModelState.AddModelError(string.Empty, "Du mÂste v‰lja en produkt innan du s‰ljer.");
+                ModelState.AddModelError(string.Empty, "Du m√•ste v√§lja en produkt innan du s√§ljer.");
                 await LoadProductsAndStorage(id, storageId);
                 return Page();
             }
@@ -62,7 +62,7 @@ namespace InventoryManagementApplication.Pages.admin.product
             if (Product == null || Storage == null)
             {
 
-                ModelState.AddModelError(string.Empty, "Du mÂste v‰lja en giltig produkt och ett lager innan du s‰ljer.");
+                ModelState.AddModelError(string.Empty, "Du m√•ste v√§lja en giltig produkt och ett lager innan du s√§ljer.");
                 return Page();
             }
 
@@ -73,12 +73,12 @@ namespace InventoryManagementApplication.Pages.admin.product
 
             if (SellAmount > currentProductAmount)
             {
-                TempData["StatusMessageError"] = "Du kan inte s‰lja mer produkter ‰n vad som finns i lagret!";
+                TempData["StatusMessageError"] = "Du kan inte s√§lja mer produkter √§n vad som finns i lagret!";
                 return RedirectToPage("./SellProduct", new { index = Index, id = Product.Id, storageId = Storage.Id });
             }
             else if(SellAmount <= 0)
             {
-                TempData["StatusMessageError"] = "Du kan inte s‰lje f‰rre ‰n 1 produkt!";
+                TempData["StatusMessageError"] = "Du kan inte s√§lje f√§rre √§n 1 produkt!";
                 return RedirectToPage("./SellProduct", new { index = Index, id = Product.Id, storageId = Storage.Id });
             }
             else
@@ -94,7 +94,7 @@ namespace InventoryManagementApplication.Pages.admin.product
                 await _productManager.EditProductAsync(Product);
                 await _trackerManager.EditTrackerAsync(Tracker);
                 await _storageManager.EditStorageAsync(Storage);
-                TempData["StatusMessageSuccess"] = $"Nu har du sÂlt {SellAmount} antal: {Product.Name}";
+                TempData["StatusMessageSuccess"] = $"Nu har du s√•lt {SellAmount} antal: {Product.Name}";
                 return RedirectToPage("./SellProduct", new { index = Index, id = Product.Id, storageId = Storage.Id });
             }           
         }

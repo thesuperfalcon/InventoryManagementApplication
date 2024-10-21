@@ -4,37 +4,54 @@
     string isDeletedMessage = Model.IsDeletedToggle == false ? "Aktiva" : "Borttagna";
 }
 
-    <h2>Användaröversikt</h2>
+<h1>Användaröversikt</h1>
+<div class="container mt-4">
     <h3>Antal (@isDeletedMessage) användare: @Model.UserCount</h3>
 
-    <form method="post" asp-route-buttonId="1">
-        <input type="hidden" name="IsDeletedToggle" value="@Model.IsDeletedToggle.ToString().ToLower()" />
-        <button class="btn btn-primary" type="submit">
-            @if (Model.IsDeletedToggle)
-            {
-                <span>Aktiva Användare</span>
-            }
-            else
-            {
-                <span>Borttagna Användare</span>
-            }
-        </button>
-    </form>
+    <div class="row mb-0">
+        <div class="col-md-6 mb-0">
+            <div class="input-group shadow-sm">
+                <input type="text" id="userRolesSearchInput" class="form-control" placeholder="Sök anställningsnummer.."
+                    aria-label="Sök" />
+                <button id="clearUserRolesInput" class="clearButton" type="button"
+                    onclick="clearUserRolesSearch()">Rensa</button>
+                <span class="input-group-text custom-color text-white">
+                    <i class="bi bi-search"></i>
+                </span>
+            </div>
+        </div>
+    </div>
 
-<div class="input-group">
-    <input id="userRolesSearchInput" type="text" class="form-control" placeholder="Sök anställningsnummer..." />
-    <button id="clearUserRolesInput" type="button" onclick="clearUserRolesSearch()">Rensa Sök</button>
-</div>
 
-<table id="userRolesTable" class="table table-striped table-hover" data-sort-direction="asc">
-    <thead>
+    <div class="button-container">
+
+        <form method="post" asp-route-buttonId="1">
+            <input type="hidden" name="IsDeletedToggle" value="@Model.IsDeletedToggle.ToString().ToLower()" />
+            <button class="btn custom-secondary-btn" type="submit">
+                @if (Model.IsDeletedToggle)
+                {
+                    <span>Aktiva Användare</span>
+                }
+                else
+                {
+                    <span>Borttagna Användare</span>
+                }
+            </button>
+        </form>
+    </div>
+
+
+
+         <div class="table-responsive">
+       <table id="userRolesTable"  class="table table-striped table-hover align-middle" data-sort-direction="asc">
+            <thead class="table-dark">
         <tr>
-            <th scope="col"><a href="javascript:void(0);" onclick="sortTable(0)">Anställningsnummer</a></th>
-            <th scope="col"><a href="javascript:void(0);" onclick="sortTable(1)">Förnamn</a></th>
-            <th scope="col"><a href="javascript:void(0);" onclick="sortTable(2)">Efternamn</a></th>
-            <th scope="col"><a href="javascript:void(0);" onclick="sortTable(3)">Roll</a></th>
-            <th scope="col"><a href="javascript:void(0);" onclick="sortTable(4)">Skapad</a></th>
-            <th scope="col"><a href="javascript:void(0);" onclick="sortTable(5)">Uppdaterad</a></th>
+            <th scope="col"><a href="javascript:void(0);" onclick="sortTable(0)">Anställningsnummer<i class="bi bi-sort-down"></i></a></th>
+            <th scope="col"><a href="javascript:void(0);" onclick="sortTable(1)">Förnamn<i class="bi bi-sort-down"></i></a></th>
+            <th scope="col"><a href="javascript:void(0);" onclick="sortTable(2)">Efternamn<i class="bi bi-sort-down"></i></a></th>
+            <th scope="col"><a href="javascript:void(0);" onclick="sortTable(3)">Roll<i class="bi bi-sort-down"></i></a></th>
+            <th scope="col"><a href="javascript:void(0);" onclick="sortTable(4)">Skapad<i class="bi bi-sort-down"></i></a></th>
+            <th scope="col"><a href="javascript:void(0);" onclick="sortTable(5)">Uppdaterad<i class="bi bi-sort-down"></i></a></th>
             <th scope="col">Inställningar</th>
         </tr>
     </thead>
@@ -65,14 +82,33 @@
 
 
 <div class="mb-3">
+          <div class="pagination-container">
     <button id="prevPage" class="btn btn-primary">Bak</button>
     <span id="pageNumber" class="mx-3"></span>
     <button id="nextPage" class="btn btn-primary">Fram</button>
+     <div class="page-container">
     <select id="pageSelector" class="form-select" aria-label="Page selector" style="max-width: 100px;"></select>
 </div>
+</div>
+</div>
+    </div>
 
-    
 @section Scripts {
-    <script src="~/js/userRoles.js"></script>
+    <script src="~/js/userRoles.js" asp-append-version="true"></script>
+    <script>
+        function clearUserRolesSearch() {
+            const userRolesSearchInput = document.getElementById("userRolesSearchInput");
+            userRolesSearchInput.value = "";
+
+            const event = new Event('input', {
+                bubbles: true,
+                cancelable: true,
+            });
+            userRolesSearchInput.dispatchEvent(event);
+        }
+    </script>
 }
 
+@section Styles {
+    <link rel="stylesheet" href="~/css/admin.css" asp-append-version="true" />
+}

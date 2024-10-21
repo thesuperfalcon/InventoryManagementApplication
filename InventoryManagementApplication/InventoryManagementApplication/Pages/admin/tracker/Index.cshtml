@@ -4,25 +4,27 @@
     ViewData["Title"] = "Flytta produkter";
 }
 
-<div class="container mt-4">
-    <div class="row mb-4">
-        <div class="col-12 d-flex justify-content-between align-items-center">
-            <h1>Flytta produkter</h1>
-            <a asp-page="Create" class="btn btn-success btn-lg">
-                <i class="bi bi-plus-lg me-2"></i> Flytta produkt
-            </a>
-        </div>
-    </div>
 
-    <div class="row mb-3">
-        <div class="col-md-6">
+            <h1>Flytta produkter</h1>
+<div class="container mt-4">
+ 
+        <div class="row mb-0">
+        <div class="col-md-6 mb-0">
             <div class="input-group shadow-sm">
                 <input type="text" id="searchInput" class="form-control" placeholder="Filtrera produkter..." onkeyup="filterTable()" />
-                <span class="input-group-text bg-primary text-white">
+                                    <a id="clearSearch" class="clearButton" href="/admin/tracker/Index" style="text-decoration:none; display: flex;align-items: center;  padding:5px;">Rensa </a>
+                <span class="input-group-text custom-color text-white">
                     <i class="bi bi-search"></i>
                 </span>
             </div>
         </div>
+ </div>
+
+               <div class="button-container">
+            <a asp-page="Create" class="btn btn-generic">
+                <i class="bi bi-plus-lg me-2"></i> Flytta produkt
+            </a>
+   
     </div>
 
     <div class="table-responsive shadow-sm">
