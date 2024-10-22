@@ -123,15 +123,20 @@
                                 </form>
                             </div>
 
-                            @if (Model.SelectedUser.IsDeleted == true)
+                       @if (Model.SelectedUser.IsDeleted == true)
                             {
+                                    <div class="d-grid gap-2" style="width: 100%;">
+                                <hr>
                                 <div>
+                                    <h5>Återskapning av raderad användare</h5>
+                                     <p>Återaktiverar en tidigare raderad användare. När en användare återskapas, återställs deras kontoinformation och tillgång till systemet.</p>
                                     <form method="post" asp-page-handler="RecreateUser">
-                                        <button type="submit">
+                                        <button type="submit" class="btn btn-success">
                                             Återskapa användare
                                         </button>
                                     </form>
                                 </div>
+                                 </div>
                             }
                             <div class="d-grid gap-2" style="width: 100%;">
                                 <hr>
@@ -141,7 +146,7 @@
                                     @if (Model.SelectedUser.Id != loggedInUserId)
                                     {
                                         <h5>Ta bort konto</h5>
-                                        <p>Denna åtgärd tar bort kontot permanent.</p>
+                                   <p>Denna åtgärd tar bort kontot @if (Model.SelectedUser.IsDeleted == true) { <strong>permanent</strong> }.</p>
                                         <button type="button" class="btn btn-danger d-flex align-items-center w-100" id="openDeleteModalBtn">
                                             <i class="fas fa-trash-alt me-1"></i> Ta bort
                                         </button>
@@ -187,10 +192,10 @@
                                 </button>
                             </div>
                             <div class="modal-body">
-                                Är du säker på att du vill ta bort detta konto permanent? Denna åtgärd kan inte ångras.
+                                Är du säker på att du vill ta bort detta konto? @if (Model.SelectedUser.IsDeleted == true) { <strong> Denna åtgärd tar bort kontot permanent</strong> }.
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Avbryt</button>
+                                <button type="button" class="btn custom-secondary-btn" data-bs-dismiss="modal">Avbryt</button>
                                 <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Ta bort</button>
                             </div>
                         </div>
@@ -213,8 +218,8 @@
                                 Är du säker på att du vill ändra användarens roll till: <strong id="modalRole"></strong>?
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Avbryt</button>
-                                <button type="button" class="btn btn-primary" id="confirmRoleChangeBtn">Bekräfta</button>
+                                <button type="button" class="btn custom-secondary-btn" data-bs-dismiss="modal">Avbryt</button>
+                                <button type="button" class="btn btn-generic" id="confirmRoleChangeBtn">Bekräfta</button>
                             </div>
                         </div>
                     </div>

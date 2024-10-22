@@ -24,12 +24,15 @@
                                 <span asp-validation-for="Product.Name" class="text-danger"></span>
                             </div>
 
-                                 <div class="form-floating mb-3 d-flex align-items-center">
-                                <label asp-for="ArticleNumber" class="form-label">Artikelnummer</label>
-                                <input asp-for="ArticleNumber" class="form-control" required readonly />
-                                <button type="button" id="generateArticleNumberBtn" class="btn btn-generic mt-2" style="margin-left:10px;">Generera</button>
-                                <span asp-validation-for="ArticleNumber" class="text-danger"></span>
-                            </div>
+                          <div class="mb-3">
+    <label asp-for="ArticleNumber" class="form-label">Artikelnummer</label>
+    <div class="d-flex align-items-center">
+        <input asp-for="ArticleNumber" class="form-control" id="ArticleNumber" required readonly />
+        <button type="button" id="generateArticleNumberBtn" class="btn btn-generic ms-2">Generera</button>
+    </div>
+    <span asp-validation-for="ArticleNumber" class="text-danger"></span>
+</div>
+
 
                             <div class="mb-3">
                                 <label asp-for="Product.Description" class="form-label">Beskrivning</label>

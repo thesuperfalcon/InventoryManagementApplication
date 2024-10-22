@@ -1,0 +1,34 @@
+a {
+    color: #0763c7; 
+    text-decoration: underline; 
+}
+
+a:hover {
+    color: #0056b3; 
+}
+
+a:visited {
+    color: #6c757d; 
+}
+
+.result-link {
+    font-size: 20px;
+    color: #007bff; 
+    text-decoration: none;
+}
+
+.result-link:hover {
+    text-decoration: underline;
+    color: #0056b3;
+}
+
+
+
+.list-unstyled {
+    margin-top: 10px;
+    padding-left: 0; 
+}
+
+li.mb-3 {
+    margin-bottom: 15px;
+}
