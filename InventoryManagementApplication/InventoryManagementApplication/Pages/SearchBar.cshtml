@@ -4,18 +4,21 @@
     ViewData["Title"] = "Sök";
 }
 
+<div class="search-results-container">
 @if (!string.IsNullOrEmpty(Model.Query))
 {
+
     <h3>Sökresultat för "@Model.Query":</h3>
+
 
     @if (Model.Products != null && Model.Products.Any())
     {
         <h4>Produkter:</h4>
-        <ul>
+       <ul class="list-unstyled">
             @foreach (var product in Model.Products)
             {
                 <li>
-                    <a href="/ProductDetails/@product.Id">@product.Name | @product.ArticleNumber </a>
+                    <a href="/ProductDetails/@product.Id" class="result-link">@product.Name | @product.ArticleNumber </a>
                 </li>
             }
         </ul>
@@ -28,11 +31,11 @@
     @if (Model.Storages.Any())
     {
         <h4>Lager:</h4>
-        <ul>
+        <ul class="list-unstyled">
             @foreach (var storage in Model.Storages)
             {
                 <li>
-                    <a href="/StorageDetails/@storage.Id">@storage.Name</a>
+                    <a href="/StorageDetails/@storage.Id" class="result-link">@storage.Name</a>
                 </li>
             }
         </ul>
@@ -45,16 +48,16 @@
     @if (Model.Users.Any())
     {
         <h4>Användare:</h4>
-        <ul>
+            <ul class="list-unstyled">
             @foreach (var user in Model.Users)
             {
                 @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
                 {
                     <li>
-                        <a asp-page="/Statistic" asp-route-employeeNumber="@user.EmployeeNumber">
+                        <a asp-page="/Statistic" asp-route-employeeNumber="@user.EmployeeNumber" class="result-link">
                             @user.FirstName @user.LastName | @user.EmployeeNumber - Statistik
                         </a> |
-                        <a href="UserInfo/@user.Id"> Användarprofil</a>
+                        <a href="UserInfo/@user.Id" class="result-link">Användarprofil</a>
                     </li>
                 }
                 else
@@ -74,4 +77,8 @@
 else
 {
     <p>Inga sökresultat att visa. Var vänlig ange en sökfråga.</p>
+}
+</div>
+@section Styles {
+    <link rel="stylesheet" href="~/css/search.css" asp-append-version="true" />
 }

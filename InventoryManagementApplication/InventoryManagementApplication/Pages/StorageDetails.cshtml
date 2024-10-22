@@ -8,14 +8,6 @@
             <div class="card mb-6">
                 	<div class="card-header d-flex justify-content-between align-items-center">
                     <h2>Lagerdetaljer: @Model.Storage.Name</h2>
-                    @* Bara admin kan göra ändringar *@
-                    @if (User.IsInRole("Admin"))
-                    {
-                        <button class="btn btn-generic" data-bs-toggle="modal" data-bs-target="#editStorageModal">
-                            <i class="bi bi-pencil"></i>
-                        </button>
-                    }
-
                 </div>
                 <div class="card-body">
                     @if (Model.Storage != null)
@@ -194,28 +186,6 @@ else
                 </div>
             </div>
         </div>
-
-
-            <div class="modal fade" id="editStorageModal" tabindex="-1" aria-labelledby="editStorageModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="editStorageModalLabel">Ändra lagernamn</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form method="post" asp-page-handler="UpdateStorage">
-                    <div class="form-group mb-3">
-                        <label for="StorageName">Nytt lagernamn</label>
-                        <input type="text" class="form-control" id="StorageName" name="StorageName" value="@Model.Storage.Name" required />
-                    </div>
-                    <input type="hidden" name="StorageId" value="@Model.Storage.Id" />
-                    <button type="submit" class="btn btn-primary">Spara</button>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
 
 
 @section Scripts {
