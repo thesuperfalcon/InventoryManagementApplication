@@ -33,11 +33,17 @@ namespace InventoryManagementApplication.Helpers
                 return new OperationResult(false, "Validation failed.");
             }
 
-            var toStorageTracker = await _trackerManager.GetTrackerByProductAndStorageAsync(productId, toStorageId) ??
-           
-            await CreateToStorageTrackerAsync(productId, toStorageId, quantity);
+            var createdTracker = false;
 
-            await UpdateTrackers(fromStorageTracker, toStorageTracker, quantity);
+            var toStorageTracker = await _trackerManager.GetTrackerByProductAndStorageAsync(productId, toStorageId);
+
+            if (toStorageTracker == null)
+            {
+                toStorageTracker = await CreateToStorageTrackerAsync(productId, toStorageId, quantity);
+                createdTracker = true;
+            }
+
+            await UpdateTrackers(fromStorageTracker, toStorageTracker, quantity, createdTracker);
             await UpdateStoragesAsync(fromStorage, toStorage, quantity);
             await UpdateProductStockAsync(defaultStorage, fromStorageId, toStorageId, product, quantity);
             await CreateMovementStatisticAsync(productId, fromStorageId, toStorageId, quantity);
@@ -65,12 +71,12 @@ namespace InventoryManagementApplication.Helpers
             return newTracker;
         }
 
-        private async Task UpdateTrackers(InventoryTracker fromTracker, InventoryTracker toTracker, int quantity)
+        private async Task UpdateTrackers(InventoryTracker fromTracker, InventoryTracker toTracker, int quantity, bool toTrackerCreated)
         {
             fromTracker.Quantity -= quantity;
             toTracker.Quantity += quantity;
             await _trackerManager.EditTrackerAsync(fromTracker);
-            if(toTracker.Id != 0 || toTracker != null)
+            if((toTracker.Id != 0 || toTracker != null) && !toTrackerCreated)
             {
                 await _trackerManager.EditTrackerAsync(toTracker);
             }

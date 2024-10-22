@@ -44,7 +44,6 @@ namespace InventoryManagementApplication.Pages.admin.product
             Product = product;
             SellAmount = 0;
             return Page();
-
         }
 
         public async Task<IActionResult> OnPostAsync()
@@ -85,52 +84,60 @@ namespace InventoryManagementApplication.Pages.admin.product
             var defaultStorage = await _storageManager.GetDefaultStorageAsync();
             var tracker = await _trackerManager.GetTrackerByProductAndStorageAsync(Product.Id, defaultStorage.Id);
 
-            InventoryTrackers = await _trackerManager.GetTrackerByProductOrStorageAsync(Product.Id, 0);
-
-
-            if (InventoryTrackers != null && InventoryTrackers.Count > 0)
+            bool isNewTracker = false;
+            if (tracker == null)
             {
-                var productQuantity = InventoryTrackers.Sum(x => x.Quantity);
-
-                if (Product.TotalStock < productQuantity)
+                tracker = new InventoryTracker
                 {
-                    TempData["StatusMessageError"] = $"Det går ej att fylla med färre antal.";
-                    return RedirectToPage("./Edit", new { id = Product.Id });
-                }
-                else
-                {
-                    var input = Product.TotalStock - productQuantity;
-                    Product.CurrentStock += input;
-                    defaultStorage.CurrentStock += input;
-                    tracker.Quantity += input;
+                    ProductId = Product.Id,
+                    StorageId = defaultStorage.Id,
+                    Quantity = Product.TotalStock
+                };
 
+                await _trackerManager.CreateTrackerAsync(tracker);
+                isNewTracker = true;
+            }
+
+            if (!isNewTracker)
+            {
+                InventoryTrackers = await _trackerManager.GetTrackerByProductOrStorageAsync(Product.Id, 0);
+
+                if (InventoryTrackers != null && InventoryTrackers.Count > 0)
+                {
+                    var productQuantity = InventoryTrackers.Sum(x => x.Quantity);
+
+                    if (Product.TotalStock < productQuantity)
+                    {
+                        TempData["StatusMessageError"] = $"Det går ej att fylla med färre antal.";
+                        return RedirectToPage("./Edit", new { id = Product.Id });
+                    }
+                    else
+                    {
+                        var input = Product.TotalStock - productQuantity;
+                        Product.CurrentStock += input;
+                        defaultStorage.CurrentStock += input;
+                        tracker.Quantity += input;
+                    }
                 }
             }
             else
             {
                 Product.CurrentStock = Product.TotalStock;
-            }
-
-            if (PreviousProduct.Name == Product.Name && PreviousProduct.Price == Product.Price && PreviousProduct.ArticleNumber == Product.ArticleNumber
-                  && PreviousProduct.Description == Product.Description && PreviousProduct.CurrentStock == Product.CurrentStock && recreatedProduct == false)
-            {
-                TempData["StatusMessageError"] = "Inga ändringar har gjorts, ange nya värden";
-                return Page();
+                defaultStorage.CurrentStock += Product.TotalStock;
             }
 
             await _productManager.EditProductAsync(Product);
             await _storageManager.EditStorageAsync(defaultStorage);
-            if (tracker != null)
+
+            if (!isNewTracker)
             {
                 await _trackerManager.EditTrackerAsync(tracker);
             }
 
             string statusMessage = recreatedProduct == true ? "Produkten har återskapats!" : "Produkt har ändrats!";
-
             TempData["StatusMessageSuccess"] = statusMessage;
 
             return RedirectToPage("./Edit", new { id = Product.Id });
-
         }
     }
 }
