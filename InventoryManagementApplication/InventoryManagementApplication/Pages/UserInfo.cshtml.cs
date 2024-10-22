@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.VisualBasic;
 using System.Data;
 
 namespace InventoryManagementApplication.Pages
@@ -186,6 +187,17 @@ namespace InventoryManagementApplication.Pages
             TempData["ConfirmationMessage"] = "Användaren har raderats. Du kommer att omdirigeras till användaröversikten om några sekunder.";
             TempData["RedirectLink"] = "/UsersRoles";
             return Partial("_EditLoggedInUserConfirmation", TempData["ConfirmationMessage"]);
+        }
+        public async Task<IActionResult> OnPostRecreateUserAsync(string userID)
+        {
+            var selectedUser = await _userManagerDal.GetOneUserAsync(userID);
+
+            if(selectedUser != null && selectedUser.IsDeleted == true)
+            {
+                selectedUser.IsDeleted = false;
+                await _userManagerDal.EditUserAsync(selectedUser, null, null, false);
+            }
+            return RedirectToPage("/UsersRoles");
         }
     }
 }

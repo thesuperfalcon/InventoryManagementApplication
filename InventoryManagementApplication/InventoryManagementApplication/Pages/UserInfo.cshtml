@@ -121,7 +121,7 @@
                             @if (Model.SelectedUser.IsDeleted == true)
                             {
                                 <div>
-                                    <form method="post" asp-page-handler="RecreateUser">
+                                    <form method="post" asp-page-handler="RecreateUser" asp-route-userId="@Model.SelectedUser.Id">
                                         <button type="submit">
                                             Återskapa användare
                                         </button>
@@ -222,8 +222,8 @@
 
 @section Scripts {
 	<script src="~/js/usermanagement.js" asp-append-version="true"></script>
-	<partial name="_ValidationScriptsPartial" />
-}
+@* 	<partial name="_ValidationScriptsPartial" />
+ *@}
 
 @section Styles {
 	<link rel="stylesheet" href="~/css/admin.css" asp-append-version="true" />
