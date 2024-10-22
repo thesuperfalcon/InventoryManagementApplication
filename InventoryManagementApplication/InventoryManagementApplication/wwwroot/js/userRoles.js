@@ -14,12 +14,37 @@ $(document).ready(function () {
 
     $("#userRolesSearchInput").on("input", function () {
         var searchTerms = $(this).val().toLowerCase().split(',').map(term => term.trim());
-        filteredRows = originalRows.filter(row => {
-            const rowText = Array.from(row.cells).map(cell => cell.innerText.toLowerCase()).join(" ");
-            return searchTerms.every(term => rowText.includes(term));
-        });
-        updateVisibleRows(filteredRows);
+        var filterRows = [];
+
+        for (var i = 0; i < originalRows.length; i++) {
+            var row = originalRows[i];
+            var rowText = Array.from(row.cells).map(cell => cell.innerText.toLowerCase()).join(" ");
+            $(row).css('display', 'table-row');
+
+            var rowMatches = searchTerms.every(term => {
+                if (term.startsWith('num:')) {
+                    var storageTerm = term.replace('num:', '').trim();
+                    return row.cells[0].innerText.toLowerCase().startsWith(storageTerm);
+                } else if (!isNaN(term) && term.length > 0) {
+                    return rowText.split(' ').some(cellText => cellText.startsWith(term));
+                } else {
+                    return rowText.indexOf(term) >= 0;
+                }
+            });
+
+            if (!rowMatches) {
+                $(row).css('display', 'none');
+            }
+            else {
+                filterRows.push(row);
+            }
+        }
+        updateVisibleRows(filterRows);
         paginateTable();
+        updatePageSelector(); 
+
+
+        console.log(`Söktermer: ${searchTerms.join(", ")}`);
     });
 
     $("#prevPage").on("click", function () {
