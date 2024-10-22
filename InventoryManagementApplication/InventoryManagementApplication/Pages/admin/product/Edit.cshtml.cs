@@ -99,10 +99,10 @@ namespace InventoryManagementApplication.Pages.admin.product
                 }
                 else
                 {
-                    var input = Product.TotalStock - productQuantity;
-                    Product.CurrentStock += input;
-                    defaultStorage.CurrentStock += input;
-                    tracker.Quantity += input;
+                    var input = Product.TotalStock + productQuantity;
+                    Product.CurrentStock = input;
+                    defaultStorage.CurrentStock = input;
+                    tracker.Quantity = input;
 
                 }
             }
