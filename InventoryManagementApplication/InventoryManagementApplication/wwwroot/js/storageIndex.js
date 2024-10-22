@@ -4,14 +4,6 @@ let originalRows = [];
 let filteredRows = [];
 let visibleRows = [];
 
-function debounce(func, delay) {
-    let timeout;
-    return function (...args) {
-        clearTimeout(timeout);
-        timeout = setTimeout(() => func.apply(this, args), delay);
-    };
-}
-
 $(document).ready(function () {
     const pageSelector = document.getElementById('pageSelector');
 
@@ -20,7 +12,7 @@ $(document).ready(function () {
     updateVisibleRows(filteredRows);
     paginateTable();
 
-    $("#searchInput").on("input", debounce(function () {
+    $("#searchInput").on("input", function () { 
         var searchTerms = $(this).val().toLowerCase().split(',').map(term => term.trim());
         filteredRows = originalRows.filter(row => {
             const rowText = Array.from(row.cells).map(cell => cell.innerText.toLowerCase()).join(" ");
@@ -28,7 +20,7 @@ $(document).ready(function () {
         });
         updateVisibleRows(filteredRows);
         paginateTable();
-    }, 300));
+    });
 
     $("#prevPage").on("click", function () {
         if (currentPage > 1) {
@@ -55,6 +47,7 @@ $(document).ready(function () {
         pageSelector.value = currentPage;
     }
 });
+
 
 function clearProductSearch() {
     const searchInput = document.getElementById("searchInput");
@@ -93,56 +86,3 @@ function paginateTable() {
     }
     pageSelector.value = currentPage;
 }
-
-function sortTable(tableId, columnIndex) {
-    const table = document.getElementById(tableId);
-    const rows = Array.from(table.rows).slice(1);
-
-    if (!table.hasAttribute("data-sort-direction")) {
-        table.setAttribute("data-sort-direction", "asc");
-    }
-
-    const isAscending = table.getAttribute("data-sort-direction") === "asc";
-
-    rows.sort((a, b) => {
-        const cellA = a.cells[columnIndex].innerText.trim();
-        const cellB = b.cells[columnIndex].innerText.trim();
-
-        if (columnIndex === 1 || columnIndex === 2 || columnIndex === 3) {
-            return isAscending
-                ? parseFloat(cellA) - parseFloat(cellB)
-                : parseFloat(cellB) - parseFloat(cellA);
-        } else {
-            return isAscending
-                ? cellA.localeCompare(cellB, 'sv-SE')
-                : cellB.localeCompare(cellA, 'sv-SE');
-        }
-    });
-
-    const tbody = table.querySelector('tbody');
-    tbody.innerHTML = "";
-    rows.forEach(row => tbody.appendChild(row));
-
-    table.setAttribute("data-sort-direction", isAscending ? "desc" : "asc");
-}
-
-document.getElementById('searchInput').addEventListener('keyup', debounce(function () {
-    const searchValue = this.value.toLowerCase();
-    const table = document.getElementById('storageTable');
-    const rows = table.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
-
-    Array.from(rows).forEach(row => {
-        const cells = row.getElementsByTagName('td');
-        let rowMatches = false;
-
-        for (let i = 0; i < cells.length; i++) {
-            const cell = cells[i].innerText.toLowerCase();
-            if (cell.includes(searchValue)) {
-                rowMatches = true;
-                break;
-            }
-        }
-
-        row.style.display = rowMatches ? '' : 'none';
-    });
-}, 300));
