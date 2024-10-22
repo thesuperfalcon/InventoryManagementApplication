@@ -64,6 +64,11 @@
                         <br>
 
                         <div class="form-group">
+                            <label for="UserName">Användarnamn</label>
+                            <input asp-for="SelectedUser.UserName" class="form-control" readonly />
+                            <span asp-validation-for="SelectedUser.UserName" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
                             <label for="EmployeeNumber">Anställningsnummer</label>
                             <input asp-for="SelectedUser.EmployeeNumber" class="form-control" readonly /> <!-- Gör fältet readonly -->
                             <span asp-validation-for="SelectedUser.EmployeeNumber" class="text-danger"></span>
