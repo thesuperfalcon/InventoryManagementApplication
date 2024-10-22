@@ -1,8 +1,5 @@
-<<<<<<< HEAD
 let rowsPerPage = 12;
-=======
 ﻿let rowsPerPage = 12;
->>>>>>> 3894007 (pageselector changed)
 let currentPage = 1;
 let originalRows = [];
 let filteredRows = [];
