@@ -142,6 +142,18 @@ namespace InventoryManagementApplication.Pages
             if (user == null)
                 return NotFound("Användaren kunde inte hittas.");
 
+            bool hasChanges = user.FirstName != SelectedUser.FirstName ||
+                     user.LastName != SelectedUser.LastName ||
+                     user.EmployeeNumber != SelectedUser.EmployeeNumber ||
+                     user.UserName != $"{SelectedUser.FirstName[..2].ToLower()}{SelectedUser.LastName[..2].ToLower()}{SelectedUser.EmployeeNumber.ToLower()}";
+
+            if (!hasChanges)
+            {
+                ModelState.AddModelError(string.Empty, "Inga ändringar gjordes.");
+                await PopulateAvailableRolesAsync();
+                return RedirectToPage();
+            }
+
             user.FirstName = SelectedUser.FirstName;
             user.LastName = SelectedUser.LastName;
             user.UserName = $"{user.FirstName[..2].ToLower()}{user.LastName[..2].ToLower()}{user.EmployeeNumber.ToLower()}";
@@ -156,9 +168,10 @@ namespace InventoryManagementApplication.Pages
                 await PopulateAvailableRolesAsync();
                 return Page();
             }
+            TempData["SuccessMessage"] = $"Uppgifter sparade!";
 
             await PopulateAvailableRolesAsync();
-            return Redirect("/UsersRoles");
+            return RedirectToPage();
         }
 
         public async Task<IActionResult> OnPostDeleteAsync(string userId)
