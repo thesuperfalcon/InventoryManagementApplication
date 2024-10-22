@@ -4,7 +4,16 @@
 
 @{
     ViewData["Title"] = "Delete";
-    var deleteMessage = Html.Raw($"Är du säker på att du vill ta bort detta objekt? Det går ej att ångra!!");
+    var deleteMessage = Html.Raw("");
+    if(Model.Product.IsDeleted == false)
+    {
+        deleteMessage = Html.Raw($"Är du säker på att du vill ta bort detta objekt?");
+    }
+    else
+    {
+        deleteMessage = Html.Raw($"Är du säker på att du vill ta bort detta objekt? Det går ej att ångra!!");
+    }
+    
 }
 
 <div class="container mt-5">
@@ -45,7 +54,7 @@
 
     <form id="deleteForm" method="post" class="d-flex justify-content-start align-items-center">
         <input type="hidden" asp-for="Product.Id" />
-                <a asp-page="./Index" class="custom-secondary-btn">Tillbaka till lista</a>
+        <a asp-page="./Index" class="custom-secondary-btn">Tillbaka till lista</a>
         <button type="button" id="deleteButton" class="add-object delete-button">Ta bort</button>
     </form>
 </div>
